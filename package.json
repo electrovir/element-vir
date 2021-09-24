@@ -1,0 +1,28 @@
+{
+    "name": "element-vir",
+    "version": "0.0.0",
+    "homepage": "https://github.com/electrovir/element-vir#readme",
+    "bugs": {
+        "url": "https://github.com/electrovir/element-vir/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/electrovir/element-vir.git"
+    },
+    "license": "MIT",
+    "author": {
+        "name": "electrovir",
+        "url": "https://github.com/electrovir"
+    },
+    "main": "dist/index.js",
+    "scripts": {
+        "prepublishOnly": "npm run test:full",
+        "spellcheck": "virmator spellcheck",
+        "test": "echo \"test\"",
+        "test:full": "npm test && npm run spellcheck && virmator format check",
+        "format": "virmator format write"
+    },
+    "devDependencies": {
+        "virmator": "^1.1.15"
+    }
+}

@@ -1,0 +1,15 @@
+.cspell-base.json
+.cspell.json
+.gitattributes
+.github
+.gitignore
+.prettierignore
+.prettierrc.js
+.vscode
+*.test.d.ts
+*.test.js
+scripts
+src
+test-repos
+tsconfig-base.json
+tsconfig.json
