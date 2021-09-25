@@ -13,3 +13,5 @@ src
 test-repos
 tsconfig-base.json
 tsconfig.json
+
+dist/test
