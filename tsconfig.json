@@ -2,9 +2,9 @@
     "compilerOptions": {
         "module": "ES6",
         "moduleResolution": "node",
-        // broken in snowpack
+        // no implicit override is broken in snowpack
         "noImplicitOverride": false
     },
-    "exclude": ["src/test", "dist"],
+    "exclude": ["dist"],
     "extends": "./tsconfig-base.json"
 }

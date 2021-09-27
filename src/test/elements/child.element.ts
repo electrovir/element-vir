@@ -1,19 +1,29 @@
+import {css} from 'lit';
 import {createFunctionalElement} from '../../functional-element/create-functional-element';
 import {html} from '../../vir-html/vir-html';
 
 export const ChildElement = createFunctionalElement({
     tagName: 'element-vir-test-child-element',
-    inputs: {
-        thingie: undefined,
+    styles: css`
+        :host {
+            display: flex;
+            flex-direction: column;
+        }
+    `,
+    propertyInit: {
+        canvasWidth: window.innerWidth,
+        inputNumber: undefined as number | undefined,
     },
-    renderCallback: ({inputs}) => {
-        // console.dir(element);
-        console.log(inputs.thingie);
+    connectedCallback(element) {
+        window.addEventListener('resize', () => {
+            element.canvasWidth = window.innerWidth;
+        });
+    },
+    renderCallback: ({props}) => {
         return html`
-            Welcome to the test child element.
+            <span>Child</span>
+            <span>width: ${props.canvasWidth}</span>
+            <span>input number: ${props.inputNumber}</span>
         `;
     },
 });
-
-console.log(ChildElement);
-console.log(ChildElement.inputs.thingie);

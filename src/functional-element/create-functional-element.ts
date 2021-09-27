@@ -1,88 +1,113 @@
-import {css, CSSResult, TemplateResult} from 'lit';
+import {css, TemplateResult} from 'lit';
 import {property} from 'lit/decorators.js';
-import {FunctionalElementBase, FunctionalElementBaseClass} from './functional-element-base';
+import {
+    FunctionalElement,
+    FunctionalElementBaseClass,
+    FunctionalElementInstance,
+} from './functional-element';
 import {EventsMap} from './functional-element-event';
-import {FunctionalElementInput, InputsMap} from './functional-element-inputs';
-
-export type RenderCallback<InputsGeneric extends InputsMap> = (
-    params: RenderParams<InputsGeneric>,
-) => TemplateResult | Promise<TemplateResult>;
-
-export type RenderParams<InputsGeneric extends InputsMap> = {
-    self: FunctionalElementBase<InputsGeneric>;
-    renderRoot: HTMLElement | ShadowRoot;
-    inputs: InputsGeneric;
-};
-
-export type FunctionalElementInit<
-    InputsGeneric extends InputsMap,
-    EventsGeneric extends EventsMap,
-> = {
-    tagName: string;
-    inputs?: InputsGeneric;
-    styles?: CSSResult;
-    events?: EventsGeneric;
-    renderCallback: RenderCallback<InputsGeneric>;
-};
-
-export type FunctionalElement<InputsGeneric extends InputsMap> =
-    (new () => FunctionalElementBase<InputsGeneric>) & {
-        inputs: Record<keyof InputsGeneric, FunctionalElementInput<InputsGeneric>>;
-    };
+import {FunctionalElementInit} from './functional-element-init';
+import {
+    FunctionalElementProperty,
+    FunctionalElementPropertyMap,
+    PropertyInitMap,
+} from './functional-element-properties';
+import {RenderParams} from './render-callback';
 
 export function createFunctionalElement<
-    InputsGeneric extends InputsMap = {},
-    EventsGeneric extends EventsMap = {},
+    PropertyInitGeneric extends PropertyInitMap,
+    EventsGeneric extends EventsMap,
 >(
-    functionalElementInit: FunctionalElementInit<InputsGeneric, EventsGeneric>,
-): FunctionalElement<InputsGeneric> {
-    const anonymousClass = class extends FunctionalElementBaseClass {
-        public static readonly tagName = functionalElementInit.tagName;
-        public static readonly events = functionalElementInit.events || {};
-        public static readonly styles = functionalElementInit.styles || css``;
-        public render(): TemplateResult | Promise<TemplateResult> {
-            return renderWrapper(this as FunctionalElementBase<InputsGeneric>);
-        }
-        public static readonly inputs: Record<
-            keyof InputsGeneric,
-            FunctionalElementInput<InputsGeneric>
-        > = Object.keys(functionalElementInit.inputs || ({} as InputsGeneric)).reduce(
-            (accum, inputKey: keyof InputsGeneric) => {
-                accum[inputKey] = {inputName: inputKey};
-                return accum;
-            },
-            {} as Record<keyof InputsGeneric, FunctionalElementInput<InputsGeneric>>,
-        );
-
-        constructor() {
-            super();
-
-            const initInputs: InputsGeneric = functionalElementInit.inputs || ({} as InputsGeneric);
-
-            console.log('constructing');
-
-            Object.keys(initInputs).forEach((inputName: keyof InputsGeneric) => {
-                property()(this, inputName);
-                (this as unknown as InputsGeneric)[inputName] = initInputs[inputName];
-            });
-        }
-    };
-
+    functionalElementInit: FunctionalElementInit<PropertyInitGeneric, EventsGeneric>,
+): FunctionalElement<PropertyInitGeneric, EventsGeneric> {
     const renderWrapper = (
-        element: FunctionalElementBase<InputsGeneric>,
+        element: FunctionalElementInstance<PropertyInitGeneric>,
     ): TemplateResult | Promise<TemplateResult> => {
-        const renderParams: RenderParams<InputsGeneric> = {
-            renderRoot: element.renderRoot,
-            self: element,
-            inputs: Object.keys(anonymousClass.inputs).reduce((accum, key: keyof InputsGeneric) => {
-                accum[key] = element[key];
-                return accum;
-            }, {} as InputsGeneric),
+        const props = Object.keys(element.props).reduce((accum, key: keyof PropertyInitGeneric) => {
+            accum[key] = element.props[key].getProp();
+            return accum;
+        }, {} as PropertyInitGeneric);
+
+        const propsProxy = new Proxy(props, {
+            set: (target, propertyName: keyof PropertyInitGeneric, value) => {
+                element[propertyName] = value;
+                return true;
+            },
+        });
+
+        const renderParams: RenderParams<PropertyInitGeneric> = {
+            // renderRoot: element.renderRoot,
+            // self: element,
+            props: propsProxy,
         };
         return functionalElementInit.renderCallback(renderParams);
     };
 
-    console.log(anonymousClass.hasOwnProperty('tagName'));
+    const anonymousClass = class extends FunctionalElementBaseClass<PropertyInitGeneric> {
+        public static readonly tagName = functionalElementInit.tagName;
+        public static readonly styles = functionalElementInit.styles || css``;
+        public static readonly propNames = Object.keys(
+            functionalElementInit.propertyInit || ({} as PropertyInitGeneric),
+        );
+        public static readonly events = functionalElementInit.events || {};
+        public static readonly renderCallback = functionalElementInit.renderCallback;
+
+        public render(): TemplateResult | Promise<TemplateResult> {
+            return renderWrapper(this as FunctionalElementInstance<PropertyInitGeneric>);
+        }
+        public readonly props: FunctionalElementPropertyMap<PropertyInitGeneric> = Object.keys(
+            functionalElementInit.propertyInit || ({} as PropertyInitGeneric),
+        ).reduce((accum, propertyKey: keyof PropertyInitGeneric) => {
+            const newProp: FunctionalElementProperty<
+                typeof propertyKey,
+                PropertyInitGeneric[typeof propertyKey]
+            > = {
+                name: propertyKey,
+                getProp: () => {
+                    return (this as FunctionalElementInstance<PropertyInitGeneric>)[propertyKey];
+                },
+                setProp: (value) => {
+                    (this as PropertyInitGeneric)[propertyKey] = value;
+                },
+            };
+            accum[propertyKey] = newProp;
+            return accum;
+        }, {} as FunctionalElementPropertyMap<PropertyInitGeneric>);
+
+        public connectedCallback() {
+            super.connectedCallback();
+            functionalElementInit.connectedCallback?.(
+                this as FunctionalElementInstance<PropertyInitGeneric>,
+            );
+        }
+
+        public disconnectedCallback() {
+            super.disconnectedCallback();
+            functionalElementInit.disconnectedCallback?.(
+                this as FunctionalElementInstance<PropertyInitGeneric>,
+            );
+        }
+
+        constructor() {
+            super();
+
+            const initProps: PropertyInitGeneric =
+                functionalElementInit.propertyInit || ({} as PropertyInitGeneric);
+
+            Object.keys(initProps).forEach((propName: keyof PropertyInitGeneric) => {
+                const functionalElementInstance: FunctionalElementInstance<PropertyInitGeneric> =
+                    this as FunctionalElementInstance<PropertyInitGeneric>;
+
+                if (propName in functionalElementInstance) {
+                    throw new Error(
+                        `${functionalElementInit.tagName} already has a property named ${propName}. Don't add a new property to it with that name.`,
+                    );
+                }
+                property()(functionalElementInstance, propName);
+                (functionalElementInstance as PropertyInitGeneric)[propName] = initProps[propName];
+            });
+        }
+    };
 
     window.customElements.define(functionalElementInit.tagName, anonymousClass);
 

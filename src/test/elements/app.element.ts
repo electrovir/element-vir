@@ -4,14 +4,14 @@ import {ChildElement} from './child.element';
 
 export const AppElement = createFunctionalElement({
     tagName: 'element-vir-test-app',
-    inputs: {
+    propertyInit: {
         funnyNumber: Math.random(),
     },
-    renderCallback: ({self, inputs}) => {
+    renderCallback: ({props}) => {
         return html`
             Welcome to the test app.
-            <button @click=${() => (self.funnyNumber = Math.random())}>new number</button>
-            <${ChildElement} .thingie=${inputs.funnyNumber}></${ChildElement}>
+            <button @click=${() => (props.funnyNumber = Math.random())}>new number</button>
+            <${ChildElement} .inputNumber=${props.funnyNumber}></${ChildElement}>
         `;
     },
 });
