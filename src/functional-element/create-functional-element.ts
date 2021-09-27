@@ -1,64 +1,74 @@
 import {css, TemplateResult} from 'lit';
 import {property} from 'lit/decorators.js';
 import {
+    ExtraStaticFunctionalElementProperties,
     FunctionalElement,
     FunctionalElementBaseClass,
     FunctionalElementInstance,
 } from './functional-element';
-import {EventsMap} from './functional-element-event';
+import {EventPropertyMap, EventsInitMap} from './functional-element-event';
 import {FunctionalElementInit} from './functional-element-init';
 import {
-    FunctionalElementProperty,
+    ElementProperty,
     FunctionalElementPropertyMap,
+    InputPropertyMap,
     PropertyInitMap,
 } from './functional-element-properties';
-import {RenderParams} from './render-callback';
+import {createRenderParams} from './render-callback';
 
 export function createFunctionalElement<
     PropertyInitGeneric extends PropertyInitMap,
-    EventsGeneric extends EventsMap,
+    EventsInitGeneric extends EventsInitMap,
 >(
-    functionalElementInit: FunctionalElementInit<PropertyInitGeneric, EventsGeneric>,
-): FunctionalElement<PropertyInitGeneric, EventsGeneric> {
-    const renderWrapper = (
-        element: FunctionalElementInstance<PropertyInitGeneric>,
-    ): TemplateResult | Promise<TemplateResult> => {
-        const props = Object.keys(element.props).reduce((accum, key: keyof PropertyInitGeneric) => {
-            accum[key] = element.props[key].getProp();
-            return accum;
-        }, {} as PropertyInitGeneric);
-
-        const propsProxy = new Proxy(props, {
-            set: (target, propertyName: keyof PropertyInitGeneric, value) => {
-                element[propertyName] = value;
-                return true;
-            },
-        });
-
-        const renderParams: RenderParams<PropertyInitGeneric> = {
-            // renderRoot: element.renderRoot,
-            // self: element,
-            props: propsProxy,
-        };
-        return functionalElementInit.renderCallback(renderParams);
-    };
-
+    functionalElementInit: FunctionalElementInit<PropertyInitGeneric, EventsInitGeneric>,
+): FunctionalElement<PropertyInitGeneric, EventsInitGeneric> {
     const anonymousClass = class extends FunctionalElementBaseClass<PropertyInitGeneric> {
         public static readonly tagName = functionalElementInit.tagName;
         public static readonly styles = functionalElementInit.styles || css``;
         public static readonly propNames = Object.keys(
             functionalElementInit.propertyInit || ({} as PropertyInitGeneric),
         );
-        public static readonly events = functionalElementInit.events || {};
-        public static readonly renderCallback = functionalElementInit.renderCallback;
 
-        public render(): TemplateResult | Promise<TemplateResult> {
-            return renderWrapper(this as FunctionalElementInstance<PropertyInitGeneric>);
+        public static readonly events: ExtraStaticFunctionalElementProperties<
+            PropertyInitGeneric,
+            EventsInitGeneric
+        >['events'] = Object.keys(functionalElementInit.events || {}).reduce(
+            (
+                accum: EventPropertyMap<EventsInitGeneric>,
+                currentKey: keyof EventsInitGeneric,
+            ): EventPropertyMap<EventsInitGeneric> => {
+                accum[currentKey] = {outputName: currentKey as keyof EventsInitMap};
+                return accum;
+            },
+            {} as EventPropertyMap<EventsInitGeneric>,
+        );
+        public static readonly renderCallback: ExtraStaticFunctionalElementProperties<
+            PropertyInitGeneric,
+            EventsInitGeneric
+        >['renderCallback'] = functionalElementInit.renderCallback;
+        public static readonly inputs: ExtraStaticFunctionalElementProperties<
+            PropertyInitGeneric,
+            EventsInitGeneric
+        >['inputs'] = Object.keys(functionalElementInit.propertyInit || {}).reduce(
+            (
+                accum: InputPropertyMap<PropertyInitGeneric>,
+                currentKey: keyof PropertyInitGeneric,
+            ): InputPropertyMap<PropertyInitGeneric> => {
+                accum[currentKey] = {inputName: currentKey as keyof PropertyInitMap};
+                return accum;
+            },
+            {} as InputPropertyMap<PropertyInitGeneric>,
+        );
+
+        render(): TemplateResult | Promise<TemplateResult> {
+            return functionalElementInit.renderCallback(
+                createRenderParams(this as FunctionalElementInstance<PropertyInitGeneric>),
+            );
         }
         public readonly props: FunctionalElementPropertyMap<PropertyInitGeneric> = Object.keys(
             functionalElementInit.propertyInit || ({} as PropertyInitGeneric),
         ).reduce((accum, propertyKey: keyof PropertyInitGeneric) => {
-            const newProp: FunctionalElementProperty<
+            const newProp: ElementProperty<
                 typeof propertyKey,
                 PropertyInitGeneric[typeof propertyKey]
             > = {

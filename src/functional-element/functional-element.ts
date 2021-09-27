@@ -1,6 +1,10 @@
 import {CSSResult, LitElement, TemplateResult} from 'lit';
-import {EventsMap} from './functional-element-event';
-import {FunctionalElementPropertyMap, PropertyInitMap} from './functional-element-properties';
+import {EventPropertyMap, EventsInitMap} from './functional-element-event';
+import {
+    FunctionalElementPropertyMap,
+    InputPropertyMap,
+    PropertyInitMap,
+} from './functional-element-properties';
 import {RenderCallback} from './render-callback';
 
 export abstract class FunctionalElementBaseClass<
@@ -19,9 +23,16 @@ export type FunctionalElementInstance<PropertyInitGeneric extends PropertyInitMa
 
 export type FunctionalElement<
     PropertyInitGeneric extends PropertyInitMap,
-    EventsGeneric extends EventsMap,
-> = (new () => FunctionalElementInstance<PropertyInitGeneric>) & {
+    EventsInitGeneric extends EventsInitMap,
+> = (new () => FunctionalElementInstance<PropertyInitGeneric>) &
+    ExtraStaticFunctionalElementProperties<PropertyInitGeneric, EventsInitGeneric>;
+
+export type ExtraStaticFunctionalElementProperties<
+    PropertyInitGeneric extends PropertyInitMap,
+    EventsInitGeneric extends EventsInitMap,
+> = {
     /** Pass through the render callback for direct unit testability */
-    renderCallback: RenderCallback<PropertyInitGeneric>;
-    events: EventsGeneric;
+    renderCallback: RenderCallback<PropertyInitGeneric, EventsInitGeneric>;
+    events: EventPropertyMap<EventsInitGeneric>;
+    inputs: InputPropertyMap<PropertyInitGeneric>;
 };

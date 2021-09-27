@@ -1,4 +1,6 @@
 import {HTMLTemplateResult} from 'lit';
+import {InputObject} from './element-input';
+import {OutputObject} from './element-output';
 
 export type HtmlTemplateTransform = {
     templateStrings: TemplateStringsArray;
@@ -6,8 +8,6 @@ export type HtmlTemplateTransform = {
 };
 
 type ValueTransform = (value: unknown) => unknown;
-const identityTransform: ValueTransform = <T>(input: T): T => input;
-type CheckInput = {lastNewString: string; currentLitString: string; currentValue: unknown};
 
 type ConstructorWithTagName = Function & {tagName: string};
 
@@ -15,12 +15,36 @@ function hasStaticTagName(currentValue: unknown): currentValue is ConstructorWit
     return typeof currentValue == 'function' && currentValue.hasOwnProperty('tagName');
 }
 
-const checksAndTransforms: {
-    check: (checkInput: CheckInput) => boolean;
-    transform: (value: unknown) => unknown;
-}[] = [
-    {
-        check: ({lastNewString, currentLitString, currentValue}): boolean => {
+type Checker<T> = {
+    check: (
+        lastNewString: string,
+        currentLitString: string,
+        currentValue: unknown,
+    ) => currentValue is T;
+    transform: (value: T) => unknown;
+    name: string;
+};
+
+function makeCheckTransform<T>(
+    name: string,
+    check: (
+        lastNewString: string,
+        currentLitString: string,
+        currentValue: unknown,
+    ) => currentValue is T,
+    transform: (value: T) => unknown,
+): Checker<T> {
+    return {
+        name,
+        check,
+        transform,
+    };
+}
+
+const checksAndTransforms: Checker<any>[] = [
+    makeCheckTransform(
+        'tag name interpolation',
+        (lastNewString, currentLitString, currentValue): currentValue is ConstructorWithTagName => {
             const shouldHaveTagNameHere: boolean =
                 (lastNewString.trim().endsWith('<') && !!currentLitString.match(/^[\s\n>]/)) ||
                 (lastNewString?.trim().endsWith('</') && currentLitString.trim().startsWith('>'));
@@ -41,16 +65,50 @@ const checksAndTransforms: {
 
             return shouldHaveTagNameHere && staticTagName;
         },
-        transform: (input: unknown) =>
+        (input) =>
             // cast is safe because the check method above verifies that this value is a VirElement
-            (input as ConstructorWithTagName).tagName,
-    },
-    {
-        check: ({lastNewString, currentLitString}): boolean => {
-            return !!(lastNewString.endsWith('@') && currentLitString.startsWith('='));
+            input.tagName,
+    ),
+    makeCheckTransform(
+        'event listener name interpolation',
+        (lastNewString, currentLitString, currentValue): currentValue is OutputObject<string> => {
+            const surroundingsMatch = !!(
+                lastNewString.endsWith('@') && currentLitString.startsWith('=')
+            );
+            const hasOutputName = !!(currentValue as OutputObject<string>).outputName;
+
+            if (hasOutputName == undefined) {
+                throw new Error(
+                    `Tried to interpolate event listener name from "${currentValue}" which lacked an outputName property. Surrounding text: "${lastNewString}", "${currentLitString}"`,
+                );
+            }
+
+            return surroundingsMatch;
         },
-        transform: identityTransform,
-    },
+        (input) => {
+            return input.outputName;
+        },
+    ),
+    makeCheckTransform(
+        'property input name interpolation',
+        (lastNewString, currentLitString, currentValue): currentValue is InputObject => {
+            const surroundingsMatch = !!(
+                lastNewString.endsWith('.') && currentLitString.startsWith('=')
+            );
+            const hasInputName = !!(currentValue as InputObject).inputName;
+
+            if (hasInputName == undefined) {
+                throw new Error(
+                    `Tried to interpolate input from "${currentValue}" which lacked an inputName property. Surrounding text: "${lastNewString}", "${currentLitString}"`,
+                );
+            }
+
+            return surroundingsMatch && hasInputName;
+        },
+        (input) => {
+            return input.inputName;
+        },
+    ),
 ];
 
 function isCustomElementTag(input: string): boolean {
@@ -83,7 +141,7 @@ export function transformTemplate(litTemplate: HTMLTemplateResult): HtmlTemplate
 
         if (typeof lastNewString === 'string') {
             validTransform = checksAndTransforms.find((checkAndTransform) => {
-                return checkAndTransform.check({lastNewString, currentLitString, currentValue});
+                return checkAndTransform.check(lastNewString, currentLitString, currentValue);
             })?.transform;
 
             if (validTransform) {
