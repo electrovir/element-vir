@@ -1,6 +1,6 @@
 import {css} from 'lit';
 import {createFunctionalElement} from '../../functional-element/create-functional-element';
-import {ElementEvent} from '../../functional-element/functional-element-event';
+import {listen} from '../../vir-html/event-listener';
 import {html} from '../../vir-html/vir-html';
 import {ChildElement} from './child.element';
 
@@ -31,10 +31,10 @@ export const AppElement = createFunctionalElement({
             <hr>
             <${ChildElement} 
                 .${ChildElement.inputs.inputNumber}=${props.funnyNumber}
-                @${ChildElement.events.speak}=${(event: ElementEvent<any, any>) => {
-            props.eventsReceived++;
-            props.lastReceivedMessage = event.detail;
-        }}
+                ${listen(ChildElement.events.speak, (event) => {
+                    props.eventsReceived++;
+                    props.lastReceivedMessage = event.detail;
+                })}
                 ></${ChildElement}>
                 <hr>
             <span>Events received: ${props.eventsReceived}</span>

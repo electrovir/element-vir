@@ -32,8 +32,9 @@ export const ChildElement = createFunctionalElement({
             <span>width: ${props.canvasWidth}</span>
             <span>input number: ${props.inputNumber}</span>
             <button
-                @click=${() =>
-                    dispatchEvent(new ElementEvent(ChildElement.events.speak, randomString()))}
+                @click=${() => {
+                    dispatchEvent(new ElementEvent(ChildElement.events.speak, randomString()));
+                }}
             >
                 click me
             </button>
