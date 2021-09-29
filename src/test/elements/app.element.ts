@@ -1,6 +1,6 @@
 import {css} from 'lit';
 import {createFunctionalElement} from '../../functional-element/create-functional-element';
-import {listen} from '../../vir-html/event-listener';
+import {listen} from '../../functional-element/functional-event-listener';
 import {html} from '../../vir-html/vir-html';
 import {ChildElement} from './child.element';
 

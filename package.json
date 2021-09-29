@@ -23,7 +23,7 @@
         "spellcheck": "virmator spellcheck",
         "start": "snowpack dev",
         "test:full": "npm test && npm run spellcheck && virmator format check",
-        "test": "echo \"test\""
+        "test": "npm run compile"
     },
     "dependencies": {
         "lit": "^2.0.0"

@@ -1,4 +1,4 @@
-export function randomString(length: number = 16) {
+export function randomString(length: number = 16): string {
     const inputLength = Math.ceil(length / 2);
     // server side
     if (typeof window === 'undefined') {

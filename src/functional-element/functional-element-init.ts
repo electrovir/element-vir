@@ -13,8 +13,8 @@ export type FunctionalElementInit<
     styles?: CSSResult | undefined;
     events?: EventsInitGeneric | undefined;
 
-    connectedCallback?: (self: FunctionalElementInstance<PropertyInitGeneric>) => void;
-    disconnectedCallback?: (self: FunctionalElementInstance<PropertyInitGeneric>) => void;
+    connectedCallback?: (element: FunctionalElementInstance<PropertyInitGeneric>) => void;
+    disconnectedCallback?: (element: FunctionalElementInstance<PropertyInitGeneric>) => void;
 
     renderCallback: RenderCallback<PropertyInitGeneric, EventsInitGeneric>;
 };

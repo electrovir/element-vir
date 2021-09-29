@@ -1,6 +1,5 @@
 import {HTMLTemplateResult} from 'lit';
 import {InputObject} from './element-input';
-import {OutputObject} from './element-output';
 
 export type HtmlTemplateTransform = {
     templateStrings: TemplateStringsArray;
@@ -68,26 +67,6 @@ const checksAndTransforms: Checker<any>[] = [
         (input) =>
             // cast is safe because the check method above verifies that this value is a VirElement
             input.tagName,
-    ),
-    makeCheckTransform(
-        'event listener name interpolation',
-        (lastNewString, currentLitString, currentValue): currentValue is OutputObject<string> => {
-            const surroundingsMatch = !!(
-                lastNewString.endsWith('@') && currentLitString.startsWith('=')
-            );
-            const hasOutputName = !!(currentValue as OutputObject<string>).outputName;
-
-            if (hasOutputName == undefined) {
-                throw new Error(
-                    `Tried to interpolate event listener name from "${currentValue}" which lacked an outputName property. Surrounding text: "${lastNewString}", "${currentLitString}"`,
-                );
-            }
-
-            return surroundingsMatch;
-        },
-        (input) => {
-            return input.outputName;
-        },
     ),
     makeCheckTransform(
         'property input name interpolation',

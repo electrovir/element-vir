@@ -1,7 +1,10 @@
 import {TemplateResult} from 'lit';
-import {InstanceType} from '../augments/type';
 import {FunctionalElementInstance} from './functional-element';
-import {ElementEvent, EventsInitMap} from './functional-element-event';
+import {
+    ElementEvent,
+    EventInitMapEventDetailExtractor,
+    EventsInitMap,
+} from './functional-element-event';
 import {PropertyInitMap} from './functional-element-properties';
 
 export type RenderCallback<
@@ -18,10 +21,8 @@ export type RenderParams<
     props: PropertyInitGeneric;
     dispatchEvent<EventName extends keyof EventsInitGeneric>(
         event: ElementEvent<
-            EventName,
-            InstanceType<EventsInitGeneric[EventName]> extends ElementEvent<any, infer R>
-                ? R
-                : never
+            EventName extends string ? EventName : never,
+            EventInitMapEventDetailExtractor<EventName, EventsInitGeneric>
         >,
     ): void;
 };

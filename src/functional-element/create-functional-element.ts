@@ -6,7 +6,13 @@ import {
     FunctionalElementBaseClass,
     FunctionalElementInstance,
 } from './functional-element';
-import {EventPropertyMap, EventsInitMap} from './functional-element-event';
+import {
+    EventExtraProperties,
+    EventInitMapEventDetailExtractor,
+    EventObject,
+    EventPropertyMap,
+    EventsInitMap,
+} from './functional-element-event';
 import {FunctionalElementInit} from './functional-element-init';
 import {
     ElementProperty,
@@ -32,16 +38,40 @@ export function createFunctionalElement<
         public static readonly events: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
             EventsInitGeneric
-        >['events'] = Object.keys(functionalElementInit.events || {}).reduce(
-            (
-                accum: EventPropertyMap<EventsInitGeneric>,
-                currentKey: keyof EventsInitGeneric,
-            ): EventPropertyMap<EventsInitGeneric> => {
-                accum[currentKey] = {outputName: currentKey as keyof EventsInitMap};
-                return accum;
-            },
-            {} as EventPropertyMap<EventsInitGeneric>,
-        );
+        >['events'] = Object.keys(functionalElementInit.events || {})
+            .filter(
+                (currentKey: keyof EventsInitGeneric): currentKey is keyof EventsInitGeneric => {
+                    if (typeof currentKey !== 'string') {
+                        throw new Error(
+                            `Expected event key of type string but got type "${typeof currentKey}" for key ${currentKey}`,
+                        );
+                    }
+                    return true;
+                },
+            )
+            .reduce(
+                (
+                    accum: EventPropertyMap<EventsInitGeneric>,
+                    currentKey: keyof EventsInitGeneric,
+                ): EventPropertyMap<EventsInitGeneric> => {
+                    const eventObject: EventObject<
+                        typeof currentKey extends string ? typeof currentKey : never,
+                        EventInitMapEventDetailExtractor<typeof currentKey, EventsInitGeneric>
+                    > = {
+                        eventName: currentKey as keyof EventsInitGeneric extends string
+                            ? keyof EventsInitGeneric
+                            : never,
+                        eventConstructor: functionalElementInit.events![
+                            currentKey
+                        ] as EventExtraProperties<
+                            EventInitMapEventDetailExtractor<typeof currentKey, EventsInitGeneric>
+                        >['eventConstructor'],
+                    };
+                    accum[currentKey] = eventObject;
+                    return accum;
+                },
+                {} as EventPropertyMap<EventsInitGeneric>,
+            );
         public static readonly renderCallback: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
             EventsInitGeneric
@@ -121,5 +151,5 @@ export function createFunctionalElement<
 
     window.customElements.define(functionalElementInit.tagName, anonymousClass);
 
-    return anonymousClass as any;
+    return anonymousClass as unknown as FunctionalElement<PropertyInitGeneric, EventsInitGeneric>;
 }

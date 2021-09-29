@@ -1,31 +1,30 @@
 import {noChange} from 'lit';
 import {directive, Directive, ElementPartInfo, PartInfo, PartType} from 'lit/directive.js';
-import {FunctionalElementBaseClass} from '../functional-element/functional-element';
-import {ElementEvent, EventObject} from '../functional-element/functional-element-event';
-import {ExtraPartInfoProperties} from './directive';
-import {OutputName} from './element-output';
+import {ExtraPartInfoProperties} from '../vir-html/directive';
+import {FunctionalElementBaseClass} from './functional-element';
+import {ElementEvent, EventObject} from './functional-element-event';
 
 /**
- * The directive generics (in listenDirective) are not strong enough to maintain the generics.
- * Thus, the directive call is wrapped in this function.
+ * The directive generics (in listenDirective) are not strong enough to maintain their values. Thus,
+ * the directive call is wrapped in this function.
  */
-export function listen<EventName extends OutputName, DetailType>(
+export function listen<EventName extends string, DetailType>(
     eventType: EventObject<EventName, DetailType>,
     listener: (event: ElementEvent<EventName, DetailType>) => void,
 ) {
     return listenDirective(eventType, listener);
 }
 
-type ListenerMetaData = {
+type ListenerMetaData<EventDetail> = {
     eventType: string;
-    callback: (event: ElementEvent<any, any>) => void;
+    callback: (event: ElementEvent<string, EventDetail>) => void;
     listener: (event: any) => void;
 };
 
-export const listenDirective = directive(
+const listenDirective = directive(
     class extends Directive {
         public readonly element: Element;
-        public lastListenerMetaData: ListenerMetaData | undefined;
+        public lastListenerMetaData: ListenerMetaData<any> | undefined;
 
         constructor(partInfo: PartInfo) {
             super(partInfo);
@@ -39,7 +38,7 @@ export const listenDirective = directive(
             }
         }
 
-        public resetListener(listenerMetaData: ListenerMetaData) {
+        public resetListener(listenerMetaData: ListenerMetaData<any>) {
             if (this.lastListenerMetaData) {
                 this.element.removeEventListener(
                     this.lastListenerMetaData.eventType,
@@ -52,21 +51,21 @@ export const listenDirective = directive(
 
         public createListenerMetaData(
             eventType: string,
-            callback: (event: ElementEvent<any, any>) => void,
-        ): ListenerMetaData {
+            callback: (event: ElementEvent<string, unknown>) => void,
+        ): ListenerMetaData<unknown> {
             return {
                 eventType,
                 callback,
-                listener: (event: ElementEvent<any, any>) =>
+                listener: (event: ElementEvent<string, unknown>) =>
                     this.lastListenerMetaData?.callback(event),
             };
         }
 
         render(
-            eventObject: EventObject<OutputName, any>,
+            eventObject: EventObject<string, any>,
             callback: (event: ElementEvent<any, any>) => void,
         ) {
-            const eventType = String(eventObject.outputName);
+            const eventType = String(eventObject.eventName);
 
             if (this.lastListenerMetaData && this.lastListenerMetaData.eventType === eventType) {
                 /**

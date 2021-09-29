@@ -1,7 +1,7 @@
 import {css} from 'lit';
 import {randomString} from '../../augments/string';
 import {createFunctionalElement} from '../../functional-element/create-functional-element';
-import {ElementEvent, elementEvent} from '../../functional-element/functional-element-event';
+import {ElementEvent, eventInit} from '../../functional-element/functional-element-event';
 import {html} from '../../vir-html/vir-html';
 
 export const ChildElement = createFunctionalElement({
@@ -18,8 +18,8 @@ export const ChildElement = createFunctionalElement({
         inputNumber: undefined as number | undefined,
     },
     events: {
-        speak: elementEvent<string>(),
-        eat: elementEvent<number>(),
+        speak: eventInit<string>(),
+        eat: eventInit<number>(),
     },
     connectedCallback(element) {
         window.addEventListener('resize', () => {
@@ -34,6 +34,7 @@ export const ChildElement = createFunctionalElement({
             <button
                 @click=${() => {
                     dispatchEvent(new ElementEvent(ChildElement.events.speak, randomString()));
+                    // dispatchEvent(new ElementEvent(ChildElement.events.eat, randomString()));
                 }}
             >
                 click me
