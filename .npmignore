@@ -16,3 +16,5 @@ tsconfig.json
 
 dist/test
 dist/readme-examples
+snowpack.config.js
+static/
