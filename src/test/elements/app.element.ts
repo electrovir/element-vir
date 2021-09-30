@@ -47,6 +47,11 @@ export const AppElement = defineFunctionalElement({
                     props.windowSize = event.detail;
                 })}
             ></${ChildElement}>
+            <hr>
+            <span>Don't listen or interact with this one</span><br>
+            <${ChildElement}
+                ${assign(ChildElement.props.inputNumber, 555)}
+            ></${ChildElement}>
                 <hr>
             <span>Events received: ${props.eventsReceived}</span>
             <span>Last message received: ${props.lastReceivedMessage}</span>
