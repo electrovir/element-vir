@@ -76,7 +76,7 @@ export function defineFunctionalElement<
         }
 
         public firstUpdated() {
-            functionalElementInit.disconnectedCallback?.({
+            functionalElementInit.firstUpdated?.({
                 element: this as FunctionalElementInstance<PropertyInitGeneric>,
                 ...this.createRenderParams(),
             });
