@@ -1,30 +1,63 @@
 import {css, TemplateResult} from 'lit';
 import {randomString} from '../augments/string';
-import {createFunctionalElement} from '../functional-element/create-functional-element';
+import {defineFunctionalElement} from '../functional-element/define-functional-element';
+import {listen} from '../functional-element/directives/event-listen.directive';
+import {assign} from '../functional-element/directives/property-assign.directive';
 import {
     ElementEvent,
     eventInit,
     EventObjectEventDetailExtractor,
-} from '../functional-element/functional-element-event';
-import {listen} from '../functional-element/functional-event-listener';
+} from '../functional-element/element-events';
 import {html} from '../vir-html/vir-html';
 
 // @ts-expect-error
-const TestElementNoTagName = createFunctionalElement({
+const TestElementNoTagName = defineFunctionalElement({
     renderCallback: (): TemplateResult => {
         return html``;
     },
 });
 
+const TestElementVoidEvent = defineFunctionalElement({
+    tagName: 'test-element-void-event',
+    events: {
+        thingHappened: eventInit<void>(),
+    },
+    renderCallback: ({props, dispatchEvent, events}): TemplateResult => {
+        // @ts-expect-error
+        console.log(props.thing);
+        // @ts-expect-error
+        dispatchEvent(new ElementEvent(events.thingHappened));
+        dispatchEvent(new ElementEvent(events.thingHappened, undefined));
+        // @ts-expect-error
+        dispatchEvent(new ElementEvent(events.thingHappened, 5));
+        return html``;
+    },
+});
+
+const TestElementNoEventsOrProps = defineFunctionalElement({
+    tagName: 'test-element-no-events-or-props',
+    renderCallback: ({props, dispatchEvent, events}): TemplateResult => {
+        // @ts-expect-error
+        console.log(events.thing);
+        // @ts-expect-error
+        console.log(props.thing);
+        // @ts-expect-error
+        dispatchEvent(new ElementEvent(events.thingHappened));
+        // @ts-expect-error
+        dispatchEvent(new ElementEvent(events.thingHappened, 5));
+        return html``;
+    },
+});
+
 // @ts-expect-error
-const TestElementNoRender = createFunctionalElement({
+const TestElementNoRender = defineFunctionalElement({
     tagName: 'element-vir-test-element-no-render',
 });
 
-const TestElement = createFunctionalElement({
+const TestElement = defineFunctionalElement({
     tagName: 'element-vir-test-element',
     styles: css``,
-    propertyInit: {
+    props: {
         stringProp: 'derp',
         numberProp: undefined as number | undefined,
     },
@@ -33,7 +66,7 @@ const TestElement = createFunctionalElement({
         stringEvent: eventInit<string>(),
         numberEvent: eventInit<number>(),
     },
-    connectedCallback(element) {
+    connectedCallback({element}) {
         window.addEventListener('resize', () => {
             element.numberProp = window.innerWidth;
         });
@@ -58,10 +91,18 @@ const TestElement = createFunctionalElement({
                     // @ts-expect-error
                     dispatchEvent(new ElementEvent(TestElement.events.numberEvent, randomString()));
                     // @ts-expect-error
+                    dispatchEvent(new ElementEvent(TestElement.events.numberEvent));
+                    // @ts-expect-error
                     dispatchEvent(new ElementEvent(TestElement.events.stringEvent, 4));
                     // @ts-expect-error
+                    dispatchEvent(new ElementEvent(TestElement.events.stringEvent));
+                    // @ts-expect-error
                     dispatchEvent(new ElementEvent(TestElement.events.nonExistingEvent, 4));
+                    // @ts-expect-error
+                    dispatchEvent(new ElementEvent(TestElement.events.nonExistingEvent));
                     dispatchEvent(new ElementEvent(TestElement.events.yo, {hello: 'there'}));
+                    // @ts-expect-error
+                    dispatchEvent(new ElementEvent(TestElement.events.yo));
                 }}
             >
                 click me
@@ -98,4 +139,15 @@ function listenTest() {
         const myEventString: ElementEvent<typeof TestElement.events.yo['eventName'], string> =
             event;
     });
+}
+
+/** Don't actually call this for anything, it's just being used to test types */
+function assignTest() {
+    assign(TestElement.props.numberProp, 5);
+    // @ts-expect-error
+    assign(TestElement.props.thisDoesNotExist, 5);
+    // @ts-expect-error
+    assign(TestElement.props.stringProp, 5);
+    // @ts-expect-error
+    assign(TestElement.props.numberProp, 'yo hello');
 }

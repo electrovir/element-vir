@@ -15,3 +15,4 @@ tsconfig-base.json
 tsconfig.json
 
 dist/test
+dist/readme-examples

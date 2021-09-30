@@ -1,5 +1,4 @@
 import {HTMLTemplateResult} from 'lit';
-import {InputObject} from './element-input';
 
 export type HtmlTemplateTransform = {
     templateStrings: TemplateStringsArray;
@@ -67,26 +66,6 @@ const checksAndTransforms: Checker<any>[] = [
         (input) =>
             // cast is safe because the check method above verifies that this value is a VirElement
             input.tagName,
-    ),
-    makeCheckTransform(
-        'property input name interpolation',
-        (lastNewString, currentLitString, currentValue): currentValue is InputObject => {
-            const surroundingsMatch = !!(
-                lastNewString.endsWith('.') && currentLitString.startsWith('=')
-            );
-            const hasInputName = !!(currentValue as InputObject).inputName;
-
-            if (hasInputName == undefined) {
-                throw new Error(
-                    `Tried to interpolate input from "${currentValue}" which lacked an inputName property. Surrounding text: "${lastNewString}", "${currentLitString}"`,
-                );
-            }
-
-            return surroundingsMatch && hasInputName;
-        },
-        (input) => {
-            return input.inputName;
-        },
     ),
 ];
 

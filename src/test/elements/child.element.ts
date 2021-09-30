@@ -1,10 +1,10 @@
 import {css} from 'lit';
 import {randomString} from '../../augments/string';
-import {createFunctionalElement} from '../../functional-element/create-functional-element';
-import {ElementEvent, eventInit} from '../../functional-element/functional-element-event';
+import {defineFunctionalElement} from '../../functional-element/define-functional-element';
+import {ElementEvent, eventInit} from '../../functional-element/element-events';
 import {html} from '../../vir-html/vir-html';
 
-export const ChildElement = createFunctionalElement({
+export const ChildElement = defineFunctionalElement({
     tagName: 'element-vir-test-child-element',
     styles: css`
         :host {
@@ -13,20 +13,30 @@ export const ChildElement = createFunctionalElement({
             align-items: flex-start;
         }
     `,
-    propertyInit: {
+    props: {
         canvasWidth: window.innerWidth,
         inputNumber: undefined as number | undefined,
+        resizeListener: undefined as (() => void) | undefined,
     },
     events: {
         speak: eventInit<string>(),
         eat: eventInit<number>(),
     },
-    connectedCallback(element) {
-        window.addEventListener('resize', () => {
-            element.canvasWidth = window.innerWidth;
-        });
+    connectedCallback({props}) {
+        props.resizeListener = () => {
+            props.canvasWidth = window.innerWidth;
+        };
+        window.addEventListener('resize', props.resizeListener);
+    },
+    disconnectedCallback({props}) {
+        if (props.resizeListener) {
+            window.removeEventListener('resize', props.resizeListener);
+        }
+        props.resizeListener = undefined;
     },
     renderCallback: ({props, dispatchEvent}) => {
+        // log here to make sure it's not rendering too often
+        console.info('child rendering');
         return html`
             <span>Child</span>
             <span>width: ${props.canvasWidth}</span>
@@ -37,7 +47,7 @@ export const ChildElement = createFunctionalElement({
                     // dispatchEvent(new ElementEvent(ChildElement.events.eat, randomString()));
                 }}
             >
-                click me
+                emit event from child
             </button>
         `;
     },

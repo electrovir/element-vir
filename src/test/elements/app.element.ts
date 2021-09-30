@@ -1,10 +1,11 @@
 import {css} from 'lit';
-import {createFunctionalElement} from '../../functional-element/create-functional-element';
-import {listen} from '../../functional-element/functional-event-listener';
+import {defineFunctionalElement} from '../../functional-element/define-functional-element';
+import {listen} from '../../functional-element/directives/event-listen.directive';
+import {assign} from '../../functional-element/directives/property-assign.directive';
 import {html} from '../../vir-html/vir-html';
 import {ChildElement} from './child.element';
 
-export const AppElement = createFunctionalElement({
+export const AppElement = defineFunctionalElement({
     tagName: 'element-vir-test-app',
     styles: css`
         :host {
@@ -18,24 +19,30 @@ export const AppElement = createFunctionalElement({
             flex-shrink: 0;
         }
     `,
-    propertyInit: {
+    props: {
         funnyNumber: Math.random(),
         eventsReceived: 0,
         lastReceivedMessage: '',
     },
     renderCallback: ({props}) => {
+        // log here to make sure it's not rendering too often
+        console.info('app rendering');
         return html`
             Welcome to the test app.
-            <button @click=${() => (props.funnyNumber = Math.random())}>new number</button>
+            <button @click=${() =>
+                (props.funnyNumber = Math.random())}>assign NEW number to child</button>
+            <!-- Verify that the child component does not rerender when we pass it the same value. -->
+            <!-- Check the console logs to verify.-->
+            <button @click=${() => (props.funnyNumber = 4)}>assign SAME number to child</button>
             
             <hr>
-            <${ChildElement} 
-                .${ChildElement.inputs.inputNumber}=${props.funnyNumber}
+            <${ChildElement}
+                ${assign(ChildElement.props.inputNumber, props.funnyNumber)}
                 ${listen(ChildElement.events.speak, (event) => {
                     props.eventsReceived++;
                     props.lastReceivedMessage = event.detail;
                 })}
-                ></${ChildElement}>
+            ></${ChildElement}>
                 <hr>
             <span>Events received: ${props.eventsReceived}</span>
             <span>Last message received: ${props.lastReceivedMessage}</span>

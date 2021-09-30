@@ -1,15 +1,16 @@
 import {noChange} from 'lit';
-import {directive, Directive, ElementPartInfo, PartInfo, PartType} from 'lit/directive.js';
-import {ExtraPartInfoProperties} from '../vir-html/directive';
-import {FunctionalElementBaseClass} from './functional-element';
-import {ElementEvent, EventObject} from './functional-element-event';
+import {directive, Directive, PartInfo} from 'lit/directive.js';
+import {ElementEvent, EventDescriptor} from '../element-events';
+import {PropertyInitMapBase} from '../element-properties';
+import {FunctionalElementInstance} from '../functional-element';
+import {extractFunctionalElement} from './directive-util';
 
 /**
  * The directive generics (in listenDirective) are not strong enough to maintain their values. Thus,
  * the directive call is wrapped in this function.
  */
 export function listen<EventName extends string, DetailType>(
-    eventType: EventObject<EventName, DetailType>,
+    eventType: EventDescriptor<EventName, DetailType>,
     listener: (event: ElementEvent<EventName, DetailType>) => void,
 ) {
     return listenDirective(eventType, listener);
@@ -23,19 +24,13 @@ type ListenerMetaData<EventDetail> = {
 
 const listenDirective = directive(
     class extends Directive {
-        public readonly element: Element;
-        public lastListenerMetaData: ListenerMetaData<any> | undefined;
+        public readonly element: FunctionalElementInstance<PropertyInitMapBase>;
+        public lastListenerMetaData: ListenerMetaData<unknown> | undefined;
 
         constructor(partInfo: PartInfo) {
             super(partInfo);
 
-            if (partInfo.type !== PartType.ELEMENT) {
-                throw new Error(`listen directive can only be attached directly to an element.`);
-            }
-            this.element = (partInfo as ElementPartInfo & ExtraPartInfoProperties).element;
-            if (!(this.element instanceof FunctionalElementBaseClass)) {
-                throw new Error(`listen directive only works when attached to functional elements`);
-            }
+            this.element = extractFunctionalElement(partInfo);
         }
 
         public resetListener(listenerMetaData: ListenerMetaData<any>) {
@@ -62,10 +57,16 @@ const listenDirective = directive(
         }
 
         render(
-            eventObject: EventObject<string, any>,
+            eventObject: EventDescriptor<string, any>,
             callback: (event: ElementEvent<any, any>) => void,
         ) {
-            const eventType = String(eventObject.eventName);
+            const eventType = eventObject.eventName;
+
+            if (typeof eventType !== 'string') {
+                throw new Error(
+                    `Cannot listen to an event with a name that is not a string. Given event name: "${eventType}"`,
+                );
+            }
 
             if (this.lastListenerMetaData && this.lastListenerMetaData.eventType === eventType) {
                 /**

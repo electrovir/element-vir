@@ -1,20 +1,27 @@
 import {CSSResult} from 'lit';
-import {FunctionalElementInstance} from './functional-element';
-import {EventsInitMap} from './functional-element-event';
-import {PropertyInitMap} from './functional-element-properties';
+import {ConnectionCallback} from './connection-callback';
+import {EventsInitMap} from './element-events';
+import {PropertyInitMapBase} from './element-properties';
 import {RenderCallback} from './render-callback';
 
 export type FunctionalElementInit<
-    PropertyInitGeneric extends PropertyInitMap,
+    PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
 > = {
+    /**
+     * HTML tag name. This should not be used directly, as interpolating it with the html tagged
+     * template from this package is preferred.
+     */
     tagName: string;
-    propertyInit?: PropertyInitGeneric | undefined;
+    /** Static styles. These should not and cannot change. */
     styles?: CSSResult | undefined;
+    /** Initializer for element properties. (These can be thought of as "inputs".) */
+    props?: PropertyInitGeneric | undefined;
+    /** Initializer for events that the element can dispatch. (These can be thought of as "outputs".) */
     events?: EventsInitGeneric | undefined;
 
-    connectedCallback?: (element: FunctionalElementInstance<PropertyInitGeneric>) => void;
-    disconnectedCallback?: (element: FunctionalElementInstance<PropertyInitGeneric>) => void;
+    connectedCallback?: ConnectionCallback<PropertyInitGeneric>;
+    disconnectedCallback?: ConnectionCallback<PropertyInitGeneric>;
 
     renderCallback: RenderCallback<PropertyInitGeneric, EventsInitGeneric>;
 };
