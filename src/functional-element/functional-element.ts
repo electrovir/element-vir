@@ -26,9 +26,17 @@ export type FunctionalElementConstructor<
 export type ExtraStaticFunctionalElementProperties<
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
-> = {
+> = Readonly<{
     /** Pass through the render callback for direct unit testability */
     renderCallback: RenderCallback<PropertyInitGeneric, EventsInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
     props: ElementPropertyDescriptorMap<PropertyInitGeneric>;
-};
+
+    /**
+     * Static properties have to be copied here cause they get nuked in the "new () =>
+     * FunctionalElementInstance<PropertyInitGeneric>" type.
+     */
+    tagName: string;
+    styles: CSSResult;
+    propNames: string[];
+}>;

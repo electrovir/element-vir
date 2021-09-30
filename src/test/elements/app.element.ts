@@ -25,6 +25,18 @@ export const AppElement = defineFunctionalElement({
         lastReceivedMessage: '',
         windowSize: -1,
     },
+    firstUpdated: ({element}) => {
+        console.log(ChildElement.tagName);
+        /**
+         * Calls to querySelector will not work in the connection callbacks because the element's
+         * internal DOM won't be populated yet.
+         */
+        const child = element.renderRoot.querySelector(ChildElement.tagName);
+        if (!child) {
+            throw new Error(`child not found`);
+        }
+        console.log(child);
+    },
     renderCallback: ({props}) => {
         // log here to make sure it's not rendering too often
         console.info('app rendering');

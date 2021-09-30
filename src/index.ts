@@ -1,4 +1,3 @@
-export * from './functional-element/connection-callback';
 export * from './functional-element/define-functional-element';
 export * from './functional-element/directives/event-listen.directive';
 export * from './functional-element/directives/property-assign.directive';
@@ -6,6 +5,7 @@ export * from './functional-element/element-events';
 export * from './functional-element/element-properties';
 export * from './functional-element/functional-element';
 export * from './functional-element/functional-element-init';
+export * from './functional-element/lifecycle-callback';
 export * from './functional-element/render-callback';
 export * from './vir-html/directive';
 export * from './vir-html/vir-html';

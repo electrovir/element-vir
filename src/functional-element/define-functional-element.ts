@@ -75,6 +75,13 @@ export function defineFunctionalElement<
             });
         }
 
+        public firstUpdated() {
+            functionalElementInit.disconnectedCallback?.({
+                element: this as FunctionalElementInstance<PropertyInitGeneric>,
+                ...this.createRenderParams(),
+            });
+        }
+
         constructor() {
             super();
 
