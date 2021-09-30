@@ -85,11 +85,6 @@ export function defineFunctionalElement<
                 const functionalElementInstance: FunctionalElementInstance<PropertyInitGeneric> =
                     this as FunctionalElementInstance<PropertyInitGeneric>;
 
-                if (propName in functionalElementInstance) {
-                    throw new Error(
-                        `${functionalElementInit.tagName} already has a property named ${propName}. Don't add a new property to it with that name.`,
-                    );
-                }
                 property()(functionalElementInstance, propName);
                 (functionalElementInstance as PropertyInitGeneric)[propName] = initProps[propName];
             });
