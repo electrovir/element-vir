@@ -1,6 +1,14 @@
 {
     "name": "element-vir",
-    "version": "0.0.1",
+    "version": "0.0.2",
+    "keywords": [
+        "custom",
+        "web",
+        "components",
+        "elements",
+        "functional",
+        "lit"
+    ],
     "homepage": "https://github.com/electrovir/element-vir#readme",
     "bugs": {
         "url": "https://github.com/electrovir/element-vir/issues"

@@ -20,8 +20,8 @@ export type FunctionalElementInit<
     /** Initializer for events that the element can dispatch. (These can be thought of as "outputs".) */
     events?: EventsInitGeneric | undefined;
 
-    connectedCallback?: ConnectionCallback<PropertyInitGeneric>;
-    disconnectedCallback?: ConnectionCallback<PropertyInitGeneric>;
+    connectedCallback?: ConnectionCallback<PropertyInitGeneric, EventsInitGeneric>;
+    disconnectedCallback?: ConnectionCallback<PropertyInitGeneric, EventsInitGeneric>;
 
     renderCallback: RenderCallback<PropertyInitGeneric, EventsInitGeneric>;
 };

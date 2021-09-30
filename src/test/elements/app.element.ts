@@ -23,6 +23,7 @@ export const AppElement = defineFunctionalElement({
         funnyNumber: Math.random(),
         eventsReceived: 0,
         lastReceivedMessage: '',
+        windowSize: -1,
     },
     renderCallback: ({props}) => {
         // log here to make sure it's not rendering too often
@@ -42,10 +43,14 @@ export const AppElement = defineFunctionalElement({
                     props.eventsReceived++;
                     props.lastReceivedMessage = event.detail;
                 })}
+                ${listen(ChildElement.events.eat, (event) => {
+                    props.windowSize = event.detail;
+                })}
             ></${ChildElement}>
                 <hr>
             <span>Events received: ${props.eventsReceived}</span>
             <span>Last message received: ${props.lastReceivedMessage}</span>
+            <span>Last window size received: ${props.windowSize}</span>
         `;
     },
 });

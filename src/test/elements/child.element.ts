@@ -22,9 +22,11 @@ export const ChildElement = defineFunctionalElement({
         speak: eventInit<string>(),
         eat: eventInit<number>(),
     },
-    connectedCallback({props}) {
+    connectedCallback({props, events, dispatchEvent}) {
+        dispatchEvent(new ElementEvent(events.eat, props.canvasWidth));
         props.resizeListener = () => {
             props.canvasWidth = window.innerWidth;
+            dispatchEvent(new ElementEvent(events.eat, props.canvasWidth));
         };
         window.addEventListener('resize', props.resizeListener);
     },

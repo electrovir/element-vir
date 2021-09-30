@@ -13,7 +13,7 @@ import {
     FunctionalElementInstance,
 } from './functional-element';
 import {FunctionalElementInit} from './functional-element-init';
-import {createRenderParams} from './render-callback';
+import {createRenderParams, RenderParams} from './render-callback';
 
 export function defineFunctionalElement<
     EventsInitGeneric extends EventsInitMap = never,
@@ -30,6 +30,13 @@ export function defineFunctionalElement<
             functionalElementInit.props || ({} as PropertyInitGeneric),
         );
 
+        public createRenderParams(): RenderParams<PropertyInitGeneric, EventsInitGeneric> {
+            return createRenderParams(
+                this as FunctionalElementInstance<PropertyInitGeneric>,
+                eventsMap,
+            );
+        }
+
         public static readonly events: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
             EventsInitGeneric
@@ -44,12 +51,7 @@ export function defineFunctionalElement<
         >['props'] = createPropertyDescriptorMap(functionalElementInit.props);
 
         render(): TemplateResult | Promise<TemplateResult> {
-            return functionalElementInit.renderCallback(
-                createRenderParams(
-                    this as FunctionalElementInstance<PropertyInitGeneric>,
-                    eventsMap,
-                ),
-            );
+            return functionalElementInit.renderCallback(this.createRenderParams());
         }
         public readonly instanceProps: PropertyInitGeneric =
             createPropertyProxy<PropertyInitGeneric>(
@@ -61,7 +63,7 @@ export function defineFunctionalElement<
             super.connectedCallback();
             functionalElementInit.connectedCallback?.({
                 element: this as FunctionalElementInstance<PropertyInitGeneric>,
-                props: this.instanceProps,
+                ...this.createRenderParams(),
             });
         }
 
@@ -69,7 +71,7 @@ export function defineFunctionalElement<
             super.disconnectedCallback();
             functionalElementInit.disconnectedCallback?.({
                 element: this as FunctionalElementInstance<PropertyInitGeneric>,
-                props: this.instanceProps,
+                ...this.createRenderParams(),
             });
         }
 
