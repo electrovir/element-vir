@@ -6,7 +6,5 @@ export * from './functional-element/directives/on-resize.directive';
 export * from './functional-element/element-events';
 export * from './functional-element/element-properties';
 export * from './functional-element/functional-element';
-export * from './functional-element/functional-element-init';
 export * from './functional-element/render-callback';
-export * from './vir-html/directive';
 export * from './vir-html/vir-html';

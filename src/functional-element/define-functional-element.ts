@@ -10,9 +10,9 @@ import {
     ExtraStaticFunctionalElementProperties,
     FunctionalElementBaseClass,
     FunctionalElementConstructor,
+    FunctionalElementInit,
     FunctionalElementInstance,
 } from './functional-element';
-import {FunctionalElementInit} from './functional-element-init';
 import {createRenderParams, RenderParams} from './render-callback';
 
 export function defineFunctionalElement<

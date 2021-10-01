@@ -1,7 +1,16 @@
 import {ElementPartInfo, PartInfo, PartType} from 'lit/directive.js';
-import {ExtraPartInfoProperties} from '../../vir-html/directive';
 import {PropertyInitMapBase} from '../element-properties';
 import {FunctionalElementBaseClass, FunctionalElementInstance} from '../functional-element';
+
+/** For some reason these aren't defined in lit's types already. */
+export type ExtraPartInfoProperties = {
+    element: Element;
+    options: {
+        host: Element;
+        renderBefore: Element;
+        isConnected: boolean;
+    };
+};
 
 export function extractFunctionalElement<PropertyInitGeneric extends PropertyInitMapBase>(
     partInfo: PartInfo,
