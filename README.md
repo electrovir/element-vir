@@ -238,7 +238,7 @@ export const MySimpleWithOnDomCreatedElement = defineFunctionalElement({
 });
 ```
 
-## onResize
+### onResize
 
 This directive fulfills a common use case of triggering callbacks when something resizes. Instead of just tracking the _globally_ resizing window though, this allows you to track resizes of an individual element. The callback here is given a portion of the [`ResizeObserverEntry`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry) (since not all properties are supported well in browsers).
 
