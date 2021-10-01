@@ -59,29 +59,6 @@ export function defineFunctionalElement<
                 this as FunctionalElementInstance<PropertyInitGeneric>,
             );
 
-        public connectedCallback() {
-            super.connectedCallback();
-            functionalElementInit.connectedCallback?.({
-                element: this as FunctionalElementInstance<PropertyInitGeneric>,
-                ...this.createRenderParams(),
-            });
-        }
-
-        public disconnectedCallback() {
-            super.disconnectedCallback();
-            functionalElementInit.disconnectedCallback?.({
-                element: this as FunctionalElementInstance<PropertyInitGeneric>,
-                ...this.createRenderParams(),
-            });
-        }
-
-        public firstUpdated() {
-            functionalElementInit.firstUpdated?.({
-                element: this as FunctionalElementInstance<PropertyInitGeneric>,
-                ...this.createRenderParams(),
-            });
-        }
-
         constructor() {
             super();
 

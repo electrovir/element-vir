@@ -1,14 +1,14 @@
 import {css, TemplateResult} from 'lit';
-import {randomString} from '../augments/string';
-import {defineFunctionalElement} from '../functional-element/define-functional-element';
-import {listen} from '../functional-element/directives/event-listen.directive';
-import {assign} from '../functional-element/directives/property-assign.directive';
 import {
+    assign,
+    defineFunctionalElement,
     ElementEvent,
     eventInit,
     EventObjectEventDetailExtractor,
-} from '../functional-element/element-events';
-import {html} from '../vir-html/vir-html';
+    html,
+    listen,
+} from '..';
+import {randomString} from '../augments/string';
 
 // @ts-expect-error
 const TestElementNoTagName = defineFunctionalElement({
@@ -65,11 +65,6 @@ const TestElement = defineFunctionalElement({
         yo: eventInit<Record<string, string>>(),
         stringEvent: eventInit<string>(),
         numberEvent: eventInit<number>(),
-    },
-    connectedCallback({element}) {
-        window.addEventListener('resize', () => {
-            element.numberProp = window.innerWidth;
-        });
     },
     renderCallback: ({props, dispatchEvent}) => {
         // @ts-expect-error

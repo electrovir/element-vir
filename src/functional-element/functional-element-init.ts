@@ -1,7 +1,6 @@
 import {CSSResult} from 'lit';
 import {EventsInitMap} from './element-events';
 import {PropertyInitMapBase} from './element-properties';
-import {LifecycleCallback} from './lifecycle-callback';
 import {RenderCallback} from './render-callback';
 
 export type FunctionalElementInit<
@@ -19,10 +18,6 @@ export type FunctionalElementInit<
     props?: PropertyInitGeneric | undefined;
     /** Initializer for events that the element can dispatch. (These can be thought of as "outputs".) */
     events?: EventsInitGeneric | undefined;
-
-    connectedCallback?: LifecycleCallback<PropertyInitGeneric, EventsInitGeneric>;
-    disconnectedCallback?: LifecycleCallback<PropertyInitGeneric, EventsInitGeneric>;
-    firstUpdated?: LifecycleCallback<PropertyInitGeneric, EventsInitGeneric>;
 
     renderCallback: RenderCallback<PropertyInitGeneric, EventsInitGeneric>;
 };

@@ -30,7 +30,7 @@ const listenDirective = directive(
         constructor(partInfo: PartInfo) {
             super(partInfo);
 
-            this.element = extractFunctionalElement(partInfo);
+            this.element = extractFunctionalElement(partInfo, 'listen');
         }
 
         public resetListener(listenerMetaData: ListenerMetaData<any>) {

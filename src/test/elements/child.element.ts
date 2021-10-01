@@ -1,8 +1,6 @@
 import {css} from 'lit';
+import {defineFunctionalElement, ElementEvent, eventInit, html, onDomCreated} from '../..';
 import {randomString} from '../../augments/string';
-import {defineFunctionalElement} from '../../functional-element/define-functional-element';
-import {ElementEvent, eventInit} from '../../functional-element/element-events';
-import {html} from '../../vir-html/vir-html';
 
 export const ChildElement = defineFunctionalElement({
     tagName: 'element-vir-test-child-element',
@@ -14,43 +12,38 @@ export const ChildElement = defineFunctionalElement({
         }
     `,
     props: {
-        canvasWidth: window.innerWidth,
+        width: -1,
         inputNumber: undefined as number | undefined,
         resizeListener: undefined as (() => void) | undefined,
+        button: undefined as undefined | HTMLButtonElement,
     },
     events: {
         speak: eventInit<string>(),
         eat: eventInit<number>(),
-    },
-    connectedCallback({props, events, dispatchEvent}) {
-        dispatchEvent(new ElementEvent(events.eat, props.canvasWidth));
-        props.resizeListener = () => {
-            props.canvasWidth = window.innerWidth;
-            dispatchEvent(new ElementEvent(events.eat, props.canvasWidth));
-        };
-        window.addEventListener('resize', props.resizeListener);
-    },
-    disconnectedCallback({props}) {
-        if (props.resizeListener) {
-            window.removeEventListener('resize', props.resizeListener);
-        }
-        props.resizeListener = undefined;
     },
     renderCallback: ({props, dispatchEvent}) => {
         // log here to make sure it's not rendering too often
         console.info('child rendering');
         return html`
             <span>Child</span>
-            <span>width: ${props.canvasWidth}</span>
+            <span>width: ${props.width}</span>
             <span>input number: ${props.inputNumber}</span>
             <button
+                ${onDomCreated((element) => {
+                    if (element instanceof HTMLButtonElement) {
+                        props.button = element;
+                    } else {
+                        console.error(element);
+                        throw new Error(`obtained element is not a button!`);
+                    }
+                })}
                 @click=${() => {
                     dispatchEvent(new ElementEvent(ChildElement.events.speak, randomString()));
-                    // dispatchEvent(new ElementEvent(ChildElement.events.eat, randomString()));
                 }}
             >
                 emit event from child
             </button>
+            <span>button handle: ${props.button?.tagName}</span>
         `;
     },
 });

@@ -30,7 +30,7 @@ const assignDirective = directive(
         constructor(partInfo: PartInfo) {
             super(partInfo);
 
-            this.element = extractFunctionalElement(partInfo);
+            this.element = extractFunctionalElement(partInfo, 'assign');
         }
 
         render(propName: string, value: unknown) {

@@ -28,6 +28,8 @@ npm i element-vir
 
 Most usage of this package is done through the [`defineFunctionalElement` function](https://github.com/electrovir/element-vir/blob/main/src/functional-element/define-functional-element.ts#L25-L30). See the [`FunctionalElementInit` type](https://github.com/electrovir/element-vir/blob/main/src/functional-element/functional-element-init.ts#L7-L20) for that function's inputs. These inputs are also described below with examples.
 
+All of [`lit`](https://lit.dev)'s syntax and functionality is also available for use.
+
 ## Simple element definition
 
 Use `defineFunctionalElement` to define your element. This is apparent if you inspect the types but it must be given an object with at least `tagName` and `renderCallback` properties. This is a bare-minimum example custom element:
@@ -206,35 +208,57 @@ export const MyAppWithEventsElement = defineFunctionalElement({
 });
 ```
 
-## Lifecycle callbacks
+## Directives
 
-Use `connectedCallback` and `disconnectedCallback` to access [`lit-element`'s lifecycle callbacks](https://lit.dev/docs/components/lifecycle/#connectedcallback):
+Some custom [`lit` directives](https://lit.dev/docs/templates/custom-directives/) are also contained within this package.
 
-<!-- src/readme-examples/my-simple-with-lifecycle-callbacks.element.ts -->
+### onDomCreate
+
+This directive should be used instead of trying to use `querySelector` directly on the custom element.
+
+This triggers only once when the element it's contained within is created in the DOM. If it's containing element changes, the callback will be triggered again.
+
+<!-- src/readme-examples/my-simple-with-on-dom-created.element.ts -->
 
 ```typescript
-import {defineFunctionalElement, html} from 'element-vir';
+import {defineFunctionalElement, html, onDomCreated} from 'element-vir';
 
-export const MySimpleWithLifecycleCallbacksElement = defineFunctionalElement({
-    tagName: 'my-simple-element-with-lifecycle-callbacks',
-    props: {
-        windowWidth: window.innerWidth,
-        resizeListener: undefined as undefined | (() => void),
-    },
-    connectedCallback: ({props}) => {
-        props.resizeListener = () => {
-            props.windowWidth = window.innerWidth;
-        };
-        window.addEventListener('resize', props.resizeListener);
-    },
-    disconnectedCallback({props}) {
-        if (props.resizeListener) {
-            window.removeEventListener('resize', props.resizeListener);
-        }
-        props.resizeListener = undefined;
-    },
-    renderCallback: ({props}) => html`
-        <span>This window is ${props.windowWidth} wide!</span>
+export const MySimpleWithOnDomCreatedElement = defineFunctionalElement({
+    tagName: 'my-simple-with-on-dom-created-element',
+    renderCallback: () => html`
+        <span
+            ${onDomCreated((element) => {
+                // logs a span element
+                console.log(element);
+            })}
+        >
+            Hello there!
+        </span>
+    `,
+});
+```
+
+## onResize
+
+This directive fulfills a common use case of triggering callbacks when something resizes. Instead of just tracking the _globally_ resizing window though, this allows you to track resizes of an individual element. The callback here is given a portion of the [`ResizeObserverEntry`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry) (since not all properties are supported well in browsers).
+
+<!-- src/readme-examples/my-simple-with-on-resize.element.ts -->
+
+```typescript
+import {defineFunctionalElement, html, onResize} from 'element-vir';
+
+export const MySimpleWithOnResizeElement = defineFunctionalElement({
+    tagName: 'my-simple-with-on-dom-created-element',
+    renderCallback: () => html`
+        <span
+            ${onResize((entry) => {
+                // this will track resizing of this span
+                // the entry parameter contains target and contentRect properties
+                console.log(entry);
+            })}
+        >
+            Hello there!
+        </span>
     `,
 });
 ```
