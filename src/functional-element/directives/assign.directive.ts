@@ -5,7 +5,7 @@ import {FunctionalElementInstance} from '../functional-element';
 import {extractFunctionalElement} from './directive-util';
 
 /**
- * The directive generics (in assignDirective) are not strong enough to maintain their values. Thus,
+ * The directive generics (in listenDirective) are not strong enough to maintain their values. Thus,
  * the directive call is wrapped in this function.
  */
 export function assign<PropName extends string, PropValue>(

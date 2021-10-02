@@ -1,5 +1,6 @@
 import {noChange} from 'lit';
-import {directive, Directive, PartInfo} from 'lit/directive.js';
+import {AsyncDirective} from 'lit/async-directive.js';
+import {directive, PartInfo} from 'lit/directive.js';
 import {PropertyInitMapBase, StaticElementPropertyDescriptor} from '../element-properties';
 import {FunctionalElementInstance} from '../functional-element';
 import {extractFunctionalElement} from './directive-util';
@@ -17,31 +18,44 @@ export function assignWithCleanup<PropName extends string, PropValue>(
 }
 
 export type CleanupCallback<T> = (oldValue: T) => void;
+export type EqualityCheckCallback<T> = (oldValue: T, newValue: T) => boolean;
 
-const assignWithCleanupDirective = directive(
-    class extends Directive {
-        public readonly element: FunctionalElementInstance<PropertyInitMapBase>;
-        public lastValue: unknown;
+class AssignWithCleanupDirectiveClass extends AsyncDirective {
+    private readonly element: FunctionalElementInstance<PropertyInitMapBase>;
+    private lastValue: unknown;
+    private lastCallback: CleanupCallback<any> | undefined;
 
-        constructor(partInfo: PartInfo) {
-            super(partInfo);
+    constructor(partInfo: PartInfo) {
+        super(partInfo);
+        this.element = extractFunctionalElement(partInfo, 'assign');
+    }
 
-            this.element = extractFunctionalElement(partInfo, 'assign');
+    disconnected() {
+        if (this.lastValue != undefined && this.lastCallback != undefined) {
+            this.lastCallback(this.lastValue);
         }
+    }
 
-        render(propName: string, value: unknown, cleanupCallback: CleanupCallback<any>) {
-            if (!(propName in this.element.instanceProps)) {
-                throw new Error(
-                    `${this.element.tagName} element has no property of name "${propName}"`,
-                );
-            }
-            // reference equality check!
-            if (this.lastValue !== value) {
-                cleanupCallback(this.lastValue);
-            }
-            this.element.instanceProps[propName] = value;
-            this.lastValue = value;
-            return noChange;
+    render(
+        propName: string,
+        value: unknown,
+        cleanupCallback: CleanupCallback<any>,
+        equalityCheck: EqualityCheckCallback<any> = (a, b) => a === b,
+    ) {
+        if (!(propName in this.element.instanceProps)) {
+            throw new Error(
+                `${this.element.tagName} element has no property of name "${propName}"`,
+            );
         }
-    },
-);
+        // reference equality check!
+        if (!equalityCheck(this.lastValue, value)) {
+            cleanupCallback(this.lastValue);
+        }
+        this.element.instanceProps[propName] = value;
+        this.lastValue = value;
+        this.lastCallback = cleanupCallback;
+        return noChange;
+    }
+}
+
+const assignWithCleanupDirective = directive(AssignWithCleanupDirectiveClass);

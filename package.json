@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "keywords": [
         "custom",
         "web",
@@ -29,7 +29,7 @@
         "format": "virmator format write",
         "prepublishOnly": "npm run test:full",
         "spellcheck": "virmator spellcheck",
-        "start": "snowpack dev",
+        "start": "snowpack dev --reload",
         "test:full": "npm test && npm run spellcheck && virmator format check",
         "test": "npm run compile"
     },

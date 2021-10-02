@@ -32,6 +32,7 @@ export const AppElement = defineFunctionalElement({
         eventsReceived: 0,
         lastReceivedMessage: '',
         width: -1,
+        showChild: true,
     },
     renderCallback: ({props}) => {
         // log here to make sure it's not rendering too often
@@ -39,7 +40,6 @@ export const AppElement = defineFunctionalElement({
         return html`
             <div ${onResize((entry) => {
                 props.width = entry.contentRect.width;
-                console.log(entry);
             })}>
                 Welcome to the test app.
                 <button @click=${() =>
@@ -47,6 +47,8 @@ export const AppElement = defineFunctionalElement({
                 <!-- Verify that the child component does not rerender when we pass it the same value. -->
                 <!-- Check the console logs to verify.-->
                 <button @click=${() => (props.funnyNumber = 4)}>assign SAME number to child</button>
+                <button @click=${() =>
+                    (props.showChild = !props.showChild)}>toggle second child</button>
                 
                 <hr>
                 <${ChildElement}
@@ -58,17 +60,22 @@ export const AppElement = defineFunctionalElement({
                     })}
                 ></${ChildElement}>
                 <hr>
+                ${
+                    props.showChild
+                        ? html`
                 <span>Child just with clean up assign</span><br>
                 <${ChildElement}
                     ${assignWithCleanup(
                         ChildElement.props.inputNumber,
                         Math.random(),
                         (lastValue) => {
-                            console.log({lastValue});
+                            console.log('assign with cleanup last value in app', lastValue);
                         },
                     )}
                 ></${ChildElement}>
-                    <hr>
+                    <hr>`
+                        : ''
+                }
                 <span>Events received: ${props.eventsReceived}</span>
                 <span>Last message received: ${props.lastReceivedMessage}</span>
                 <span>app width: ${props.width}</span>
