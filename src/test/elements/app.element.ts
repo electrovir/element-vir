@@ -1,5 +1,6 @@
 import {css} from 'lit';
 import {assign, defineFunctionalElement, html, listen, onResize} from '../..';
+import {assignWithCleanup} from '../../functional-element/directives/assign-with-clean-up.directive';
 import {ChildElement} from './child.element';
 
 export const AppElement = defineFunctionalElement({
@@ -57,9 +58,15 @@ export const AppElement = defineFunctionalElement({
                     })}
                 ></${ChildElement}>
                 <hr>
-                <span>Don't listen or interact with this one</span><br>
+                <span>Child just with clean up assign</span><br>
                 <${ChildElement}
-                    ${assign(ChildElement.props.inputNumber, 555)}
+                    ${assignWithCleanup(
+                        ChildElement.props.inputNumber,
+                        Math.random(),
+                        (lastValue) => {
+                            console.log({lastValue});
+                        },
+                    )}
                 ></${ChildElement}>
                     <hr>
                 <span>Events received: ${props.eventsReceived}</span>

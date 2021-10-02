@@ -9,6 +9,7 @@ import {
     listen,
 } from '..';
 import {randomString} from '../augments/string';
+import {assignWithCleanup} from '../functional-element/directives/assign-with-clean-up.directive';
 
 // @ts-expect-error
 const TestElementNoTagName = defineFunctionalElement({
@@ -139,6 +140,14 @@ function listenTest() {
 /** Don't actually call this for anything, it's just being used to test types */
 function assignTest() {
     assign(TestElement.props.numberProp, 5);
+    assignWithCleanup(TestElement.props.numberProp, 5, () => {});
+
+    // @ts-expect-error
+    assignWithCleanup(TestElement.props.numberProp, 'derp', () => {});
+    // @ts-expect-error
+    assignWithCleanup(TestElement.props.numberProp, 5, (input: string) => {});
+    // @ts-expect-error
+    assignWithCleanup(TestElement.props.numberProp, 5);
     // @ts-expect-error
     assign(TestElement.props.thisDoesNotExist, 5);
     // @ts-expect-error
