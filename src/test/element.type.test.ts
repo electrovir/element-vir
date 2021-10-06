@@ -1,3 +1,4 @@
+import {getObjectTypedKeys} from 'augment-vir';
 import {css, TemplateResult} from 'lit';
 import {
     assign,
@@ -10,6 +11,12 @@ import {
 } from '..';
 import {randomString} from '../augments/string';
 import {assignWithCleanup} from '../functional-element/directives/assign-with-clean-up.directive';
+import {
+    FunctionalElement,
+    FunctionalElementInstance,
+} from '../functional-element/functional-element';
+import {AppElement} from './elements/app.element';
+import {ChildElement} from './elements/child.element';
 
 // @ts-expect-error
 const TestElementNoTagName = defineFunctionalElement({
@@ -17,6 +24,23 @@ const TestElementNoTagName = defineFunctionalElement({
         return html``;
     },
 });
+
+/** Verify that there's a base type that all functional elements can be assigned to. */
+const elements: FunctionalElement[] = [AppElement, ChildElement];
+
+type AppElementProps = {
+    funnyNumber: number;
+    eventsReceived: number;
+    lastReceivedMessage: string;
+    width: number;
+    showChild: boolean;
+};
+
+const props: (keyof AppElementProps)[] = getObjectTypedKeys(AppElement.props);
+
+// element constructor should not be able to be assigned to an instance
+// @ts-expect-error
+const instance: FunctionalElementInstance<AppElementProps> = AppElement;
 
 const TestElementVoidEvent = defineFunctionalElement({
     tagName: 'test-element-void-event',

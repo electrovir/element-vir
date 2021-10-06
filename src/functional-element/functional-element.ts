@@ -33,12 +33,12 @@ export abstract class FunctionalElementBaseClass<
     public abstract readonly instanceProps: PropertyInitGeneric;
 }
 
-export type FunctionalElementInstance<PropertyInitGeneric extends PropertyInitMapBase> =
+export type FunctionalElementInstance<PropertyInitGeneric extends PropertyInitMapBase = {}> =
     FunctionalElementBaseClass<PropertyInitGeneric> & PropertyInitGeneric;
 
-export type FunctionalElementConstructor<
-    PropertyInitGeneric extends PropertyInitMapBase,
-    EventsInitGeneric extends EventsInitMap,
+export type FunctionalElement<
+    PropertyInitGeneric extends PropertyInitMapBase = any,
+    EventsInitGeneric extends EventsInitMap = any,
 > = (new () => FunctionalElementInstance<PropertyInitGeneric>) &
     ExtraStaticFunctionalElementProperties<PropertyInitGeneric, EventsInitGeneric>;
 

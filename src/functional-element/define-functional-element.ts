@@ -8,19 +8,19 @@ import {
 } from './element-properties';
 import {
     ExtraStaticFunctionalElementProperties,
+    FunctionalElement,
     FunctionalElementBaseClass,
-    FunctionalElementConstructor,
     FunctionalElementInit,
     FunctionalElementInstance,
 } from './functional-element';
 import {createRenderParams, RenderParams} from './render-callback';
 
 export function defineFunctionalElement<
-    EventsInitGeneric extends EventsInitMap = never,
-    PropertyInitGeneric extends PropertyInitMapBase = never,
+    EventsInitGeneric extends EventsInitMap = {},
+    PropertyInitGeneric extends PropertyInitMapBase = {},
 >(
     functionalElementInit: FunctionalElementInit<PropertyInitGeneric, EventsInitGeneric>,
-): FunctionalElementConstructor<PropertyInitGeneric, EventsInitGeneric> {
+): FunctionalElement<PropertyInitGeneric, EventsInitGeneric> {
     const eventsMap = createEventDescriptorMap(functionalElementInit.events);
 
     const anonymousClass = class extends FunctionalElementBaseClass<PropertyInitGeneric> {
@@ -77,8 +77,5 @@ export function defineFunctionalElement<
 
     window.customElements.define(functionalElementInit.tagName, anonymousClass);
 
-    return anonymousClass as unknown as FunctionalElementConstructor<
-        PropertyInitGeneric,
-        EventsInitGeneric
-    >;
+    return anonymousClass as unknown as FunctionalElement<PropertyInitGeneric, EventsInitGeneric>;
 }
