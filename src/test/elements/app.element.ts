@@ -1,6 +1,13 @@
 import {css} from 'lit';
-import {assign, defineFunctionalElement, html, listen, onResize} from '../..';
-import {assignWithCleanup} from '../../functional-element/directives/assign-with-clean-up.directive';
+import {
+    assign,
+    assignWithCleanup,
+    cssSelector,
+    defineFunctionalElement,
+    html,
+    listen,
+    onResize,
+} from '../..';
 import {ChildElement} from './child.element';
 
 export const AppElement = defineFunctionalElement({
@@ -25,6 +32,11 @@ export const AppElement = defineFunctionalElement({
             align-self: stretch;
             margin: 16px 0;
             flex-shrink: 0;
+        }
+
+        ${cssSelector(ChildElement)} {
+            background-color: #eee;
+            padding: 8px;
         }
     `,
     props: {

@@ -29,7 +29,7 @@
         "format": "virmator format write",
         "prepublishOnly": "npm run test:full",
         "spellcheck": "virmator spellcheck",
-        "start": "snowpack dev --reload",
+        "start": "snowpack dev",
         "test:full": "npm test && npm run spellcheck && virmator format check",
         "test": "npm run compile"
     },
