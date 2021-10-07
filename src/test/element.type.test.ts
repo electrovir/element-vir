@@ -49,7 +49,7 @@ const TestElementVoidEvent = defineFunctionalElement({
     },
     renderCallback: ({props, dispatchEvent, events}): TemplateResult => {
         // @ts-expect-error
-        console.log(props.thing);
+        console.info(props.thing);
         // @ts-expect-error
         dispatchEvent(new ElementEvent(events.thingHappened));
         dispatchEvent(new ElementEvent(events.thingHappened, undefined));
@@ -63,9 +63,9 @@ const TestElementNoEventsOrProps = defineFunctionalElement({
     tagName: 'test-element-no-events-or-props',
     renderCallback: ({props, dispatchEvent, events}): TemplateResult => {
         // @ts-expect-error
-        console.log(events.thing);
+        console.info(events.thing);
         // @ts-expect-error
-        console.log(props.thing);
+        console.info(props.thing);
         // @ts-expect-error
         dispatchEvent(new ElementEvent(events.thingHappened));
         // @ts-expect-error

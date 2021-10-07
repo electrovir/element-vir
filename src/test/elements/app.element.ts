@@ -1,8 +1,7 @@
-import {css} from 'lit';
 import {
     assign,
     assignWithCleanup,
-    cssSelector,
+    css,
     defineFunctionalElement,
     html,
     listen,
@@ -34,9 +33,13 @@ export const AppElement = defineFunctionalElement({
             flex-shrink: 0;
         }
 
-        ${cssSelector(ChildElement)} {
+        ${ChildElement} {
             background-color: #eee;
             padding: 8px;
+        }
+
+        ${ChildElement}.darker {
+            background-color: #ddd;
         }
     `,
     props: {
@@ -77,11 +80,12 @@ export const AppElement = defineFunctionalElement({
                         ? html`
                 <span>Child just with clean up assign</span><br>
                 <${ChildElement}
+                    class="darker"
                     ${assignWithCleanup(
                         ChildElement.props.inputNumber,
-                        Math.random(),
+                        props.funnyNumber,
                         (lastValue) => {
-                            console.log('assign with cleanup last value in app', lastValue);
+                            console.info('assign with cleanup last value in app', lastValue);
                         },
                     )}
                 ></${ChildElement}>

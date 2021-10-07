@@ -10,7 +10,7 @@ export const MyAppWithEventsElement = defineFunctionalElement({
         <h1>My App</h1>
         <${MySimpleWithEventsElement}
             ${listen(MySimpleWithEventsElement.events.logoutClick, () => {
-                console.log('logout triggered');
+                console.info('logout triggered');
             })}
             ${listen(MySimpleWithEventsElement.events.randomNumber, (event) => {
                 props.myNumber = event.detail;
