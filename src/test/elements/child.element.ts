@@ -1,6 +1,6 @@
+import {randomString} from 'augment-vir';
 import {css} from 'lit';
 import {defineFunctionalElement, ElementEvent, eventInit, html, onDomCreated} from '../..';
-import {randomString} from '../../augments/string';
 
 export const ChildElement = defineFunctionalElement({
     tagName: 'element-vir-test-child-element',

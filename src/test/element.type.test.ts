@@ -1,4 +1,4 @@
-import {getObjectTypedKeys} from 'augment-vir';
+import {getObjectTypedKeys, randomString} from 'augment-vir';
 import {css, TemplateResult} from 'lit';
 import {
     assign,
@@ -9,7 +9,6 @@ import {
     html,
     listen,
 } from '..';
-import {randomString} from '../augments/string';
 import {assignWithCleanup} from '../functional-element/directives/assign-with-clean-up.directive';
 import {
     FunctionalElement,
