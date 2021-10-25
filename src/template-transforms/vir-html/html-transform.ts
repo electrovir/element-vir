@@ -1,4 +1,5 @@
 import {HTMLTemplateResult} from 'lit';
+import {functionalElementRequired} from '../../require-functional-element';
 import {ConstructorWithTagName, hasStaticTagName} from '../has-static-tag-name';
 import {
     CheckAndTransform,
@@ -46,7 +47,7 @@ function isCustomElementTag(input: string): boolean {
 }
 
 function stringValidator(input: string): void {
-    if (isCustomElementTag(input)) {
+    if (functionalElementRequired && isCustomElementTag(input)) {
         throw new Error(
             `Custom element tags must be interpolated from functional elements: ${input}`,
         );

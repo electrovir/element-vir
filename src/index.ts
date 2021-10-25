@@ -8,5 +8,6 @@ export * from './functional-element/element-events';
 export * from './functional-element/element-properties';
 export * from './functional-element/functional-element';
 export * from './functional-element/render-callback';
+export {requireAllCustomElementsToBeFunctionalElement} from './require-functional-element';
 export * from './template-transforms/vir-css/vir-css';
 export * from './template-transforms/vir-html/vir-html';
