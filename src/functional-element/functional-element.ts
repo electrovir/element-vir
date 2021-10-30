@@ -3,6 +3,8 @@ import {EventDescriptorMap, EventsInitMap} from './element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './element-properties';
 import {RenderCallback} from './render-callback';
 
+export type CustomElementTagName = `${string}-${string}`;
+
 export type FunctionalElementInit<
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
@@ -11,7 +13,7 @@ export type FunctionalElementInit<
      * HTML tag name. This should not be used directly, as interpolating it with the html tagged
      * template from this package is preferred.
      */
-    tagName: string;
+    tagName: CustomElementTagName;
     /** Static styles. These should not and cannot change. */
     styles?: CSSResult | undefined;
     /** Initializer for element properties. (These can be thought of as "inputs".) */

@@ -58,6 +58,12 @@ const TestElementVoidEvent = defineFunctionalElement({
     },
 });
 
+const TestElementInvalidTagName = defineFunctionalElement({
+    // @ts-expect-error
+    tagName: 'invalidTagNameMissingDash',
+    renderCallback: () => html``,
+});
+
 const TestElementNoEventsOrProps = defineFunctionalElement({
     tagName: 'test-element-no-events-or-props',
     renderCallback: ({props, dispatchEvent, events}): TemplateResult => {

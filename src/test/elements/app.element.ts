@@ -6,8 +6,11 @@ import {
     html,
     listen,
     onResize,
+    requireAllCustomElementsToBeFunctionalElement,
 } from '../..';
 import {ChildElement} from './child.element';
+
+requireAllCustomElementsToBeFunctionalElement();
 
 export const AppElement = defineFunctionalElement({
     tagName: 'element-vir-test-app',
@@ -78,18 +81,27 @@ export const AppElement = defineFunctionalElement({
                 ${
                     props.showChild
                         ? html`
-                <span>Child just with clean up assign</span><br>
-                <${ChildElement}
-                    class="darker"
-                    ${assignWithCleanup(
-                        ChildElement.props.inputNumber,
-                        props.funnyNumber,
-                        (lastValue) => {
-                            console.info('assign with cleanup last value in app', lastValue);
-                        },
-                    )}
-                ></${ChildElement}>
-                    <hr>`
+                              <span>Child just with clean up assign</span>
+                              <br />
+                              <!-- prettier-ignore -->
+                              <element-vir-test-child-element
+                                  class="darker"
+                                  ${assignWithCleanup(
+                                  ChildElement.props.inputNumber,
+                                  props.funnyNumber,
+                                  (lastValue) => {
+                                      console.info(
+                                          'assign with cleanup last value in app',
+                                          lastValue,
+                                      );
+                                  },
+                              )}
+                              >
+                              </
+                                element-vir-test-child-element
+                              >
+                              <hr />
+                          `
                         : ''
                 }
                 <span>Events received: ${props.eventsReceived}</span>

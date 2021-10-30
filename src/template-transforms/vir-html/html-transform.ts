@@ -1,3 +1,4 @@
+import {collapseSpaces, safeMatch} from 'augment-vir';
 import {HTMLTemplateResult} from 'lit';
 import {functionalElementRequired} from '../../require-functional-element';
 import {ConstructorWithTagName, hasStaticTagName} from '../has-static-tag-name';
@@ -38,19 +39,28 @@ const htmlChecksAndTransforms: CheckAndTransform<any>[] = [
     ),
 ];
 
-function isCustomElementTag(input: string): boolean {
-    if (input.includes('</') && !input.trim().endsWith('</')) {
-        const customTagName: boolean = !!input.trim().match(/<\/[\n\s]*(?:[^\s\n-]-)+[\s\n]/);
-        return customTagName;
-    }
-    return false;
+function extractCustomElementTags(input: string): string[] {
+    const tagNameMatches = safeMatch(input, /<\/[\s\n]*[^\s\n><]+[\s\n]*>/g);
+    return tagNameMatches.reduce((accum: string[], match) => {
+        const tagName = collapseSpaces(match.replace(/\n/g, ' ')).replace(/<\/|>/g, '');
+        // custom elements always have a dash in them
+        if (tagName.includes('-')) {
+            return accum.concat(tagName);
+        }
+        return accum;
+    }, []);
 }
 
 function stringValidator(input: string): void {
-    if (functionalElementRequired && isCustomElementTag(input)) {
-        throw new Error(
-            `Custom element tags must be interpolated from functional elements: ${input}`,
-        );
+    if (functionalElementRequired) {
+        const customElementTagNames = extractCustomElementTags(input);
+        if (customElementTagNames.length) {
+            console.error(
+                `Custom element tags must be interpolated from functional elements: ${customElementTagNames.join(
+                    ', ',
+                )}`,
+            );
+        }
     }
 }
 
