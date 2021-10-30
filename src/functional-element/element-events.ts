@@ -8,14 +8,17 @@ export function eventInit<T>(): new () => ElementEvent<string, T> {
     return customEventElement as new () => ElementEvent<string, T>;
 }
 
-type EventInitInfo<EventNameGeneric extends string> = {
+export type EventInitInfo<EventNameGeneric extends string> = {
     eventName: EventNameGeneric;
 };
 
 export class ElementEvent<EventName extends string, EventValue> extends CustomEvent<EventValue> {
     public readonly eventName: string = String(this.eventInitInfo.eventName);
 
-    constructor(private readonly eventInitInfo: EventInitInfo<EventName>, initDetail: EventValue) {
+    constructor(
+        protected readonly eventInitInfo: EventInitInfo<EventName>,
+        initDetail: EventValue,
+    ) {
         super(String(eventInitInfo.eventName), {detail: initDetail, bubbles: true, composed: true});
     }
 }

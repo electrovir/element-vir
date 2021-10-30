@@ -1,9 +1,7 @@
 import {noChange} from 'lit';
 import {directive, Directive, PartInfo} from 'lit/directive.js';
 import {ElementEvent, EventDescriptor} from '../element-events';
-import {PropertyInitMapBase} from '../element-properties';
-import {FunctionalElementInstance} from '../functional-element';
-import {extractFunctionalElement} from './directive-util';
+import {extractElement} from './directive-util';
 
 /**
  * The directive generics (in listenDirective) are not strong enough to maintain their values. Thus,
@@ -24,13 +22,13 @@ type ListenerMetaData<EventDetail> = {
 
 const listenDirective = directive(
     class extends Directive {
-        public readonly element: FunctionalElementInstance<PropertyInitMapBase>;
+        public readonly element: HTMLElement;
         public lastListenerMetaData: ListenerMetaData<unknown> | undefined;
 
         constructor(partInfo: PartInfo) {
             super(partInfo);
 
-            this.element = extractFunctionalElement(partInfo, 'listen');
+            this.element = extractElement(partInfo, 'listen', HTMLElement);
         }
 
         public resetListener(listenerMetaData: ListenerMetaData<any>) {

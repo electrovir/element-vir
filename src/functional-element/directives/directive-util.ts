@@ -16,14 +16,24 @@ export function extractFunctionalElement<PropertyInitGeneric extends PropertyIni
     partInfo: PartInfo,
     directiveName: string,
 ): FunctionalElementInstance<PropertyInitGeneric> {
+    return extractElement(
+        partInfo,
+        directiveName,
+        FunctionalElementBaseClass,
+    ) as FunctionalElementInstance<PropertyInitGeneric>;
+}
+
+export function extractElement<ElementType = HTMLElement>(
+    partInfo: PartInfo,
+    directiveName: string,
+    constructorClass: (new () => ElementType) | (abstract new () => ElementType),
+): ElementType {
     assertsIsElementPartInfo(partInfo, directiveName);
     const element = (partInfo as ElementPartInfo & ExtraPartInfoProperties).element;
-    if (!(element instanceof FunctionalElementBaseClass)) {
-        throw new Error(
-            `${directiveName} directive only works when attached to functional elements`,
-        );
+    if (!(element instanceof constructorClass)) {
+        throw new Error(`${directiveName} attached to non ${constructorClass.name} element.`);
     }
-    return element as FunctionalElementInstance<PropertyInitGeneric>;
+    return element as ElementType;
 }
 
 export function assertsIsElementPartInfo(
