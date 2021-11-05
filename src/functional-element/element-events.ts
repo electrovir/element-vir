@@ -15,12 +15,28 @@ export type EventInitInfo<EventNameGeneric extends string> = {
 export class ElementEvent<EventName extends string, EventValue> extends CustomEvent<EventValue> {
     public readonly eventName: string = String(this.eventInitInfo.eventName);
 
-    constructor(
-        protected readonly eventInitInfo: EventInitInfo<EventName>,
-        initDetail: EventValue,
-    ) {
+    constructor(public readonly eventInitInfo: EventInitInfo<EventName>, initDetail: EventValue) {
         super(String(eventInitInfo.eventName), {detail: initDetail, bubbles: true, composed: true});
     }
+}
+
+export function createCustomEvent<EventName extends string, EventValue>(
+    eventName: EventName,
+): (new (eventValue: EventValue) => ElementEvent<EventName, EventValue>) &
+    EventDescriptor<EventName, EventValue> {
+    return class extends ElementEvent<EventName, EventValue> {
+        public static eventName = eventName;
+        // this allows sub classes of ElementEvent to be directly listened to
+        public static eventConstructor = ElementEvent.constructor as new () => ElementEvent<
+            string,
+            EventValue
+        >;
+
+        constructor(eventValue: EventValue) {
+            super({eventName: eventName}, eventValue);
+            (window as any).ElementEvent = ElementEvent;
+        }
+    };
 }
 
 export type EventExtraProperties<DetailType> = {
