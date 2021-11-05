@@ -6,12 +6,17 @@ export const MySimpleWithEventsElement = defineFunctionalElement({
         logoutClick: eventInit<void>(),
         randomNumber: eventInit<number>(),
     },
-    renderCallback: ({props, dispatchEvent, events}) => html`
+    renderCallback: ({dispatchElementEvent, events}) => html`
         <!-- normal DOM events must be listened to with the "@" keyword from lit. -->
-        <button @click=${() => dispatchEvent(new ElementEvent(events.logoutClick, undefined))}>
+        <button
+            @click=${() => dispatchElementEvent(new ElementEvent(events.logoutClick, undefined))}
+        >
             log out
         </button>
-        <button @click=${() => dispatchEvent(new ElementEvent(events.randomNumber, Math.random()))}>
+        <button
+            @click=${() =>
+                dispatchElementEvent(new ElementEvent(events.randomNumber, Math.random()))}
+        >
             generate random number
         </button>
     `,

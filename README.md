@@ -152,7 +152,7 @@ export const MyAppWithPropsElement = defineFunctionalElement({
 
 Define events with `events` when defining a functional element. Each event must be initialized with `eventInit` and a type parameter. `eventInit` accepts no inputs as it doesn't make sense for events to have a default value.
 
-To dispatch an event, grab `dispatchEvent` from `renderCallback`'s parameters.
+To dispatch an event, grab `dispatchElementEvent` from `renderCallback`'s parameters.
 
 <!-- example-link: src/readme-examples/my-simple-with-events.element.ts -->
 
@@ -165,12 +165,17 @@ export const MySimpleWithEventsElement = defineFunctionalElement({
         logoutClick: eventInit<void>(),
         randomNumber: eventInit<number>(),
     },
-    renderCallback: ({props, dispatchEvent, events}) => html`
+    renderCallback: ({dispatchElementEvent, events}) => html`
         <!-- normal DOM events must be listened to with the "@" keyword from lit. -->
-        <button @click=${() => dispatchEvent(new ElementEvent(events.logoutClick, undefined))}>
+        <button
+            @click=${() => dispatchElementEvent(new ElementEvent(events.logoutClick, undefined))}
+        >
             log out
         </button>
-        <button @click=${() => dispatchEvent(new ElementEvent(events.randomNumber, Math.random()))}>
+        <button
+            @click=${() =>
+                dispatchElementEvent(new ElementEvent(events.randomNumber, Math.random()))}
+        >
             generate random number
         </button>
     `,
@@ -204,6 +209,46 @@ export const MyAppWithEventsElement = defineFunctionalElement({
         >
         </${MySimpleWithEventsElement}>
         <span>${props.myNumber}</span>
+    `,
+});
+```
+
+## Custom events without an element
+
+Create a custom event type with `createCustomEvent`. Make sure to include the type generics (like this: `createCustomEvent<'customEventName', string>`) to ensure type safety when using your event.
+
+Creating a custom event:
+
+<!-- example-link: src/readme-examples/custom-event-no-element.ts -->
+
+```TypeScript
+import {createCustomEvent} from 'element-vir';
+
+export const MyCustomEvent = createCustomEvent<'myCustomEventName', number>('myCustomEventName');
+```
+
+Using a custom event (both dispatching and listening):
+
+<!-- example-link: src/readme-examples/custom-event-usage.element.ts -->
+
+```TypeScript
+import {defineFunctionalElement, html, listen} from 'element-vir';
+import {MyCustomEvent} from './custom-event-no-element';
+
+export const MyElementWithCustomEvents = defineFunctionalElement({
+    tagName: 'my-app-with-custom-events',
+    renderCallback: ({dispatchEvent: defaultDispatchEvent}) => html`
+        <div
+            ${listen(MyCustomEvent, (event) => {
+                console.log(`Got a number! ${event.detail}`);
+            })}
+        >
+            <div
+                @click=${() => {
+                    defaultDispatchEvent(new MyCustomEvent(Math.random()));
+                }}
+            ></div>
+        </div>
     `,
 });
 ```
@@ -270,6 +315,24 @@ Assign a value to one of a custom element's properties. This is explained in the
 ### listen
 
 Listen to a specific event emitted from a custom element. This is explained in the **Listening to custom events (outputs)** section earlier in this README.
+
+### namedListen
+
+Listen to an event by name directly. This can be used to listen to native events as well as custom events. However, `listen` (explained above) is better for custom events as it'll give you better type information. When using `namedListen` for native DOM events (like `'click'`) the callback will be typed correctly. When listening to custom events, however, it can't guess the callback type from anywhere so the event parameter type will be unknown.
+
+<!-- example-link: src/readme-examples/my-simple-with-named-listen.element.ts -->
+
+```TypeScript
+import {defineFunctionalElement, html, namedListen} from 'element-vir';
+
+export const MySimpleWithNamedListenElement = defineFunctionalElement({
+    tagName: 'my-simple-element-with-named-listen',
+    renderCallback: () => html`
+        <!-- normal DOM events can be listened to  -->
+        <button ${namedListen('click', (event) => console.log(event.buttons))}>click me</button>
+    `,
+});
+```
 
 ### assignWithCleanup
 
