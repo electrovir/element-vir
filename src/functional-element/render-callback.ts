@@ -21,17 +21,17 @@ export type RenderParams<
 > = {
     props: PropertyInitGeneric;
     events: EventDescriptorMap<EventsInitGeneric>;
-    dispatchEvent: <EventName extends keyof EventsInitGeneric>(
+    dispatchElementEvent: <EventName extends keyof EventsInitGeneric>(
         event: ElementEvent<
             EventName extends string ? EventName : never,
             EventInitMapEventDetailExtractor<EventName, EventsInitGeneric>
         >,
     ) => boolean;
     /**
-     * Same as dispatchEvent but without the extra types. This allows you to emit any events, even
-     * events from other custom elements.
+     * Same as dispatchElementEvent but without the extra types. This allows you to emit any events,
+     * even events from other custom elements.
      */
-    defaultDispatchEvent: (event: Event) => boolean;
+    dispatchEvent: (event: Event) => boolean;
 };
 
 export function createRenderParams<
@@ -46,8 +46,8 @@ export function createRenderParams<
          * These two dispatch properties do the same thing but their interfaces are different.
          * DispatchEvent's type interface is much stricter.
          */
+        dispatchElementEvent: (event) => element.dispatchEvent(event),
         dispatchEvent: (event) => element.dispatchEvent(event),
-        defaultDispatchEvent: (event) => element.dispatchEvent(event),
         props: element.instanceProps,
         events: eventsMap,
     };
