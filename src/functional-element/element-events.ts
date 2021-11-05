@@ -20,7 +20,7 @@ export class ElementEvent<EventName extends string, EventValue> extends CustomEv
     }
 }
 
-export function createCustomEvent<EventName extends string, EventValue>(
+export function defineCustomEvent<EventName extends string, EventValue>(
     eventName: EventName,
 ): (new (eventValue: EventValue) => ElementEvent<EventName, EventValue>) &
     EventDescriptor<EventName, EventValue> {

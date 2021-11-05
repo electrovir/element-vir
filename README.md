@@ -215,16 +215,16 @@ export const MyAppWithEventsElement = defineFunctionalElement({
 
 ## Custom events without an element
 
-Create a custom event type with `createCustomEvent`. Make sure to include the type generics (like this: `createCustomEvent<'customEventName', string>`) to ensure type safety when using your event.
+Create a custom event type with `defineCustomEvent`. Make sure to include the type generics (like this: `defineCustomEvent<'customEventName', string>`) to ensure type safety when using your event.
 
 Creating a custom event:
 
 <!-- example-link: src/readme-examples/custom-event-no-element.ts -->
 
 ```TypeScript
-import {createCustomEvent} from 'element-vir';
+import {defineCustomEvent} from 'element-vir';
 
-export const MyCustomEvent = createCustomEvent<'myCustomEventName', number>('myCustomEventName');
+export const MyCustomEvent = defineCustomEvent<'myCustomEventName', number>('myCustomEventName');
 ```
 
 Using a custom event (both dispatching and listening):

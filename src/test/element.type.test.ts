@@ -3,7 +3,7 @@ import {css, TemplateResult} from 'lit';
 import {
     assign,
     assignWithCleanup,
-    createCustomEvent,
+    defineCustomEvent,
     defineFunctionalElement,
     ElementEvent,
     eventInit,
@@ -64,7 +64,7 @@ const TestElementInvalidTagName = defineFunctionalElement({
     renderCallback: () => html``,
 });
 
-const MyElementEvent = createCustomEvent<'customEvent', string>('customEvent');
+const MyElementEvent = defineCustomEvent<'customEvent', string>('customEvent');
 
 const TestElementNoEventsOrProps = defineFunctionalElement({
     tagName: 'test-element-no-events-or-props',
