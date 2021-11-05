@@ -4,14 +4,19 @@ import {ElementEvent, EventDescriptor} from '../element-events';
 import {extractElement} from './directive-util';
 
 /**
- * The directive generics (in listenDirective) are not strong enough to maintain their values. Thus,
- * the directive call is wrapped in this function.
+ * Listen to element events.
+ *
+ * @param eventDescriptor Needs to come either from a functional element (like
+ *   MyFunctionalElement.events.eventName) or from a custom element event created via the
+ *   createCustomEvent function.
+ * @param listener The callback to fire when an event is caught. Assuming the eventDescriptor input
+ *   is properly typed, the event given to this callback will also be typed.
  */
 export function listen<EventName extends string, DetailType>(
-    eventType: EventDescriptor<EventName, DetailType>,
+    eventDescriptor: EventDescriptor<EventName, DetailType>,
     listener: (event: ElementEvent<EventName, DetailType>) => void,
 ) {
-    return listenDirective(eventType, listener);
+    return listenDirective(eventDescriptor, listener);
 }
 
 type ListenerMetaData<EventDetail> = {
@@ -20,6 +25,10 @@ type ListenerMetaData<EventDetail> = {
     listener: (event: any) => void;
 };
 
+/**
+ * The directive generics here are not strong enough to maintain their values. Thus, the directive
+ * call is wrapped in the function above.
+ */
 const listenDirective = directive(
     class extends Directive {
         public readonly element: HTMLElement;
