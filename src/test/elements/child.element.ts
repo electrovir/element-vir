@@ -21,7 +21,7 @@ export const ChildElement = defineFunctionalElement({
         speak: eventInit<string>(),
         eat: eventInit<number>(),
     },
-    renderCallback: ({props, dispatchEvent}) => {
+    renderCallback: ({props, dispatchEvent, events, defaultDispatchEvent}) => {
         // log here to make sure it's not rendering too often
         console.info('child rendering');
         return html`
@@ -38,10 +38,13 @@ export const ChildElement = defineFunctionalElement({
                     }
                 })}
                 @click=${() => {
-                    dispatchEvent(new ElementEvent(ChildElement.events.speak, randomString()));
+                    dispatchEvent(new ElementEvent(events.speak, randomString()));
                 }}
             >
                 emit event from child
+            </button>
+            <button @click=${() => defaultDispatchEvent(new ElementEvent(events.eat, 5))}>
+                Emit default event
             </button>
             <span>button handle: ${props.button?.tagName}</span>
         `;

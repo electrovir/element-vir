@@ -76,6 +76,9 @@ export const AppElement = defineFunctionalElement({
                         props.eventsReceived++;
                         props.lastReceivedMessage = event.detail;
                     })}
+                    ${listen(ChildElement.events.eat, (event) => {
+                        console.log(event);
+                    })}
                 ></${ChildElement}>
                 <hr>
                 ${
@@ -84,22 +87,20 @@ export const AppElement = defineFunctionalElement({
                               <span>Child just with clean up assign</span>
                               <br />
                               <!-- prettier-ignore -->
+                              <!-- intentionally not interpolated to make sure we're logging errors for it -->
                               <element-vir-test-child-element
                                   class="darker"
                                   ${assignWithCleanup(
-                                  ChildElement.props.inputNumber,
-                                  props.funnyNumber,
-                                  (lastValue) => {
-                                      console.info(
-                                          'assign with cleanup last value in app',
-                                          lastValue,
-                                      );
-                                  },
-                              )}
-                              >
-                              </
-                                element-vir-test-child-element
-                              >
+                                      ChildElement.props.inputNumber,
+                                      props.funnyNumber,
+                                      (lastValue) => {
+                                          console.info(
+                                              'assign with cleanup last value in app',
+                                              lastValue,
+                                          );
+                                      },
+                                  )}
+                              ></element-vir-test-child-element>
                               <hr />
                           `
                         : ''
