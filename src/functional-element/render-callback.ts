@@ -26,8 +26,12 @@ export type RenderParams<
             EventName extends string ? EventName : never,
             EventInitMapEventDetailExtractor<EventName, EventsInitGeneric>
         >,
-    ) => void;
-    defaultDispatchEvent: EventTarget['dispatchEvent'];
+    ) => boolean;
+    /**
+     * Same as dispatchEvent but without the extra types. This allows you to emit any events, even
+     * events from other custom elements.
+     */
+    defaultDispatchEvent: (event: Event) => boolean;
 };
 
 export function createRenderParams<
@@ -38,8 +42,12 @@ export function createRenderParams<
     eventsMap: EventDescriptorMap<EventsInitGeneric>,
 ): RenderParams<PropertyInitGeneric, EventsInitGeneric> {
     const renderParams: RenderParams<PropertyInitGeneric, EventsInitGeneric> = {
+        /**
+         * These two dispatch properties do the same thing but their interfaces are different.
+         * DispatchEvent's type interface is much stricter.
+         */
         dispatchEvent: (event) => element.dispatchEvent(event),
-        defaultDispatchEvent: element.dispatchEvent,
+        defaultDispatchEvent: (event) => element.dispatchEvent(event),
         props: element.instanceProps,
         events: eventsMap,
     };
