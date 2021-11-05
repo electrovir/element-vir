@@ -1,6 +1,7 @@
 import {randomString} from 'augment-vir';
 import {css} from 'lit';
 import {defineFunctionalElement, ElementEvent, eventInit, html, onDomCreated} from '../..';
+import {MyCustomEvent} from '../customEvent';
 
 export const ChildElement = defineFunctionalElement({
     tagName: 'element-vir-test-child-element',
@@ -21,7 +22,7 @@ export const ChildElement = defineFunctionalElement({
         speak: eventInit<string>(),
         eat: eventInit<number>(),
     },
-    renderCallback: ({props, dispatchEvent, events, defaultDispatchEvent}) => {
+    renderCallback: ({props, dispatchElementEvent, events, dispatchEvent}) => {
         // log here to make sure it's not rendering too often
         console.info('child rendering');
         return html`
@@ -38,14 +39,12 @@ export const ChildElement = defineFunctionalElement({
                     }
                 })}
                 @click=${() => {
-                    dispatchEvent(new ElementEvent(events.speak, randomString()));
+                    dispatchElementEvent(new ElementEvent(events.speak, randomString()));
                 }}
             >
-                emit event from child
+                emit speak event
             </button>
-            <button @click=${() => defaultDispatchEvent(new ElementEvent(events.eat, 5))}>
-                Emit default event
-            </button>
+            <button @click=${() => dispatchEvent(new MyCustomEvent(5))}>Emit custom event</button>
             <span>button handle: ${props.button?.tagName}</span>
         `;
     },

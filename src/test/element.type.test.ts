@@ -2,18 +2,18 @@ import {getObjectTypedKeys, randomString} from 'augment-vir';
 import {css, TemplateResult} from 'lit';
 import {
     assign,
+    assignWithCleanup,
+    createCustomEvent,
     defineFunctionalElement,
     ElementEvent,
     eventInit,
     EventObjectEventDetailExtractor,
-    html,
-    listen,
-} from '..';
-import {assignWithCleanup} from '../functional-element/directives/assign-with-clean-up.directive';
-import {
     FunctionalElement,
     FunctionalElementInstance,
-} from '../functional-element/functional-element';
+    html,
+    listen,
+    namedListen,
+} from '..';
 import {AppElement} from './elements/app.element';
 import {ChildElement} from './elements/child.element';
 
@@ -46,14 +46,14 @@ const TestElementVoidEvent = defineFunctionalElement({
     events: {
         thingHappened: eventInit<void>(),
     },
-    renderCallback: ({props, dispatchEvent, events}): TemplateResult => {
+    renderCallback: ({props, dispatchElementEvent, events}): TemplateResult => {
         // @ts-expect-error
         console.info(props.thing);
         // @ts-expect-error
-        dispatchEvent(new ElementEvent(events.thingHappened));
-        dispatchEvent(new ElementEvent(events.thingHappened, undefined));
+        dispatchElementEvent(new ElementEvent(events.thingHappened));
+        dispatchElementEvent(new ElementEvent(events.thingHappened, undefined));
         // @ts-expect-error
-        dispatchEvent(new ElementEvent(events.thingHappened, 5));
+        dispatchElementEvent(new ElementEvent(events.thingHappened, 5));
         return html``;
     },
 });
@@ -64,19 +64,35 @@ const TestElementInvalidTagName = defineFunctionalElement({
     renderCallback: () => html``,
 });
 
+const MyElementEvent = createCustomEvent<'customEvent', string>('customEvent');
+
 const TestElementNoEventsOrProps = defineFunctionalElement({
     tagName: 'test-element-no-events-or-props',
-    renderCallback: ({props, dispatchEvent, events}): TemplateResult => {
+    renderCallback: ({props, dispatchElementEvent, events}): TemplateResult => {
         // @ts-expect-error
         console.info(events.thing);
         // @ts-expect-error
         console.info(props.thing);
         // @ts-expect-error
-        dispatchEvent(new ElementEvent(events.thingHappened));
+        dispatchElementEvent(new ElementEvent(events.thingHappened));
         // @ts-expect-error
-        dispatchEvent(new ElementEvent(events.thingHappened, 5));
+        dispatchElementEvent(new ElementEvent(events.thingHappened, 5));
         return html``;
     },
+});
+
+const thingie = {} as HTMLElement;
+
+namedListen('click', (event) => {
+    event.buttons;
+});
+namedListen('not a real event name', (event) => {
+    // event type is unknown in this case
+    // @ts-expect-error
+    event.buttons;
+});
+thingie.addEventListener('click', (event) => {
+    event.buttons;
 });
 
 // @ts-expect-error
@@ -96,7 +112,7 @@ const TestElement = defineFunctionalElement({
         stringEvent: eventInit<string>(),
         numberEvent: eventInit<number>(),
     },
-    renderCallback: ({props, dispatchEvent}) => {
+    renderCallback: ({props, dispatchElementEvent}) => {
         // @ts-expect-error
         const stuff: number = props.stringProp;
 
@@ -110,24 +126,31 @@ const TestElement = defineFunctionalElement({
                 }
             </span>
             <button
+                ${listen(MyElementEvent, (event) => {
+                    console.log(event);
+                })}
                 @click=${() => {
-                    dispatchEvent(new ElementEvent(TestElement.events.stringEvent, randomString()));
-                    dispatchEvent(new ElementEvent(TestElement.events.numberEvent, 4));
+                    dispatchElementEvent(
+                        new ElementEvent(TestElement.events.stringEvent, randomString()),
+                    );
+                    dispatchElementEvent(new ElementEvent(TestElement.events.numberEvent, 4));
+                    dispatchElementEvent(
+                        // @ts-expect-error
+                        new ElementEvent(TestElement.events.numberEvent, randomString()),
+                    );
                     // @ts-expect-error
-                    dispatchEvent(new ElementEvent(TestElement.events.numberEvent, randomString()));
+                    dispatchElementEvent(new ElementEvent(TestElement.events.numberEvent));
                     // @ts-expect-error
-                    dispatchEvent(new ElementEvent(TestElement.events.numberEvent));
+                    dispatchElementEvent(new ElementEvent(TestElement.events.stringEvent, 4));
                     // @ts-expect-error
-                    dispatchEvent(new ElementEvent(TestElement.events.stringEvent, 4));
+                    dispatchElementEvent(new ElementEvent(TestElement.events.stringEvent));
                     // @ts-expect-error
-                    dispatchEvent(new ElementEvent(TestElement.events.stringEvent));
+                    dispatchElementEvent(new ElementEvent(TestElement.events.nonExistingEvent, 4));
                     // @ts-expect-error
-                    dispatchEvent(new ElementEvent(TestElement.events.nonExistingEvent, 4));
+                    dispatchElementEvent(new ElementEvent(TestElement.events.nonExistingEvent));
+                    dispatchElementEvent(new ElementEvent(TestElement.events.yo, {hello: 'there'}));
                     // @ts-expect-error
-                    dispatchEvent(new ElementEvent(TestElement.events.nonExistingEvent));
-                    dispatchEvent(new ElementEvent(TestElement.events.yo, {hello: 'there'}));
-                    // @ts-expect-error
-                    dispatchEvent(new ElementEvent(TestElement.events.yo));
+                    dispatchElementEvent(new ElementEvent(TestElement.events.yo));
                 }}
             >
                 click me

@@ -5,9 +5,11 @@ import {
     defineFunctionalElement,
     html,
     listen,
+    namedListen,
     onResize,
     requireAllCustomElementsToBeFunctionalElement,
 } from '../..';
+import {MyCustomEvent, MyCustomEvent2} from '../customEvent';
 import {ChildElement} from './child.element';
 
 requireAllCustomElementsToBeFunctionalElement();
@@ -76,8 +78,18 @@ export const AppElement = defineFunctionalElement({
                         props.eventsReceived++;
                         props.lastReceivedMessage = event.detail;
                     })}
-                    ${listen(ChildElement.events.eat, (event) => {
-                        console.log(event);
+                    ${listen(MyCustomEvent, (event) => {
+                        console.log(event.detail);
+                    })}
+                    ${namedListen(MyCustomEvent.eventName, (event) => {
+                        console.log(
+                            'namedListen',
+                            // should be true
+                            event instanceof MyCustomEvent,
+                            // should be false
+                            event instanceof MyCustomEvent2,
+                            event,
+                        );
                     })}
                 ></${ChildElement}>
                 <hr>
@@ -105,8 +117,8 @@ export const AppElement = defineFunctionalElement({
                           `
                         : ''
                 }
-                <span>Events received: ${props.eventsReceived}</span>
-                <span>Last message received: ${props.lastReceivedMessage}</span>
+                <span>Speak events received: ${props.eventsReceived}</span>
+                <span>Last speak message received: ${props.lastReceivedMessage}</span>
                 <span>app width: ${props.width}</span>
             </div>
         `;
