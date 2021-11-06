@@ -21,6 +21,7 @@ export type RenderParams<
 > = {
     props: PropertyInitGeneric;
     events: EventDescriptorMap<EventsInitGeneric>;
+    host: FunctionalElementInstance<PropertyInitGeneric>;
     dispatchElementEvent: <EventName extends keyof EventsInitGeneric>(
         event: ElementEvent<
             EventName extends string ? EventName : never,
@@ -48,6 +49,7 @@ export function createRenderParams<
          */
         dispatchElementEvent: (event) => element.dispatchEvent(event),
         dispatchEvent: (event) => element.dispatchEvent(event),
+        host: element,
         props: element.instanceProps,
         events: eventsMap,
     };

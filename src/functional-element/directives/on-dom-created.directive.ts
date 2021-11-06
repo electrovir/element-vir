@@ -20,8 +20,8 @@ export const onDomCreated = directive(
             assertsIsElementPartInfo(partInfo, directiveName);
             const newElement = partInfo.element;
             if (newElement !== this.element) {
-                // use setTimeout here so it can fire property changes outside of a render loop
-                setTimeout(() => callback(newElement), 0);
+                // use requestAnimationFrame here so it can fire property changes outside of a render loop
+                requestAnimationFrame(() => callback(newElement));
                 this.element = newElement;
             }
             return this.render(callback);
