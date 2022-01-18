@@ -1,5 +1,4 @@
-import {assign, defineFunctionalElement, html} from '..';
-import {assignWithCleanup} from '../functional-element/directives/assign-with-clean-up.directive';
+import {assign, assignWithCleanup, defineFunctionalElement, html} from '..';
 import {MySimpleWithPropsElement} from './my-simple-with-props.element';
 
 export const MyAppWithPropsElement = defineFunctionalElement({

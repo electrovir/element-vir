@@ -5,11 +5,10 @@ import {
     defineFunctionalElement,
     html,
     listen,
-    namedListen,
     onResize,
     requireAllCustomElementsToBeFunctionalElement,
 } from '../..';
-import {MyCustomEvent, MyCustomEvent2} from '../customEvent';
+import {MyCustomEvent} from '../customEvent';
 import {ChildElement} from './child.element';
 
 requireAllCustomElementsToBeFunctionalElement();
@@ -62,13 +61,23 @@ export const AppElement = defineFunctionalElement({
                 props.width = entry.contentRect.width;
             })}>
                 Welcome to the test app.
-                <button @click=${() =>
-                    (props.funnyNumber = Math.random())}>assign NEW number to child</button>
+                <button
+                    ${listen('click', () => (props.funnyNumber = Math.random()))}
+                >
+                    assign NEW number to child
+                </button>
                 <!-- Verify that the child component does not rerender when we pass it the same value. -->
                 <!-- Check the console logs to verify.-->
-                <button @click=${() => (props.funnyNumber = 4)}>assign SAME number to child</button>
-                <button @click=${() =>
-                    (props.showChild = !props.showChild)}>toggle second child</button>
+                <button
+                    ${listen('click', () => (props.funnyNumber = 4))}
+                >
+                    assign SAME number to child
+                </button>
+                <button
+                    ${listen('click', () => (props.showChild = !props.showChild))}
+                >
+                    toggle second child
+                </button>
                 
                 <hr>
                 <${ChildElement}
@@ -81,13 +90,11 @@ export const AppElement = defineFunctionalElement({
                     ${listen(MyCustomEvent, (event) => {
                         console.log(event.detail);
                     })}
-                    ${namedListen(MyCustomEvent.eventName, (event) => {
+                    ${listen('click', (event) => {
                         console.log(
-                            'namedListen',
+                            'event should be a mouse event:',
                             // should be true
-                            event instanceof MyCustomEvent,
-                            // should be false
-                            event instanceof MyCustomEvent2,
+                            event instanceof MouseEvent,
                             event,
                         );
                     })}

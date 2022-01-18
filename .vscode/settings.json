@@ -25,5 +25,6 @@
     },
     "editor.formatOnSave": true,
     "editor.rulers": [100],
+    "editor.wordWrapColumn": 100,
     "typescript.tsdk": "node_modules/typescript/lib"
 }

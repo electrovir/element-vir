@@ -1,27 +1,61 @@
 import {noChange} from 'lit';
-import {directive, Directive, PartInfo} from 'lit/directive.js';
-import {ElementEvent, EventDescriptor} from '../typed-event';
+import {directive, Directive, DirectiveResult, PartInfo} from 'lit/directive.js';
+import {DefinedTypedEvent, TypedEvent} from '../../typed-event/typed-event';
 import {extractElement} from './directive-util';
 
+type PossibleListenerCallbacks<
+    TypedEventTypeNameGeneric extends string,
+    TypedEventDetailGeneric,
+    NativeElementEventNameGeneric extends keyof HTMLElementEventMap,
+> =
+    | ((event: TypedEvent<TypedEventTypeNameGeneric, TypedEventDetailGeneric>) => void)
+    | ((event: HTMLElementEventMap[NativeElementEventNameGeneric]) => void);
+
 /**
- * Listen to element events.
+ * Listen to events. These can be native DOM events (use a string for the inputType argument) or
+ * typed events (pass in a return value from defineTypedEvent).
  *
- * @param eventDescriptor Needs to come either from a functional element (like
- *   MyFunctionalElement.events.eventName) or from a custom element event created via the
- *   createCustomEvent function.
- * @param listener The callback to fire when an event is caught. Assuming the eventDescriptor input
- *   is properly typed, the event given to this callback will also be typed.
+ * @param definedTypedEvent Needs to come either from a functional element (like
+ *   MyFunctionalElement.events.eventName) or from a typed event created via the defineTypedEvent function.
+ * @param listener The callback to fire when an event is caught. Assuming the definedTypedEvent
+ *   input is properly typed, the event given to this callback will also be typed.
  */
-export function listen<EventName extends string, DetailType>(
-    eventDescriptor: EventDescriptor<EventName, DetailType>,
-    listener: (event: ElementEvent<EventName, DetailType>) => void,
-) {
-    return listenDirective(eventDescriptor, listener);
+export function listen<
+    TypedEventTypeNameGeneric extends string,
+    TypedEventDetailGeneric,
+    NativeElementEventNameGeneric extends keyof HTMLElementEventMap,
+>(
+    eventType: DefinedTypedEvent<TypedEventTypeNameGeneric, TypedEventDetailGeneric>,
+    listener: (event: TypedEvent<TypedEventTypeNameGeneric, TypedEventDetailGeneric>) => void,
+): DirectiveResult<any>;
+export function listen<
+    TypedEventTypeNameGeneric extends string,
+    TypedEventDetailGeneric,
+    NativeElementEventNameGeneric extends keyof HTMLElementEventMap,
+>(
+    eventType: NativeElementEventNameGeneric,
+    listener: (event: HTMLElementEventMap[NativeElementEventNameGeneric]) => void,
+): DirectiveResult<any>;
+export function listen<
+    TypedEventTypeNameGeneric extends string,
+    TypedEventDetailGeneric,
+    NativeElementEventNameGeneric extends keyof HTMLElementEventMap,
+>(
+    eventType:
+        | DefinedTypedEvent<TypedEventTypeNameGeneric, TypedEventDetailGeneric>
+        | NativeElementEventNameGeneric,
+    listener: PossibleListenerCallbacks<
+        TypedEventTypeNameGeneric,
+        TypedEventDetailGeneric,
+        NativeElementEventNameGeneric
+    >,
+): DirectiveResult<any> {
+    return listenDirective(eventType, listener);
 }
 
-type ListenerMetaData<EventDetail> = {
+type ListenerMetaData = {
     eventType: string;
-    callback: (event: ElementEvent<string, EventDetail>) => void;
+    callback: PossibleListenerCallbacks<any, any, any>;
     listener: (event: any) => void;
 };
 
@@ -32,7 +66,7 @@ type ListenerMetaData<EventDetail> = {
 const listenDirective = directive(
     class extends Directive {
         public readonly element: HTMLElement;
-        public lastListenerMetaData: ListenerMetaData<unknown> | undefined;
+        public lastListenerMetaData: ListenerMetaData | undefined;
 
         constructor(partInfo: PartInfo) {
             super(partInfo);
@@ -40,7 +74,7 @@ const listenDirective = directive(
             this.element = extractElement(partInfo, 'listen', HTMLElement);
         }
 
-        public resetListener(listenerMetaData: ListenerMetaData<any>) {
+        public resetListener(listenerMetaData: ListenerMetaData) {
             if (this.lastListenerMetaData) {
                 this.element.removeEventListener(
                     this.lastListenerMetaData.eventType,
@@ -53,21 +87,22 @@ const listenDirective = directive(
 
         public createListenerMetaData(
             eventType: string,
-            callback: (event: ElementEvent<string, unknown>) => void,
-        ): ListenerMetaData<unknown> {
+            callback: (event: TypedEvent<string, unknown>) => void,
+        ): ListenerMetaData {
             return {
                 eventType,
                 callback,
-                listener: (event: ElementEvent<string, unknown>) =>
+                listener: (event: TypedEvent<string, unknown>) =>
                     this.lastListenerMetaData?.callback(event),
             };
         }
 
         render(
-            eventObject: EventDescriptor<string, any>,
-            callback: (event: ElementEvent<any, any>) => void,
+            eventTypeInput: {type: string} | string,
+            callback: PossibleListenerCallbacks<any, any, any>,
         ) {
-            const eventType = eventObject.eventName;
+            const eventType =
+                typeof eventTypeInput === 'string' ? eventTypeInput : eventTypeInput.type;
 
             if (typeof eventType !== 'string') {
                 throw new Error(

@@ -1,6 +1,5 @@
 import {randomString} from 'augment-vir';
-import {css} from 'lit';
-import {defineFunctionalElement, ElementEvent, eventInit, html, onDomCreated} from '../..';
+import {css, defineElementEvent, defineFunctionalElement, html, listen, onDomCreated} from '../..';
 import {MyCustomEvent} from '../customEvent';
 
 export const ChildElement = defineFunctionalElement({
@@ -19,10 +18,10 @@ export const ChildElement = defineFunctionalElement({
         button: undefined as undefined | HTMLButtonElement,
     },
     events: {
-        speak: eventInit<string>(),
-        eat: eventInit<number>(),
+        speak: defineElementEvent<string>(),
+        eat: defineElementEvent<number>(),
     },
-    renderCallback: ({props, dispatchElementEvent, events, dispatchEvent}) => {
+    renderCallback: ({props, dispatch, events, genericDispatch}) => {
         // log here to make sure it's not rendering too often
         console.info('child rendering');
         return html`
@@ -38,13 +37,15 @@ export const ChildElement = defineFunctionalElement({
                         throw new Error(`obtained element is not a button!`);
                     }
                 })}
-                @click=${() => {
-                    dispatchElementEvent(new ElementEvent(events.speak, randomString()));
-                }}
+                ${listen('click', () => {
+                    dispatch(new events.speak(randomString()));
+                })}
             >
                 emit speak event
             </button>
-            <button @click=${() => dispatchEvent(new MyCustomEvent(5))}>Emit custom event</button>
+            <button ${listen('click', () => genericDispatch(new MyCustomEvent(5)))}>
+                Emit custom event
+            </button>
             <span>button handle: ${props.button?.tagName}</span>
         `;
     },

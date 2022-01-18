@@ -9,7 +9,8 @@ const config: InitialOptionsTsJest = {
     preset: 'ts-jest',
     testEnvironment: 'jsdom',
     verbose: false,
-
+    // type tests are caught by the typescript compiler
+    testPathIgnorePatterns: ['.type.test.ts'],
     rootDir: repoRootDir,
     silent: false,
     moduleNameMapper: pathsToModuleNameMapper(getTsconfigPathAliases(), {

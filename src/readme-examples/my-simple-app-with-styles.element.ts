@@ -1,5 +1,4 @@
-import {css} from 'lit';
-import {defineFunctionalElement, html} from '..';
+import {css, defineFunctionalElement, html} from '..';
 
 export const MySimpleWithStylesElement = defineFunctionalElement({
     tagName: 'my-simple-with-styles-element',

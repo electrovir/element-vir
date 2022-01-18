@@ -5,7 +5,9 @@ export function findTsConfigFile(): string {
     const dirToCheck = __dirname;
     const configFileName = findConfigFile(dirToCheck, tsSys.fileExists, 'tsconfig.json');
     if (!configFileName) {
-        throw new Error(`Could not find tsconfig.json file from starting search at "${dirToCheck}"`);
+        throw new Error(
+            `Could not find tsconfig.json file from starting search at "${dirToCheck}"`,
+        );
     }
     return configFileName;
 }

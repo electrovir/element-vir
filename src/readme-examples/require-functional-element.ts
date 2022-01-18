@@ -1,3 +1,3 @@
-import {requireAllCustomElementsToBeFunctionalElement} from '../require-functional-element';
+import {requireAllCustomElementsToBeFunctionalElement} from '..';
 
 requireAllCustomElementsToBeFunctionalElement();

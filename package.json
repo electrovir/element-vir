@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "3.1.0",
+    "version": "4.0.0",
     "keywords": [
         "custom",
         "web",
@@ -27,12 +27,14 @@
     "scripts": {
         "compile": "tsc",
         "format": "virmator format write",
+        "jest": "jest --config ./jest/jest.config.ts",
         "prepublishOnly": "npm run test:full",
         "spellcheck": "virmator spellcheck",
         "start": "npm install && vite --force --config ./vite/vite.config.ts",
-        "test": "jest --config ./jest/jest.config.ts",
+        "test": "npm run type-check && npm run jest",
         "test:full": "npm test && npm run spellcheck && virmator format check && npm run update-docs -- --check",
-        "update-docs": "virmator code-in-markdown README.md"
+        "type-check": "tsc --noEmit",
+        "update-docs": "virmator code-in-markdown README.md --index src/index.ts"
     },
     "dependencies": {
         "augment-vir": "^1.4.3",

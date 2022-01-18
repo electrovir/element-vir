@@ -1,4 +1,4 @@
-import {defineCustomEvent} from '..';
+import {defineTypedEvent} from '..';
 
-export const MyCustomEvent = defineCustomEvent<'myCustomEventName', number>('myCustomEventName');
-export const MyCustomEvent2 = defineCustomEvent<'myCustomEventName2', number>('myCustomEventName2');
+export const MyCustomEvent = defineTypedEvent<number>()('myCustomEventName');
+export const MyCustomEvent2 = defineTypedEvent<number>()('myCustomEventName2');

@@ -31,7 +31,7 @@ export const onResize = directive(
             this.callback?.({target: resizeEntry.target, contentRect: resizeEntry.contentRect});
         }
 
-        update(partInfo: PartInfo, [callback]: [OnResizeCallback]) {
+        override update(partInfo: PartInfo, [callback]: [OnResizeCallback]) {
             assertsIsElementPartInfo(partInfo, directiveName);
             this.callback = callback;
             const newElement = partInfo.element;

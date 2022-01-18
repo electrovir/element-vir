@@ -30,7 +30,7 @@ class AssignWithCleanupDirectiveClass extends AsyncDirective {
         this.element = extractFunctionalElement(partInfo, 'assign');
     }
 
-    disconnected() {
+    override disconnected() {
         if (this.lastValue != undefined && this.lastCallback != undefined) {
             this.lastCallback(this.lastValue);
         }

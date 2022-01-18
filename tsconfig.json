@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
-        "module": "ES6",
-        "moduleResolution": "node"
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "target": "ESNext"
     },
     "exclude": ["dist"],
     "extends": "./tsconfig-base.json",

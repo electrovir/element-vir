@@ -16,7 +16,7 @@ export const onDomCreated = directive(
             assertsIsElementPartInfo(partInfo, directiveName);
         }
 
-        update(partInfo: PartInfo, [callback]: [OnDomCreatedCallback]) {
+        override update(partInfo: PartInfo, [callback]: [OnDomCreatedCallback]) {
             assertsIsElementPartInfo(partInfo, directiveName);
             const newElement = partInfo.element;
             if (newElement !== this.element) {

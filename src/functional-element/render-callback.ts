@@ -1,12 +1,12 @@
 import {TemplateResult} from 'lit';
-import {PropertyInitMapBase} from './element-properties';
-import {FunctionalElementInstance} from './functional-element';
+import {TypedEvent} from '../typed-event/typed-event';
 import {
-    ElementEvent,
     EventDescriptorMap,
     EventInitMapEventDetailExtractor,
     EventsInitMap,
-} from './typed-event';
+} from './element-events';
+import {PropertyInitMapBase} from './element-properties';
+import {FunctionalElementInstance} from './functional-element';
 
 export type RenderCallback<
     PropertyInitGeneric extends PropertyInitMapBase,
@@ -22,17 +22,17 @@ export type RenderParams<
     props: PropertyInitGeneric;
     events: EventDescriptorMap<EventsInitGeneric>;
     host: FunctionalElementInstance<PropertyInitGeneric>;
-    dispatchElementEvent: <EventName extends keyof EventsInitGeneric>(
-        event: ElementEvent<
-            EventName extends string ? EventName : never,
-            EventInitMapEventDetailExtractor<EventName, EventsInitGeneric>
+    dispatch: <EventTypeNameGeneric extends keyof EventsInitGeneric>(
+        event: TypedEvent<
+            EventTypeNameGeneric extends string ? EventTypeNameGeneric : never,
+            EventInitMapEventDetailExtractor<EventTypeNameGeneric, EventsInitGeneric>
         >,
     ) => boolean;
     /**
      * Same as dispatchElementEvent but without the extra types. This allows you to emit any events,
      * even events from other custom elements.
      */
-    dispatchEvent: (event: Event) => boolean;
+    genericDispatch: (event: Event) => boolean;
 };
 
 export function createRenderParams<
@@ -47,8 +47,8 @@ export function createRenderParams<
          * These two dispatch properties do the same thing but their interfaces are different.
          * DispatchEvent's type interface is much stricter.
          */
-        dispatchElementEvent: (event) => element.dispatchEvent(event),
-        dispatchEvent: (event) => element.dispatchEvent(event),
+        dispatch: (event) => element.dispatchEvent(event),
+        genericDispatch: (event) => element.dispatchEvent(event),
         host: element,
         props: element.instanceProps,
         events: eventsMap,
