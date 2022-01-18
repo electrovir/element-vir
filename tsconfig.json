@@ -6,5 +6,6 @@
         "noImplicitOverride": false
     },
     "exclude": ["dist"],
-    "extends": "./tsconfig-base.json"
+    "extends": "./tsconfig-base.json",
+    "include": ["./src/", "./vite/"]
 }
