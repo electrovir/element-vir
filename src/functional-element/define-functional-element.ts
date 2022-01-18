@@ -1,6 +1,5 @@
 import {css, TemplateResult} from 'lit';
 import {property} from 'lit/decorators.js';
-import {createEventDescriptorMap, EventsInitMap} from './element-events';
 import {
     createPropertyDescriptorMap,
     createPropertyProxy,
@@ -14,6 +13,7 @@ import {
     FunctionalElementInstance,
 } from './functional-element';
 import {createRenderParams, RenderParams} from './render-callback';
+import {createEventDescriptorMap, EventsInitMap} from './typed-event';
 
 export function defineFunctionalElement<
     EventsInitGeneric extends EventsInitMap = {},
@@ -26,9 +26,6 @@ export function defineFunctionalElement<
     const anonymousClass = class extends FunctionalElementBaseClass<PropertyInitGeneric> {
         public static readonly tagName = functionalElementInit.tagName;
         public static readonly styles = functionalElementInit.styles || css``;
-        public static readonly propNames = Object.keys(
-            functionalElementInit.props || ({} as PropertyInitGeneric),
-        );
 
         public createRenderParams(): RenderParams<PropertyInitGeneric, EventsInitGeneric> {
             return createRenderParams(

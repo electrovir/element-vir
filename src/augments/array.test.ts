@@ -1,30 +1,18 @@
-import {testGroup} from 'test-vir';
 import {filterOutArrayIndexes} from './array';
 
-testGroup({
-    description: filterOutArrayIndexes.name,
-    tests: (runTest) => {
-        const experimentArray = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+describe(filterOutArrayIndexes.name, () => {
+    const experimentArray = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
 
-        runTest({
-            description: 'removes array indexes',
-            expect: ['a', 'c', 'd'],
-            test: () => filterOutArrayIndexes(experimentArray, [1, 4, 5, 6]),
-        });
+    it('removes array indexes', () => {
+        expect(filterOutArrayIndexes(experimentArray, [1, 4, 5, 6])).toEqual(['a', 'c', 'd']);
+    });
 
-        runTest({
-            description: 'does not modify the original array',
-            expect: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
-            test: () => {
-                filterOutArrayIndexes(experimentArray, [1, 4, 5, 6]);
-                return experimentArray;
-            },
-        });
+    it('does not modify the original array', () => {
+        filterOutArrayIndexes(experimentArray, [1, 4, 5, 6]);
+        expect(experimentArray).toEqual(['a', 'b', 'c', 'd', 'e', 'f', 'g']);
+    });
 
-        runTest({
-            description: "doesn't do anything if no indexes are given to remove",
-            expect: experimentArray,
-            test: () => filterOutArrayIndexes(experimentArray, []),
-        });
-    },
+    it("doesn't do anything if no indexes are given to remove", () => {
+        expect(filterOutArrayIndexes(experimentArray, [])).toEqual(experimentArray);
+    });
 });

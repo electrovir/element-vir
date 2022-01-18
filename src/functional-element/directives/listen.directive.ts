@@ -1,6 +1,6 @@
 import {noChange} from 'lit';
 import {directive, Directive, PartInfo} from 'lit/directive.js';
-import {ElementEvent, EventDescriptor} from '../element-events';
+import {ElementEvent, EventDescriptor} from '../typed-event';
 import {extractElement} from './directive-util';
 
 /**

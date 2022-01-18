@@ -1,11 +1,14 @@
 {
     "compilerOptions": {
         "module": "ES6",
-        "moduleResolution": "node",
-        // no implicit override is broken in snowpack
-        "noImplicitOverride": false
+        "moduleResolution": "node"
     },
     "exclude": ["dist"],
     "extends": "./tsconfig-base.json",
-    "include": ["./src/", "./vite/"]
+    "include": ["./src/", "./vite/", "./jest/"],
+    "ts-node": {
+        "compilerOptions": {
+            "module": "CommonJS"
+        }
+    }
 }

@@ -1,7 +1,7 @@
 import {CSSResult, LitElement, TemplateResult} from 'lit';
-import {EventDescriptorMap, EventsInitMap} from './element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './element-properties';
 import {RenderCallback} from './render-callback';
+import {EventDescriptorMap, EventsInitMap} from './typed-event';
 
 export type CustomElementTagName = `${string}-${string}`;
 
@@ -29,7 +29,6 @@ export abstract class FunctionalElementBaseClass<
 > extends LitElement {
     public static readonly tagName: string;
     public static readonly styles: CSSResult;
-    public static readonly propNames: string[];
 
     public abstract render(): TemplateResult | Promise<TemplateResult>;
     public abstract readonly instanceProps: PropertyInitGeneric;
@@ -59,5 +58,4 @@ export type ExtraStaticFunctionalElementProperties<
      */
     tagName: string;
     styles: CSSResult;
-    propNames: string[];
 }>;

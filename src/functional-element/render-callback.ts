@@ -1,12 +1,12 @@
 import {TemplateResult} from 'lit';
+import {PropertyInitMapBase} from './element-properties';
+import {FunctionalElementInstance} from './functional-element';
 import {
     ElementEvent,
     EventDescriptorMap,
     EventInitMapEventDetailExtractor,
     EventsInitMap,
-} from './element-events';
-import {PropertyInitMapBase} from './element-properties';
-import {FunctionalElementInstance} from './functional-element';
+} from './typed-event';
 
 export type RenderCallback<
     PropertyInitGeneric extends PropertyInitMapBase,

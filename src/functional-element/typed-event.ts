@@ -20,6 +20,47 @@ export class ElementEvent<EventName extends string, EventValue> extends CustomEv
     }
 }
 
+export class TypedEvent<
+    EventNameGeneric extends string = '',
+    EventValueGeneric = undefined,
+> extends CustomEvent<EventValueGeneric> {
+    public readonly _type: EventNameGeneric = '' as EventNameGeneric;
+    public override get type(): EventNameGeneric {
+        return this._type;
+    }
+}
+
+/**
+ * Defined a typed event. Make sure to use currying and call this function twice! Typescript's
+ * generic restrictions require this setup to get the types right without excessive verbosity.
+ *
+ * Example:
+ *
+ * Const myCustomEvent = defineTypedEvent<number>()('my-custom-event')
+ */
+export function defineTypedEvent<EventValueGeneric>() {
+    return <
+        /**
+         * EventNameGeneric is used for the event type property but not for the event value type...
+         * so it's named "name" instead of "type" cause type is overloaded here.
+         */
+        EventNameGeneric extends string = '',
+    >(
+        eventType: EventNameGeneric,
+    ): (new (eventValue: EventValueGeneric) => TypedEvent<EventNameGeneric, EventValueGeneric>) & {
+        type: EventNameGeneric;
+    } => {
+        return class extends TypedEvent<EventNameGeneric, EventValueGeneric> {
+            public static type = eventType;
+            public override readonly _type = eventType;
+
+            constructor(value: EventValueGeneric) {
+                super(eventType, {detail: value, bubbles: true, composed: true});
+            }
+        };
+    };
+}
+
 export function defineCustomEvent<EventName extends string, EventValue>(
     eventName: EventName,
 ): (new (eventValue: EventValue) => ElementEvent<EventName, EventValue>) &
