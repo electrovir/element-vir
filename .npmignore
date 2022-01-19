@@ -20,7 +20,7 @@ tsconfig.json
 
 dist/test/
 dist/readme-examples/
-src/jest/
-src/vite/
+dist/jest/
+dist/vite/
 public/
 index.html
