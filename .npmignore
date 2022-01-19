@@ -18,5 +18,9 @@ test-repos/
 tsconfig-base.json
 tsconfig.json
 
-dist/test
-dist/readme-examples
+dist/test/
+dist/readme-examples/
+src/jest/
+src/vite/
+public/
+index.html

@@ -3,7 +3,7 @@ import {pathsToModuleNameMapper} from 'ts-jest';
 import {InitialOptionsTsJest} from 'ts-jest/dist/types';
 import {findTsConfigFile, getTsconfigPathAliases} from './read-tsconfig';
 
-const repoRootDir = dirname(__dirname);
+const repoRootDir = dirname(dirname(__dirname));
 
 const config: InitialOptionsTsJest = {
     preset: 'ts-jest',
