@@ -11,14 +11,12 @@ import {FunctionalElementInstance} from './functional-element';
 export type RenderCallback<
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
-> = (
-    params: RenderParams<PropertyInitGeneric, EventsInitGeneric>,
-) => TemplateResult | Promise<TemplateResult>;
+> = (params: RenderParams<PropertyInitGeneric, EventsInitGeneric>) => TemplateResult;
 
 export type InitCallback<
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
-> = (params: RenderParams<PropertyInitGeneric, EventsInitGeneric>) => void | Promise<void>;
+> = (params: RenderParams<PropertyInitGeneric, EventsInitGeneric>) => void;
 
 export type RenderParams<
     PropertyInitGeneric extends PropertyInitMapBase,
