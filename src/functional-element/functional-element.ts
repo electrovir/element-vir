@@ -1,7 +1,7 @@
 import {CSSResult, LitElement, TemplateResult} from 'lit';
 import {EventDescriptorMap, EventsInitMap} from './element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './element-properties';
-import {RenderCallback} from './render-callback';
+import {InitCallback, RenderCallback} from './render-callback';
 
 export type CustomElementTagName = `${string}-${string}`;
 
@@ -20,6 +20,8 @@ export type FunctionalElementInit<
     props?: PropertyInitGeneric | undefined;
     /** Initializer for events that the element can dispatch. (These can be thought of as "outputs".) */
     events?: EventsInitGeneric | undefined;
+    /** Called as part of the first renderCallback call, before the first renderCallback call. */
+    initCallback?: InitCallback<PropertyInitGeneric, EventsInitGeneric>;
 
     renderCallback: RenderCallback<PropertyInitGeneric, EventsInitGeneric>;
 };

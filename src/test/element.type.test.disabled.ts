@@ -24,7 +24,10 @@ const TestElementNoTagName = defineFunctionalElement({
 });
 
 /** Verify that there's a base type that all functional elements can be assigned to. */
-const elements: FunctionalElement[] = [AppElement, ChildElement];
+const elements: FunctionalElement[] = [
+    AppElement,
+    ChildElement,
+];
 
 type AppElementProps = {
     funnyNumber: number;

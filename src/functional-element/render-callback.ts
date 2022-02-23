@@ -15,6 +15,11 @@ export type RenderCallback<
     params: RenderParams<PropertyInitGeneric, EventsInitGeneric>,
 ) => TemplateResult | Promise<TemplateResult>;
 
+export type InitCallback<
+    PropertyInitGeneric extends PropertyInitMapBase,
+    EventsInitGeneric extends EventsInitMap,
+> = (params: RenderParams<PropertyInitGeneric, EventsInitGeneric>) => void;
+
 export type RenderParams<
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
