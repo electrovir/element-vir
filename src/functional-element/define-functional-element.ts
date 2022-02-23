@@ -48,11 +48,11 @@ export function defineFunctionalElement<
         >['props'] = createPropertyDescriptorMap(functionalElementInit.props);
 
         public initCalled = false;
-        public render(): TemplateResult | Promise<TemplateResult> {
+        public async render(): Promise<TemplateResult> {
             const renderParams = this.createRenderParams();
             if (!this.initCalled && functionalElementInit.initCallback) {
-                functionalElementInit.initCallback(renderParams);
                 this.initCalled = true;
+                await functionalElementInit.initCallback(renderParams);
             }
             return functionalElementInit.renderCallback(renderParams);
         }

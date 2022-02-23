@@ -18,7 +18,7 @@ export type RenderCallback<
 export type InitCallback<
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
-> = (params: RenderParams<PropertyInitGeneric, EventsInitGeneric>) => void;
+> = (params: RenderParams<PropertyInitGeneric, EventsInitGeneric>) => void | Promise<void>;
 
 export type RenderParams<
     PropertyInitGeneric extends PropertyInitMapBase,
