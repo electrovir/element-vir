@@ -53,6 +53,7 @@ export type ExtraStaticFunctionalElementProperties<
     renderCallback: RenderCallback<PropertyInitGeneric, EventsInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
     props: ElementPropertyDescriptorMap<PropertyInitGeneric>;
+    initInput: FunctionalElementInit<PropertyInitGeneric, EventsInitGeneric>;
 
     /**
      * Static properties have to be copied here cause they get nuked in the "new () =>

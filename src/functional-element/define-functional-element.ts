@@ -34,6 +34,8 @@ export function defineFunctionalElement<
             );
         }
 
+        public static initInput = functionalElementInit;
+
         public static readonly events: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
             EventsInitGeneric
