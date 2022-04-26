@@ -1,14 +1,7 @@
 {
     "compilerOptions": {
         "module": "ESNext",
-        "moduleResolution": "Node",
-        "target": "ESNext"
+        "moduleResolution": "Node"
     },
-    "exclude": ["dist"],
-    "extends": "./tsconfig-base.json",
-    "ts-node": {
-        "compilerOptions": {
-            "module": "CommonJS"
-        }
-    }
+    "extends": "./tsconfig-base.json"
 }
