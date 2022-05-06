@@ -1,3 +1,4 @@
+import {getObjectTypedKeys} from 'augment-vir';
 import {TemplateResult} from 'lit';
 import {TypedEvent} from '../typed-event/typed-event';
 import {
@@ -18,11 +19,16 @@ export type InitCallback<
     EventsInitGeneric extends EventsInitMap,
 > = (params: RenderParams<PropertyInitGeneric, EventsInitGeneric>) => void;
 
+export type SetPropCallback<PropertyInitGeneric extends PropertyInitMapBase> = (
+    props: Partial<PropertyInitGeneric>,
+) => void;
+
 export type RenderParams<
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
 > = {
-    props: PropertyInitGeneric;
+    props: Readonly<PropertyInitGeneric>;
+    setProps: SetPropCallback<PropertyInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
     host: FunctionalElementInstance<PropertyInitGeneric>;
     dispatch: <EventTypeNameGeneric extends keyof EventsInitGeneric>(
@@ -52,8 +58,15 @@ export function createRenderParams<
          */
         dispatch: (event) => element.dispatchEvent(event),
         genericDispatch: (event) => element.dispatchEvent(event),
+        setProps: (partialProps) => {
+            getObjectTypedKeys(partialProps).forEach((propKey) => {
+                element.instanceProps[propKey] = partialProps[
+                    propKey
+                ] as PropertyInitGeneric[typeof propKey];
+            });
+        },
         host: element,
-        props: element.instanceProps,
+        props: {...element.instanceProps},
         events: eventsMap,
     };
     return renderParams;

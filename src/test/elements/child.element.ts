@@ -21,7 +21,7 @@ export const ChildElement = defineFunctionalElement({
         speak: defineElementEvent<string>(),
         eat: defineElementEvent<number>(),
     },
-    renderCallback: ({props, dispatch, events, genericDispatch}) => {
+    renderCallback: ({props, dispatch, setProps, events, genericDispatch}) => {
         // log here to make sure it's not rendering too often
         console.info('child rendering');
         return html`
@@ -31,7 +31,7 @@ export const ChildElement = defineFunctionalElement({
             <button
                 ${onDomCreated((element) => {
                     if (element instanceof HTMLButtonElement) {
-                        props.button = element;
+                        setProps({button: element});
                     } else {
                         console.error(element);
                         throw new Error(`obtained element is not a button!`);
@@ -44,7 +44,7 @@ export const ChildElement = defineFunctionalElement({
                 emit speak event
             </button>
             <button ${listen('click', () => genericDispatch(new MyCustomEvent(5)))}>
-                Emit custom event
+                emit custom event (logged to console)
             </button>
             <span>button handle: ${props.button?.tagName}</span>
         `;

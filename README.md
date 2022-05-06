@@ -150,6 +150,33 @@ export const MySimpleWithPropsElement = defineFunctionalElement({
 });
 ```
 
+## Updating properties
+
+Grab `setProps` from `renderCallback`'s parameters to update the values in `props`. This causes a re-render. (Note that this example also uses the `listen` directive to respond to click events.)
+
+<!-- example-link: src/readme-examples/my-simple-with-set-props.element.ts -->
+
+```TypeScript
+import {defineFunctionalElement, html, listen} from 'element-vir';
+
+export const MySimpleWithPropsElement = defineFunctionalElement({
+    tagName: 'my-simple-element-with-props',
+    props: {
+        currentUsername: 'dev',
+        currentEmail: undefined as string | undefined,
+    },
+    renderCallback: ({props, setProps}) => html`
+        <span
+            ${listen('click', () => {
+                setProps({currentUsername: 'new name!'});
+            })}
+        >
+            Hello there ${props.currentUsername}!
+        </span>
+    `,
+});
+```
+
 ## Assigning to properties (inputs)
 
 Use the `assign` directive to assign properties to child custom elements:
@@ -216,14 +243,14 @@ export const MyAppWithEventsElement = defineFunctionalElement({
     props: {
         myNumber: -1,
     },
-    renderCallback: ({props}) => html`
+    renderCallback: ({props, setProps}) => html`
         <h1>My App</h1>
         <${MySimpleWithEventsElement}
             ${listen(MySimpleWithEventsElement.events.logoutClick, () => {
                 console.info('logout triggered');
             })}
             ${listen(MySimpleWithEventsElement.events.randomNumber, (event) => {
-                props.myNumber = event.detail;
+                setProps({myNumber: event.detail});
             })}
         >
         </${MySimpleWithEventsElement}>

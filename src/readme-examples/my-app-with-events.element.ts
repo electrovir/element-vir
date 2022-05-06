@@ -6,14 +6,14 @@ export const MyAppWithEventsElement = defineFunctionalElement({
     props: {
         myNumber: -1,
     },
-    renderCallback: ({props}) => html`
+    renderCallback: ({props, setProps}) => html`
         <h1>My App</h1>
         <${MySimpleWithEventsElement}
             ${listen(MySimpleWithEventsElement.events.logoutClick, () => {
                 console.info('logout triggered');
             })}
             ${listen(MySimpleWithEventsElement.events.randomNumber, (event) => {
-                props.myNumber = event.detail;
+                setProps({myNumber: event.detail});
             })}
         >
         </${MySimpleWithEventsElement}>

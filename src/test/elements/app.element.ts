@@ -53,28 +53,28 @@ export const AppElement = defineFunctionalElement({
         width: -1,
         showChild: true,
     },
-    renderCallback: ({props}) => {
+    renderCallback: ({props, setProps}) => {
         // log here to make sure it's not rendering too often
         console.info('app rendering');
         return html`
             <div ${onResize((entry) => {
-                props.width = entry.contentRect.width;
+                setProps({width: entry.contentRect.width});
             })}>
                 Welcome to the test app.
                 <button
-                    ${listen('click', () => (props.funnyNumber = Math.random()))}
+                    ${listen('click', () => setProps({funnyNumber: Math.random()}))}
                 >
                     assign NEW number to child
                 </button>
                 <!-- Verify that the child component does not rerender when we pass it the same value. -->
                 <!-- Check the console logs to verify.-->
                 <button
-                    ${listen('click', () => (props.funnyNumber = 4))}
+                    ${listen('click', () => setProps({funnyNumber: 4}))}
                 >
                     assign SAME number to child
                 </button>
                 <button
-                    ${listen('click', () => (props.showChild = !props.showChild))}
+                    ${listen('click', () => setProps({showChild: !props.showChild}))}
                 >
                     toggle second child
                 </button>
@@ -84,8 +84,10 @@ export const AppElement = defineFunctionalElement({
                     ${assign(ChildElement.props.inputNumber, props.funnyNumber)}
                     ${assign(ChildElement.props.width, props.width)}
                     ${listen(ChildElement.events.speak, (event) => {
-                        props.eventsReceived++;
-                        props.lastReceivedMessage = event.detail;
+                        setProps({
+                            eventsReceived: props.eventsReceived + 1,
+                            lastReceivedMessage: event.detail,
+                        });
                     })}
                     ${listen(MyCustomEvent, (event) => {
                         console.log(event.detail);
@@ -103,7 +105,7 @@ export const AppElement = defineFunctionalElement({
                 ${
                     props.showChild
                         ? html`
-                              <span>Child just with clean up assign</span>
+                              <span>Child just with clean up assign (no event listeners)</span>
                               <br />
                               <!-- prettier-ignore -->
                               <!-- intentionally not interpolated to make sure we're logging errors for it -->
