@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "5.4.1",
+    "version": "5.4.2",
     "keywords": [
         "custom",
         "web",
@@ -21,11 +21,6 @@
     "author": {
         "name": "electrovir",
         "url": "https://github.com/electrovir"
-    },
-    "exports": {
-        "import": "./dist/esm/index.js",
-        "require": "./dist/cjs/index.js",
-        "default": "./dist/esm/index.js"
     },
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
