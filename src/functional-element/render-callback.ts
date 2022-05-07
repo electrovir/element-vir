@@ -66,7 +66,7 @@ export function createRenderParams<
             });
         },
         host: element,
-        props: {...element.instanceProps},
+        props: element.instanceProps,
         events: eventsMap,
     };
     return renderParams;
