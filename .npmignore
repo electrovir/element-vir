@@ -26,3 +26,8 @@ test-repos/
 
 public/
 index.html
+dist/*/readme-examples/
+dist/*/scripts/
+dist/*/test/
+dist/*/vite/
+tsconfig.*.json
