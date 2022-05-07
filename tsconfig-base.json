@@ -3,7 +3,6 @@
         "alwaysStrict": true,
         "baseUrl": ".",
         "declaration": true,
-        "declarationDir": "dist/types",
         "esModuleInterop": true,
         "exactOptionalPropertyTypes": true,
         "forceConsistentCasingInFileNames": true,
@@ -19,7 +18,7 @@
         "skipDefaultLibCheck": true,
         "skipLibCheck": true,
         "strict": true,
-        "target": "ESNext",
+        "target": "ES2018",
         "useUnknownInCatchVariables": true
     },
     "exclude": [
