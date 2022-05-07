@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "5.4.0",
+    "version": "5.4.1",
     "keywords": [
         "custom",
         "web",
@@ -43,7 +43,7 @@
         "update-docs": "virmator code-in-markdown README.md --index src/index.ts"
     },
     "dependencies": {
-        "augment-vir": "2.1.1",
+        "augment-vir": "2.2.0",
         "lit": "2.2.3"
     },
     "devDependencies": {
