@@ -1,7 +1,7 @@
 import {html} from '..';
 import {defineFunctionalElement} from './define-functional-element';
 import {defineElementEvent} from './element-events';
-import {FunctionalElementInstance} from './functional-element';
+import {FunctionalElementInstance, FunctionalElementInstanceFromInit} from './functional-element';
 
 const definedFunctionalElementWithProps = defineFunctionalElement({
     renderCallback: () => html``,
@@ -19,10 +19,27 @@ const definedFunctionalElementWithoutProps = defineFunctionalElement({
     tagName: 'defined-functional-element',
 });
 
+definedFunctionalElementWithProps.props.thing;
+
 function acceptInstanceWithProps(
     input: FunctionalElementInstance<typeof definedFunctionalElementWithProps>,
 ): void {
-    input.props.thing;
+    input.thing;
+    input.instanceProps;
+    input.instanceProps.thing;
+    // @ts-expect-error
+    input.events.stuff;
+}
+
+function acceptInstanceWithPropsFromInit(
+    input: FunctionalElementInstanceFromInit<
+        typeof definedFunctionalElementWithProps['init']['props']
+    >,
+): void {
+    input.thing;
+    input.instanceProps;
+    input.instanceProps.thing;
+    // @ts-expect-error
     input.events.stuff;
 }
 
@@ -34,3 +51,14 @@ function acceptInstanceWithoutProps(
     // @ts-expect-error
     input.events.stuff;
 }
+
+function assertInstanceOf<T>(
+    element: unknown,
+    constructor: new (...args: any[]) => T,
+): asserts element is T {}
+
+const testInstance: unknown = {} as any;
+assertInstanceOf(testInstance, definedFunctionalElementWithProps);
+testInstance;
+acceptInstanceWithProps(testInstance);
+acceptInstanceWithPropsFromInit(testInstance);

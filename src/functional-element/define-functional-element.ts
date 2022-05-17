@@ -15,6 +15,11 @@ import {
 } from './functional-element';
 import {createRenderParams, RenderParams} from './render-callback';
 
+const defaultInit: Required<Pick<FunctionalElementInit<any, any>, 'props' | 'events'>> = {
+    events: {},
+    props: {},
+};
+
 export function defineFunctionalElement<
     EventsInitGeneric extends EventsInitMap = {},
     PropertyInitGeneric extends PropertyInitMapBase = {},
@@ -34,7 +39,10 @@ export function defineFunctionalElement<
             );
         }
 
-        public static init = functionalElementInit;
+        public static init: ExtraStaticFunctionalElementProperties<
+            PropertyInitGeneric,
+            EventsInitGeneric
+        >['init'] = {...defaultInit, ...functionalElementInit};
 
         public static readonly events: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,

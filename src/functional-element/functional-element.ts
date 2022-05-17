@@ -1,3 +1,4 @@
+import {RequiredBy} from 'augment-vir';
 import {CSSResult, LitElement, TemplateResult} from 'lit';
 import {EventDescriptorMap, EventsInitMap} from './element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './element-properties';
@@ -38,10 +39,10 @@ export abstract class FunctionalElementBaseClass<
 
 export type FunctionalElementInstanceFromInit<
     PropertyInitGeneric extends PropertyInitMapBase = {},
-> = FunctionalElementBaseClass<PropertyInitGeneric> & Required<PropertyInitGeneric>;
+> = FunctionalElementBaseClass<NonNullable<Required<PropertyInitGeneric>>> & PropertyInitGeneric;
 
 export type FunctionalElementInstance<FunctionalElementGeneric extends FunctionalElement> =
-    FunctionalElementInstanceFromInit<FunctionalElementGeneric['init']>;
+    FunctionalElementInstanceFromInit<FunctionalElementGeneric['init']['props']>;
 
 export type FunctionalElement<
     PropertyInitGeneric extends PropertyInitMapBase = any,
@@ -57,7 +58,10 @@ export type ExtraStaticFunctionalElementProperties<
     renderCallback: RenderCallback<PropertyInitGeneric, EventsInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
     props: ElementPropertyDescriptorMap<PropertyInitGeneric>;
-    init: FunctionalElementInit<PropertyInitGeneric, EventsInitGeneric>;
+    init: RequiredBy<
+        FunctionalElementInit<PropertyInitGeneric, EventsInitGeneric>,
+        'props' | 'events'
+    >;
 
     /**
      * Static properties have to be copied here cause they get nuked in the "new () =>
