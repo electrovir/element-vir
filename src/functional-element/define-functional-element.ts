@@ -11,7 +11,7 @@ import {
     FunctionalElement,
     FunctionalElementBaseClass,
     FunctionalElementInit,
-    FunctionalElementInstance,
+    FunctionalElementInstanceFromInit,
 } from './functional-element';
 import {createRenderParams, RenderParams} from './render-callback';
 
@@ -29,12 +29,12 @@ export function defineFunctionalElement<
 
         public createRenderParams(): RenderParams<PropertyInitGeneric, EventsInitGeneric> {
             return createRenderParams(
-                this as FunctionalElementInstance<PropertyInitGeneric>,
+                this as FunctionalElementInstanceFromInit<PropertyInitGeneric>,
                 eventsMap,
             );
         }
 
-        public static initInput = functionalElementInit;
+        public static init = functionalElementInit;
 
         public static readonly events: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
@@ -62,7 +62,7 @@ export function defineFunctionalElement<
         public readonly instanceProps: PropertyInitGeneric =
             createPropertyProxy<PropertyInitGeneric>(
                 functionalElementInit.props,
-                this as FunctionalElementInstance<PropertyInitGeneric>,
+                this as FunctionalElementInstanceFromInit<PropertyInitGeneric>,
             );
 
         constructor() {
@@ -72,8 +72,8 @@ export function defineFunctionalElement<
                 functionalElementInit.props || ({} as PropertyInitGeneric);
 
             Object.keys(initProps).forEach((propName: keyof PropertyInitGeneric) => {
-                const functionalElementInstance: FunctionalElementInstance<PropertyInitGeneric> =
-                    this as FunctionalElementInstance<PropertyInitGeneric>;
+                const functionalElementInstance: FunctionalElementInstanceFromInit<PropertyInitGeneric> =
+                    this as FunctionalElementInstanceFromInit<PropertyInitGeneric>;
 
                 property()(functionalElementInstance, propName);
                 (functionalElementInstance as PropertyInitGeneric)[propName] = initProps[propName];

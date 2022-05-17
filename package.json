@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "5.4.2",
+    "version": "5.5.0",
     "keywords": [
         "custom",
         "web",
@@ -38,12 +38,12 @@
         "update-docs": "virmator code-in-markdown README.md --index src/index.ts"
     },
     "dependencies": {
-        "augment-vir": "2.2.0",
+        "augment-vir": "2.2.1",
         "lit": "2.2.3"
     },
     "devDependencies": {
         "jest-environment-jsdom": "28.1.0",
         "virmator": "2.0.7",
-        "vite": "2.9.8"
+        "vite": "2.9.9"
     }
 }

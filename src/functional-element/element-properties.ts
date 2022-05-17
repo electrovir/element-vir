@@ -1,4 +1,4 @@
-import {FunctionalElementInstance} from './functional-element';
+import {FunctionalElementInstanceFromInit} from './functional-element';
 export type PropertyInitMapBase = Record<string, unknown>;
 
 export type ElementProperty<KeyGeneric extends string | number | symbol, ValueGeneric> = {
@@ -38,7 +38,7 @@ function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase
 
 export function createPropertyProxy<PropertyInitGeneric extends PropertyInitMapBase>(
     propsInitMap: PropertyInitGeneric | undefined,
-    element: FunctionalElementInstance<PropertyInitGeneric>,
+    element: FunctionalElementInstanceFromInit<PropertyInitGeneric>,
 ): PropertyInitGeneric {
     if (!propsInitMap) {
         return {} as PropertyInitGeneric;

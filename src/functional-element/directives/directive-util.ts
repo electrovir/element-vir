@@ -1,6 +1,6 @@
 import {ElementPartInfo, PartInfo, PartType} from 'lit/directive.js';
 import {PropertyInitMapBase} from '../element-properties';
-import {FunctionalElementBaseClass, FunctionalElementInstance} from '../functional-element';
+import {FunctionalElementBaseClass, FunctionalElementInstanceFromInit} from '../functional-element';
 
 /** For some reason these aren't defined in lit's types already. */
 export type ExtraPartInfoProperties = {
@@ -15,12 +15,12 @@ export type ExtraPartInfoProperties = {
 export function extractFunctionalElement<PropertyInitGeneric extends PropertyInitMapBase>(
     partInfo: PartInfo,
     directiveName: string,
-): FunctionalElementInstance<PropertyInitGeneric> {
+): FunctionalElementInstanceFromInit<PropertyInitGeneric> {
     return extractElement(
         partInfo,
         directiveName,
         FunctionalElementBaseClass,
-    ) as FunctionalElementInstance<PropertyInitGeneric>;
+    ) as FunctionalElementInstanceFromInit<PropertyInitGeneric>;
 }
 
 export function extractElement<ElementType = HTMLElement>(

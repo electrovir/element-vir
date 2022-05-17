@@ -15,11 +15,11 @@ export type FunctionalElementInit<
      */
     tagName: CustomElementTagName;
     /** Static styles. These should not and cannot change. */
-    styles?: CSSResult | undefined;
-    /** Initializer for element properties. (These can be thought of as "inputs".) */
-    props?: PropertyInitGeneric | undefined;
-    /** Initializer for events that the element can dispatch. (These can be thought of as "outputs".) */
-    events?: EventsInitGeneric | undefined;
+    styles?: CSSResult;
+    /** Element properties. (These can be thought of as "inputs".) */
+    props?: PropertyInitGeneric;
+    /** Events that the element can dispatch. (These can be thought of as "outputs".) */
+    events?: EventsInitGeneric;
     /** Called as part of the first renderCallback call, before the first renderCallback call. */
     initCallback?: InitCallback<PropertyInitGeneric, EventsInitGeneric>;
 
@@ -36,13 +36,17 @@ export abstract class FunctionalElementBaseClass<
     public abstract readonly instanceProps: PropertyInitGeneric;
 }
 
-export type FunctionalElementInstance<PropertyInitGeneric extends PropertyInitMapBase = {}> =
-    FunctionalElementBaseClass<PropertyInitGeneric> & PropertyInitGeneric;
+export type FunctionalElementInstanceFromInit<
+    PropertyInitGeneric extends PropertyInitMapBase = {},
+> = FunctionalElementBaseClass<PropertyInitGeneric> & Required<PropertyInitGeneric>;
+
+export type FunctionalElementInstance<FunctionalElementGeneric extends FunctionalElement> =
+    FunctionalElementInstanceFromInit<FunctionalElementGeneric['init']>;
 
 export type FunctionalElement<
     PropertyInitGeneric extends PropertyInitMapBase = any,
     EventsInitGeneric extends EventsInitMap = any,
-> = (new () => FunctionalElementInstance<PropertyInitGeneric>) &
+> = (new () => FunctionalElementInstanceFromInit<PropertyInitGeneric>) &
     ExtraStaticFunctionalElementProperties<PropertyInitGeneric, EventsInitGeneric>;
 
 export type ExtraStaticFunctionalElementProperties<
@@ -53,7 +57,7 @@ export type ExtraStaticFunctionalElementProperties<
     renderCallback: RenderCallback<PropertyInitGeneric, EventsInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
     props: ElementPropertyDescriptorMap<PropertyInitGeneric>;
-    initInput: FunctionalElementInit<PropertyInitGeneric, EventsInitGeneric>;
+    init: FunctionalElementInit<PropertyInitGeneric, EventsInitGeneric>;
 
     /**
      * Static properties have to be copied here cause they get nuked in the "new () =>

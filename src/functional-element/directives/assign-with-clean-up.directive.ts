@@ -2,7 +2,7 @@ import {noChange} from 'lit';
 import {AsyncDirective} from 'lit/async-directive.js';
 import {directive, PartInfo} from 'lit/directive.js';
 import {PropertyInitMapBase, StaticElementPropertyDescriptor} from '../element-properties';
-import {FunctionalElementInstance} from '../functional-element';
+import {FunctionalElementInstanceFromInit} from '../functional-element';
 import {extractFunctionalElement} from './directive-util';
 
 /**
@@ -21,7 +21,7 @@ export type CleanupCallback<T> = (oldValue: T) => void;
 export type EqualityCheckCallback<T> = (oldValue: T, newValue: T) => boolean;
 
 class AssignWithCleanupDirectiveClass extends AsyncDirective {
-    private readonly element: FunctionalElementInstance<PropertyInitMapBase>;
+    private readonly element: FunctionalElementInstanceFromInit<PropertyInitMapBase>;
     private lastValue: unknown;
     private lastCallback: CleanupCallback<any> | undefined;
 

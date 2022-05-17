@@ -8,11 +8,11 @@ import {
     defineTypedEvent,
     EventObjectEventDetailExtractor,
     FunctionalElement,
-    FunctionalElementInstance,
     html,
     listen,
     TypedEvent,
 } from '..';
+import {FunctionalElementInstanceFromInit} from '../functional-element/functional-element';
 import {AppElement} from './elements/app.element';
 import {ChildElement} from './elements/child.element';
 
@@ -41,7 +41,7 @@ const props: (keyof AppElementProps)[] = getObjectTypedKeys(AppElement.props);
 
 // element constructor should not be able to be assigned to an instance
 // @ts-expect-error
-const instance: FunctionalElementInstance<AppElementProps> = AppElement;
+const instance: FunctionalElementInstanceFromInit<AppElementProps> = AppElement;
 
 const TestElementVoidEvent = defineFunctionalElement({
     tagName: 'test-element-void-event',

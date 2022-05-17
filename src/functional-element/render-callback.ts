@@ -7,7 +7,7 @@ import {
     EventsInitMap,
 } from './element-events';
 import {PropertyInitMapBase} from './element-properties';
-import {FunctionalElementInstance} from './functional-element';
+import {FunctionalElementInstanceFromInit} from './functional-element';
 
 export type RenderCallback<
     PropertyInitGeneric extends PropertyInitMapBase,
@@ -30,7 +30,7 @@ export type RenderParams<
     props: Readonly<PropertyInitGeneric>;
     setProps: SetPropCallback<PropertyInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
-    host: FunctionalElementInstance<PropertyInitGeneric>;
+    host: FunctionalElementInstanceFromInit<PropertyInitGeneric>;
     dispatch: <EventTypeNameGeneric extends keyof EventsInitGeneric>(
         event: TypedEvent<
             EventTypeNameGeneric extends string ? EventTypeNameGeneric : never,
@@ -48,7 +48,7 @@ export function createRenderParams<
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
 >(
-    element: FunctionalElementInstance<PropertyInitGeneric>,
+    element: FunctionalElementInstanceFromInit<PropertyInitGeneric>,
     eventsMap: EventDescriptorMap<EventsInitGeneric>,
 ): RenderParams<PropertyInitGeneric, EventsInitGeneric> {
     const renderParams: RenderParams<PropertyInitGeneric, EventsInitGeneric> = {

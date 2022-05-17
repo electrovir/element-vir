@@ -1,7 +1,7 @@
 import {noChange} from 'lit';
 import {directive, Directive, PartInfo} from 'lit/directive.js';
 import {PropertyInitMapBase, StaticElementPropertyDescriptor} from '../element-properties';
-import {FunctionalElementInstance} from '../functional-element';
+import {FunctionalElementInstanceFromInit} from '../functional-element';
 import {extractFunctionalElement} from './directive-util';
 
 /**
@@ -17,7 +17,7 @@ export function assign<PropName extends string, PropValue>(
 
 const assignDirective = directive(
     class extends Directive {
-        public readonly element: FunctionalElementInstance<PropertyInitMapBase>;
+        public readonly element: FunctionalElementInstanceFromInit<PropertyInitMapBase>;
 
         constructor(partInfo: PartInfo) {
             super(partInfo);
