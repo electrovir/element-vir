@@ -17,15 +17,27 @@ import {AppElement} from './elements/app.element';
 import {ChildElement} from './elements/child.element';
 
 // host classes test
-const WithHostClasses = defineFunctionalElement({
+const WithHostClassesAndCssVars = defineFunctionalElement({
     tagName: 'derp-whatever',
     hostClasses: {
         stuff: false,
     },
+    cssVars: {
+        myCssVar: 'blue',
+    },
     renderCallback: () => html``,
 });
 
-WithHostClasses.hostClasses.stuff;
+WithHostClassesAndCssVars.hostClasses.stuff;
+// @ts-expect-error
+WithHostClassesAndCssVars.hostClasses.derp;
+
+WithHostClassesAndCssVars.cssVarNames.myCssVar;
+WithHostClassesAndCssVars.cssVarValues.myCssVar;
+// @ts-expect-error
+WithHostClassesAndCssVars.cssVarNames.derp;
+// @ts-expect-error
+WithHostClassesAndCssVars.cssVarValues.derp;
 
 // @ts-expect-error
 const TestElementNoTagName = defineFunctionalElement({

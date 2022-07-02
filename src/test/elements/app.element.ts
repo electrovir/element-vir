@@ -45,6 +45,14 @@ export const AppElement = defineFunctionalElement({
         ${ChildElement}.darker {
             background-color: #ddd;
         }
+
+        .normal-colors {
+            ${ChildElement.cssVarNames.derp}: transparent;
+        }
+
+        .weird-colors {
+            ${ChildElement.cssVarNames.derp}: yellow;
+        }
     `,
     props: {
         funnyNumber: Math.random(),
@@ -81,6 +89,7 @@ export const AppElement = defineFunctionalElement({
                 
                 <hr>
                 <${ChildElement}
+                    class="normal-colors"
                     ${assign(ChildElement.props.inputNumber, props.funnyNumber)}
                     ${assign(ChildElement.props.width, props.width)}
                     ${listen(ChildElement.events.speak, (event) => {
@@ -110,7 +119,7 @@ export const AppElement = defineFunctionalElement({
                               <!-- prettier-ignore -->
                               <!-- intentionally not interpolated to make sure we're logging errors for it -->
                               <element-vir-test-child-element
-                                  class="darker"
+                                  class="darker weird-colors"
                                   ${assignWithCleanup(
                                       ChildElement.props.inputNumber,
                                       props.funnyNumber,

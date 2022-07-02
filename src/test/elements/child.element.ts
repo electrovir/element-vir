@@ -1,25 +1,43 @@
-import {randomString} from 'augment-vir';
+import {mapObject, randomString} from 'augment-vir';
 import {css} from 'lit';
 import {defineElementEvent, defineFunctionalElement, html, listen, onDomCreated} from '../..';
 import {MyCustomEvent} from '../customEvent';
 
 export const ChildElement = defineFunctionalElement({
     tagName: 'element-vir-test-child-element',
-    styles: ({hostClass}) => css`
-        :host {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
+    styles: ({hostClass, cssVarValue, cssVarName}) => {
+        console.log({
+            hostClass,
+            cssVarValue: mapObject(cssVarValue, (key, value) => {
+                return String(value);
+            }),
+            cssVarName: mapObject(cssVarName, (key, value) => {
+                return String(value);
+            }),
+        });
+        return css`
+            :host {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
 
-        ${hostClass.testHostClass} {
-            color: blue;
-        }
+            span {
+                background-color: ${cssVarValue.derp};
+            }
 
-        ${hostClass.automaticallyApplied} {
-            font-weight: bold;
-        }
-    `,
+            ${hostClass.testHostClass} {
+                color: blue;
+            }
+
+            ${hostClass.automaticallyApplied} {
+                font-weight: bold;
+            }
+        `;
+    },
+    cssVars: {
+        derp: 'white',
+    },
     hostClasses: {
         testHostClass: false,
         automaticallyApplied: ({props}) => props.inputNumber === 15,

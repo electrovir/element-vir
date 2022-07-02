@@ -1,5 +1,6 @@
-import {camelCaseToKebabCase, mapObject} from 'augment-vir';
+import {mapObject} from 'augment-vir';
 import {PropertyInitMapBase} from './element-properties';
+import {toHtmlSafeWithTagName, WithTagName} from './tag-name';
 
 export type HostClassToggleCallbackInput<PropertyInitGeneric extends PropertyInitMapBase> = {
     props: Readonly<PropertyInitGeneric>;
@@ -26,9 +27,13 @@ export type HostClassName<
     HostClassPropName extends string,
 > = `${TagName}-${HostClassPropName}`;
 
-export type HostClassNames<HostClassKeys extends string> = Record<HostClassKeys, string>;
+export type HostClassNamesMap<TagName extends string, HostClassKeys extends string> = Record<
+    HostClassKeys,
+    WithTagName<TagName, string>
+>;
 
-export function createHostClassNames<
+export function createHostClassNamesMap<
+    TagName extends string,
     HostClassKeys extends string,
     HostClassesInitGeneric extends HostClassesInitMap<
         HostClassKeys,
@@ -37,12 +42,15 @@ export function createHostClassNames<
          * host class names are
          */ any
     >,
->(tagName: string, hostClassesInit?: HostClassesInitGeneric): HostClassNames<HostClassKeys> {
+>(
+    tagName: TagName,
+    hostClassesInit?: HostClassesInitGeneric,
+): HostClassNamesMap<TagName, HostClassKeys> {
     if (hostClassesInit) {
         return mapObject(hostClassesInit, (key) => {
-            return `${tagName}-${camelCaseToKebabCase(String(key))}`;
-        }) as HostClassNames<HostClassKeys>;
+            return toHtmlSafeWithTagName(tagName, String(key));
+        }) as HostClassNamesMap<TagName, HostClassKeys>;
     } else {
-        return {} as HostClassNames<HostClassKeys>;
+        return {} as HostClassNamesMap<TagName, HostClassKeys>;
     }
 }

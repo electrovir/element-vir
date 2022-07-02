@@ -1,5 +1,6 @@
 import {css, TemplateResult} from 'lit';
 import {property} from 'lit/decorators.js';
+import {createCssVarNamesMap, createCssVarValuesMap} from './css-vars';
 import {createEventDescriptorMap, EventsInitMap} from './element-events';
 import {
     createPropertyDescriptorMap,
@@ -13,36 +14,51 @@ import {
     FunctionalElementInit,
     FunctionalElementInstanceFromInit,
 } from './functional-element';
-import {createHostClassNames} from './host-classes';
+import {createHostClassNamesMap} from './host-classes';
 import {createRenderParams, RenderParams} from './render-callback';
 import {applyHostClasses, hostClassNamesToStylesInput} from './styles';
 
-const defaultInit: Required<Pick<FunctionalElementInit<any, any, any>, 'props' | 'events'>> = {
+const defaultInit: Required<Pick<FunctionalElementInit<any, any, any, any>, 'props' | 'events'>> = {
     events: {},
     props: {},
 };
 
 export function defineFunctionalElement<
-    HostClassKeys extends string,
+    HostClassKeys extends string = '',
+    CssVarKeys extends string = '',
     EventsInitGeneric extends EventsInitMap = {},
     PropertyInitGeneric extends PropertyInitMapBase = {},
 >(
     functionalElementInit: FunctionalElementInit<
         PropertyInitGeneric,
         EventsInitGeneric,
-        HostClassKeys
+        HostClassKeys,
+        CssVarKeys
     >,
-): FunctionalElement<PropertyInitGeneric, EventsInitGeneric, HostClassKeys> {
+): FunctionalElement<PropertyInitGeneric, EventsInitGeneric, HostClassKeys, CssVarKeys> {
     const eventsMap = createEventDescriptorMap(functionalElementInit.events);
-    const hostClassNames = createHostClassNames(
+    const hostClassNames = createHostClassNamesMap(
         functionalElementInit.tagName,
         functionalElementInit.hostClasses,
     );
+    const cssVarNames = createCssVarNamesMap(
+        functionalElementInit.tagName,
+        functionalElementInit.cssVars,
+    );
+    const cssVarValues = createCssVarValuesMap(functionalElementInit.cssVars, cssVarNames);
     console.log({hostClassNames});
-    console.log(hostClassNamesToStylesInput(hostClassNames));
+    console.log(
+        hostClassNamesToStylesInput({
+            hostClassNames,
+            cssVarNames,
+            cssVarValues,
+        }),
+    );
     const calculatedStyles =
         typeof functionalElementInit.styles === 'function'
-            ? functionalElementInit.styles(hostClassNamesToStylesInput(hostClassNames))
+            ? functionalElementInit.styles(
+                  hostClassNamesToStylesInput({hostClassNames, cssVarNames, cssVarValues}),
+              )
             : functionalElementInit.styles || css``;
     if (typeof functionalElementInit.styles === 'function') {
         console.log({calculatedStyles: String(calculatedStyles)});
@@ -62,29 +78,46 @@ export function defineFunctionalElement<
         public static init: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
             EventsInitGeneric,
-            HostClassKeys
+            HostClassKeys,
+            CssVarKeys
         >['init'] = {...defaultInit, ...functionalElementInit};
 
         public static readonly events: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
             EventsInitGeneric,
-            HostClassKeys
+            HostClassKeys,
+            CssVarKeys
         >['events'] = eventsMap;
         public static readonly renderCallback: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
             EventsInitGeneric,
-            HostClassKeys
+            HostClassKeys,
+            CssVarKeys
         >['renderCallback'] = functionalElementInit.renderCallback;
         public static readonly props: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
             EventsInitGeneric,
-            HostClassKeys
+            HostClassKeys,
+            CssVarKeys
         >['props'] = createPropertyDescriptorMap(functionalElementInit.props);
         public static readonly hostClasses: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
             EventsInitGeneric,
-            HostClassKeys
+            HostClassKeys,
+            CssVarKeys
         >['hostClasses'] = hostClassNames;
+        public static readonly cssVarNames: ExtraStaticFunctionalElementProperties<
+            PropertyInitGeneric,
+            EventsInitGeneric,
+            HostClassKeys,
+            CssVarKeys
+        >['cssVarNames'] = cssVarNames;
+        public static readonly cssVarValues: ExtraStaticFunctionalElementProperties<
+            PropertyInitGeneric,
+            EventsInitGeneric,
+            HostClassKeys,
+            CssVarKeys
+        >['cssVarValues'] = cssVarNames;
 
         public initCalled = false;
         public render(): TemplateResult {
