@@ -2,13 +2,16 @@ import {RequiredBy} from 'augment-vir';
 import {CSSResult, LitElement, TemplateResult} from 'lit';
 import {EventDescriptorMap, EventsInitMap} from './element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './element-properties';
+import {HostClassesInitMap, HostClassNames} from './host-classes';
 import {InitCallback, RenderCallback} from './render-callback';
+import {StylesCallback} from './styles';
 
 export type CustomElementTagName = `${string}-${string}`;
 
 export type FunctionalElementInit<
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
+    HostClassKeys extends string,
 > = {
     /**
      * HTML tag name. This should not be used directly, as interpolating it with the html tagged
@@ -16,11 +19,17 @@ export type FunctionalElementInit<
      */
     tagName: CustomElementTagName;
     /** Static styles. These should not and cannot change. */
-    styles?: CSSResult;
+    styles?: CSSResult | StylesCallback<HostClassKeys>;
     /** Element properties. (These can be thought of as "inputs".) */
     props?: PropertyInitGeneric;
     /** Events that the element can dispatch. (These can be thought of as "outputs".) */
     events?: EventsInitGeneric;
+    /**
+     * CSS host classes. Values can be callbacks to determine when a host class should be defined,
+     * based on current instance props, or just undefined to indicate that the host class will only
+     * be manually set.
+     */
+    hostClasses?: HostClassesInitMap<HostClassKeys, PropertyInitGeneric>;
     /** Called as part of the first renderCallback call, before the first renderCallback call. */
     initCallback?: InitCallback<PropertyInitGeneric, EventsInitGeneric>;
 
@@ -47,21 +56,24 @@ export type FunctionalElementInstance<FunctionalElementGeneric extends Functiona
 export type FunctionalElement<
     PropertyInitGeneric extends PropertyInitMapBase = any,
     EventsInitGeneric extends EventsInitMap = any,
+    HostClassKeys extends string = string,
 > = (new () => FunctionalElementInstanceFromInit<PropertyInitGeneric>) &
-    ExtraStaticFunctionalElementProperties<PropertyInitGeneric, EventsInitGeneric>;
+    ExtraStaticFunctionalElementProperties<PropertyInitGeneric, EventsInitGeneric, HostClassKeys>;
 
 export type ExtraStaticFunctionalElementProperties<
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
+    HostClassKeys extends string,
 > = Readonly<{
     /** Pass through the render callback for direct unit testability */
     renderCallback: RenderCallback<PropertyInitGeneric, EventsInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
     props: ElementPropertyDescriptorMap<PropertyInitGeneric>;
     init: RequiredBy<
-        FunctionalElementInit<PropertyInitGeneric, EventsInitGeneric>,
+        FunctionalElementInit<PropertyInitGeneric, EventsInitGeneric, HostClassKeys>,
         'props' | 'events'
     >;
+    hostClasses: HostClassNames<HostClassKeys>;
 
     /**
      * Static properties have to be copied here cause they get nuked in the "new () =>

@@ -57,7 +57,7 @@ export const AppElement = defineFunctionalElement({
         // log here to make sure it's not rendering too often
         console.info('app rendering');
         return html`
-            <div ${onResize((entry) => {
+            <main ${onResize((entry) => {
                 setProps({width: entry.contentRect.width});
             })}>
                 Welcome to the test app.
@@ -129,7 +129,12 @@ export const AppElement = defineFunctionalElement({
                 <span>Speak events received: ${props.eventsReceived}</span>
                 <span>Last speak message received: ${props.lastReceivedMessage}</span>
                 <span>app width: ${props.width}</span>
-            </div>
+                
+                <${ChildElement}
+                    class=${ChildElement.hostClasses.testHostClass}
+                    ${assign(ChildElement.props.inputNumber, 15)}
+                ></${ChildElement}>
+            </main>
         `;
     },
 });

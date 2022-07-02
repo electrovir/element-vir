@@ -1,16 +1,29 @@
 import {randomString} from 'augment-vir';
-import {css, defineElementEvent, defineFunctionalElement, html, listen, onDomCreated} from '../..';
+import {css} from 'lit';
+import {defineElementEvent, defineFunctionalElement, html, listen, onDomCreated} from '../..';
 import {MyCustomEvent} from '../customEvent';
 
 export const ChildElement = defineFunctionalElement({
     tagName: 'element-vir-test-child-element',
-    styles: css`
+    styles: ({hostClass}) => css`
         :host {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
         }
+
+        ${hostClass.testHostClass} {
+            color: blue;
+        }
+
+        ${hostClass.automaticallyApplied} {
+            font-weight: bold;
+        }
     `,
+    hostClasses: {
+        testHostClass: false,
+        automaticallyApplied: ({props}) => props.inputNumber === 15,
+    },
     props: {
         width: -1,
         inputNumber: undefined as number | undefined,

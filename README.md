@@ -11,7 +11,7 @@ _**It's just TypeScript.**_
 
 Uses the power of _native_ JavaScript custom web elements, _native_ JavaScript template literals, _native_ JavaScript functions<sup>\*</sup>, _native_ HTML, and [lit-element](http://lit.dev).
 
-In reality this is basically a [lit-element](http://lit.dev) wrapper that adds type-safe element tag usage and I/O with functional-programming style component definition.
+In reality this is basically a [lit-element](http://lit.dev) wrapper that adds type-safe element tag usage and I/O with functional-programming style component definition. (As functional as possible, element property mutations are still possible cause without that, how would you do anything?)
 
 [Works in every major web browser except Internet Explorer.](https://caniuse.com/mdn-api_window_customelements)
 
@@ -150,7 +150,7 @@ export const MySimpleWithPropsElement = defineFunctionalElement({
 });
 ```
 
-## Updating properties
+### Updating properties
 
 Grab `setProps` from `renderCallback`'s parameters to update the values in `props`. This causes a re-render. (Note that this example also uses the `listen` directive to respond to click events.)
 
@@ -177,7 +177,7 @@ export const MySimpleWithPropsElement = defineFunctionalElement({
 });
 ```
 
-## Assigning to properties (inputs)
+### Assigning to properties (inputs)
 
 Use the `assign` directive to assign properties to child custom elements:
 
@@ -228,7 +228,7 @@ export const MySimpleWithEventsElement = defineFunctionalElement({
 });
 ```
 
-## Listening to typed events (outputs)
+### Listening to typed events (outputs)
 
 Use the `listen` directive to listen to typed events emitted by your custom functional elements:
 
@@ -299,6 +299,57 @@ export const MyElementWithCustomEvents = defineFunctionalElement({
                 })}
             ></div>
         </div>
+    `,
+});
+```
+
+## Host classes
+
+Host classes can be defined and used with type safety. Host classes are used to provide alternative styles for components. They are purely driven by CSS and are thus applied via the `class` HTML attribute.
+
+Host classes that are defined with a callback will automatically get applied if that callback returns true after a render is executed. These are executed _after_ `renderCallback` is executed. When a definition is set to `false`, it's left to the element's consumer to apply the host class.
+
+Apply host classes in the element's stylesheet by using a callback for the styles property.
+
+<!-- example-link: src/readme-examples/host-class-definition.ts -->
+
+```TypeScript
+import {css, defineFunctionalElement, html} from 'element-vir';
+
+export const MyAppWithHostClasses = defineFunctionalElement({
+    tagName: 'my-app-with-host-classes',
+    props: {
+        myProp: 'hello there',
+    },
+    hostClasses: {
+        /**
+         * Setting the value to false means this host class will not ever automatically be applied.
+         * It will simply be a static member on the element for manual application in consumers when desired.
+         */
+        styleVariationA: false,
+        /**
+         * This host class will be automatically applied if the given callback evaluated to true
+         * after a call to renderCallback.
+         */
+        automaticallyAppliedVariation: ({props}) => {
+            return props.myProp === 'foo';
+        },
+    },
+    /**
+     * Apply styles to the host classes by using a callback for "styles". The callback's argument
+     * contains the host classes defined above in the "hostClasses" property.
+     */
+    styles: ({hostClass}) => css`
+        ${hostClass.automaticallyAppliedVariation} {
+            color: blue;
+        }
+
+        ${hostClass.styleVariationA} {
+            color: red;
+        }
+    `,
+    renderCallback: ({props}) => html`
+        ${props.myProp}
     `,
 });
 ```

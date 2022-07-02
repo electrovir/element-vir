@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "5.5.1",
+    "version": "5.6.0",
     "keywords": [
         "custom",
         "web",
@@ -39,11 +39,11 @@
     },
     "dependencies": {
         "augment-vir": "2.2.1",
-        "lit": "2.2.3"
+        "lit": "2.2.7"
     },
     "devDependencies": {
-        "jest-environment-jsdom": "28.1.0",
+        "jest-environment-jsdom": "28.1.2",
         "virmator": "2.0.7",
-        "vite": "2.9.9"
+        "vite": "2.9.13"
     }
 }

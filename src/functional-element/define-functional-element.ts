@@ -13,24 +13,44 @@ import {
     FunctionalElementInit,
     FunctionalElementInstanceFromInit,
 } from './functional-element';
+import {createHostClassNames} from './host-classes';
 import {createRenderParams, RenderParams} from './render-callback';
+import {applyHostClasses, hostClassNamesToStylesInput} from './styles';
 
-const defaultInit: Required<Pick<FunctionalElementInit<any, any>, 'props' | 'events'>> = {
+const defaultInit: Required<Pick<FunctionalElementInit<any, any, any>, 'props' | 'events'>> = {
     events: {},
     props: {},
 };
 
 export function defineFunctionalElement<
+    HostClassKeys extends string,
     EventsInitGeneric extends EventsInitMap = {},
     PropertyInitGeneric extends PropertyInitMapBase = {},
 >(
-    functionalElementInit: FunctionalElementInit<PropertyInitGeneric, EventsInitGeneric>,
-): FunctionalElement<PropertyInitGeneric, EventsInitGeneric> {
+    functionalElementInit: FunctionalElementInit<
+        PropertyInitGeneric,
+        EventsInitGeneric,
+        HostClassKeys
+    >,
+): FunctionalElement<PropertyInitGeneric, EventsInitGeneric, HostClassKeys> {
     const eventsMap = createEventDescriptorMap(functionalElementInit.events);
+    const hostClassNames = createHostClassNames(
+        functionalElementInit.tagName,
+        functionalElementInit.hostClasses,
+    );
+    console.log({hostClassNames});
+    console.log(hostClassNamesToStylesInput(hostClassNames));
+    const calculatedStyles =
+        typeof functionalElementInit.styles === 'function'
+            ? functionalElementInit.styles(hostClassNamesToStylesInput(hostClassNames))
+            : functionalElementInit.styles || css``;
+    if (typeof functionalElementInit.styles === 'function') {
+        console.log({calculatedStyles: String(calculatedStyles)});
+    }
 
     const anonymousClass = class extends FunctionalElementBaseClass<PropertyInitGeneric> {
         public static override readonly tagName = functionalElementInit.tagName;
-        public static override readonly styles = functionalElementInit.styles || css``;
+        public static override readonly styles = calculatedStyles;
 
         public createRenderParams(): RenderParams<PropertyInitGeneric, EventsInitGeneric> {
             return createRenderParams(
@@ -41,21 +61,30 @@ export function defineFunctionalElement<
 
         public static init: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
-            EventsInitGeneric
+            EventsInitGeneric,
+            HostClassKeys
         >['init'] = {...defaultInit, ...functionalElementInit};
 
         public static readonly events: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
-            EventsInitGeneric
+            EventsInitGeneric,
+            HostClassKeys
         >['events'] = eventsMap;
         public static readonly renderCallback: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
-            EventsInitGeneric
+            EventsInitGeneric,
+            HostClassKeys
         >['renderCallback'] = functionalElementInit.renderCallback;
         public static readonly props: ExtraStaticFunctionalElementProperties<
             PropertyInitGeneric,
-            EventsInitGeneric
+            EventsInitGeneric,
+            HostClassKeys
         >['props'] = createPropertyDescriptorMap(functionalElementInit.props);
+        public static readonly hostClasses: ExtraStaticFunctionalElementProperties<
+            PropertyInitGeneric,
+            EventsInitGeneric,
+            HostClassKeys
+        >['hostClasses'] = hostClassNames;
 
         public initCalled = false;
         public render(): TemplateResult {
@@ -64,7 +93,14 @@ export function defineFunctionalElement<
                 this.initCalled = true;
                 functionalElementInit.initCallback(renderParams);
             }
-            return functionalElementInit.renderCallback(renderParams);
+            const renderResult = functionalElementInit.renderCallback(renderParams);
+            applyHostClasses(
+                renderParams.host,
+                functionalElementInit.hostClasses,
+                hostClassNames,
+                renderParams.props,
+            );
+            return renderResult;
         }
 
         public readonly instanceProps: PropertyInitGeneric =

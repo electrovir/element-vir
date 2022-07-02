@@ -16,6 +16,17 @@ import {FunctionalElementInstanceFromInit} from '../functional-element/functiona
 import {AppElement} from './elements/app.element';
 import {ChildElement} from './elements/child.element';
 
+// host classes test
+const WithHostClasses = defineFunctionalElement({
+    tagName: 'derp-whatever',
+    hostClasses: {
+        stuff: false,
+    },
+    renderCallback: () => html``,
+});
+
+WithHostClasses.hostClasses.stuff;
+
 // @ts-expect-error
 const TestElementNoTagName = defineFunctionalElement({
     renderCallback: (): TemplateResult => {
