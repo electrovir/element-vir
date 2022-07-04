@@ -22,11 +22,10 @@
         "name": "electrovir",
         "url": "https://github.com/electrovir"
     },
-    "main": "dist/cjs/index.js",
-    "module": "dist/esm/index.js",
-    "types": "dist/types/index.d.ts",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
-        "compile": "rm -rf dist && tsc --project tsconfig.json && tsc --project tsconfig.cjs.json && tsc --project tsconfig.esm.json",
+        "compile": "rm -rf dist && tsc --project tsconfig.json",
         "format": "virmator format write",
         "jest": "jest --config ./src/jest/jest.config.ts",
         "prepublishOnly": "npm run compile && npm run test:full",
