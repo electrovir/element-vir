@@ -354,6 +354,36 @@ export const MyAppWithHostClasses = defineFunctionalElement({
 });
 ```
 
+## CSS Vars
+
+Typed CSS vars are created in a similar way as host classes:
+
+<!-- example-link: src/readme-examples/css-vars-definition.ts -->
+
+```TypeScript
+import {css, defineFunctionalElement, html} from 'element-vir';
+
+export const MyAppWithCssVars = defineFunctionalElement({
+    tagName: 'my-app-with-css-vars',
+    cssVars: {
+        /**
+         * The value assigned here ('blue') becomes the fallback value for this CSS var when used
+         * via "cssVarValue".
+         */
+        myCssVar: 'blue',
+    },
+    styles: ({cssVarName, cssVarValue}) => css`
+        :host {
+            /* Set CSS vars (or reference the name directly) via "cssVarName" */
+            ${cssVarName.myCssVar}: yellow;
+            /* Use CSS vars with "cssVarValue". This includes a "var" wrapper and the assigned fallback value (which in this case is 'blue'). */
+            color: ${cssVarValue.myCssVar};
+        }
+    `,
+    renderCallback: () => html``,
+});
+```
+
 ## Directives
 
 The following custom [`lit` directives](https://lit.dev/docs/templates/custom-directives/) are contained within this package.
