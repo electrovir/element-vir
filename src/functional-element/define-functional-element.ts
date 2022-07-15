@@ -46,23 +46,13 @@ export function defineFunctionalElement<
         functionalElementInit.cssVars,
     );
     const cssVarValues = createCssVarValuesMap(functionalElementInit.cssVars, cssVarNames);
-    console.log({hostClassNames});
-    console.log(
-        hostClassNamesToStylesInput({
-            hostClassNames,
-            cssVarNames,
-            cssVarValues,
-        }),
-    );
+
     const calculatedStyles =
         typeof functionalElementInit.styles === 'function'
             ? functionalElementInit.styles(
                   hostClassNamesToStylesInput({hostClassNames, cssVarNames, cssVarValues}),
               )
             : functionalElementInit.styles || css``;
-    if (typeof functionalElementInit.styles === 'function') {
-        console.log({calculatedStyles: String(calculatedStyles)});
-    }
 
     const anonymousClass = class extends FunctionalElementBaseClass<PropertyInitGeneric> {
         public static override readonly tagName = functionalElementInit.tagName;
