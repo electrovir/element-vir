@@ -14,7 +14,7 @@ import {
 } from '..';
 import {FunctionalElementInstanceFromInit} from '../functional-element/functional-element';
 import {AppElement} from './elements/app.element';
-import {ChildElement} from './elements/child.element';
+import {TestChildElement} from './elements/child.element';
 
 // host classes test
 const WithHostClassesAndCssVars = defineFunctionalElement({
@@ -49,7 +49,7 @@ const TestElementNoTagName = defineFunctionalElement({
 /** Verify that there's a base type that all functional elements can be assigned to. */
 const elements: FunctionalElement[] = [
     AppElement,
-    ChildElement,
+    TestChildElement,
 ];
 
 type AppElementProps = {

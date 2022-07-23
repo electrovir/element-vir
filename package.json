@@ -9,13 +9,13 @@
         "functional",
         "lit"
     ],
-    "homepage": "https://github.com/electrovir/element-vir#readme",
+    "homepage": "https://github.com/electrovir/element-vir",
     "bugs": {
         "url": "https://github.com/electrovir/element-vir/issues"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/electrovir/element-vir.git"
+        "url": "https://github.com/electrovir/element-vir"
     },
     "license": "MIT",
     "author": {
@@ -26,23 +26,24 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "compile": "rm -rf dist && tsc --project tsconfig.json",
-        "format": "virmator format write",
-        "jest": "jest --config ./src/jest/jest.config.ts",
+        "format": "virmator format",
         "prepublishOnly": "npm run compile && npm run test:full",
         "spellcheck": "virmator spellcheck",
         "start": "npm install && vite --force --config ./src/vite/vite.config.ts",
-        "test": "npm run type-check && virmator test --no-write-config",
+        "test": "npm run test:types && virmator test-web",
         "test:full": "npm test && npm run spellcheck && virmator format check && npm run update-docs -- --check",
-        "type-check": "tsc --noEmit",
+        "test:types": "tsc --noEmit",
+        "test:web": "web-test-runner --config .virmator/src/web-test-runner.config.mjs",
         "update-docs": "virmator code-in-markdown README.md --index src/index.ts"
     },
     "dependencies": {
-        "augment-vir": "2.2.1",
-        "lit": "2.2.7"
+        "augment-vir": "2.3.0",
+        "lit": "2.2.8"
     },
     "devDependencies": {
-        "jest-environment-jsdom": "28.1.2",
-        "virmator": "2.0.7",
-        "vite": "2.9.13"
+        "@open-wc/testing": "3.1.6",
+        "@web/dev-server-esbuild": "0.3.1",
+        "@web/test-runner": "0.13.31",
+        "virmator": "3.0.5"
     }
 }

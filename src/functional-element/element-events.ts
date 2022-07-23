@@ -48,7 +48,9 @@ export function createEventDescriptorMap<EventsInitGeneric extends EventsInitMap
             ): currentElementEventKey is NonEmptyString<keyof EventsInitGeneric> => {
                 if (typeof currentElementEventKey !== 'string') {
                     throw new Error(
-                        `Expected event key of type string but got type "${typeof currentElementEventKey}" for key ${currentElementEventKey}`,
+                        `Expected event key of type string but got type "${typeof currentElementEventKey}" for key ${String(
+                            currentElementEventKey,
+                        )}`,
                     );
                 }
                 if (currentElementEventKey === '') {

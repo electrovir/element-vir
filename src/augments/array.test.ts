@@ -1,3 +1,4 @@
+import {assert} from '@open-wc/testing';
 import {filterOutArrayIndexes} from './array';
 
 describe(filterOutArrayIndexes.name, () => {
@@ -9,10 +10,10 @@ describe(filterOutArrayIndexes.name, () => {
         'e',
         'f',
         'g',
-    ];
+    ] as const;
 
     it('removes array indexes', () => {
-        expect(
+        assert.deepEqual(
             filterOutArrayIndexes(
                 experimentArray,
                 [
@@ -22,11 +23,12 @@ describe(filterOutArrayIndexes.name, () => {
                     6,
                 ],
             ),
-        ).toEqual([
-            'a',
-            'c',
-            'd',
-        ]);
+            [
+                'a',
+                'c',
+                'd',
+            ],
+        );
     });
 
     it('does not modify the original array', () => {
@@ -39,7 +41,7 @@ describe(filterOutArrayIndexes.name, () => {
                 6,
             ],
         );
-        expect(experimentArray).toEqual([
+        assert.deepEqual(experimentArray, [
             'a',
             'b',
             'c',
@@ -51,6 +53,9 @@ describe(filterOutArrayIndexes.name, () => {
     });
 
     it("doesn't do anything if no indexes are given to remove", () => {
-        expect(filterOutArrayIndexes(experimentArray, [])).toEqual(experimentArray);
+        assert.deepEqual(
+            filterOutArrayIndexes(experimentArray, []) as Readonly<string[]>,
+            experimentArray,
+        );
     });
 });

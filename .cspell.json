@@ -1,10 +1,4 @@
 {
-    "import": ".cspell-base.json",
-    "words": [
-        "locationchange",
-        "pushstate",
-        "replacestate",
-        "vite",
-        "globbing"
-    ]
+    "import": ".virmator/.cspell-base.json",
+    "words": []
 }

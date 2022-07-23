@@ -3,7 +3,7 @@ import {css} from 'lit';
 import {defineElementEvent, defineFunctionalElement, html, listen, onDomCreated} from '../..';
 import {MyCustomEvent} from '../customEvent';
 
-export const ChildElement = defineFunctionalElement({
+export const TestChildElement = defineFunctionalElement({
     tagName: 'element-vir-test-child-element',
     styles: ({hostClass, cssVarValue, cssVarName}) => {
         console.log({

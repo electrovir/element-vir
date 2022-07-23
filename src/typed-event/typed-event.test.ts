@@ -1,3 +1,4 @@
+import {assert} from '@open-wc/testing';
 import {defineTypedEvent} from './typed-event';
 
 describe(defineTypedEvent.name, () => {
@@ -12,9 +13,9 @@ describe(defineTypedEvent.name, () => {
 
         const newValidEvent = new myCustomTypedEvent(5);
 
-        expect(newValidEvent.detail).toBe(5);
+        assert.strictEqual(newValidEvent.detail, 5);
 
-        expect(myCustomTypedEvent.type).toBe(eventTypeName);
-        expect(newValidEvent.type).toBe(eventTypeName);
+        assert.strictEqual(myCustomTypedEvent.type, eventTypeName);
+        assert.strictEqual(newValidEvent.type, eventTypeName);
     });
 });

@@ -1,4 +1,6 @@
 .DS_Store
-node_modules
-dist
 /Icon?
+coverage/
+dist/
+graphics/
+node_modules/

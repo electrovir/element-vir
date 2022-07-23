@@ -9,7 +9,7 @@ import {
     requireAllCustomElementsToBeFunctionalElement,
 } from '../..';
 import {MyCustomEvent} from '../customEvent';
-import {ChildElement} from './child.element';
+import {TestChildElement} from './child.element';
 
 requireAllCustomElementsToBeFunctionalElement();
 
@@ -37,21 +37,21 @@ export const AppElement = defineFunctionalElement({
             flex-shrink: 0;
         }
 
-        ${ChildElement} {
+        ${TestChildElement} {
             background-color: #eee;
             padding: 8px;
         }
 
-        ${ChildElement}.darker {
+        ${TestChildElement}.darker {
             background-color: #ddd;
         }
 
         .normal-colors {
-            ${ChildElement.cssVarNames.derp}: transparent;
+            ${TestChildElement.cssVarNames.derp}: transparent;
         }
 
         .weird-colors {
-            ${ChildElement.cssVarNames.derp}: yellow;
+            ${TestChildElement.cssVarNames.derp}: yellow;
         }
     `,
     props: {
@@ -88,11 +88,10 @@ export const AppElement = defineFunctionalElement({
                 </button>
                 
                 <hr>
-                <${ChildElement}
-                    class="normal-colors"
-                    ${assign(ChildElement.props.inputNumber, props.funnyNumber)}
-                    ${assign(ChildElement.props.width, props.width)}
-                    ${listen(ChildElement.events.speak, (event) => {
+                <${TestChildElement}
+                    ${assign(TestChildElement.props.inputNumber, props.funnyNumber)}
+                    ${assign(TestChildElement.props.width, props.width)}
+                    ${listen(TestChildElement.events.speak, (event) => {
                         setProps({
                             eventsReceived: props.eventsReceived + 1,
                             lastReceivedMessage: event.detail,
@@ -109,7 +108,7 @@ export const AppElement = defineFunctionalElement({
                             event,
                         );
                     })}
-                ></${ChildElement}>
+                ></${TestChildElement}>
                 <hr>
                 ${
                     props.showChild
@@ -121,7 +120,7 @@ export const AppElement = defineFunctionalElement({
                               <element-vir-test-child-element
                                   class="darker weird-colors"
                                   ${assignWithCleanup(
-                                      ChildElement.props.inputNumber,
+                                      TestChildElement.props.inputNumber,
                                       props.funnyNumber,
                                       (lastValue) => {
                                           console.info(
@@ -139,10 +138,10 @@ export const AppElement = defineFunctionalElement({
                 <span>Last speak message received: ${props.lastReceivedMessage}</span>
                 <span>app width: ${props.width}</span>
                 
-                <${ChildElement}
-                    class=${ChildElement.hostClasses.testHostClass}
-                    ${assign(ChildElement.props.inputNumber, 15)}
-                ></${ChildElement}>
+                <${TestChildElement}
+                    class=${TestChildElement.hostClasses.testHostClass}
+                    ${assign(TestChildElement.props.inputNumber, 15)}
+                ></${TestChildElement}>
             </main>
         `;
     },
