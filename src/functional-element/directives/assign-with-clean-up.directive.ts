@@ -3,18 +3,29 @@ import {AsyncDirective} from 'lit/async-directive.js';
 import {directive, PartInfo} from 'lit/directive.js';
 import {PropertyInitMapBase, StaticElementPropertyDescriptor} from '../element-properties';
 import {FunctionalElementInstanceFromInit} from '../functional-element';
-import {extractFunctionalElement} from './directive-util';
+import {extractFunctionalElement} from './directive-helpers';
 
 /**
- * The directive generics (in listenDirective) are not strong enough to maintain their values. Thus,
- * the directive call is wrapped in this function.
+ * Assign values to elements but include a cleanup callback which gets called when a new value gets
+ * assigned so the previous value can get cleaned up. Useful 3D graphics applications.
  */
 export function assignWithCleanup<PropName extends string, PropValue>(
     propertyDescriptor: StaticElementPropertyDescriptor<PropName, PropValue>,
     value: typeof propertyDescriptor['initValue'],
     cleanupCallback: CleanupCallback<typeof propertyDescriptor['initValue']>,
+    equalityCheckCallback: EqualityCheckCallback<typeof propertyDescriptor['initValue']> = (a, b) =>
+        a === b,
 ) {
-    return assignWithCleanupDirective(propertyDescriptor.propName, value, cleanupCallback);
+    /**
+     * The directive generics (in listenDirective) are not strong enough to maintain their values.
+     * Thus, the directive call is wrapped in this function.
+     */
+    return assignWithCleanupDirective(
+        propertyDescriptor.propName,
+        value,
+        cleanupCallback,
+        equalityCheckCallback,
+    );
 }
 
 export type CleanupCallback<T> = (oldValue: T) => void;
@@ -24,6 +35,7 @@ class AssignWithCleanupDirectiveClass extends AsyncDirective {
     private readonly element: FunctionalElementInstanceFromInit<PropertyInitMapBase>;
     private lastValue: unknown;
     private lastCallback: CleanupCallback<any> | undefined;
+    private hasBeenAssigned = false;
 
     constructor(partInfo: PartInfo) {
         super(partInfo);
@@ -48,10 +60,11 @@ class AssignWithCleanupDirectiveClass extends AsyncDirective {
             );
         }
         // reference equality check!
-        if (!equalityCheck(this.lastValue, value)) {
+        if (!equalityCheck(this.lastValue, value) && this.hasBeenAssigned) {
             cleanupCallback(this.lastValue);
         }
         this.element.instanceProps[propName] = value;
+        this.hasBeenAssigned = true;
         this.lastValue = value;
         this.lastCallback = cleanupCallback;
         return noChange;

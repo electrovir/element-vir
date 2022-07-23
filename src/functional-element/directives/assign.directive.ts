@@ -2,7 +2,7 @@ import {noChange} from 'lit';
 import {directive, Directive, PartInfo} from 'lit/directive.js';
 import {PropertyInitMapBase, StaticElementPropertyDescriptor} from '../element-properties';
 import {FunctionalElementInstanceFromInit} from '../functional-element';
-import {extractFunctionalElement} from './directive-util';
+import {extractFunctionalElement} from './directive-helpers';
 
 /**
  * The directive generics (in listenDirective) are not strong enough to maintain their values. Thus,

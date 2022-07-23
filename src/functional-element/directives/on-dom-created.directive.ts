@@ -1,5 +1,5 @@
 import {directive, Directive, PartInfo} from 'lit/directive.js';
-import {assertsIsElementPartInfo} from './directive-util';
+import {assertsIsElementPartInfo} from './directive-helpers';
 
 export type OnDomCreatedCallback = (element: Element) => void;
 

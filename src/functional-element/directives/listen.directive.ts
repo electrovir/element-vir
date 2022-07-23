@@ -1,7 +1,7 @@
 import {noChange} from 'lit';
 import {directive, Directive, DirectiveResult, PartInfo} from 'lit/directive.js';
 import {DefinedTypedEvent, TypedEvent} from '../../typed-event/typed-event';
-import {extractElement} from './directive-util';
+import {extractElement} from './directive-helpers';
 
 type PossibleListenerCallbacks<
     TypedEventTypeNameGeneric extends string,

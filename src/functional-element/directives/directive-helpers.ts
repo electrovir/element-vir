@@ -44,6 +44,6 @@ export function assertsIsElementPartInfo(
         throw new Error(`${directiveName} directive can only be attached directly to an element.`);
     }
     if (!(partInfo as ElementPartInfo & ExtraPartInfoProperties).element) {
-        throw new Error(`${directiveName} directive found no element`);
+        throw new Error(`${directiveName} directive found no element.`);
     }
 }
