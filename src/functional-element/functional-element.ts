@@ -47,6 +47,8 @@ export abstract class FunctionalElementBaseClass<
 
     public abstract override render(): TemplateResult | Promise<TemplateResult>;
     public abstract readonly instanceProps: PropertyInitGeneric;
+    public abstract readonly haveInputsBeenSet: boolean;
+    public abstract markInputsAsHavingBeenSet(): void;
 }
 
 export type FunctionalElementInstanceFromInit<

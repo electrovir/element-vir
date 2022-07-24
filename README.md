@@ -152,7 +152,7 @@ export const MySimpleWithPropsElement = defineFunctionalElement({
 
 ### Updating properties
 
-Grab `setProps` from `renderCallback`'s parameters to update the values in `props`. This causes a re-render. (Note that this example also uses the `listen` directive to respond to click events.)
+Grab `setProps` from `renderCallback`'s parameters to update the values in `props`. When `setProps` is called within `renderCallback`, the `props` object is updated but a new render is not scheduled. When `setProps` is called outside of `renderCallback` (like as a result of an event listener, as shown below), a new render is triggered. (Note that this example also uses the `listen` directive to respond to click events.)
 
 <!-- example-link: src/readme-examples/my-simple-with-set-props.element.ts -->
 

@@ -110,12 +110,25 @@ export function defineFunctionalElement<
         >['cssVarValues'] = cssVarNames;
 
         public initCalled = false;
+
+        public _renderBlockedCauseInputsNotSet = false;
+        public haveInputsBeenSet = false;
+        public markInputsAsHavingBeenSet(): void {
+            if (!this.haveInputsBeenSet) {
+                this.haveInputsBeenSet = true;
+                if (this._renderBlockedCauseInputsNotSet) {
+                    this.render();
+                    this._renderBlockedCauseInputsNotSet = false;
+                }
+            }
+        }
         public render(): TemplateResult {
             const renderParams = this.createRenderParams();
             if (!this.initCalled && functionalElementInit.initCallback) {
                 this.initCalled = true;
                 functionalElementInit.initCallback(renderParams);
             }
+
             const renderResult = functionalElementInit.renderCallback(renderParams);
             applyHostClasses(
                 renderParams.host,
