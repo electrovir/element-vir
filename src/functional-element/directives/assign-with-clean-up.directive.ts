@@ -6,8 +6,12 @@ import {FunctionalElementInstanceFromInit} from '../functional-element';
 import {extractFunctionalElement} from './directive-helpers';
 
 /**
- * Assign values to elements but include a cleanup callback which gets called when a new value gets
- * assigned so the previous value can get cleaned up. Useful 3D graphics applications.
+ * Assign values but include a cleanup callback which gets called when a new value gets assigned so
+ * the previous value can get cleaned up. An optional equality check callback can be provided. If it
+ * is provided, the clean up callback will then only be called if the equality check callback
+ * resolves to false (which indicates that the previous value and the new value are not equal).
+ *
+ * Example use case: 3D graphics applications with classes that setup buffers and the like.
  */
 export function assignWithCleanup<PropName extends string, PropValue>(
     propertyDescriptor: StaticElementPropertyDescriptor<PropName, PropValue>,

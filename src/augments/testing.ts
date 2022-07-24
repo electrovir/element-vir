@@ -86,3 +86,38 @@ function queryTree(
 
     return finalElement;
 }
+
+export async function assertRejects(input: () => PromiseLike<any>, message?: string): Promise<void>;
+export async function assertRejects(
+    input: () => PromiseLike<any>,
+    errType: RegExp | ErrorConstructor,
+    message?: string,
+): Promise<void>;
+export async function assertRejects(
+    input: () => PromiseLike<any>,
+    errType: ErrorConstructor,
+    regExp: RegExp,
+): Promise<void>;
+export async function assertRejects(
+    input: () => PromiseLike<any>,
+    messageOrRegExpOrError?: string | RegExp | ErrorConstructor,
+    messageOrRegExp?: string | RegExp,
+): Promise<void> {
+    let thrown: unknown = undefined;
+    let errorThrown = false;
+    try {
+        await input();
+    } catch (error) {
+        errorThrown = true;
+        thrown = error;
+    }
+    assert.isTrue(errorThrown, 'No error was thrown.');
+
+    assert.throws(
+        () => {
+            throw thrown;
+        },
+        messageOrRegExpOrError as any,
+        messageOrRegExp as any,
+    );
+}
