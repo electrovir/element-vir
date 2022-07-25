@@ -1,7 +1,6 @@
 import {defineElementEvent, defineFunctionalElement, html} from '..';
 import {TypedEvent} from '../typed-event/typed-event';
 import {createEventDescriptorMap} from './element-events';
-import {FunctionalElementInstanceFromInit} from './functional-element';
 import {createRenderParams} from './render-callback';
 
 function main() {
@@ -25,7 +24,8 @@ function main() {
     });
 
     const renderParams = createRenderParams(
-        {} as FunctionalElementInstanceFromInit<{}>,
+        // {} as FunctionalElementInstanceFromInit<{}>,
+        {} as any,
         createEventDescriptorMap({
             testEventName: defineElementEvent<number>(),
         }),

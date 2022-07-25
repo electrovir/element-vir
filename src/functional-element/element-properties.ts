@@ -1,4 +1,5 @@
-import {FunctionalElementInstanceFromInit} from './functional-element';
+import {FunctionalElement} from './functional-element';
+
 export type PropertyInitMapBase = Record<string, unknown>;
 
 export type ElementProperty<KeyGeneric extends string | number | symbol, ValueGeneric> = {
@@ -28,42 +29,42 @@ function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase
         throw new Error(
             `Property name must be a string, got type "${typeof propertyName}" from: "${String(
                 propertyName,
-            )}" for ${elementTagName}`,
+            )}" for ${elementTagName.toLowerCase()}`,
         );
     }
     if (!(propertyName in propsInitMap)) {
-        throw new Error(`Property name "${propertyName}" does not exist on ${elementTagName}.`);
+        throw new Error(
+            `Property name "${propertyName}" does not exist on ${elementTagName.toLowerCase()}.`,
+        );
     }
 }
 
-export function createPropertyProxy<PropertyInitGeneric extends PropertyInitMapBase>(
-    propsInitMap: PropertyInitGeneric | undefined,
-    element: FunctionalElementInstanceFromInit<PropertyInitGeneric>,
+export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyInitMapBase>(
+    element: FunctionalElement,
+    propsInitMap: PropertyInitGeneric = {} as PropertyInitGeneric,
 ): PropertyInitGeneric {
-    if (!propsInitMap) {
-        return {} as PropertyInitGeneric;
-    }
-    const props = Object.keys(propsInitMap).reduce(
-        (accum, propertyName: keyof PropertyInitGeneric) => {
-            accum[propertyName] = element[propertyName];
-            return accum;
+    /**
+     * List updates props by setting them directly on the element, so we must do that here.
+     * FunctionalElement's types, however, do not expose this behavior, so we add that back in here.
+     */
+    const elementAsProps = element as FunctionalElement & PropertyInitGeneric;
+
+    const propsProxy = new Proxy(
+        {},
+        {
+            get: (_target, propertyName: keyof PropertyInitGeneric | symbol) => {
+                assertValidPropertyName(propertyName, propsInitMap, element.tagName);
+                return elementAsProps[propertyName];
+            },
+            set: (_target, propertyName: keyof PropertyInitGeneric | symbol, value) => {
+                assertValidPropertyName(propertyName, propsInitMap, element.tagName);
+                elementAsProps[propertyName] = value;
+                return true;
+            },
         },
-        {} as PropertyInitGeneric,
     );
 
-    const propsProxy = new Proxy(props, {
-        get: (_target, propertyName: keyof PropertyInitGeneric | symbol) => {
-            assertValidPropertyName(propertyName, propsInitMap, element.tagName);
-            return element[propertyName];
-        },
-        set: (_target, propertyName: keyof PropertyInitGeneric | symbol, value) => {
-            assertValidPropertyName(propertyName, propsInitMap, element.tagName);
-            element[propertyName] = value;
-            return true;
-        },
-    });
-
-    return propsProxy;
+    return propsProxy as PropertyInitGeneric;
 }
 
 export function createPropertyDescriptorMap<PropertyInitGeneric extends PropertyInitMapBase>(

@@ -2,7 +2,7 @@ import {defineFunctionalElement, html, listen} from '..';
 
 export const MySimpleWithPropsElement = defineFunctionalElement({
     tagName: 'my-simple-element-with-props',
-    props: {
+    stateInit: {
         currentUsername: 'dev',
         currentEmail: undefined as string | undefined,
     },

@@ -1,11 +1,11 @@
 import {css as litCss, CSSResult, CSSResultGroup} from 'lit';
-import {FunctionalElement} from '../../functional-element/functional-element';
+import {FunctionalElementDefinition} from '../../functional-element/functional-element';
 import {getTransformedTemplate} from '../transform-template';
 import {transformCssTemplate} from './css-transform';
 
 export function css(
     inputTemplateStrings: TemplateStringsArray,
-    ...inputValues: (number | CSSResultGroup | FunctionalElement)[]
+    ...inputValues: (number | CSSResultGroup | FunctionalElementDefinition)[]
 ): CSSResult {
     const transformedTemplate = getTransformedTemplate(inputTemplateStrings, inputValues, () => {
         return transformCssTemplate(inputTemplateStrings, inputValues);

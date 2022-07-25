@@ -12,7 +12,7 @@ import {
     listen,
     TypedEvent,
 } from '..';
-import {FunctionalElementInstanceFromInit} from '../functional-element/functional-element';
+import {FunctionalElementDefinition} from '../functional-element/functional-element';
 import {AppElement} from './elements/app.element';
 import {TestChildElement} from './elements/child.element';
 
@@ -47,7 +47,7 @@ const TestElementNoTagName = defineFunctionalElement({
 });
 
 /** Verify that there's a base type that all functional elements can be assigned to. */
-const elements: FunctionalElement[] = [
+const elements: FunctionalElementDefinition[] = [
     AppElement,
     TestChildElement,
 ];
@@ -64,7 +64,9 @@ const props: (keyof AppElementProps)[] = getObjectTypedKeys(AppElement.props);
 
 // element constructor should not be able to be assigned to an instance
 // @ts-expect-error
-const instance: FunctionalElementInstanceFromInit<AppElementProps> = AppElement;
+const instance: typeof AppElement.instanceType = AppElement;
+// @ts-expect-error
+const instance: FunctionalElement = AppElement;
 
 const TestElementVoidEvent = defineFunctionalElement({
     tagName: 'test-element-void-event',
@@ -125,7 +127,7 @@ const TestElementNoRender = defineFunctionalElement({
 const TestElement = defineFunctionalElement({
     tagName: 'element-vir-test-element',
     styles: css``,
-    props: {
+    stateInit: {
         stringProp: 'derp',
         numberProp: undefined as number | undefined,
     },
@@ -219,8 +221,18 @@ function listenTest() {
 
 /** Don't actually call this for anything, it's just being used to test types */
 function assignTest() {
-    assign(TestElement.props.numberProp, 5);
-    assignWithCleanup(TestElement.props.numberProp, 5, () => {});
+    assign(TestElement, {
+        numberProp: 5,
+        stringProp: '',
+    });
+    assignWithCleanup(
+        TestElement,
+        {
+            numberProp: 5,
+            stringProp: '',
+        },
+        () => {},
+    );
 
     // @ts-expect-error
     assignWithCleanup(TestElement.props.numberProp, 'derp', () => {});

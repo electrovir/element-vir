@@ -2,7 +2,7 @@ import {css, defineFunctionalElement, html} from '..';
 
 export const MyAppWithHostClasses = defineFunctionalElement({
     tagName: 'my-app-with-host-classes',
-    props: {
+    stateInit: {
         myProp: 'hello there',
     },
     hostClasses: {

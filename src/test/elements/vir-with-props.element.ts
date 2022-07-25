@@ -2,7 +2,7 @@ import {defineFunctionalElement, html} from '../..';
 
 export const VirWithProps = defineFunctionalElement({
     tagName: 'vir-with-props',
-    props: {
+    stateInit: {
         first: 1,
         second: 'two',
     },

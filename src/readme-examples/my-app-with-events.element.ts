@@ -3,7 +3,7 @@ import {MySimpleWithEventsElement} from './my-simple-with-events.element';
 
 export const MyAppWithEventsElement = defineFunctionalElement({
     tagName: 'my-app-with-events-element',
-    props: {
+    stateInit: {
         myNumber: -1,
     },
     renderCallback: ({props, setProps}) => html`

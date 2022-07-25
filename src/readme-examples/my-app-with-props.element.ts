@@ -6,8 +6,10 @@ export const MyAppWithPropsElement = defineFunctionalElement({
     renderCallback: () => html`
         <h1>My App</h1>
         <${MySimpleWithPropsElement}
-            ${assign(MySimpleWithPropsElement.props.currentUsername, 'user')}
-            ${assign(MySimpleWithPropsElement.props.currentEmail, 'user@example.com')}
+            ${assign(MySimpleWithPropsElement, {
+                currentEmail: 'user@example.com',
+                currentUsername: 'user',
+            })}
         >
         </${MySimpleWithPropsElement}>
     `,

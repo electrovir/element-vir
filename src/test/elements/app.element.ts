@@ -54,7 +54,7 @@ export const AppElement = defineFunctionalElement({
             ${TestChildElement.cssVarNames.derp}: yellow;
         }
     `,
-    props: {
+    stateInit: {
         funnyNumber: Math.random(),
         eventsReceived: 0,
         lastReceivedMessage: '',
@@ -89,8 +89,12 @@ export const AppElement = defineFunctionalElement({
                 
                 <hr>
                 <${TestChildElement}
-                    ${assign(TestChildElement.props.inputNumber, props.funnyNumber)}
-                    ${assign(TestChildElement.props.width, props.width)}
+                    ${assign(TestChildElement, {
+                        button: undefined,
+                        inputNumber: props.funnyNumber,
+                        resizeListener: () => {},
+                        width: props.width,
+                    })}
                     ${listen(TestChildElement.events.speak, (event) => {
                         setProps({
                             eventsReceived: props.eventsReceived + 1,
@@ -120,8 +124,10 @@ export const AppElement = defineFunctionalElement({
                               <element-vir-test-child-element
                                   class="darker weird-colors"
                                   ${assignWithCleanup(
-                                      TestChildElement.props.inputNumber,
-                                      props.funnyNumber,
+                                      TestChildElement,
+                                      {
+                                          inputNumber: props.funnyNumber,
+                                      } as any,
                                       (lastValue) => {
                                           console.info(
                                               'assign with cleanup last value in app',
@@ -140,7 +146,12 @@ export const AppElement = defineFunctionalElement({
                 
                 <${TestChildElement}
                     class=${TestChildElement.hostClasses.testHostClass}
-                    ${assign(TestChildElement.props.inputNumber, 15)}
+                    ${assign(TestChildElement, {
+                        button: undefined,
+                        inputNumber: 15,
+                        resizeListener: () => {},
+                        width: 0,
+                    })}
                 ></${TestChildElement}>
             </main>
         `;

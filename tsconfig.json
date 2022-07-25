@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "experimentalDecorators": true,
         "module": "ESNext"
     },
     "extends": "./.virmator/tsconfig-base.json"

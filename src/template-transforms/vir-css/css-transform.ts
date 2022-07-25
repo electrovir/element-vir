@@ -1,5 +1,5 @@
 import {CSSResultGroup} from 'lit';
-import {FunctionalElement} from '../../functional-element/functional-element';
+import {FunctionalElementDefinition} from '../../functional-element/functional-element';
 import {ConstructorWithTagName, hasStaticTagName} from '../has-static-tag-name';
 import {CheckAndTransform, makeCheckTransform, transformTemplate} from '../transform-template';
 export type CssTemplateTransform = {
@@ -21,7 +21,7 @@ const cssChecksAndTransforms: CheckAndTransform<any>[] = [
 
 export function transformCssTemplate(
     inputTemplateStrings: TemplateStringsArray,
-    inputValues: (number | CSSResultGroup | FunctionalElement)[],
+    inputValues: (number | CSSResultGroup | FunctionalElementDefinition)[],
 ): CssTemplateTransform {
     return transformTemplate(inputTemplateStrings, inputValues, cssChecksAndTransforms);
 }

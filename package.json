@@ -29,7 +29,7 @@
         "format": "virmator format",
         "prepublishOnly": "npm run compile && npm run test:full",
         "spellcheck": "virmator spellcheck",
-        "start": "npm install && vite --force --config ./src/vite/vite.config.ts",
+        "start": "npm install && virmator frontend",
         "test": "npm run test:types && virmator test-web",
         "test:full": "npm test && npm run spellcheck && virmator format check && npm run update-docs -- --check",
         "test:types": "tsc --noEmit",

@@ -1,4 +1,4 @@
-import {mapObject, randomString} from 'augment-vir';
+import {randomString} from 'augment-vir';
 import {css} from 'lit';
 import {defineElementEvent, defineFunctionalElement, html, listen, onDomCreated} from '../..';
 import {MyCustomEvent} from '../customEvent';
@@ -6,15 +6,15 @@ import {MyCustomEvent} from '../customEvent';
 export const TestChildElement = defineFunctionalElement({
     tagName: 'element-vir-test-child-element',
     styles: ({hostClass, cssVarValue, cssVarName}) => {
-        console.log({
-            hostClass,
-            cssVarValue: mapObject(cssVarValue, (key, value) => {
-                return String(value);
-            }),
-            cssVarName: mapObject(cssVarName, (key, value) => {
-                return String(value);
-            }),
-        });
+        // console.log({
+        //     hostClass,
+        //     cssVarValue: mapObject(cssVarValue, (key, value) => {
+        //         return String(value);
+        //     }),
+        //     cssVarName: mapObject(cssVarName, (key, value) => {
+        //         return String(value);
+        //     }),
+        // });
         return css`
             :host {
                 display: flex;
@@ -42,7 +42,7 @@ export const TestChildElement = defineFunctionalElement({
         testHostClass: false,
         automaticallyApplied: ({props}) => props.inputNumber === 15,
     },
-    props: {
+    stateInit: {
         width: -1,
         inputNumber: undefined as number | undefined,
         resizeListener: undefined as (() => void) | undefined,

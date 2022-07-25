@@ -1,4 +1,4 @@
-import {assign, assignWithCleanup, defineFunctionalElement, html} from '..';
+import {assignWithCleanup, defineFunctionalElement, html} from '..';
 import {MySimpleWithPropsElement} from './my-simple-with-props.element';
 
 export const MyAppWithPropsElement = defineFunctionalElement({
@@ -7,15 +7,18 @@ export const MyAppWithPropsElement = defineFunctionalElement({
         <h1>My App</h1>
         <${MySimpleWithPropsElement}
             ${assignWithCleanup(
-                MySimpleWithPropsElement.props.currentUsername,
-                'user',
+                MySimpleWithPropsElement,
+                {
+                    currentEmail: 'user@example.com',
+                    currentUsername: 'user',
+                },
                 (previousValue) => {
                     // here would be the cleanup code.
-                    // In this specific example the value is just a string, so no cleanup is needed.
-                    previousValue.trim();
+                    // In this specific example the value is just a string, so no cleanup is needed
+                    // and the following line isn't actually doing anything.
+                    previousValue.currentUsername.trim();
                 },
             )}
-            ${assign(MySimpleWithPropsElement.props.currentEmail, 'user@example.com')}
         >
         </${MySimpleWithPropsElement}>
     `,

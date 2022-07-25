@@ -7,36 +7,68 @@ import {
     EventsInitMap,
 } from './element-events';
 import {PropertyInitMapBase} from './element-properties';
-import {FunctionalElementInstanceFromInit} from './functional-element';
+import {FunctionalElement} from './functional-element';
 
 export type RenderCallback<
-    PropertyInitGeneric extends PropertyInitMapBase,
-    EventsInitGeneric extends EventsInitMap,
-> = (params: RenderParams<PropertyInitGeneric, EventsInitGeneric>) => TemplateResult;
+    InputsGeneric extends PropertyInitMapBase = any,
+    PropertyInitGeneric extends PropertyInitMapBase = any,
+    EventsInitGeneric extends EventsInitMap = any,
+    HostClassKeys extends string = any,
+    CssVarKeys extends string = any,
+> = (
+    params: RenderParams<
+        InputsGeneric,
+        PropertyInitGeneric,
+        EventsInitGeneric,
+        HostClassKeys,
+        CssVarKeys
+    >,
+) => TemplateResult;
 
 export type InitCallback<
+    InputsGeneric extends PropertyInitMapBase,
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
-> = (params: RenderParams<PropertyInitGeneric, EventsInitGeneric>) => void;
+    HostClassKeys extends string,
+    CssVarKeys extends string,
+> = (
+    params: RenderParams<
+        InputsGeneric,
+        PropertyInitGeneric,
+        EventsInitGeneric,
+        HostClassKeys,
+        CssVarKeys
+    >,
+) => void;
 
 export type SetPropCallback<PropertyInitGeneric extends PropertyInitMapBase> = (
     props: Partial<PropertyInitGeneric>,
 ) => void;
 
 export type RenderParams<
+    InputsGeneric extends PropertyInitMapBase,
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
+    HostClassKeys extends string,
+    CssVarKeys extends string,
 > = {
     props: Readonly<PropertyInitGeneric>;
     setProps: SetPropCallback<PropertyInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
-    host: FunctionalElementInstanceFromInit<PropertyInitGeneric>;
+    host: FunctionalElement<
+        InputsGeneric,
+        PropertyInitGeneric,
+        EventsInitGeneric,
+        HostClassKeys,
+        CssVarKeys
+    >;
     dispatch: <EventTypeNameGeneric extends keyof EventsInitGeneric>(
         event: TypedEvent<
             EventTypeNameGeneric extends string ? EventTypeNameGeneric : never,
             EventInitMapEventDetailExtractor<EventTypeNameGeneric, EventsInitGeneric>
         >,
     ) => boolean;
+    inputs: InputsGeneric;
     /**
      * Same as dispatchElementEvent but without the extra types. This allows you to emit any events,
      * even events from other custom elements.
@@ -45,13 +77,28 @@ export type RenderParams<
 };
 
 export function createRenderParams<
+    InputsGeneric extends PropertyInitMapBase,
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
+    HostClassKeys extends string,
+    CssVarKeys extends string,
 >(
-    element: FunctionalElementInstanceFromInit<PropertyInitGeneric>,
+    element: FunctionalElement<
+        InputsGeneric,
+        PropertyInitGeneric,
+        EventsInitGeneric,
+        HostClassKeys,
+        CssVarKeys
+    >,
     eventsMap: EventDescriptorMap<EventsInitGeneric>,
-): RenderParams<PropertyInitGeneric, EventsInitGeneric> {
-    const renderParams: RenderParams<PropertyInitGeneric, EventsInitGeneric> = {
+): RenderParams<InputsGeneric, PropertyInitGeneric, EventsInitGeneric, HostClassKeys, CssVarKeys> {
+    const renderParams: RenderParams<
+        InputsGeneric,
+        PropertyInitGeneric,
+        EventsInitGeneric,
+        HostClassKeys,
+        CssVarKeys
+    > = {
         /**
          * These two dispatch properties do the same thing but their interfaces are different.
          * DispatchEvent's type interface is much stricter.
@@ -65,6 +112,7 @@ export function createRenderParams<
                 ] as PropertyInitGeneric[typeof propKey];
             });
         },
+        inputs: element.currentInputs,
         host: element,
         props: element.instanceProps,
         events: eventsMap,
