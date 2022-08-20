@@ -37,6 +37,7 @@ export function assignInputsObject<FunctionalElementGeneric extends FunctionalEl
     assignmentObject: typeof element['creator']['init']['stateInit'],
 ) {
     Object.keys(assignmentObject).forEach((key) => {
+        element.markInputsAsHavingBeenSet();
         const value = assignmentObject[key];
         element.instanceProps[key] = value;
     });

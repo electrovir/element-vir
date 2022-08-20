@@ -132,6 +132,8 @@ export abstract class FunctionalElement<
     public abstract override render(): TemplateResult | Promise<TemplateResult>;
     public abstract readonly instanceProps: PropertyInitGeneric;
     public abstract readonly currentInputs: InputsGeneric;
+    public abstract readonly haveInputsBeenSet: boolean;
+    public abstract markInputsAsHavingBeenSet(): void;
     public abstract readonly creator: FunctionalElementDefinition<
         InputsGeneric,
         PropertyInitGeneric,

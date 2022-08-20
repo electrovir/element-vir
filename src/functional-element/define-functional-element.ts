@@ -15,6 +15,7 @@ import {
     StaticFunctionalElementProperties,
 } from './functional-element';
 import {FunctionalElementInit} from './functional-element-init';
+import {hasFunctionalElementParent} from './has-functional-element-parent';
 import {createHostClassNamesMap} from './host-classes';
 import {createRenderParams, RenderParams} from './render-callback';
 import {applyHostClasses, hostClassNamesToStylesInput} from './styles';
@@ -153,7 +154,26 @@ export function defineFunctionalElement<
         }
 
         public initCalled = false;
+
+        public haveInputsBeenSet = false;
+        public markInputsAsHavingBeenSet(): void {
+            if (!this.haveInputsBeenSet) {
+                this.haveInputsBeenSet = true;
+            }
+        }
         public render(): TemplateResult {
+            if (
+                // This ignores elements at the root of a page, as they can't receive inputs from
+                // other functional elements (cause they have no custom element ancestors).
+                hasFunctionalElementParent(this) &&
+                !this.haveInputsBeenSet
+            ) {
+                console.warn(
+                    this,
+                    `${initInput.tagName} got rendered before its input object was set. This was most likely caused by forgetting to use the "assign" directive on it.`,
+                );
+            }
+
             const renderParams = this.createRenderParams();
             if (!this.initCalled && initInput.initCallback) {
                 this.initCalled = true;
