@@ -1,6 +1,5 @@
 import {CSSResult} from 'lit';
 import {CssVarsInitMap} from './css-vars';
-import {FunctionalElementDefinitionOptions} from './definition-options';
 import {EventsInitMap} from './element-events';
 import {PropertyInitMapBase} from './element-properties';
 import {HostClassesInitMap} from './host-classes';
@@ -49,5 +48,4 @@ export type FunctionalElementInit<
         HostClassKeys,
         CssVarKeys
     >;
-    options?: Partial<FunctionalElementDefinitionOptions> | undefined;
 };

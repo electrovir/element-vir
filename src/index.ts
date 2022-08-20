@@ -1,5 +1,4 @@
 export * from './functional-element/define-functional-element';
-export type {FunctionalElementDefinitionOptions} from './functional-element/definition-options';
 export * from './functional-element/directives/assign-with-clean-up.directive';
 export * from './functional-element/directives/assign.directive';
 export * from './functional-element/directives/directive-helpers';

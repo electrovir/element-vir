@@ -2,7 +2,7 @@ import {assert, expect, fixture, waitUntil} from '@open-wc/testing';
 import {sendMouse} from '@web/test-runner-commands';
 import {RequiredAndNotNullBy} from 'augment-vir';
 import {html} from '../..';
-import {assertInstanceOf} from '../../augments/testing';
+import {assertInstanceOf, isInstanceOf} from '../../augments/testing';
 import {AppElement} from './app.element';
 import {TestChildElement} from './child.element';
 
@@ -56,6 +56,20 @@ function getCenterOfElement(element: Element): [number, number] {
 }
 
 describe(AppElement.tagName, () => {
+    async function renderApp() {
+        return await fixture(html`<${AppElement}></${AppElement}>`);
+    }
+
+    function getAppElement(context: Element) {
+        if (isInstanceOf(context, AppElement)) {
+            return context;
+        }
+        const appElement = context.querySelector(AppElement.tagName);
+        assertInstanceOf(appElement, AppElement);
+        assertHasShadowRoot(appElement);
+        return appElement;
+    }
+
     it('should change input numbers', async () => {
         function getDisplayedInputNumber(appElement: HTMLElement): number {
             const inputNumberSpan = queryTree(appElement, [
@@ -81,17 +95,9 @@ describe(AppElement.tagName, () => {
                 type: 'click',
             });
         }
+        const rendered = await renderApp();
 
-        function getAppElement() {
-            const appElement = document.body.querySelector(AppElement.tagName);
-            assertInstanceOf(appElement, AppElement);
-            assertHasShadowRoot(appElement);
-            return appElement;
-        }
-
-        await fixture(html`<${AppElement}></${AppElement}>`);
-
-        const appElement = getAppElement();
+        const appElement = getAppElement(rendered);
 
         const firstInputNumber = getDisplayedInputNumber(appElement);
 
@@ -101,5 +107,22 @@ describe(AppElement.tagName, () => {
             const secondInputNumber = getDisplayedInputNumber(appElement);
             return firstInputNumber !== secondInputNumber;
         }, 'the child input number did not change');
+    });
+
+    it('should render unique elements with identical strings', async () => {
+        const rendered = await renderApp();
+
+        const appElement = getAppElement(rendered);
+        const childrenWithDataAttribute = Array.from(appElement.children).filter((child) =>
+            child.hasAttribute('data-tag-name'),
+        );
+
+        const tagNames = new Set(childrenWithDataAttribute.map((child) => child.tagName));
+
+        assert.strictEqual(
+            tagNames.size,
+            childrenWithDataAttribute.length,
+            'tag names were not unique between data children',
+        );
     });
 });

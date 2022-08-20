@@ -14,6 +14,10 @@ export function assertInstanceOf<T>(
     assert.instanceOf(value, constructor, message);
 }
 
+export function isInstanceOf<T>(value: unknown, constructor: new (...args: any) => T): value is T {
+    return value instanceof constructor;
+}
+
 export function getAssertedFunctionalElement<
     FunctionalElementGeneric extends FunctionalElementDefinition,
 >(

@@ -82,7 +82,6 @@ export function getTransformedTemplate<PossibleValues>(
 
     if (!alreadyTransformedTemplateStrings) {
         const result = setMappedTemplate(templateStringsKey, values, templateTransform);
-        console.log('setting');
         if (!result.result) {
             throw new Error(`Failed to set template transform: ${result.reason}`);
         } else {
