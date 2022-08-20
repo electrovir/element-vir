@@ -27,12 +27,12 @@ const assignDirective = directive(
         }
 
         render(propName: string, value: unknown) {
-            if (!(propName in this.element.instanceProps)) {
+            if (!(propName in this.element.instanceState)) {
                 throw new Error(
                     `${this.element.tagName} element has no property of name "${propName}"`,
                 );
             }
-            this.element.instanceProps[propName] = value;
+            this.element.instanceState[propName] = value;
             return noChange;
         }
     },

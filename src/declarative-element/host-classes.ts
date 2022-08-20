@@ -2,24 +2,30 @@ import {mapObject} from 'augment-vir';
 import {PropertyInitMapBase} from './element-properties';
 import {toHtmlSafeWithTagName, WithTagName} from './tag-name';
 
-export type HostClassToggleCallbackInput<PropertyInitGeneric extends PropertyInitMapBase> = {
-    props: Readonly<PropertyInitGeneric>;
+export type HostClassToggleCallbackInput<
+    InputsGeneric extends PropertyInitMapBase,
+    StateGeneric extends PropertyInitMapBase,
+> = {
+    state: Readonly<StateGeneric>;
+    inputs: Readonly<InputsGeneric>;
 };
 
-export type HostClassToggleCallback<PropertyInitGeneric extends PropertyInitMapBase> = (
-    inputs: HostClassToggleCallbackInput<PropertyInitGeneric>,
-) => boolean;
+export type HostClassToggleCallback<
+    InputsGeneric extends PropertyInitMapBase,
+    StateGeneric extends PropertyInitMapBase,
+> = (inputs: HostClassToggleCallbackInput<InputsGeneric, StateGeneric>) => boolean;
 
 export type HostClassesInitMap<
     HostClassKeys extends string,
-    PropertyInitGeneric extends PropertyInitMapBase,
+    InputsGeneric extends PropertyInitMapBase,
+    StateGeneric extends PropertyInitMapBase,
 > = Record<
     HostClassKeys,
     /**
-     * Callback to determine when host class should be enabled (based on current props), or just
-     * undefined to mark that this host class name will only be manually applied.
+     * Callback to determine when host class should be enabled (based on current inputs and state),
+     * or just undefined to mark that this host class name will only be manually applied.
      */
-    HostClassToggleCallback<PropertyInitGeneric> | false
+    HostClassToggleCallback<InputsGeneric, StateGeneric> | false
 >;
 
 export type HostClassName<
@@ -38,9 +44,11 @@ export function createHostClassNamesMap<
     HostClassesInitGeneric extends HostClassesInitMap<
         HostClassKeys,
         /**
-         * We can use any here because we don't care what the prop names are, we just care what the
-         * host class names are
-         */ any
+         * We can use any here because we don't care what the state or input names are, we just care
+         * what the host class names are
+         */
+        any,
+        any
     >,
 >(
     tagName: TagName,

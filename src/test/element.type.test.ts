@@ -4,6 +4,7 @@ import {
     assign,
     assignWithCleanup,
     DeclarativeElement,
+    defineElement,
     defineElementEvent,
     defineElementNoInputs,
     defineTypedEvent,
@@ -60,7 +61,7 @@ type AppElementProps = {
     showChild: boolean;
 };
 
-const props: (keyof AppElementProps)[] = getObjectTypedKeys(AppElement.props);
+const stateInit: (keyof AppElementProps)[] = getObjectTypedKeys(AppElement.stateInit);
 
 // element constructor should not be able to be assigned to an instance
 // @ts-expect-error
@@ -73,9 +74,9 @@ const TestElementVoidEvent = defineElementNoInputs({
     events: {
         thingHappened: defineElementEvent<void>(),
     },
-    renderCallback: ({props, dispatch, events}): TemplateResult => {
+    renderCallback: ({state, dispatch, events}): TemplateResult => {
         // @ts-expect-error
-        console.info(props.thing);
+        console.info(state.thing);
         dispatch(new events.thingHappened());
         dispatch(new events.thingHappened(undefined));
         // @ts-expect-error
@@ -92,13 +93,13 @@ const TestElementInvalidTagName = defineElementNoInputs({
 
 const MyElementEvent = defineTypedEvent<string>()('customEvent');
 
-const TestElementNoEventsOrProps = defineElementNoInputs({
-    tagName: 'test-element-no-events-or-props',
-    renderCallback: ({props, genericDispatch, dispatch, events}): TemplateResult => {
+const TestElementNoEventsOrState = defineElementNoInputs({
+    tagName: 'test-element-no-events-or-state',
+    renderCallback: ({state, genericDispatch, dispatch, events}): TemplateResult => {
         // @ts-expect-error
         console.info(events.thing);
         // @ts-expect-error
-        console.info(props.thing);
+        console.info(state.thing);
         // should only allow strings
         // @ts-expect-error
         genericDispatch(new MyElementEvent(5));
@@ -124,7 +125,11 @@ const TestElementNoRender = defineElementNoInputs({
     tagName: 'element-vir-test-element-no-render',
 });
 
-const TestElement = defineElementNoInputs({
+const TestElement = defineElement<{
+    stringInput: string;
+    numberInput: number;
+    optionalInput?: string;
+}>()({
     tagName: 'element-vir-test-element',
     styles: css``,
     stateInit: {
@@ -136,17 +141,17 @@ const TestElement = defineElementNoInputs({
         stringEvent: defineElementEvent<string>(),
         numberEvent: defineElementEvent<number>(),
     },
-    renderCallback: ({props, dispatch, events}) => {
+    renderCallback: ({state, dispatch, events}) => {
         // @ts-expect-error
-        const stuff: number = props.stringProp;
+        const stuff: number = state.stringProp;
 
         return html`
-            <span>width: ${props.stringProp}</span>
+            <span>width: ${state.stringProp}</span>
             <span>
                 input number:
                 ${
                     // @ts-expect-error
-                    props.nonExistingProp
+                    state.nonExistingProp
                 }
             </span>
             <button
@@ -222,28 +227,45 @@ function listenTest() {
 /** Don't actually call this for anything, it's just being used to test types */
 function assignTest() {
     assign(TestElement, {
-        numberProp: 5,
-        stringProp: '',
+        numberInput: 5,
+        stringInput: '',
+    });
+    assign(TestElement, {
+        numberInput: 5,
+        stringInput: '',
+        optionalInput: '',
     });
     assignWithCleanup(
         TestElement,
         {
-            numberProp: 5,
-            stringProp: '',
+            numberInput: 5,
+            stringInput: '',
+        },
+        () => {},
+    );
+    assignWithCleanup(
+        TestElement,
+        {
+            numberInput: 5,
+            stringInput: '',
+            // @ts-expect-error
+            propNoExist: 4,
         },
         () => {},
     );
 
     // @ts-expect-error
-    assignWithCleanup(TestElement.props.numberProp, 'derp', () => {});
+    assignWithCleanup(TestElement, {
+        numberInput: 5,
+        stringInput: '',
+    });
+
     // @ts-expect-error
-    assignWithCleanup(TestElement.props.numberProp, 5, (input: string) => {});
-    // @ts-expect-error
-    assignWithCleanup(TestElement.props.numberProp, 5);
-    // @ts-expect-error
-    assign(TestElement.props.thisDoesNotExist, 5);
-    // @ts-expect-error
-    assign(TestElement.props.stringProp, 5);
-    // @ts-expect-error
-    assign(TestElement.props.numberProp, 'yo hello');
+    assign(TestElement);
+    assign(TestElement, {
+        numberInput: 5,
+        // @ts-expect-error
+        thisDoesNotExist: 5,
+        stringInput: '',
+    });
 }

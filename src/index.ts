@@ -1,4 +1,5 @@
 export * from './declarative-element/declarative-element';
+export * from './declarative-element/define-element';
 export * from './declarative-element/define-element-no-inputs';
 export type {DeclarativeElementDefinitionOptions} from './declarative-element/definition-options';
 export * from './declarative-element/directives/assign-with-clean-up.directive';

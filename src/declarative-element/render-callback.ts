@@ -11,53 +11,41 @@ import {PropertyInitMapBase} from './element-properties';
 
 export type RenderCallback<
     InputsGeneric extends PropertyInitMapBase = any,
-    PropertyInitGeneric extends PropertyInitMapBase = any,
+    StateGeneric extends PropertyInitMapBase = any,
     EventsInitGeneric extends EventsInitMap = any,
     HostClassKeys extends string = any,
     CssVarKeys extends string = any,
 > = (
-    params: RenderParams<
-        InputsGeneric,
-        PropertyInitGeneric,
-        EventsInitGeneric,
-        HostClassKeys,
-        CssVarKeys
-    >,
+    params: RenderParams<InputsGeneric, StateGeneric, EventsInitGeneric, HostClassKeys, CssVarKeys>,
 ) => TemplateResult;
 
 export type InitCallback<
     InputsGeneric extends PropertyInitMapBase,
-    PropertyInitGeneric extends PropertyInitMapBase,
+    StateGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
 > = (
-    params: RenderParams<
-        InputsGeneric,
-        PropertyInitGeneric,
-        EventsInitGeneric,
-        HostClassKeys,
-        CssVarKeys
-    >,
+    params: RenderParams<InputsGeneric, StateGeneric, EventsInitGeneric, HostClassKeys, CssVarKeys>,
 ) => void;
 
-export type SetPropCallback<PropertyInitGeneric extends PropertyInitMapBase> = (
-    props: Partial<PropertyInitGeneric>,
+export type UpdateStateCallback<StateGeneric extends PropertyInitMapBase> = (
+    newState: Partial<StateGeneric>,
 ) => void;
 
 export type RenderParams<
     InputsGeneric extends PropertyInitMapBase,
-    PropertyInitGeneric extends PropertyInitMapBase,
+    StateGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
 > = {
-    props: Readonly<PropertyInitGeneric>;
-    setProps: SetPropCallback<PropertyInitGeneric>;
+    state: Readonly<StateGeneric>;
+    updateState: UpdateStateCallback<StateGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
     host: DeclarativeElement<
         InputsGeneric,
-        PropertyInitGeneric,
+        StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
@@ -78,23 +66,23 @@ export type RenderParams<
 
 export function createRenderParams<
     InputsGeneric extends PropertyInitMapBase,
-    PropertyInitGeneric extends PropertyInitMapBase,
+    StateGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
 >(
     element: DeclarativeElement<
         InputsGeneric,
-        PropertyInitGeneric,
+        StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
     >,
     eventsMap: EventDescriptorMap<EventsInitGeneric>,
-): RenderParams<InputsGeneric, PropertyInitGeneric, EventsInitGeneric, HostClassKeys, CssVarKeys> {
+): RenderParams<InputsGeneric, StateGeneric, EventsInitGeneric, HostClassKeys, CssVarKeys> {
     const renderParams: RenderParams<
         InputsGeneric,
-        PropertyInitGeneric,
+        StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
@@ -105,16 +93,16 @@ export function createRenderParams<
          */
         dispatch: (event) => element.dispatchEvent(event),
         genericDispatch: (event) => element.dispatchEvent(event),
-        setProps: (partialProps) => {
+        updateState: (partialProps) => {
             getObjectTypedKeys(partialProps).forEach((propKey) => {
-                element.instanceProps[propKey] = partialProps[
+                element.instanceState[propKey] = partialProps[
                     propKey
-                ] as PropertyInitGeneric[typeof propKey];
+                ] as StateGeneric[typeof propKey];
             });
         },
         inputs: element.currentInputs,
         host: element,
-        props: element.instanceProps,
+        state: element.instanceState,
         events: eventsMap,
     };
     return renderParams;

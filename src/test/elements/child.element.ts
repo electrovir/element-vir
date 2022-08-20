@@ -1,20 +1,14 @@
 import {randomString} from 'augment-vir';
 import {css} from 'lit';
-import {defineElementEvent, defineElementNoInputs, html, listen, onDomCreated} from '../..';
+import {defineElement, defineElementEvent, html, listen, onDomCreated} from '../..';
 import {MyCustomEvent} from '../customEvent';
 
-export const TestChildElement = defineElementNoInputs({
-    tagName: 'element-vir-test-child-element',
-    styles: ({hostClass, cssVarValue, cssVarName}) => {
-        // console.log({
-        //     hostClass,
-        //     cssVarValue: mapObject(cssVarValue, (key, value) => {
-        //         return String(value);
-        //     }),
-        //     cssVarName: mapObject(cssVarName, (key, value) => {
-        //         return String(value);
-        //     }),
-        // });
+export const TestChildElement = defineElement<{
+    width: number;
+    displayNumber: number;
+}>()({
+    tagName: 'element-vir-test-child',
+    styles: ({hostClass, cssVarValue}) => {
         return css`
             :host {
                 display: flex;
@@ -40,29 +34,26 @@ export const TestChildElement = defineElementNoInputs({
     },
     hostClasses: {
         testHostClass: false,
-        automaticallyApplied: ({props}) => props.inputNumber === 15,
+        automaticallyApplied: ({inputs}) => inputs.displayNumber === 15,
     },
     stateInit: {
-        width: -1,
-        inputNumber: undefined as number | undefined,
-        resizeListener: undefined as (() => void) | undefined,
         button: undefined as undefined | HTMLButtonElement,
     },
     events: {
         speak: defineElementEvent<string>(),
         eat: defineElementEvent<number>(),
     },
-    renderCallback: ({props, dispatch, setProps, events, genericDispatch}) => {
+    renderCallback: ({state, inputs, dispatch, updateState, events, genericDispatch}) => {
         // log here to make sure it's not rendering too often
         console.info('child rendering');
         return html`
             <span>Child</span>
-            <span>width: ${props.width}</span>
-            <span>input number: ${props.inputNumber}</span>
+            <span>width: ${inputs.width}</span>
+            <span>input number: ${inputs.displayNumber}</span>
             <button
                 ${onDomCreated((element) => {
                     if (element instanceof HTMLButtonElement) {
-                        setProps({button: element});
+                        updateState({button: element});
                     } else {
                         console.error(element);
                         throw new Error(`obtained element is not a button!`);
@@ -77,7 +68,7 @@ export const TestChildElement = defineElementNoInputs({
             <button ${listen('click', () => genericDispatch(new MyCustomEvent(5)))}>
                 emit custom event (logged to console)
             </button>
-            <span>button handle: ${props.button?.tagName}</span>
+            <span>button handle: ${state.button?.tagName}</span>
         `;
     },
 });

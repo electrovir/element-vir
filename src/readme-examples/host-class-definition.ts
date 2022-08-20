@@ -15,8 +15,8 @@ export const MyAppWithHostClasses = defineElementNoInputs({
          * This host class will be automatically applied if the given callback evaluated to true
          * after a call to renderCallback.
          */
-        automaticallyAppliedVariation: ({props}) => {
-            return props.myProp === 'foo';
+        automaticallyAppliedVariation: ({state}) => {
+            return state.myProp === 'foo';
         },
     },
     /**
@@ -32,7 +32,7 @@ export const MyAppWithHostClasses = defineElementNoInputs({
             color: red;
         }
     `,
-    renderCallback: ({props}) => html`
-        ${props.myProp}
+    renderCallback: ({state}) => html`
+        ${state.myProp}
     `,
 });

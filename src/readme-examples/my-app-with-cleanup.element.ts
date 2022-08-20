@@ -1,25 +1,25 @@
 import {assignWithCleanup, defineElementNoInputs, html} from '..';
-import {MySimpleWithPropsElement} from './my-simple-with-props.element';
+import {MySimpleWithInputsElement} from './my-simple-with-inputs.element';
 
-export const MyAppWithPropsElement = defineElementNoInputs({
+export const MyAppWithAssignmentCleanupElement = defineElementNoInputs({
     tagName: 'my-app-with-cleanup',
     renderCallback: () => html`
         <h1>My App</h1>
-        <${MySimpleWithPropsElement}
+        <${MySimpleWithInputsElement}
             ${assignWithCleanup(
-                MySimpleWithPropsElement,
+                MySimpleWithInputsElement,
                 {
-                    currentEmail: 'user@example.com',
-                    currentUsername: 'user',
+                    email: 'user@example.com',
+                    username: 'user',
                 },
                 (previousValue) => {
                     // here would be the cleanup code.
                     // In this specific example the value is just a string, so no cleanup is needed
                     // and the following line isn't actually doing anything.
-                    previousValue.currentUsername.trim();
+                    previousValue.username.trim();
                 },
             )}
         >
-        </${MySimpleWithPropsElement}>
+        </${MySimpleWithInputsElement}>
     `,
 });

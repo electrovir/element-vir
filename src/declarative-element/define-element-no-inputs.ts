@@ -15,11 +15,7 @@ import {
     IgnoreInputsNotBeenSetBeforeRenderWarningSymbol,
 } from './definition-options';
 import {createEventDescriptorMap, EventsInitMap} from './element-events';
-import {
-    createElementUpdaterProxy,
-    createPropertyDescriptorMap,
-    PropertyInitMapBase,
-} from './element-properties';
+import {createElementUpdaterProxy, PropertyInitMapBase} from './element-properties';
 import {hasDeclarativeElementParent} from './has-declarative-element-parent';
 import {createHostClassNamesMap} from './host-classes';
 import {createRenderParams, RenderParams} from './render-callback';
@@ -34,33 +30,33 @@ const defaultInit: Required<
 
 export function defineElementNoInputs<
     InputsGeneric extends PropertyInitMapBase = {},
-    PropertyInitGeneric extends PropertyInitMapBase = {},
+    StateGeneric extends PropertyInitMapBase = {},
     EventsInitGeneric extends EventsInitMap = {},
     HostClassKeys extends string = '',
     CssVarKeys extends string = '',
 >(
     initInput: DeclarativeElementInit<
         InputsGeneric,
-        PropertyInitGeneric,
+        StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
     >,
 ): DeclarativeElementDefinition<
     InputsGeneric,
-    PropertyInitGeneric,
+    StateGeneric,
     EventsInitGeneric,
     HostClassKeys,
     CssVarKeys
 > {
     type ThisElementDefinition = DeclarativeElementDefinition<
         InputsGeneric,
-        PropertyInitGeneric,
+        StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
     >;
-    type ThisElementInstance = typeof DeclarativeElement<InputsGeneric, PropertyInitGeneric>;
+    type ThisElementInstance = typeof DeclarativeElement<InputsGeneric, StateGeneric>;
 
     const eventsMap = createEventDescriptorMap(initInput.events);
     const hostClassNames = createHostClassNamesMap(initInput.tagName, initInput.hostClasses);
@@ -77,17 +73,9 @@ export function defineElementNoInputs<
               )
             : initInput.styles || css``;
 
-    const typedInit: StaticDeclarativeElementProperties<
-        InputsGeneric,
-        PropertyInitGeneric,
-        EventsInitGeneric,
-        HostClassKeys,
-        CssVarKeys
-    >['init'] = {...defaultInit, ...initInput};
-
     const typedRenderCallback: StaticDeclarativeElementProperties<
         InputsGeneric,
-        PropertyInitGeneric,
+        StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
@@ -95,7 +83,7 @@ export function defineElementNoInputs<
 
     const anonymousClass = class extends DeclarativeElement<
         InputsGeneric,
-        PropertyInitGeneric,
+        StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
@@ -105,7 +93,7 @@ export function defineElementNoInputs<
 
         public createRenderParams(): RenderParams<
             InputsGeneric,
-            PropertyInitGeneric,
+            StateGeneric,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys
@@ -113,44 +101,47 @@ export function defineElementNoInputs<
             return createRenderParams(this, eventsMap);
         }
 
-        public static override init: ThisElementInstance['init'] =
-            typedInit as ThisElementInstance['init'];
-
-        // this gets overridden below
+        // this gets set below in Object.defineProperties
         public static override readonly isStrictInstance: any = () => false;
         public static override readonly events: StaticDeclarativeElementProperties<
             InputsGeneric,
-            PropertyInitGeneric,
+            StateGeneric,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys
         >['events'] = eventsMap;
         public static override readonly renderCallback: ThisElementInstance['renderCallback'] =
             typedRenderCallback as ThisElementInstance['renderCallback'];
-        public static override readonly props: StaticDeclarativeElementProperties<
-            InputsGeneric,
-            PropertyInitGeneric,
-            EventsInitGeneric,
-            HostClassKeys,
-            CssVarKeys
-        >['props'] = createPropertyDescriptorMap(initInput.stateInit);
         public static override readonly hostClasses: StaticDeclarativeElementProperties<
             InputsGeneric,
-            PropertyInitGeneric,
+            StateGeneric,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys
         >['hostClasses'] = hostClassNames;
         public static override readonly cssVarNames: StaticDeclarativeElementProperties<
             InputsGeneric,
-            PropertyInitGeneric,
+            StateGeneric,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys
         >['cssVarNames'] = cssVarNames;
+        public static override readonly stateInit: StaticDeclarativeElementProperties<
+            PropertyInitMapBase,
+            PropertyInitMapBase,
+            EventsInitMap,
+            string,
+            string
+        >['stateInit'] = initInput.stateInit as StaticDeclarativeElementProperties<
+            PropertyInitMapBase,
+            PropertyInitMapBase,
+            EventsInitMap,
+            string,
+            string
+        >['stateInit'];
         public static override readonly cssVarValues: StaticDeclarativeElementProperties<
             InputsGeneric,
-            PropertyInitGeneric,
+            StateGeneric,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys
@@ -158,6 +149,11 @@ export function defineElementNoInputs<
         public get instanceType() {
             throw new Error(
                 `"instanceType" was called on ${initInput.tagName} as a value but it is only for types.`,
+            );
+        }
+        public static override get inputsType(): InputsGeneric {
+            throw new Error(
+                `"inputsType" was called on ${initInput.tagName} as a value but it is only for types.`,
             );
         }
 
@@ -190,39 +186,39 @@ export function defineElementNoInputs<
             }
 
             const renderResult = initInput.renderCallback(renderParams);
-            applyHostClasses(
-                renderParams.host,
-                initInput.hostClasses,
+            applyHostClasses({
+                host: renderParams.host,
+                hostClassesInit: initInput.hostClasses,
                 hostClassNames,
-                renderParams.props,
-            );
+                state: renderParams.state,
+                inputs: renderParams.inputs,
+            });
             return renderResult;
         }
 
-        // this is set below
+        // this is set below in Object.defineProperties
         public readonly creator = {} as unknown as ThisElementDefinition;
 
         public readonly currentInputs: InputsGeneric =
             createElementUpdaterProxy<InputsGeneric>(this);
 
-        public readonly instanceProps: PropertyInitGeneric =
-            createElementUpdaterProxy<PropertyInitGeneric>(this, initInput.stateInit);
+        public readonly instanceState: StateGeneric = createElementUpdaterProxy<StateGeneric>(
+            this,
+            initInput.stateInit,
+        );
 
         constructor() {
             super();
 
-            const initProps: PropertyInitGeneric =
-                initInput.stateInit || ({} as PropertyInitGeneric);
+            const stateInit: StateGeneric = initInput.stateInit || ({} as StateGeneric);
 
-            Object.keys(initProps).forEach((propName: keyof PropertyInitGeneric) => {
+            Object.keys(stateInit).forEach((propName: keyof StateGeneric) => {
                 property()(this, propName);
-                (this as PropertyInitGeneric)[propName] = initProps[propName];
+                (this as StateGeneric)[propName] = stateInit[propName];
             });
         }
     };
 
-    (anonymousClass as unknown as {creator: ThisElementDefinition}).creator =
-        anonymousClass as unknown as ThisElementDefinition;
     Object.defineProperties(anonymousClass, {
         [DeclarativeElementMarkerSymbol]: {
             value: true,
@@ -233,6 +229,10 @@ export function defineElementNoInputs<
                 capitalizeFirstLetter: true,
             }),
             writable: true,
+        },
+        creator: {
+            value: anonymousClass as unknown as ThisElementDefinition,
+            writable: false,
         },
         isStrictInstance: {
             value: (element: unknown) => {

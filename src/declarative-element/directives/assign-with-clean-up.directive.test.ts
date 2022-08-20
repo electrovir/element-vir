@@ -9,7 +9,7 @@ import {
     queryWithAssert,
     testIdSelector,
 } from '../../augments/testing';
-import {VirWithProps} from '../../test/elements/vir-with-props.element';
+import {VirWithInputs} from '../../test/elements/vir-with-inputs.element';
 import {assignWithCleanup} from './assign-with-clean-up.directive';
 
 const AssignWithCleanupTestElement = defineElementNoInputs({
@@ -26,44 +26,44 @@ const AssignWithCleanupTestElement = defineElementNoInputs({
         },
         equalityCheck: undefined as undefined | ((a: string, b: string) => boolean),
     },
-    renderCallback: ({props, setProps}) => {
+    renderCallback: ({state, updateState}) => {
         return html`
             <button
                 data-test-id="update-button"
                 ${listen('click', () => {
-                    setProps({nothing: Math.random()});
+                    updateState({nothing: Math.random()});
                 })}
             >
                 Click me
             </button>
-            <${VirWithProps}
+            <${VirWithInputs}
                 ${assignWithCleanup(
-                    VirWithProps,
+                    VirWithInputs,
                     (() => {
-                        setProps({
+                        updateState({
                             firedCount: {
-                                ...props.firedCount,
-                                set: props.firedCount.set + 1,
+                                ...state.firedCount,
+                                set: state.firedCount.set + 1,
                             },
                         });
                         const newString = randomString();
-                        props.generatedStrings.add(newString);
+                        state.generatedStrings.add(newString);
                         return {
                             first: 5,
                             second: newString,
                         };
                     })(),
                     (oldValue) => {
-                        props.firedCount.cleanup++;
-                        if (!props.generatedStrings.has(oldValue.second)) {
-                            props.errors.push(
+                        state.firedCount.cleanup++;
+                        if (!state.generatedStrings.has(oldValue.second)) {
+                            state.errors.push(
                                 `Could not find ${oldValue.second} in generated strings.`,
                             );
                         }
-                        props.generatedStrings.delete(oldValue.second);
+                        state.generatedStrings.delete(oldValue.second);
                     },
                 )}
-            ></${VirWithProps}>
+            ></${VirWithInputs}>
         `;
     },
 });
@@ -80,7 +80,7 @@ describe(assignWithCleanup.name, () => {
             AssignWithCleanupTestElement,
             window.document,
         );
-        const originalValue = element.instanceProps.nothing;
+        const originalValue = element.instanceState.nothing;
         const updateButton = queryWithAssert(
             testIdSelector('update-button'),
             HTMLButtonElement,
@@ -91,26 +91,26 @@ describe(assignWithCleanup.name, () => {
             position: getCenterOfElement(updateButton),
             type: 'click',
         });
-        assert.notStrictEqual(originalValue, element.instanceProps.nothing);
+        assert.notStrictEqual(originalValue, element.instanceState.nothing);
         await sendMouse({
             position: getCenterOfElement(updateButton),
             type: 'click',
         });
-        assert.notStrictEqual(originalValue, element.instanceProps.nothing);
+        assert.notStrictEqual(originalValue, element.instanceState.nothing);
 
-        assert.strictEqual(element.instanceProps.generatedStrings.size, 1);
+        assert.strictEqual(element.instanceState.generatedStrings.size, 1);
         assert.strictEqual(
-            element.instanceProps.errors.length,
+            element.instanceState.errors.length,
             0,
-            element.instanceProps.errors.join(' '),
+            element.instanceState.errors.join(' '),
         );
         assert.strictEqual(
-            element.instanceProps.firedCount.set,
+            element.instanceState.firedCount.set,
             3,
             'set a different amount of times than expected',
         );
         assert.strictEqual(
-            element.instanceProps.firedCount.cleanup,
+            element.instanceState.firedCount.cleanup,
             2,
             'cleaned up a different amount of times than expected',
         );
@@ -120,7 +120,7 @@ describe(assignWithCleanup.name, () => {
         await assertRejects(
             () =>
                 fixture(html`
-                    <${VirWithProps}
+                    <${VirWithInputs}
                         ${assignWithCleanup(
                             AssignWithCleanupTestElement,
                             {
@@ -128,10 +128,10 @@ describe(assignWithCleanup.name, () => {
                             } as any,
                             () => {},
                         )}
-                    ></${VirWithProps}>
+                    ></${VirWithInputs}>
                 `),
             Error,
-            /Property name "errors" does not exist on vir-with-props./,
+            /Property name "errors" does not exist on vir-with-inputs./,
         );
     });
 });

@@ -62,28 +62,28 @@ export const AppElement = defineElementNoInputs({
         width: -1,
         showChild: true,
     },
-    renderCallback: ({props, setProps}) => {
+    renderCallback: ({state, updateState}) => {
         // log here to make sure it's not rendering too often
         console.info('app rendering');
         return html`
             <main ${onResize((entry) => {
-                setProps({width: entry.contentRect.width});
+                updateState({width: entry.contentRect.width});
             })}>
                 Welcome to the test app.
                 <button
-                    ${listen('click', () => setProps({funnyNumber: Math.random()}))}
+                    ${listen('click', () => updateState({funnyNumber: Math.random()}))}
                 >
                     assign NEW number to child
                 </button>
                 <!-- Verify that the child component does not rerender when we pass it the same value. -->
                 <!-- Check the console logs to verify.-->
                 <button
-                    ${listen('click', () => setProps({funnyNumber: 4}))}
+                    ${listen('click', () => updateState({funnyNumber: 4}))}
                 >
                     assign SAME number to child
                 </button>
                 <button
-                    ${listen('click', () => setProps({showChild: !props.showChild}))}
+                    ${listen('click', () => updateState({showChild: !state.showChild}))}
                 >
                     toggle second child
                 </button>
@@ -91,14 +91,12 @@ export const AppElement = defineElementNoInputs({
                 <hr>
                 <${TestChildElement}
                     ${assign(TestChildElement, {
-                        button: undefined,
-                        inputNumber: props.funnyNumber,
-                        resizeListener: () => {},
-                        width: props.width,
+                        displayNumber: state.funnyNumber,
+                        width: state.width,
                     })}
                     ${listen(TestChildElement.events.speak, (event) => {
-                        setProps({
-                            eventsReceived: props.eventsReceived + 1,
+                        updateState({
+                            eventsReceived: state.eventsReceived + 1,
                             lastReceivedMessage: event.detail,
                         });
                     })}
@@ -116,18 +114,18 @@ export const AppElement = defineElementNoInputs({
                 ></${TestChildElement}>
                 <hr>
                 ${
-                    props.showChild
+                    state.showChild
                         ? html`
                               <span>Child just with clean up assign (no event listeners)</span>
                               <br />
                               <!-- prettier-ignore -->
                               <!-- intentionally not interpolated to make sure we're logging errors for it -->
-                              <element-vir-test-child-element
+                              <element-vir-test-child
                                   class="darker weird-colors"
                                   ${assignWithCleanup(
                                       TestChildElement,
                                       {
-                                          inputNumber: props.funnyNumber,
+                                          inputNumber: state.funnyNumber,
                                       } as any,
                                       (lastValue) => {
                                           console.info(
@@ -136,21 +134,19 @@ export const AppElement = defineElementNoInputs({
                                           );
                                       },
                                   )}
-                              ></element-vir-test-child-element>
+                              ></element-vir-test-child>
                               <hr />
                           `
                         : ''
                 }
-                <span>Speak events received: ${props.eventsReceived}</span>
-                <span>Last speak message received: ${props.lastReceivedMessage}</span>
-                <span>app width: ${props.width}</span>
+                <span>Speak events received: ${state.eventsReceived}</span>
+                <span>Last speak message received: ${state.lastReceivedMessage}</span>
+                <span>app width: ${state.width}</span>
                 
                 <${TestChildElement}
                     class=${TestChildElement.hostClasses.testHostClass}
                     ${assign(TestChildElement, {
-                        button: undefined,
-                        inputNumber: 15,
-                        resizeListener: () => {},
+                        displayNumber: 15,
                         width: 0,
                     })}
                 ></${TestChildElement}>

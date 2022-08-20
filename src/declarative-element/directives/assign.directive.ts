@@ -6,13 +6,17 @@ import {extractDeclarativeElement} from './directive-helpers';
 /** Assign an object matching an element's inputs to its inputs. */
 export function assign<DeclarativeElementGeneric extends DeclarativeElementDefinition>(
     declarativeElement: DeclarativeElementGeneric,
-    propsObject: typeof declarativeElement['init']['stateInit'],
+    inputsObject: DeclarativeElementGeneric extends DeclarativeElementDefinition<
+        infer InputsGeneric
+    >
+        ? InputsGeneric
+        : never,
 ) {
     /**
      * The directive generics (in listenDirective) are not strong enough to maintain their values.
      * Thus, the directive call is wrapped in this function.
      */
-    return assignDirective(propsObject);
+    return assignDirective(inputsObject);
 }
 
 const assignDirective = directive(
@@ -25,8 +29,8 @@ const assignDirective = directive(
             this.element = extractDeclarativeElement(partInfo, 'assign');
         }
 
-        render(propsObject: Record<PropertyKey, unknown>) {
-            assignInputsObject(this.element, propsObject);
+        render(inputsObject: Record<PropertyKey, unknown>) {
+            assignInputsObject(this.element, inputsObject);
             return noChange;
         }
     },
@@ -37,8 +41,8 @@ export function assignInputsObject<DeclarativeElementGeneric extends Declarative
     assignmentObject: typeof element['creator']['init']['stateInit'],
 ) {
     Object.keys(assignmentObject).forEach((key) => {
-        element.markInputsAsHavingBeenSet();
         const value = assignmentObject[key];
-        element.instanceProps[key] = value;
+        element.instanceState[key] = value;
     });
+    element.markInputsAsHavingBeenSet();
 }

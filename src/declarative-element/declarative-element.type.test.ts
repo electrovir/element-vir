@@ -15,18 +15,21 @@ const definedDeclarativeElementWithProps = defineElementNoInputs({
 
 const definedDeclarativeElementWithoutProps = defineElementNoInputs({
     renderCallback: () => html``,
+    stateInit: {
+        thing: 5,
+    },
     tagName: 'defined-declarative-element',
 });
 
-definedDeclarativeElementWithProps.props.thing;
+definedDeclarativeElementWithProps.init.stateInit.thing;
 
 function acceptInstanceWithProps(
     input: typeof definedDeclarativeElementWithProps.instanceType,
 ): void {
     // @ts-expect-error
     input.thing;
-    input.instanceProps;
-    input.instanceProps.thing;
+    input.instanceState;
+    input.instanceState.thing;
     // @ts-expect-error
     input.events.stuff;
 }
@@ -34,10 +37,10 @@ function acceptInstanceWithProps(
 function acceptInstanceWithoutProps(
     input: typeof definedDeclarativeElementWithoutProps.instanceType,
 ): void {
+    input.instanceState.thing;
+    // static properties should not be accessible from an instance
     // @ts-expect-error
-    input.props.thing;
-    // @ts-expect-error
-    input.events.stuff;
+    input.events;
 }
 
 function assertInstanceOf<T>(

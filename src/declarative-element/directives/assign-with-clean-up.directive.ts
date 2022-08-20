@@ -17,14 +17,22 @@ export type CleanupCallback<T> = (oldValue: T) => void;
  */
 export function assignWithCleanup<DeclarativeElementGeneric extends DeclarativeElementDefinition>(
     declarativeElement: DeclarativeElementGeneric,
-    propsObject: typeof declarativeElement['init']['stateInit'],
-    cleanupCallback: CleanupCallback<typeof declarativeElement['init']['stateInit']>,
+    InputsObject: DeclarativeElementGeneric extends DeclarativeElementDefinition<
+        infer InputsGeneric
+    >
+        ? InputsGeneric
+        : never,
+    cleanupCallback: CleanupCallback<
+        DeclarativeElementGeneric extends DeclarativeElementDefinition<infer InputsGeneric>
+            ? InputsGeneric
+            : never
+    >,
 ) {
     /**
      * The directive generics (in listenDirective) are not strong enough to maintain their values.
      * Thus, the directive call is wrapped in this function.
      */
-    return assignWithCleanupDirective(propsObject, cleanupCallback);
+    return assignWithCleanupDirective(InputsObject, cleanupCallback);
 }
 
 class AssignWithCleanupDirectiveClass extends AsyncDirective {
@@ -44,13 +52,13 @@ class AssignWithCleanupDirectiveClass extends AsyncDirective {
         }
     }
 
-    render(propsObject: Record<PropertyKey, unknown>, cleanupCallback: CleanupCallback<any>) {
+    render(InputsObject: Record<PropertyKey, unknown>, cleanupCallback: CleanupCallback<any>) {
         if (this.hasBeenAssigned) {
             cleanupCallback(this.lastValue);
         }
-        assignInputsObject(this.element, propsObject);
+        assignInputsObject(this.element, InputsObject);
         this.hasBeenAssigned = true;
-        this.lastValue = propsObject;
+        this.lastValue = InputsObject;
         this.lastCallback = cleanupCallback;
         return noChange;
     }

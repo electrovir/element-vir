@@ -36,14 +36,24 @@ export function hostClassNamesToStylesInput<
 }
 
 export function applyHostClasses<
-    PropertyInitGeneric extends PropertyInitMapBase,
+    InputsGeneric extends PropertyInitMapBase,
+    StateGeneric extends PropertyInitMapBase,
     HostClassKeys extends string,
->(
-    host: HTMLElement,
-    hostClassesInit: Readonly<HostClassesInitMap<HostClassKeys, PropertyInitGeneric>> | undefined,
-    hostClassNames: HostClassNamesMap<string, HostClassKeys>,
-    props: Readonly<PropertyInitGeneric>,
-): void {
+>({
+    host,
+    hostClassesInit,
+    hostClassNames,
+    state,
+    inputs,
+}: {
+    host: HTMLElement;
+    hostClassesInit:
+        | Readonly<HostClassesInitMap<HostClassKeys, InputsGeneric, StateGeneric>>
+        | undefined;
+    hostClassNames: HostClassNamesMap<string, HostClassKeys>;
+    state: Readonly<StateGeneric>;
+    inputs: Readonly<InputsGeneric>;
+}): void {
     if (!hostClassesInit) {
         return;
     }
@@ -52,7 +62,7 @@ export function applyHostClasses<
         const hostClassName = hostClassNames[hostClassKey];
 
         if (typeof maybeCallback === 'function') {
-            const shouldApplyHostClass = maybeCallback({props});
+            const shouldApplyHostClass = maybeCallback({state, inputs});
             if (shouldApplyHostClass) {
                 host.classList.add(hostClassName);
             } else {

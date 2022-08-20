@@ -1,18 +1,18 @@
 import {defineElementNoInputs, html, listen} from '..';
 
-export const MySimpleWithPropsElement = defineElementNoInputs({
-    tagName: 'my-simple-element-with-props',
+export const MySimpleWithUpdateStateElement = defineElementNoInputs({
+    tagName: 'my-simple-element-with-update-state',
     stateInit: {
-        currentUsername: 'dev',
-        currentEmail: undefined as string | undefined,
+        username: 'dev',
+        email: undefined as string | undefined,
     },
-    renderCallback: ({props, setProps}) => html`
+    renderCallback: ({state, updateState}) => html`
         <span
             ${listen('click', () => {
-                setProps({currentUsername: 'new name!'});
+                updateState({username: 'new name!'});
             })}
         >
-            Hello there ${props.currentUsername}!
+            Hello there ${state.username}!
         </span>
     `,
 });

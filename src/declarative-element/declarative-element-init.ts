@@ -29,10 +29,10 @@ export type DeclarativeElementInit<
     events?: EventsInitGeneric;
     /**
      * CSS host classes. Values can be callbacks to determine when a host class should be defined,
-     * based on current instance props, or just undefined to indicate that the host class will only
-     * be manually set.
+     * based on current instance state or inputs, or just undefined to indicate that the host class
+     * will only be manually set.
      */
-    hostClasses?: HostClassesInitMap<HostClassKeys, StateInit>;
+    hostClasses?: HostClassesInitMap<HostClassKeys, InputsGeneric, StateInit>;
     cssVars?: CssVarsInitMap<CssVarKeys>;
     /** Called as part of the first renderCallback call, before the first renderCallback call. */
     initCallback?: InitCallback<

@@ -8,7 +8,7 @@ import {HostClassNamesMap} from './host-classes';
 import {RenderCallback} from './render-callback';
 
 export type DeclarativeElementDefinition<
-    InputsGeneric extends PropertyInitMapBase = {},
+    InputsGeneric extends PropertyInitMapBase = any,
     PropertyInitGeneric extends PropertyInitMapBase = any,
     EventsInitGeneric extends EventsInitMap = any,
     HostClassKeys extends string = string,
@@ -86,6 +86,13 @@ export abstract class DeclarativeElement<
         string,
         string
     >['renderCallback'];
+    public static readonly inputsType: StaticDeclarativeElementProperties<
+        PropertyInitMapBase,
+        PropertyInitMapBase,
+        EventsInitMap,
+        string,
+        string
+    >['inputsType'];
     public static readonly events: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
@@ -93,13 +100,13 @@ export abstract class DeclarativeElement<
         string,
         string
     >['events'];
-    public static readonly props: StaticDeclarativeElementProperties<
+    public static readonly stateInit: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
         EventsInitMap,
         string,
         string
-    >['props'];
+    >['stateInit'];
     public static readonly init: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
@@ -130,7 +137,7 @@ export abstract class DeclarativeElement<
     >['cssVarValues'];
 
     public abstract override render(): TemplateResult | Promise<TemplateResult>;
-    public abstract readonly instanceProps: PropertyInitGeneric;
+    public abstract readonly instanceState: PropertyInitGeneric;
     public abstract readonly currentInputs: InputsGeneric;
     public abstract readonly haveInputsBeenSet: boolean;
     public abstract markInputsAsHavingBeenSet(): void;
@@ -159,7 +166,7 @@ export interface StaticDeclarativeElementProperties<
         CssVarKeys
     >;
     events: EventDescriptorMap<EventsInitGeneric>;
-    props: ElementPropertyDescriptorMap<PropertyInitGeneric>;
+    stateInit: ElementPropertyDescriptorMap<PropertyInitGeneric>;
     init: RequiredBy<
         DeclarativeElementInit<
             InputsGeneric,
@@ -170,7 +177,7 @@ export interface StaticDeclarativeElementProperties<
         >,
         'stateInit' | 'events'
     >;
-
+    inputsType: InputsGeneric;
     isStrictInstance: (
         element: unknown,
     ) => element is DeclarativeElement<

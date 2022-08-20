@@ -6,17 +6,17 @@ export const MyAppWithEventsElement = defineElementNoInputs({
     stateInit: {
         myNumber: -1,
     },
-    renderCallback: ({props, setProps}) => html`
+    renderCallback: ({state, updateState}) => html`
         <h1>My App</h1>
         <${MySimpleWithEventsElement}
             ${listen(MySimpleWithEventsElement.events.logoutClick, () => {
                 console.info('logout triggered');
             })}
             ${listen(MySimpleWithEventsElement.events.randomNumber, (event) => {
-                setProps({myNumber: event.detail});
+                updateState({myNumber: event.detail});
             })}
         >
         </${MySimpleWithEventsElement}>
-        <span>${props.myNumber}</span>
+        <span>${state.myNumber}</span>
     `,
 });
