@@ -14,6 +14,7 @@ import {
     defaultDeclarativeElementDefinitionOptions,
     IgnoreInputsNotBeenSetBeforeRenderWarningSymbol,
 } from './definition-options';
+import {assign} from './directives/assign.directive';
 import {createEventDescriptorMap, EventsInitMap} from './element-events';
 import {createElementUpdaterProxy, PropertyInitMapBase} from './element-properties';
 import {hasDeclarativeElementParent} from './has-declarative-element-parent';
@@ -168,7 +169,7 @@ export function defineElementNoInputs<
             ) {
                 console.warn(
                     this,
-                    `${initInput.tagName} got rendered before its input object was set. This was most likely caused by forgetting to use the "assign" directive on it.`,
+                    `${initInput.tagName} got rendered before its input object was set. This was most likely caused by forgetting to use the "${assign.name}" directive on it. If no inputs are intended, use "${defineElementNoInputs.name}" to define ${initInput.tagName}.`,
                 );
             }
 
