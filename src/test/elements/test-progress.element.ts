@@ -15,7 +15,7 @@ export const TestTypesProgress = defineElementNoInputs<TestTypesProgressInputs>(
 });
 
 function doThing(thing: typeof TestTypesProgress.instanceType) {
-    thing.currentInputs;
+    thing.instanceInputs;
 }
 
 const thing = new TestTypesProgress();

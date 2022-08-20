@@ -8,5 +8,5 @@ export type DeclarativeElementDefinitionOptions = {
 };
 
 export const defaultDeclarativeElementDefinitionOptions: DeclarativeElementDefinitionOptions = {
-    [IgnoreInputsNotBeenSetBeforeRenderWarningSymbol]: false,
+    [IgnoreInputsNotBeenSetBeforeRenderWarningSymbol]: true,
 };

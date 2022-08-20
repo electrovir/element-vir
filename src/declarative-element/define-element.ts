@@ -1,6 +1,7 @@
 import {DeclarativeElementDefinition} from './declarative-element';
 import {DeclarativeElementInit} from './declarative-element-init';
 import {defineElementNoInputs} from './define-element-no-inputs';
+import {IgnoreInputsNotBeenSetBeforeRenderWarningSymbol} from './definition-options';
 import {EventsInitMap} from './element-events';
 import {PropertyInitMapBase} from './element-properties';
 
@@ -25,6 +26,12 @@ export function defineElement<InputsGeneric extends PropertyInitMapBase = {}>() 
         HostClassKeys,
         CssVarKeys
     > => {
-        return defineElementNoInputs(initInput);
+        return defineElementNoInputs({
+            ...initInput,
+            options: {
+                [IgnoreInputsNotBeenSetBeforeRenderWarningSymbol]: false,
+            },
+            ...initInput.options,
+        });
     };
 }

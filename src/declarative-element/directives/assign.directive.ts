@@ -41,8 +41,7 @@ export function assignInputsObject<DeclarativeElementGeneric extends Declarative
     assignmentObject: typeof element['creator']['init']['stateInit'],
 ) {
     Object.keys(assignmentObject).forEach((key) => {
-        const value = assignmentObject[key];
-        element.instanceState[key] = value;
+        element.instanceInputs[key] = assignmentObject[key];
     });
     element.markInputsAsHavingBeenSet();
 }

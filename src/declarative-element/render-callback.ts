@@ -100,7 +100,7 @@ export function createRenderParams<
                 ] as StateGeneric[typeof propKey];
             });
         },
-        inputs: element.currentInputs,
+        inputs: element.instanceInputs,
         host: element,
         state: element.instanceState,
         events: eventsMap,

@@ -21,28 +21,27 @@ export type ElementPropertyDescriptorMap<PropertyInitGeneric extends PropertyIni
 };
 
 function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase>(
-    propertyName: any,
-    element: Element,
+    propKey: any,
+    element: DeclarativeElement,
     elementTagName: string,
-): asserts propertyName is keyof PropertyInitGeneric {
-    if (typeof propertyName !== 'string') {
+): asserts propKey is keyof PropertyInitGeneric {
+    if (typeof propKey !== 'string' && typeof propKey !== 'number' && typeof propKey !== 'symbol') {
         throw new Error(
-            `Property name must be a string, got type "${typeof propertyName}" from: "${String(
-                propertyName,
+            `Property name must be a string, got type "${typeof propKey}" from: "${String(
+                propKey,
             )}" for ${elementTagName.toLowerCase()}`,
         );
     }
-    if (!(propertyName in element)) {
-        console.log('derp');
+    if (!(propKey in element)) {
         throw new Error(
-            `Property name "${propertyName}" does not exist on ${elementTagName.toLowerCase()}.`,
+            `Property "${String(propKey)}" does not exist on ${elementTagName.toLowerCase()}.`,
         );
     }
 }
 
 export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyInitMapBase>(
     element: DeclarativeElement,
-    propsInitMap: PropertyInitGeneric = {} as PropertyInitGeneric,
+    verifyExists: boolean,
 ): PropertyInitGeneric {
     /**
      * Lit element updates state and inputs by setting them directly on the element, so we must do
@@ -55,15 +54,15 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
         {},
         {
             get: (_target, propertyName: keyof PropertyInitGeneric | symbol) => {
-                console.log('derp');
-                element.haveInputsBeenSet &&
+                if (verifyExists) {
                     assertValidPropertyName(propertyName, element, element.tagName);
+                }
                 return elementAsProps[propertyName];
             },
             set: (_target, propertyName: keyof PropertyInitGeneric | symbol, value) => {
-                console.log('derp');
-                element.haveInputsBeenSet &&
+                if (verifyExists) {
                     assertValidPropertyName(propertyName, element, element.tagName);
+                }
                 elementAsProps[propertyName] = value;
                 return true;
             },

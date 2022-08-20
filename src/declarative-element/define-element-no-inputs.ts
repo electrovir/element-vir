@@ -21,13 +21,6 @@ import {createHostClassNamesMap} from './host-classes';
 import {createRenderParams, RenderParams} from './render-callback';
 import {applyHostClasses, hostClassNamesToStylesInput} from './styles';
 
-const defaultInit: Required<
-    Pick<DeclarativeElementInit<any, any, any, any, any>, 'stateInit' | 'events'>
-> = {
-    events: {},
-    stateInit: {},
-};
-
 export function defineElementNoInputs<
     InputsGeneric extends PropertyInitMapBase = {},
     StateGeneric extends PropertyInitMapBase = {},
@@ -199,12 +192,14 @@ export function defineElementNoInputs<
         // this is set below in Object.defineProperties
         public readonly creator = {} as unknown as ThisElementDefinition;
 
-        public readonly currentInputs: InputsGeneric =
-            createElementUpdaterProxy<InputsGeneric>(this);
+        public readonly instanceInputs: InputsGeneric = createElementUpdaterProxy<InputsGeneric>(
+            this,
+            false,
+        );
 
         public readonly instanceState: StateGeneric = createElementUpdaterProxy<StateGeneric>(
             this,
-            initInput.stateInit,
+            true,
         );
 
         constructor() {

@@ -101,10 +101,10 @@ export const AppElement = defineElementNoInputs({
                         });
                     })}
                     ${listen(MyCustomEvent, (event) => {
-                        console.log(event.detail);
+                        console.debug(event.detail);
                     })}
                     ${listen('click', (event) => {
-                        console.log(
+                        console.debug(
                             'event should be a mouse event:',
                             // should be true
                             event instanceof MouseEvent,
