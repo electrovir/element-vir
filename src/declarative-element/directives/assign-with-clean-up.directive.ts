@@ -16,8 +16,8 @@ export type CleanupCallback<T> = (oldValue: T) => void;
  * Example use case: 3D graphics applications with classes that setup buffers and the like.
  */
 export function assignWithCleanup<DeclarativeElementGeneric extends DeclarativeElementDefinition>(
-    declarativeElement: DeclarativeElementGeneric,
-    InputsObject: DeclarativeElementGeneric extends DeclarativeElementDefinition<
+    elementDefinition: DeclarativeElementGeneric,
+    inputsObject: DeclarativeElementGeneric extends DeclarativeElementDefinition<
         infer InputsGeneric
     >
         ? InputsGeneric
@@ -32,7 +32,7 @@ export function assignWithCleanup<DeclarativeElementGeneric extends DeclarativeE
      * The directive generics (in listenDirective) are not strong enough to maintain their values.
      * Thus, the directive call is wrapped in this function.
      */
-    return assignWithCleanupDirective(InputsObject, cleanupCallback);
+    return assignWithCleanupDirective(elementDefinition, inputsObject, cleanupCallback);
 }
 
 class AssignWithCleanupDirectiveClass extends AsyncDirective {
@@ -52,13 +52,17 @@ class AssignWithCleanupDirectiveClass extends AsyncDirective {
         }
     }
 
-    render(InputsObject: Record<PropertyKey, unknown>, cleanupCallback: CleanupCallback<any>) {
+    render(
+        elementDefinition: DeclarativeElementDefinition,
+        inputsObject: Record<PropertyKey, unknown>,
+        cleanupCallback: CleanupCallback<any>,
+    ) {
         if (this.hasBeenAssigned) {
             cleanupCallback(this.lastValue);
         }
-        assignInputsObject(this.element, InputsObject);
+        assignInputsObject(elementDefinition, this.element, inputsObject);
         this.hasBeenAssigned = true;
-        this.lastValue = InputsObject;
+        this.lastValue = inputsObject;
         this.lastCallback = cleanupCallback;
         return noChange;
     }

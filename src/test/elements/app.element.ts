@@ -64,7 +64,7 @@ export const AppElement = defineElementNoInputs({
     },
     renderCallback: ({state, updateState}) => {
         // log here to make sure it's not rendering too often
-        console.info('app rendering');
+        console.info(`app rendering ${state.width}`);
         return html`
             <main ${onResize((entry) => {
                 updateState({width: entry.contentRect.width});
@@ -125,8 +125,9 @@ export const AppElement = defineElementNoInputs({
                                   ${assignWithCleanup(
                                       TestChildElement,
                                       {
-                                          inputNumber: state.funnyNumber,
-                                      } as any,
+                                          displayNumber: state.funnyNumber,
+                                          width: -1,
+                                      },
                                       (lastValue) => {
                                           console.info(
                                               'assign with cleanup last value in app',
@@ -147,7 +148,7 @@ export const AppElement = defineElementNoInputs({
                     class=${TestChildElement.hostClasses.testHostClass}
                     ${assign(TestChildElement, {
                         displayNumber: 15,
-                        width: 0,
+                        width: -1,
                     })}
                 ></${TestChildElement}>
                 ${allTestArrayElements.map((element) => {

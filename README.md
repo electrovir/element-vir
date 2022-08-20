@@ -1,6 +1,6 @@
 # element-vir
 
-Heroic. Reactive. Functional. Type safe. Web components without compromise.
+Heroic. Reactive. Declarative. Type safe. Web components without compromise.
 
 No need for an extra build step,<br>
 no need for side effect imports, <br>
@@ -35,7 +35,7 @@ All of [`lit`](https://lit.dev)'s syntax and functionality is also available for
 
 ## Simple element definition
 
-Use `defineElementNoInputs` to define your element. Tt must be given an object with at least `tagName` and `renderCallback` properties (the types enforce this). Here is a bare-minimum example custom element:
+Use `defineElementNoInputs` to define your element if you're not setting inputs (or just for now as you're getting started). It must be given an object with at least `tagName` and `renderCallback` properties (the types enforce this). Here is a bare-minimum example custom element:
 
 <!-- example-link: src/readme-examples/my-simple.element.ts -->
 
@@ -106,7 +106,7 @@ export const MySimpleWithStylesElement = defineElementNoInputs({
 
 ### Element definition as style selector
 
-Functional element definitions can be used in the `css` tagged template just like in the `html` tagged template. This will be replaced by the element's tag name:
+Declarative element definitions can be used in the `css` tagged template just like in the `html` tagged template. This will be replaced by the element's tag name:
 
 <!-- example-link: src/readme-examples/my-simple-app-with-styles-and-interpolated-selector.element.ts -->
 
@@ -127,51 +127,50 @@ export const MySimpleWithStylesAndInterpolatedSelectorElement = defineElementNoI
 });
 ```
 
-## Defining and using properties (inputs)
+## Defining and using Inputs
 
-Define element properties with `props` when defining a declarative element. Each property must be given a default value. If you wish to leave the property's default value as `undefined`, give it a type as well (shown below with `as string | undefined`) so you can assign a defined value of that type to it later.
+Define element inputs by using `defineElement` to define a declarative element. Pass your input type as a generic to the `defineElement` call. Then call _that_ with the normal definition input (like when using `defineElementNoInputs`).
 
-To use a custom element's properties, grab `props` from `renderCallback`'s parameters and interpolate it into your HTML template:
+To use an element's inputs for use in its template, grab `inputs` from `renderCallback`'s parameters and interpolate it into your HTML template:
 
-<!-- example-link: src/readme-examples/my-simple-with-props.element.ts -->
+<!-- example-link: src/readme-examples/my-simple-with-inputs.element.ts -->
 
 ```TypeScript
-import {defineElementNoInputs, html} from 'element-vir';
+import {defineElement, html} from 'element-vir';
 
-export const MySimpleWithPropsElement = defineElementNoInputs({
-    tagName: 'my-simple-element-with-props',
-    props: {
-        currentUsername: 'dev',
-        currentEmail: undefined as string | undefined,
-    },
-    renderCallback: ({props}) => html`
-        <span>Hello there ${props.currentUsername}!</span>
+export const MySimpleWithInputsElement = defineElement<{
+    username: string;
+    email: string;
+}>()({
+    tagName: 'my-simple-element-with-inputs',
+    renderCallback: ({inputs}) => html`
+        <span>Hello there ${inputs.username}!</span>
     `,
 });
 ```
 
-### Updating properties
+## Defining internal state
 
-Grab `setProps` from `renderCallback`'s parameters to update the values in `props`. When `setProps` is called within `renderCallback`, the `props` object is updated but a new render is not scheduled. When `setProps` is called outside of `renderCallback` (like as a result of an event listener, as shown below), a new render is triggered. (Note that this example also uses the `listen` directive to respond to click events.)
+Define internal state with the `stateInit` property when defining an element. Grab it with `state` in `renderCallback` to use state. Grab `updateState` in `renderCallback` to update state:
 
-<!-- example-link: src/readme-examples/my-simple-with-set-props.element.ts -->
+<!-- example-link: src/readme-examples/my-simple-with-update-state.element.ts -->
 
 ```TypeScript
 import {defineElementNoInputs, html, listen} from 'element-vir';
 
-export const MySimpleWithPropsElement = defineElementNoInputs({
-    tagName: 'my-simple-element-with-props',
-    props: {
-        currentUsername: 'dev',
-        currentEmail: undefined as string | undefined,
+export const MySimpleWithUpdateStateElement = defineElementNoInputs({
+    tagName: 'my-simple-element-with-update-state',
+    stateInit: {
+        username: 'dev',
+        email: undefined as string | undefined,
     },
-    renderCallback: ({props, setProps}) => html`
+    renderCallback: ({state, updateState}) => html`
         <span
             ${listen('click', () => {
-                setProps({currentUsername: 'new name!'});
+                updateState({username: 'new name!'});
             })}
         >
-            Hello there ${props.currentUsername}!
+            Hello there ${state.username}!
         </span>
     `,
 });
@@ -181,21 +180,23 @@ export const MySimpleWithPropsElement = defineElementNoInputs({
 
 Use the `assign` directive to assign properties to child custom elements:
 
-<!-- example-link: src/readme-examples/my-app-with-props.element.ts -->
+<!-- example-link: src/readme-examples/my-app-with-assignment.element.ts -->
 
 ```TypeScript
 import {assign, defineElementNoInputs, html} from 'element-vir';
-import {MySimpleWithPropsElement} from './my-simple-with-props.element';
+import {MySimpleWithInputsElement} from './my-simple-with-inputs.element';
 
-export const MyAppWithPropsElement = defineElementNoInputs({
-    tagName: 'my-app-with-props-element',
+export const MyAppWithAssignmentElement = defineElementNoInputs({
+    tagName: 'my-app-with-assignment-element',
     renderCallback: () => html`
         <h1>My App</h1>
-        <${MySimpleWithPropsElement}
-            ${assign(MySimpleWithPropsElement.props.currentUsername, 'user')}
-            ${assign(MySimpleWithPropsElement.props.currentEmail, 'user@example.com')}
+        <${MySimpleWithInputsElement}
+            ${assign(MySimpleWithInputsElement, {
+                email: 'user@example.com',
+                username: 'user',
+            })}
         >
-        </${MySimpleWithPropsElement}>
+        </${MySimpleWithInputsElement}>
     `,
 });
 ```
@@ -240,21 +241,21 @@ import {MySimpleWithEventsElement} from './my-simple-with-events.element';
 
 export const MyAppWithEventsElement = defineElementNoInputs({
     tagName: 'my-app-with-events-element',
-    props: {
+    stateInit: {
         myNumber: -1,
     },
-    renderCallback: ({props, setProps}) => html`
+    renderCallback: ({state, updateState}) => html`
         <h1>My App</h1>
         <${MySimpleWithEventsElement}
             ${listen(MySimpleWithEventsElement.events.logoutClick, () => {
                 console.info('logout triggered');
             })}
             ${listen(MySimpleWithEventsElement.events.randomNumber, (event) => {
-                setProps({myNumber: event.detail});
+                updateState({myNumber: event.detail});
             })}
         >
         </${MySimpleWithEventsElement}>
-        <span>${props.myNumber}</span>
+        <span>${state.myNumber}</span>
     `,
 });
 ```
@@ -318,7 +319,7 @@ import {css, defineElementNoInputs, html} from 'element-vir';
 
 export const MyAppWithHostClasses = defineElementNoInputs({
     tagName: 'my-app-with-host-classes',
-    props: {
+    stateInit: {
         myProp: 'hello there',
     },
     hostClasses: {
@@ -331,8 +332,8 @@ export const MyAppWithHostClasses = defineElementNoInputs({
          * This host class will be automatically applied if the given callback evaluated to true
          * after a call to renderCallback.
          */
-        automaticallyAppliedVariation: ({props}) => {
-            return props.myProp === 'foo';
+        automaticallyAppliedVariation: ({state}) => {
+            return state.myProp === 'foo';
         },
     },
     /**
@@ -348,8 +349,8 @@ export const MyAppWithHostClasses = defineElementNoInputs({
             color: red;
         }
     `,
-    renderCallback: ({props}) => html`
-        ${props.myProp}
+    renderCallback: ({state}) => html`
+        ${state.myProp}
     `,
 });
 ```
@@ -454,26 +455,29 @@ This directive is the same as the `assign` directive but it accepts an additiona
 <!-- example-link: src/readme-examples/my-app-with-cleanup.element.ts -->
 
 ```TypeScript
-import {assign, assignWithCleanup, defineElementNoInputs, html} from 'element-vir';
-import {MySimpleWithPropsElement} from './my-simple-with-props.element';
+import {assignWithCleanup, defineElementNoInputs, html} from 'element-vir';
+import {MySimpleWithInputsElement} from './my-simple-with-inputs.element';
 
-export const MyAppWithPropsElement = defineElementNoInputs({
+export const MyAppWithAssignmentCleanupElement = defineElementNoInputs({
     tagName: 'my-app-with-cleanup',
     renderCallback: () => html`
         <h1>My App</h1>
-        <${MySimpleWithPropsElement}
+        <${MySimpleWithInputsElement}
             ${assignWithCleanup(
-                MySimpleWithPropsElement.props.currentUsername,
-                'user',
+                MySimpleWithInputsElement,
+                {
+                    email: 'user@example.com',
+                    username: 'user',
+                },
                 (previousValue) => {
                     // here would be the cleanup code.
-                    // In this specific example the value is just a string, so no cleanup is needed.
-                    previousValue.trim();
+                    // In this specific example the value is just a string, so no cleanup is needed
+                    // and the following line isn't actually doing anything.
+                    previousValue.username.trim();
                 },
             )}
-            ${assign(MySimpleWithPropsElement.props.currentEmail, 'user@example.com')}
         >
-        </${MySimpleWithPropsElement}>
+        </${MySimpleWithInputsElement}>
     `,
 });
 ```

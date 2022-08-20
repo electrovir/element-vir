@@ -131,7 +131,7 @@ describe(assignWithCleanup.name, () => {
                     ></${VirWithInputs}>
                 `),
             Error,
-            /Property name "errors" does not exist on vir-with-inputs./,
+            /Assignment mismatch. Assignment was made for vir-with-inputs but it\'s attached to vir-assign-with-cleanup-test/,
         );
     });
 });
