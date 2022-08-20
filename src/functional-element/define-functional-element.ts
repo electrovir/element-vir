@@ -107,6 +107,8 @@ export function defineFunctionalElement<
         public static override init: ThisElementInstance['init'] =
             typedInit as ThisElementInstance['init'];
 
+        // this gets overridden below
+        public static override readonly isStrictInstance: any = () => false;
         public static override readonly events: StaticFunctionalElementProperties<
             InputsGeneric,
             PropertyInitGeneric,
@@ -192,17 +194,24 @@ export function defineFunctionalElement<
 
     (anonymousClass as unknown as {creator: ThisElementDefinition}).creator =
         anonymousClass as unknown as ThisElementDefinition;
-    Object.defineProperty(anonymousClass, 'name', {
-        value: kebabCaseToCamelCase(initInput.tagName, {
-            capitalizeFirstLetter: true,
-        }),
-        writable: true,
+    Object.defineProperties(anonymousClass, {
+        [FunctionalElementMarkerSymbol]: {
+            value: true,
+            writable: false,
+        },
+        name: {
+            value: kebabCaseToCamelCase(initInput.tagName, {
+                capitalizeFirstLetter: true,
+            }),
+            writable: true,
+        },
+        isStrictInstance: {
+            value: (element: unknown) => {
+                return element instanceof anonymousClass;
+            },
+            writable: false,
+        },
     });
-    Object.defineProperty(anonymousClass, FunctionalElementMarkerSymbol, {
-        value: true,
-        writable: false,
-    });
-
     window.customElements.define(initInput.tagName, anonymousClass);
 
     return anonymousClass as unknown as ThisElementDefinition;

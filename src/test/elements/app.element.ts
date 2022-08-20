@@ -88,7 +88,8 @@ export const AppElement = defineFunctionalElement({
                     toggle second child
                 </button>
                 
-                <hr>                <${TestChildElement}
+                <hr>
+                <${TestChildElement}
                     ${assign(TestChildElement, {
                         button: undefined,
                         inputNumber: props.funnyNumber,

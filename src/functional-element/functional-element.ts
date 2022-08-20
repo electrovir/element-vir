@@ -72,6 +72,13 @@ export abstract class FunctionalElement<
         string,
         string
     >['styles'];
+    public static readonly isStrictInstance: StaticFunctionalElementProperties<
+        PropertyInitMapBase,
+        PropertyInitMapBase,
+        EventsInitMap,
+        string,
+        string
+    >['isStrictInstance'];
     public static readonly renderCallback: StaticFunctionalElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
@@ -160,6 +167,16 @@ export interface StaticFunctionalElementProperties<
             CssVarKeys
         >,
         'stateInit' | 'events'
+    >;
+
+    isStrictInstance: (
+        element: unknown,
+    ) => element is FunctionalElement<
+        InputsGeneric,
+        PropertyInitGeneric,
+        EventsInitGeneric,
+        HostClassKeys,
+        CssVarKeys
     >;
     hostClasses: HostClassNamesMap<string, HostClassKeys>;
     cssVarNames: CssVarNameOrValueMap<CssVarKeys>;

@@ -2,7 +2,7 @@ import {assert, expect, fixture, waitUntil} from '@open-wc/testing';
 import {sendMouse} from '@web/test-runner-commands';
 import {RequiredAndNotNullBy} from 'augment-vir';
 import {html} from '../..';
-import {assertInstanceOf, isInstanceOf} from '../../augments/testing';
+import {assertInstanceOf} from '../../augments/testing';
 import {AppElement} from './app.element';
 import {TestChildElement} from './child.element';
 
@@ -61,7 +61,7 @@ describe(AppElement.tagName, () => {
     }
 
     function getAppElement(context: Element) {
-        if (isInstanceOf(context, AppElement)) {
+        if (AppElement.isStrictInstance(context)) {
             return context;
         }
         const appElement = context.querySelector(AppElement.tagName);
