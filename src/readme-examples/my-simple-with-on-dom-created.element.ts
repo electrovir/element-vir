@@ -1,6 +1,6 @@
-import {defineFunctionalElement, html, onDomCreated} from '..';
+import {defineElement, html, onDomCreated} from '..';
 
-export const MySimpleWithOnDomCreatedElement = defineFunctionalElement({
+export const MySimpleWithOnDomCreatedElement = defineElement({
     tagName: 'my-simple-with-on-dom-created-element',
     renderCallback: () => html`
         <span

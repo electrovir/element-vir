@@ -1,6 +1,6 @@
-import {css, defineFunctionalElement, html} from '..';
+import {css, defineElement, html} from '..';
 
-export const MyAppWithCssVars = defineFunctionalElement({
+export const MyAppWithCssVars = defineElement({
     tagName: 'my-app-with-css-vars',
     cssVars: {
         /**

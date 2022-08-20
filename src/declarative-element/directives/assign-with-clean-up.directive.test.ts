@@ -1,10 +1,10 @@
 import {assert, fixture} from '@open-wc/testing';
 import {sendMouse} from '@web/test-runner-commands';
 import {randomString} from 'augment-vir';
-import {defineFunctionalElement, html, listen} from '../..';
+import {defineElement, html, listen} from '../..';
 import {
     assertRejects,
-    getAssertedFunctionalElement,
+    getAssertedDeclarativeElement,
     getCenterOfElement,
     queryWithAssert,
     testIdSelector,
@@ -12,7 +12,7 @@ import {
 import {VirWithProps} from '../../test/elements/vir-with-props.element';
 import {assignWithCleanup} from './assign-with-clean-up.directive';
 
-const AssignWithCleanupTestElement = defineFunctionalElement({
+const AssignWithCleanupTestElement = defineElement({
     tagName: 'vir-assign-with-cleanup-test',
     stateInit: {
         first: 1,
@@ -74,7 +74,7 @@ describe(assignWithCleanup.name, () => {
             <${AssignWithCleanupTestElement}></${AssignWithCleanupTestElement}>
         `);
 
-        const element = getAssertedFunctionalElement(AssignWithCleanupTestElement, rendered);
+        const element = getAssertedDeclarativeElement(AssignWithCleanupTestElement, rendered);
         const testElement = queryWithAssert(
             AssignWithCleanupTestElement.tagName,
             AssignWithCleanupTestElement,

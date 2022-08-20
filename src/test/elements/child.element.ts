@@ -1,9 +1,9 @@
 import {randomString} from 'augment-vir';
 import {css} from 'lit';
-import {defineElementEvent, defineFunctionalElement, html, listen, onDomCreated} from '../..';
+import {defineElement, defineElementEvent, html, listen, onDomCreated} from '../..';
 import {MyCustomEvent} from '../customEvent';
 
-export const TestChildElement = defineFunctionalElement({
+export const TestChildElement = defineElement({
     tagName: 'element-vir-test-child-element',
     styles: ({hostClass, cssVarValue, cssVarName}) => {
         // console.log({

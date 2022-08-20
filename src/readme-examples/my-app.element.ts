@@ -1,7 +1,7 @@
-import {defineFunctionalElement, html} from '..';
+import {defineElement, html} from '..';
 import {MySimpleElement} from './my-simple.element';
 
-export const MyAppElement = defineFunctionalElement({
+export const MyAppElement = defineElement({
     tagName: 'my-app-element',
     renderCallback: () => html`
         <h1>My App</h1>

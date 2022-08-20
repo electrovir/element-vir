@@ -1,33 +1,33 @@
 import {RequiredBy} from 'augment-vir';
 import {CSSResult, LitElement, TemplateResult} from 'lit';
 import {CssVarNameOrValueMap} from './css-vars';
+import {DeclarativeElementInit} from './declarative-element-init';
 import {EventDescriptorMap, EventsInitMap} from './element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './element-properties';
-import {FunctionalElementInit} from './functional-element-init';
 import {HostClassNamesMap} from './host-classes';
 import {RenderCallback} from './render-callback';
 
-export type FunctionalElementDefinition<
+export type DeclarativeElementDefinition<
     InputsGeneric extends PropertyInitMapBase = {},
     PropertyInitGeneric extends PropertyInitMapBase = any,
     EventsInitGeneric extends EventsInitMap = any,
     HostClassKeys extends string = string,
     CssVarKeys extends string = string,
-> = (new () => FunctionalElement<
+> = (new () => DeclarativeElement<
     InputsGeneric,
     PropertyInitGeneric,
     EventsInitGeneric,
     HostClassKeys,
     CssVarKeys
 >) &
-    StaticFunctionalElementProperties<
+    StaticDeclarativeElementProperties<
         InputsGeneric,
         PropertyInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
     > & {
-        instanceType: FunctionalElement<
+        instanceType: DeclarativeElement<
             InputsGeneric,
             PropertyInitGeneric,
             EventsInitGeneric,
@@ -43,7 +43,7 @@ function staticImplements<T>() {
 }
 
 @staticImplements<
-    StaticFunctionalElementProperties<
+    StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
         EventsInitMap,
@@ -51,77 +51,77 @@ function staticImplements<T>() {
         string
     >
 >()
-export abstract class FunctionalElement<
+export abstract class DeclarativeElement<
     InputsGeneric extends PropertyInitMapBase = any,
     PropertyInitGeneric extends PropertyInitMapBase = any,
     EventsInitGeneric extends EventsInitMap = any,
     HostClassKeys extends string = string,
     CssVarKeys extends string = string,
 > extends LitElement {
-    public static readonly tagName: StaticFunctionalElementProperties<
+    public static readonly tagName: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
         EventsInitMap,
         string,
         string
     >['tagName'];
-    public static override readonly styles: StaticFunctionalElementProperties<
+    public static override readonly styles: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
         EventsInitMap,
         string,
         string
     >['styles'];
-    public static readonly isStrictInstance: StaticFunctionalElementProperties<
+    public static readonly isStrictInstance: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
         EventsInitMap,
         string,
         string
     >['isStrictInstance'];
-    public static readonly renderCallback: StaticFunctionalElementProperties<
+    public static readonly renderCallback: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
         EventsInitMap,
         string,
         string
     >['renderCallback'];
-    public static readonly events: StaticFunctionalElementProperties<
+    public static readonly events: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
         EventsInitMap,
         string,
         string
     >['events'];
-    public static readonly props: StaticFunctionalElementProperties<
+    public static readonly props: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
         EventsInitMap,
         string,
         string
     >['props'];
-    public static readonly init: StaticFunctionalElementProperties<
+    public static readonly init: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
         EventsInitMap,
         string,
         string
     >['init'];
-    public static readonly hostClasses: StaticFunctionalElementProperties<
+    public static readonly hostClasses: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
         EventsInitMap,
         string,
         string
     >['hostClasses'];
-    public static readonly cssVarNames: StaticFunctionalElementProperties<
+    public static readonly cssVarNames: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
         EventsInitMap,
         string,
         string
     >['cssVarNames'];
-    public static readonly cssVarValues: StaticFunctionalElementProperties<
+    public static readonly cssVarValues: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
         EventsInitMap,
@@ -134,7 +134,7 @@ export abstract class FunctionalElement<
     public abstract readonly currentInputs: InputsGeneric;
     public abstract readonly haveInputsBeenSet: boolean;
     public abstract markInputsAsHavingBeenSet(): void;
-    public abstract readonly creator: FunctionalElementDefinition<
+    public abstract readonly creator: DeclarativeElementDefinition<
         InputsGeneric,
         PropertyInitGeneric,
         EventsInitGeneric,
@@ -143,7 +143,7 @@ export abstract class FunctionalElement<
     >;
 }
 
-export interface StaticFunctionalElementProperties<
+export interface StaticDeclarativeElementProperties<
     InputsGeneric extends PropertyInitMapBase,
     PropertyInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
@@ -161,7 +161,7 @@ export interface StaticFunctionalElementProperties<
     events: EventDescriptorMap<EventsInitGeneric>;
     props: ElementPropertyDescriptorMap<PropertyInitGeneric>;
     init: RequiredBy<
-        FunctionalElementInit<
+        DeclarativeElementInit<
             InputsGeneric,
             PropertyInitGeneric,
             EventsInitGeneric,
@@ -173,7 +173,7 @@ export interface StaticFunctionalElementProperties<
 
     isStrictInstance: (
         element: unknown,
-    ) => element is FunctionalElement<
+    ) => element is DeclarativeElement<
         InputsGeneric,
         PropertyInitGeneric,
         EventsInitGeneric,

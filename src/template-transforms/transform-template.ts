@@ -1,6 +1,6 @@
 import {typedHasOwnProperties} from 'augment-vir';
 import {filterOutArrayIndexes} from '../augments/array';
-import {FunctionalElementMarkerSymbol} from '../funtional-element-marker-symbol';
+import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';
 import {getAlreadyMappedTemplate, setMappedTemplate} from './nested-mapped-templates';
 
 export type TemplateTransform = {
@@ -38,7 +38,7 @@ export function makeCheckTransform<T>(
 
 type WeakMapElementKey = {
     tagName: string;
-    [FunctionalElementMarkerSymbol]: true;
+    [DeclarativeElementMarkerSymbol]: true;
 };
 
 type NestedTemplatesWeakMap = WeakMap<
@@ -62,10 +62,10 @@ function extractElementValues(values: unknown[]): WeakMapElementKey[] {
         return (
             typedHasOwnProperties(value, [
                 'tagName',
-                FunctionalElementMarkerSymbol,
+                DeclarativeElementMarkerSymbol,
             ]) &&
             !!value.tagName &&
-            !!value[FunctionalElementMarkerSymbol]
+            !!value[DeclarativeElementMarkerSymbol]
         );
     });
 }

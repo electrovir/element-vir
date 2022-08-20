@@ -1,6 +1,6 @@
-import {defineFunctionalElement, html, onResize} from '..';
+import {defineElement, html, onResize} from '..';
 
-export const MySimpleWithOnResizeElement = defineFunctionalElement({
+export const MySimpleWithOnResizeElement = defineElement({
     tagName: 'my-simple-with-on-dom-created-element',
     renderCallback: () => html`
         <span

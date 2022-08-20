@@ -1,8 +1,8 @@
 import {html} from '..';
-import {defineFunctionalElement} from './define-functional-element';
+import {defineElement} from './define-element';
 import {defineElementEvent} from './element-events';
 
-const definedFunctionalElementWithProps = defineFunctionalElement({
+const definedDeclarativeElementWithProps = defineElement({
     renderCallback: () => html``,
     stateInit: {
         thing: '',
@@ -10,18 +10,18 @@ const definedFunctionalElementWithProps = defineFunctionalElement({
     events: {
         stuff: defineElementEvent<boolean>(),
     },
-    tagName: 'defined-functional-element',
+    tagName: 'defined-declarative-element',
 });
 
-const definedFunctionalElementWithoutProps = defineFunctionalElement({
+const definedDeclarativeElementWithoutProps = defineElement({
     renderCallback: () => html``,
-    tagName: 'defined-functional-element',
+    tagName: 'defined-declarative-element',
 });
 
-definedFunctionalElementWithProps.props.thing;
+definedDeclarativeElementWithProps.props.thing;
 
 function acceptInstanceWithProps(
-    input: typeof definedFunctionalElementWithProps.instanceType,
+    input: typeof definedDeclarativeElementWithProps.instanceType,
 ): void {
     // @ts-expect-error
     input.thing;
@@ -32,7 +32,7 @@ function acceptInstanceWithProps(
 }
 
 function acceptInstanceWithoutProps(
-    input: typeof definedFunctionalElementWithoutProps.instanceType,
+    input: typeof definedDeclarativeElementWithoutProps.instanceType,
 ): void {
     // @ts-expect-error
     input.props.thing;
@@ -46,7 +46,7 @@ function assertInstanceOf<T>(
 ): asserts element is T {}
 
 const testInstance: unknown = {} as any;
-assertInstanceOf(testInstance, definedFunctionalElementWithProps);
+assertInstanceOf(testInstance, definedDeclarativeElementWithProps);
 testInstance;
 acceptInstanceWithProps(testInstance);
-acceptInstanceWithoutProps(new definedFunctionalElementWithoutProps());
+acceptInstanceWithoutProps(new definedDeclarativeElementWithoutProps());

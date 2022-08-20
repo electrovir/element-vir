@@ -1,10 +1,10 @@
 import {typedHasOwnProperties} from 'augment-vir';
-import {FunctionalElementMarkerSymbol} from '../funtional-element-marker-symbol';
+import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';
 import {TemplateTransform} from './transform-template';
 
 type WeakMapElementKey = {
     tagName: string;
-    [FunctionalElementMarkerSymbol]: true;
+    [DeclarativeElementMarkerSymbol]: true;
 };
 
 type TemplateAndNested = {
@@ -19,10 +19,10 @@ function extractElementKeys(values: unknown[]): WeakMapElementKey[] {
         return (
             typedHasOwnProperties(value, [
                 'tagName',
-                FunctionalElementMarkerSymbol,
+                DeclarativeElementMarkerSymbol,
             ]) &&
             !!value.tagName &&
-            !!value[FunctionalElementMarkerSymbol]
+            !!value[DeclarativeElementMarkerSymbol]
         );
     });
 }

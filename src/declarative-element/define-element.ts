@@ -1,61 +1,61 @@
 import {kebabCaseToCamelCase} from 'augment-vir';
 import {css, TemplateResult} from 'lit';
 import {property} from 'lit/decorators.js';
-import {FunctionalElementMarkerSymbol} from '../funtional-element-marker-symbol';
+import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';
 import {createCssVarNamesMap, createCssVarValuesMap} from './css-vars';
+import {
+    DeclarativeElement,
+    DeclarativeElementDefinition,
+    StaticDeclarativeElementProperties,
+} from './declarative-element';
+import {DeclarativeElementInit} from './declarative-element-init';
 import {createEventDescriptorMap, EventsInitMap} from './element-events';
 import {
     createElementUpdaterProxy,
     createPropertyDescriptorMap,
     PropertyInitMapBase,
 } from './element-properties';
-import {
-    FunctionalElement,
-    FunctionalElementDefinition,
-    StaticFunctionalElementProperties,
-} from './functional-element';
-import {FunctionalElementInit} from './functional-element-init';
-import {hasFunctionalElementParent} from './has-functional-element-parent';
+import {hasDeclarativeElementParent} from './has-declarative-element-parent';
 import {createHostClassNamesMap} from './host-classes';
 import {createRenderParams, RenderParams} from './render-callback';
 import {applyHostClasses, hostClassNamesToStylesInput} from './styles';
 
 const defaultInit: Required<
-    Pick<FunctionalElementInit<any, any, any, any, any>, 'stateInit' | 'events'>
+    Pick<DeclarativeElementInit<any, any, any, any, any>, 'stateInit' | 'events'>
 > = {
     events: {},
     stateInit: {},
 };
 
-export function defineFunctionalElement<
+export function defineElement<
     InputsGeneric extends PropertyInitMapBase = {},
     PropertyInitGeneric extends PropertyInitMapBase = {},
     EventsInitGeneric extends EventsInitMap = {},
     HostClassKeys extends string = '',
     CssVarKeys extends string = '',
 >(
-    initInput: FunctionalElementInit<
+    initInput: DeclarativeElementInit<
         InputsGeneric,
         PropertyInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
     >,
-): FunctionalElementDefinition<
+): DeclarativeElementDefinition<
     InputsGeneric,
     PropertyInitGeneric,
     EventsInitGeneric,
     HostClassKeys,
     CssVarKeys
 > {
-    type ThisElementDefinition = FunctionalElementDefinition<
+    type ThisElementDefinition = DeclarativeElementDefinition<
         InputsGeneric,
         PropertyInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
     >;
-    type ThisElementInstance = typeof FunctionalElement<InputsGeneric, PropertyInitGeneric>;
+    type ThisElementInstance = typeof DeclarativeElement<InputsGeneric, PropertyInitGeneric>;
 
     const eventsMap = createEventDescriptorMap(initInput.events);
     const hostClassNames = createHostClassNamesMap(initInput.tagName, initInput.hostClasses);
@@ -69,7 +69,7 @@ export function defineFunctionalElement<
               )
             : initInput.styles || css``;
 
-    const typedInit: StaticFunctionalElementProperties<
+    const typedInit: StaticDeclarativeElementProperties<
         InputsGeneric,
         PropertyInitGeneric,
         EventsInitGeneric,
@@ -77,7 +77,7 @@ export function defineFunctionalElement<
         CssVarKeys
     >['init'] = {...defaultInit, ...initInput};
 
-    const typedRenderCallback: StaticFunctionalElementProperties<
+    const typedRenderCallback: StaticDeclarativeElementProperties<
         InputsGeneric,
         PropertyInitGeneric,
         EventsInitGeneric,
@@ -85,7 +85,7 @@ export function defineFunctionalElement<
         CssVarKeys
     >['renderCallback'] = initInput.renderCallback;
 
-    const anonymousClass = class extends FunctionalElement<
+    const anonymousClass = class extends DeclarativeElement<
         InputsGeneric,
         PropertyInitGeneric,
         EventsInitGeneric,
@@ -110,7 +110,7 @@ export function defineFunctionalElement<
 
         // this gets overridden below
         public static override readonly isStrictInstance: any = () => false;
-        public static override readonly events: StaticFunctionalElementProperties<
+        public static override readonly events: StaticDeclarativeElementProperties<
             InputsGeneric,
             PropertyInitGeneric,
             EventsInitGeneric,
@@ -119,28 +119,28 @@ export function defineFunctionalElement<
         >['events'] = eventsMap;
         public static override readonly renderCallback: ThisElementInstance['renderCallback'] =
             typedRenderCallback as ThisElementInstance['renderCallback'];
-        public static override readonly props: StaticFunctionalElementProperties<
+        public static override readonly props: StaticDeclarativeElementProperties<
             InputsGeneric,
             PropertyInitGeneric,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys
         >['props'] = createPropertyDescriptorMap(initInput.stateInit);
-        public static override readonly hostClasses: StaticFunctionalElementProperties<
+        public static override readonly hostClasses: StaticDeclarativeElementProperties<
             InputsGeneric,
             PropertyInitGeneric,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys
         >['hostClasses'] = hostClassNames;
-        public static override readonly cssVarNames: StaticFunctionalElementProperties<
+        public static override readonly cssVarNames: StaticDeclarativeElementProperties<
             InputsGeneric,
             PropertyInitGeneric,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys
         >['cssVarNames'] = cssVarNames;
-        public static override readonly cssVarValues: StaticFunctionalElementProperties<
+        public static override readonly cssVarValues: StaticDeclarativeElementProperties<
             InputsGeneric,
             PropertyInitGeneric,
             EventsInitGeneric,
@@ -164,8 +164,8 @@ export function defineFunctionalElement<
         public render(): TemplateResult {
             if (
                 // This ignores elements at the root of a page, as they can't receive inputs from
-                // other functional elements (cause they have no custom element ancestors).
-                hasFunctionalElementParent(this) &&
+                // other elements (cause they have no custom element ancestors).
+                hasDeclarativeElementParent(this) &&
                 !this.haveInputsBeenSet
             ) {
                 console.warn(
@@ -215,7 +215,7 @@ export function defineFunctionalElement<
     (anonymousClass as unknown as {creator: ThisElementDefinition}).creator =
         anonymousClass as unknown as ThisElementDefinition;
     Object.defineProperties(anonymousClass, {
-        [FunctionalElementMarkerSymbol]: {
+        [DeclarativeElementMarkerSymbol]: {
             value: true,
             writable: false,
         },

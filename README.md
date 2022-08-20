@@ -11,7 +11,7 @@ _**It's just TypeScript.**_
 
 Uses the power of _native_ JavaScript custom web elements, _native_ JavaScript template literals, _native_ JavaScript functions<sup>\*</sup>, _native_ HTML, and [lit-element](http://lit.dev).
 
-In reality this is basically a [lit-element](http://lit.dev) wrapper that adds type-safe element tag usage and I/O with functional-programming style component definition. (As functional as possible, element property mutations are still possible cause without that, how would you do anything?)
+In reality this is basically a [lit-element](http://lit.dev) wrapper that adds type-safe element tag usage and I/O with declarative style component definition.
 
 [Works in every major web browser except Internet Explorer.](https://caniuse.com/mdn-api_window_customelements)
 
@@ -29,20 +29,20 @@ Make sure to install this as a normal dependency (not just a dev dependency) bec
 
 # Usage
 
-Most usage of this package is done through the [`defineFunctionalElement` function](https://github.com/electrovir/element-vir/blob/main/src/functional-element/define-functional-element.ts#L25-L30). See the [`FunctionalElementInit` type](https://github.com/electrovir/element-vir/blob/main/src/functional-element/functional-element-init.ts#L7-L20) for that function's inputs. These inputs are also described below with examples.
+Most usage of this package is done through the [`defineElement` function](https://github.com/electrovir/element-vir/blob/main/src/declarative-element/define-declarative-element.ts#L25-L30). See the [`DeclarativeElementInit` type](https://github.com/electrovir/element-vir/blob/main/src/declarative-element/declarative-element-init.ts#L7-L20) for that function's inputs. These inputs are also described below with examples.
 
 All of [`lit`](https://lit.dev)'s syntax and functionality is also available for use if you wish.
 
 ## Simple element definition
 
-Use `defineFunctionalElement` to define your element. Tt must be given an object with at least `tagName` and `renderCallback` properties (the types enforce this). Here is a bare-minimum example custom element:
+Use `defineElement` to define your element. Tt must be given an object with at least `tagName` and `renderCallback` properties (the types enforce this). Here is a bare-minimum example custom element:
 
 <!-- example-link: src/readme-examples/my-simple.element.ts -->
 
 ```TypeScript
-import {defineFunctionalElement, html} from 'element-vir';
+import {defineElement, html} from 'element-vir';
 
-export const MySimpleElement = defineFunctionalElement({
+export const MySimpleElement = defineElement({
     tagName: 'my-simple-element',
     renderCallback: () => html`
         <span>Hello there!</span>
@@ -54,15 +54,15 @@ Make sure to export your element definition if you need to use it in other files
 
 ## Using in other elements
 
-To use already defined functional elements (like `my-simple-element` above), they must be interpolated into HTML templates like so:
+To use already defined elements (like `my-simple-element` above), they must be interpolated into HTML templates like so:
 
 <!-- example-link: src/readme-examples/my-app.element.ts -->
 
 ```TypeScript
-import {defineFunctionalElement, html} from 'element-vir';
+import {defineElement, html} from 'element-vir';
 import {MySimpleElement} from './my-simple.element';
 
-export const MyAppElement = defineFunctionalElement({
+export const MyAppElement = defineElement({
     tagName: 'my-app-element',
     renderCallback: () => html`
         <h1>My App</h1>
@@ -77,14 +77,14 @@ If you wish to bypass this interpolation, make sure to [import the `html` tagged
 
 ## Adding styles
 
-Styles are added through the `styles` property when defining a functional element (similar to [how they are defined in `lit`](https://lit.dev/docs/components/styles/)):
+Styles are added through the `styles` property when defining a declarative element (similar to [how they are defined in `lit`](https://lit.dev/docs/components/styles/)):
 
 <!-- example-link: src/readme-examples/my-simple-app-with-styles.element.ts -->
 
 ```TypeScript
-import {css, defineFunctionalElement, html} from 'element-vir';
+import {css, defineElement, html} from 'element-vir';
 
-export const MySimpleWithStylesElement = defineFunctionalElement({
+export const MySimpleWithStylesElement = defineElement({
     tagName: 'my-simple-with-styles-element',
     styles: css`
         :host {
@@ -111,10 +111,10 @@ Functional element definitions can be used in the `css` tagged template just lik
 <!-- example-link: src/readme-examples/my-simple-app-with-styles-and-interpolated-selector.element.ts -->
 
 ```TypeScript
-import {css, defineFunctionalElement, html} from 'element-vir';
+import {css, defineElement, html} from 'element-vir';
 import {MySimpleElement} from './my-simple.element';
 
-export const MySimpleWithStylesAndInterpolatedSelectorElement = defineFunctionalElement({
+export const MySimpleWithStylesAndInterpolatedSelectorElement = defineElement({
     tagName: 'my-simple-with-styles-and-interpolated-selector-element',
     styles: css`
         ${MySimpleElement} {
@@ -129,16 +129,16 @@ export const MySimpleWithStylesAndInterpolatedSelectorElement = defineFunctional
 
 ## Defining and using properties (inputs)
 
-Define element properties with `props` when making a functional element. Each property must be given a default value. If you wish to leave the property's default value as `undefined`, give it a type as well (shown below with `as string | undefined`) so you can assign a defined value of that type to it later.
+Define element properties with `props` when defining a declarative element. Each property must be given a default value. If you wish to leave the property's default value as `undefined`, give it a type as well (shown below with `as string | undefined`) so you can assign a defined value of that type to it later.
 
 To use a custom element's properties, grab `props` from `renderCallback`'s parameters and interpolate it into your HTML template:
 
 <!-- example-link: src/readme-examples/my-simple-with-props.element.ts -->
 
 ```TypeScript
-import {defineFunctionalElement, html} from 'element-vir';
+import {defineElement, html} from 'element-vir';
 
-export const MySimpleWithPropsElement = defineFunctionalElement({
+export const MySimpleWithPropsElement = defineElement({
     tagName: 'my-simple-element-with-props',
     props: {
         currentUsername: 'dev',
@@ -157,9 +157,9 @@ Grab `setProps` from `renderCallback`'s parameters to update the values in `prop
 <!-- example-link: src/readme-examples/my-simple-with-set-props.element.ts -->
 
 ```TypeScript
-import {defineFunctionalElement, html, listen} from 'element-vir';
+import {defineElement, html, listen} from 'element-vir';
 
-export const MySimpleWithPropsElement = defineFunctionalElement({
+export const MySimpleWithPropsElement = defineElement({
     tagName: 'my-simple-element-with-props',
     props: {
         currentUsername: 'dev',
@@ -184,10 +184,10 @@ Use the `assign` directive to assign properties to child custom elements:
 <!-- example-link: src/readme-examples/my-app-with-props.element.ts -->
 
 ```TypeScript
-import {assign, defineFunctionalElement, html} from 'element-vir';
+import {assign, defineElement, html} from 'element-vir';
 import {MySimpleWithPropsElement} from './my-simple-with-props.element';
 
-export const MyAppWithPropsElement = defineFunctionalElement({
+export const MyAppWithPropsElement = defineElement({
     tagName: 'my-app-with-props-element',
     renderCallback: () => html`
         <h1>My App</h1>
@@ -202,16 +202,16 @@ export const MyAppWithPropsElement = defineFunctionalElement({
 
 ## Element events (outputs)
 
-Define events with `events` when making a functional element. Each event must be initialized with `defineElementEvent` and a type parameter. `defineElementEvent` accepts no inputs as it doesn't make sense for events to have default values.
+Define events with `events` when defining a declarative element. Each event must be initialized with `defineElementEvent` and a type parameter. `defineElementEvent` accepts no inputs as it doesn't make sense for events to have default values.
 
 To dispatch an event, grab `dispatch` from `renderCallback`'s parameters.
 
 <!-- example-link: src/readme-examples/my-simple-with-events.element.ts -->
 
 ```TypeScript
-import {defineElementEvent, defineFunctionalElement, html, listen} from 'element-vir';
+import {defineElementEvent, defineElement, html, listen} from 'element-vir';
 
-export const MySimpleWithEventsElement = defineFunctionalElement({
+export const MySimpleWithEventsElement = defineElement({
     tagName: 'my-simple-element-with-events',
     events: {
         logoutClick: defineElementEvent<void>(),
@@ -230,15 +230,15 @@ export const MySimpleWithEventsElement = defineFunctionalElement({
 
 ### Listening to typed events (outputs)
 
-Use the `listen` directive to listen to typed events emitted by your custom functional elements:
+Use the `listen` directive to listen to typed events emitted by your custom elements:
 
 <!-- example-link: src/readme-examples/my-app-with-events.element.ts -->
 
 ```TypeScript
-import {defineFunctionalElement, html, listen} from 'element-vir';
+import {defineElement, html, listen} from 'element-vir';
 import {MySimpleWithEventsElement} from './my-simple-with-events.element';
 
-export const MyAppWithEventsElement = defineFunctionalElement({
+export const MyAppWithEventsElement = defineElement({
     tagName: 'my-app-with-events-element',
     props: {
         myNumber: -1,
@@ -282,10 +282,10 @@ Both dispatching a custom event and listening to a custom event:
 <!-- example-link: src/readme-examples/custom-event-usage.element.ts -->
 
 ```TypeScript
-import {defineFunctionalElement, html, listen} from 'element-vir';
+import {defineElement, html, listen} from 'element-vir';
 import {MyCustomEvent} from './custom-event-no-element';
 
-export const MyElementWithCustomEvents = defineFunctionalElement({
+export const MyElementWithCustomEvents = defineElement({
     tagName: 'my-app-with-custom-events',
     renderCallback: ({genericDispatch}) => html`
         <div
@@ -314,9 +314,9 @@ Apply host classes in the element's stylesheet by using a callback for the style
 <!-- example-link: src/readme-examples/host-class-definition.ts -->
 
 ```TypeScript
-import {css, defineFunctionalElement, html} from 'element-vir';
+import {css, defineElement, html} from 'element-vir';
 
-export const MyAppWithHostClasses = defineFunctionalElement({
+export const MyAppWithHostClasses = defineElement({
     tagName: 'my-app-with-host-classes',
     props: {
         myProp: 'hello there',
@@ -361,9 +361,9 @@ Typed CSS vars are created in a similar way as host classes:
 <!-- example-link: src/readme-examples/css-vars-definition.ts -->
 
 ```TypeScript
-import {css, defineFunctionalElement, html} from 'element-vir';
+import {css, defineElement, html} from 'element-vir';
 
-export const MyAppWithCssVars = defineFunctionalElement({
+export const MyAppWithCssVars = defineElement({
     tagName: 'my-app-with-css-vars',
     cssVars: {
         /**
@@ -397,9 +397,9 @@ This triggers only once when the element it's attached has actually been created
 <!-- example-link: src/readme-examples/my-simple-with-on-dom-created.element.ts -->
 
 ```TypeScript
-import {defineFunctionalElement, html, onDomCreated} from 'element-vir';
+import {defineElement, html, onDomCreated} from 'element-vir';
 
-export const MySimpleWithOnDomCreatedElement = defineFunctionalElement({
+export const MySimpleWithOnDomCreatedElement = defineElement({
     tagName: 'my-simple-with-on-dom-created-element',
     renderCallback: () => html`
         <span
@@ -421,9 +421,9 @@ This directive fulfills a common use case of triggering callbacks when something
 <!-- example-link: src/readme-examples/my-simple-with-on-resize.element.ts -->
 
 ```TypeScript
-import {defineFunctionalElement, html, onResize} from 'element-vir';
+import {defineElement, html, onResize} from 'element-vir';
 
-export const MySimpleWithOnResizeElement = defineFunctionalElement({
+export const MySimpleWithOnResizeElement = defineElement({
     tagName: 'my-simple-with-on-dom-created-element',
     renderCallback: () => html`
         <span
@@ -454,10 +454,10 @@ This directive is the same as the `assign` directive but it accepts an additiona
 <!-- example-link: src/readme-examples/my-app-with-cleanup.element.ts -->
 
 ```TypeScript
-import {assign, assignWithCleanup, defineFunctionalElement, html} from 'element-vir';
+import {assign, assignWithCleanup, defineElement, html} from 'element-vir';
 import {MySimpleWithPropsElement} from './my-simple-with-props.element';
 
-export const MyAppWithPropsElement = defineFunctionalElement({
+export const MyAppWithPropsElement = defineElement({
     tagName: 'my-app-with-cleanup',
     renderCallback: () => html`
         <h1>My App</h1>
@@ -478,16 +478,16 @@ export const MyAppWithPropsElement = defineFunctionalElement({
 });
 ```
 
-## Require all child custom elements to be functional elements
+## Require all child custom elements to be declarative elements
 
-To require all child elements to be functional elements defined by this package, call `requireAllCustomElementsToBeFunctionalElement` anywhere in your app. This is a global setting so do not enable it unless you want it to be true _everywhere_ in your current run-time. This should not be used if you're using custom elements from other libraries (unless they happen to also use this package to define their custom elements).
+To require all child elements to be declarative elements defined by this package, call `requireAllCustomElementsToBeDeclarativeElements` anywhere in your app. This is a global setting so do not enable it unless you want it to be true _everywhere_ in your current run-time. This should not be used if you're using custom elements from other libraries (unless they happen to also use this package to define their custom elements).
 
-<!-- example-link: src/readme-examples/require-functional-element.ts -->
+<!-- example-link: src/readme-examples/require-declarative-element.ts -->
 
 ```TypeScript
-import {requireAllCustomElementsToBeFunctionalElement} from 'element-vir';
+import {requireAllCustomElementsToBeDeclarativeElements} from 'element-vir';
 
-requireAllCustomElementsToBeFunctionalElement();
+requireAllCustomElementsToBeDeclarativeElements();
 ```
 
 # Dev

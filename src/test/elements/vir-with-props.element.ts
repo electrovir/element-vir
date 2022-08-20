@@ -1,6 +1,6 @@
-import {defineFunctionalElement, html} from '../..';
+import {defineElement, html} from '../..';
 
-export const VirWithProps = defineFunctionalElement({
+export const VirWithProps = defineElement({
     tagName: 'vir-with-props',
     stateInit: {
         first: 1,

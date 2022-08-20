@@ -1,7 +1,7 @@
-import {assignWithCleanup, defineFunctionalElement, html} from '..';
+import {assignWithCleanup, defineElement, html} from '..';
 import {MySimpleWithPropsElement} from './my-simple-with-props.element';
 
-export const MyAppWithPropsElement = defineFunctionalElement({
+export const MyAppWithPropsElement = defineElement({
     tagName: 'my-app-with-cleanup',
     renderCallback: () => html`
         <h1>My App</h1>

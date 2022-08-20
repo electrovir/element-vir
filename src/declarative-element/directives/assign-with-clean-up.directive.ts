@@ -1,9 +1,9 @@
 import {noChange} from 'lit';
 import {AsyncDirective} from 'lit/async-directive.js';
 import {directive, PartInfo} from 'lit/directive.js';
-import {FunctionalElement, FunctionalElementDefinition} from '../functional-element';
+import {DeclarativeElement, DeclarativeElementDefinition} from '../declarative-element';
 import {assignInputsObject} from './assign.directive';
-import {extractFunctionalElement} from './directive-helpers';
+import {extractDeclarativeElement} from './directive-helpers';
 
 export type CleanupCallback<T> = (oldValue: T) => void;
 
@@ -15,10 +15,10 @@ export type CleanupCallback<T> = (oldValue: T) => void;
  *
  * Example use case: 3D graphics applications with classes that setup buffers and the like.
  */
-export function assignWithCleanup<FunctionalElementGeneric extends FunctionalElementDefinition>(
-    functionalElement: FunctionalElementGeneric,
-    propsObject: typeof functionalElement['init']['stateInit'],
-    cleanupCallback: CleanupCallback<typeof functionalElement['init']['stateInit']>,
+export function assignWithCleanup<DeclarativeElementGeneric extends DeclarativeElementDefinition>(
+    declarativeElement: DeclarativeElementGeneric,
+    propsObject: typeof declarativeElement['init']['stateInit'],
+    cleanupCallback: CleanupCallback<typeof declarativeElement['init']['stateInit']>,
 ) {
     /**
      * The directive generics (in listenDirective) are not strong enough to maintain their values.
@@ -28,14 +28,14 @@ export function assignWithCleanup<FunctionalElementGeneric extends FunctionalEle
 }
 
 class AssignWithCleanupDirectiveClass extends AsyncDirective {
-    private readonly element: FunctionalElement;
+    private readonly element: DeclarativeElement;
     private lastValue: unknown;
     private lastCallback: CleanupCallback<any> | undefined;
     private hasBeenAssigned = false;
 
     constructor(partInfo: PartInfo) {
         super(partInfo);
-        this.element = extractFunctionalElement(partInfo, 'assign');
+        this.element = extractDeclarativeElement(partInfo, 'assign');
     }
 
     override disconnected() {

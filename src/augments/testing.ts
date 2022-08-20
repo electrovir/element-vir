@@ -1,5 +1,5 @@
 import {assert} from '@open-wc/testing';
-import {FunctionalElementDefinition} from '../functional-element/functional-element';
+import {DeclarativeElementDefinition} from '../declarative-element/declarative-element';
 
 /**
  * Wrapper for assert.instanceOf that also works with TypeScript in setting the proper types.
@@ -18,22 +18,22 @@ export function isInstanceOf<T>(value: unknown, constructor: new (...args: any) 
     return value instanceof constructor;
 }
 
-export function getAssertedFunctionalElement<
-    FunctionalElementGeneric extends FunctionalElementDefinition,
+export function getAssertedDeclarativeElement<
+    DeclarativeElementGeneric extends DeclarativeElementDefinition,
 >(
-    searchFor: FunctionalElementGeneric,
+    searchFor: DeclarativeElementGeneric,
     searchIn: Element,
-): FunctionalElementGeneric['instanceType'] {
+): DeclarativeElementGeneric['instanceType'] {
     if (searchIn.tagName.toLowerCase() === searchFor.tagName.toLowerCase()) {
         assertInstanceOf(searchIn, searchFor);
-        return searchIn as FunctionalElementGeneric['instanceType'];
+        return searchIn as DeclarativeElementGeneric['instanceType'];
     }
 
     const result = queryTree(searchIn, [searchFor.tagName]);
     assertInstanceOf(result, searchFor);
     assert.strictEqual(result!.tagName, searchFor.tagName);
 
-    return result as FunctionalElementGeneric['instanceType'];
+    return result as DeclarativeElementGeneric['instanceType'];
 }
 
 export function testIdSelector(testId: string): string {

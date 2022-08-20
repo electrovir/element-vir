@@ -1,13 +1,13 @@
-import {defineFunctionalElement, html, requireAllCustomElementsToBeFunctionalElement} from '../..';
+import {defineElement, html, requireAllCustomElementsToBeDeclarativeElements} from '../..';
 
-requireAllCustomElementsToBeFunctionalElement();
+requireAllCustomElementsToBeDeclarativeElements();
 
 export type TestTypesProgressInputs = {
     thingA: number;
     thingB?: number;
 };
 
-export const TestTypesProgress = defineFunctionalElement<TestTypesProgressInputs>({
+export const TestTypesProgress = defineElement<TestTypesProgressInputs>({
     tagName: 'vir-test-types-progress',
     renderCallback: () => {
         return html``;

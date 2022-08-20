@@ -1,5 +1,5 @@
 import {ElementPartInfo, PartInfo, PartType} from 'lit/directive.js';
-import {FunctionalElement} from '../functional-element';
+import {DeclarativeElement} from '../declarative-element';
 
 /** For some reason these aren't defined in lit's types already. */
 export type ExtraPartInfoProperties = {
@@ -11,11 +11,11 @@ export type ExtraPartInfoProperties = {
     };
 };
 
-export function extractFunctionalElement(
+export function extractDeclarativeElement(
     partInfo: PartInfo,
     directiveName: string,
-): FunctionalElement {
-    return extractElement(partInfo, directiveName, FunctionalElement) as FunctionalElement;
+): DeclarativeElement {
+    return extractElement(partInfo, directiveName, DeclarativeElement) as DeclarativeElement;
 }
 
 export function extractElement<ElementType = HTMLElement>(

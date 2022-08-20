@@ -2,19 +2,19 @@ import {
     assign,
     assignWithCleanup,
     css,
-    defineFunctionalElement,
+    defineElement,
     html,
     listen,
     onResize,
-    requireAllCustomElementsToBeFunctionalElement,
+    requireAllCustomElementsToBeDeclarativeElements,
 } from '../..';
 import {MyCustomEvent} from '../customEvent';
 import {allTestArrayElements} from './array-of-elements-test/elements-array.element';
 import {TestChildElement} from './child.element';
 
-requireAllCustomElementsToBeFunctionalElement();
+requireAllCustomElementsToBeDeclarativeElements();
 
-export const AppElement = defineFunctionalElement({
+export const AppElement = defineElement({
     tagName: 'element-vir-test-app',
     styles: css`
         :host {

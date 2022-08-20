@@ -1,4 +1,4 @@
-import {defineFunctionalElement, html} from '..';
+import {defineElement, html} from '..';
 import {
     defineElementEvent,
     EventInitMapEventDetailExtractor,
@@ -6,7 +6,7 @@ import {
 } from './element-events';
 
 function main() {
-    const customElement = defineFunctionalElement({
+    const customElement = defineElement({
         tagName: 'test-element',
         events: {
             testEventName: defineElementEvent<number>(),

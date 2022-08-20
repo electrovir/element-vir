@@ -1,8 +1,8 @@
 import {noChange} from 'lit';
 import {directive, Directive, PartInfo} from 'lit/directive.js';
+import {DeclarativeElement} from '../declarative-element';
 import {StaticElementPropertyDescriptor} from '../element-properties';
-import {FunctionalElement} from '../functional-element';
-import {extractFunctionalElement} from './directive-helpers';
+import {extractDeclarativeElement} from './directive-helpers';
 
 /** Assign an object to an element's inputs. */
 export function assign<PropName extends string, PropValue>(
@@ -18,12 +18,12 @@ export function assign<PropName extends string, PropValue>(
 
 const assignDirective = directive(
     class extends Directive {
-        public readonly element: FunctionalElement;
+        public readonly element: DeclarativeElement;
 
         constructor(partInfo: PartInfo) {
             super(partInfo);
 
-            this.element = extractFunctionalElement(partInfo, 'assign');
+            this.element = extractDeclarativeElement(partInfo, 'assign');
         }
 
         render(propName: string, value: unknown) {

@@ -1,12 +1,12 @@
 import {noChange} from 'lit';
 import {directive, Directive, PartInfo} from 'lit/directive.js';
-import {FunctionalElement, FunctionalElementDefinition} from '../functional-element';
-import {extractFunctionalElement} from './directive-helpers';
+import {DeclarativeElement, DeclarativeElementDefinition} from '../declarative-element';
+import {extractDeclarativeElement} from './directive-helpers';
 
 /** Assign an object matching an element's inputs to its inputs. */
-export function assign<FunctionalElementGeneric extends FunctionalElementDefinition>(
-    functionalElement: FunctionalElementGeneric,
-    propsObject: typeof functionalElement['init']['stateInit'],
+export function assign<DeclarativeElementGeneric extends DeclarativeElementDefinition>(
+    declarativeElement: DeclarativeElementGeneric,
+    propsObject: typeof declarativeElement['init']['stateInit'],
 ) {
     /**
      * The directive generics (in listenDirective) are not strong enough to maintain their values.
@@ -17,12 +17,12 @@ export function assign<FunctionalElementGeneric extends FunctionalElementDefinit
 
 const assignDirective = directive(
     class extends Directive {
-        public readonly element: FunctionalElement;
+        public readonly element: DeclarativeElement;
 
         constructor(partInfo: PartInfo) {
             super(partInfo);
 
-            this.element = extractFunctionalElement(partInfo, 'assign');
+            this.element = extractDeclarativeElement(partInfo, 'assign');
         }
 
         render(propsObject: Record<PropertyKey, unknown>) {
@@ -32,8 +32,8 @@ const assignDirective = directive(
     },
 );
 
-export function assignInputsObject<FunctionalElementGeneric extends FunctionalElement>(
-    element: FunctionalElementGeneric,
+export function assignInputsObject<DeclarativeElementGeneric extends DeclarativeElement>(
+    element: DeclarativeElementGeneric,
     assignmentObject: typeof element['creator']['init']['stateInit'],
 ) {
     Object.keys(assignmentObject).forEach((key) => {

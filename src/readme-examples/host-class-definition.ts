@@ -1,6 +1,6 @@
-import {css, defineFunctionalElement, html} from '..';
+import {css, defineElement, html} from '..';
 
-export const MyAppWithHostClasses = defineFunctionalElement({
+export const MyAppWithHostClasses = defineElement({
     tagName: 'my-app-with-host-classes',
     stateInit: {
         myProp: 'hello there',

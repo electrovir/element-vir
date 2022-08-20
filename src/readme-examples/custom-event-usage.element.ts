@@ -1,7 +1,7 @@
-import {defineFunctionalElement, html, listen} from '..';
+import {defineElement, html, listen} from '..';
 import {MyCustomEvent} from './custom-event-no-element';
 
-export const MyElementWithCustomEvents = defineFunctionalElement({
+export const MyElementWithCustomEvents = defineElement({
     tagName: 'my-app-with-custom-events',
     renderCallback: ({genericDispatch}) => html`
         <div

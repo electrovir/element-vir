@@ -8,7 +8,7 @@ import {StylesCallback} from './styles';
 
 export type CustomElementTagName = `${string}-${string}`;
 
-export type FunctionalElementInit<
+export type DeclarativeElementInit<
     InputsGeneric extends PropertyInitMapBase,
     StateInit extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,

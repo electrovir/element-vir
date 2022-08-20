@@ -6,7 +6,7 @@
         "web",
         "components",
         "elements",
-        "functional",
+        "declarative",
         "lit"
     ],
     "homepage": "https://github.com/electrovir/element-vir",

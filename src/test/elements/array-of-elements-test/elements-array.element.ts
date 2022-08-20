@@ -1,6 +1,6 @@
-import {defineFunctionalElement, html} from '../../..';
+import {defineElement, html} from '../../..';
 
-const ArrayAElement = defineFunctionalElement({
+const ArrayAElement = defineElement({
     tagName: 'element-vir-test-a',
     renderCallback: () => {
         return html`
@@ -9,7 +9,7 @@ const ArrayAElement = defineFunctionalElement({
     },
 });
 
-const ArrayBElement = defineFunctionalElement({
+const ArrayBElement = defineElement({
     tagName: 'element-vir-test-b',
     renderCallback: () => {
         return html`
@@ -18,7 +18,7 @@ const ArrayBElement = defineFunctionalElement({
     },
 });
 
-const ArrayCElement = defineFunctionalElement({
+const ArrayCElement = defineElement({
     tagName: 'element-vir-test-c',
     renderCallback: () => {
         return html`
@@ -27,7 +27,7 @@ const ArrayCElement = defineFunctionalElement({
     },
 });
 
-const ArrayDElement = defineFunctionalElement({
+const ArrayDElement = defineElement({
     tagName: 'element-vir-test-d',
     renderCallback: () => {
         return html`

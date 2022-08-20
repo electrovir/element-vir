@@ -1,4 +1,4 @@
-import {FunctionalElement} from './functional-element';
+import {DeclarativeElement} from './declarative-element';
 
 export type PropertyInitMapBase = Record<string, unknown>;
 
@@ -40,14 +40,14 @@ function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase
 }
 
 export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyInitMapBase>(
-    element: FunctionalElement,
+    element: DeclarativeElement,
     propsInitMap: PropertyInitGeneric = {} as PropertyInitGeneric,
 ): PropertyInitGeneric {
     /**
      * List updates props by setting them directly on the element, so we must do that here.
-     * FunctionalElement's types, however, do not expose this behavior, so we add that back in here.
+     * DeclarativeElement's types, however, do not expose this behavior, so we add that back in here.
      */
-    const elementAsProps = element as FunctionalElement & PropertyInitGeneric;
+    const elementAsProps = element as DeclarativeElement & PropertyInitGeneric;
 
     const propsProxy = new Proxy(
         {},

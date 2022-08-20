@@ -1,4 +1,4 @@
-import {listen} from '../functional-element/directives/listen.directive';
+import {listen} from '../declarative-element/directives/listen.directive';
 import {defineTypedEvent} from './typed-event';
 
 // this shouldn't actually be run, it's just used to check types

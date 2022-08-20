@@ -1,3 +1,0 @@
-import {requireAllCustomElementsToBeFunctionalElement} from '..';
-
-requireAllCustomElementsToBeFunctionalElement();

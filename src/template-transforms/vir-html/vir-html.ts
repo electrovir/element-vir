@@ -2,7 +2,7 @@ import {html as litHtml, HTMLTemplateResult} from 'lit';
 import {getTransformedTemplate} from '../transform-template';
 import {transformHtmlTemplate} from './html-transform';
 
-/** Enables interpolation of FunctionalElement tag names */
+/** Enables interpolation of DeclarativeElement tag names */
 export function html(
     inputTemplateStrings: TemplateStringsArray,
     ...inputValues: unknown[]

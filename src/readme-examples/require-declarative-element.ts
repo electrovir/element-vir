@@ -1,0 +1,3 @@
+import {requireAllCustomElementsToBeDeclarativeElements} from '..';
+
+requireAllCustomElementsToBeDeclarativeElements();

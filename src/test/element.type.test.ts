@@ -3,21 +3,21 @@ import {css, TemplateResult} from 'lit';
 import {
     assign,
     assignWithCleanup,
+    DeclarativeElement,
+    defineElement,
     defineElementEvent,
-    defineFunctionalElement,
     defineTypedEvent,
     EventObjectEventDetailExtractor,
-    FunctionalElement,
     html,
     listen,
     TypedEvent,
 } from '..';
-import {FunctionalElementDefinition} from '../functional-element/functional-element';
+import {DeclarativeElementDefinition} from '../declarative-element/declarative-element';
 import {AppElement} from './elements/app.element';
 import {TestChildElement} from './elements/child.element';
 
 // host classes test
-const WithHostClassesAndCssVars = defineFunctionalElement({
+const WithHostClassesAndCssVars = defineElement({
     tagName: 'derp-whatever',
     hostClasses: {
         stuff: false,
@@ -40,14 +40,14 @@ WithHostClassesAndCssVars.cssVarNames.derp;
 WithHostClassesAndCssVars.cssVarValues.derp;
 
 // @ts-expect-error
-const TestElementNoTagName = defineFunctionalElement({
+const TestElementNoTagName = defineElement({
     renderCallback: (): TemplateResult => {
         return html``;
     },
 });
 
-/** Verify that there's a base type that all functional elements can be assigned to. */
-const elements: FunctionalElementDefinition[] = [
+/** Verify that there's a base type that all declarative elements can be assigned to. */
+const elements: DeclarativeElementDefinition[] = [
     AppElement,
     TestChildElement,
 ];
@@ -66,9 +66,9 @@ const props: (keyof AppElementProps)[] = getObjectTypedKeys(AppElement.props);
 // @ts-expect-error
 const instance: typeof AppElement.instanceType = AppElement;
 // @ts-expect-error
-const instance: FunctionalElement = AppElement;
+const instance: DeclarativeElement = AppElement;
 
-const TestElementVoidEvent = defineFunctionalElement({
+const TestElementVoidEvent = defineElement({
     tagName: 'test-element-void-event',
     events: {
         thingHappened: defineElementEvent<void>(),
@@ -84,7 +84,7 @@ const TestElementVoidEvent = defineFunctionalElement({
     },
 });
 
-const TestElementInvalidTagName = defineFunctionalElement({
+const TestElementInvalidTagName = defineElement({
     // @ts-expect-error
     tagName: 'invalidTagNameMissingDash',
     renderCallback: () => html``,
@@ -92,7 +92,7 @@ const TestElementInvalidTagName = defineFunctionalElement({
 
 const MyElementEvent = defineTypedEvent<string>()('customEvent');
 
-const TestElementNoEventsOrProps = defineFunctionalElement({
+const TestElementNoEventsOrProps = defineElement({
     tagName: 'test-element-no-events-or-props',
     renderCallback: ({props, genericDispatch, dispatch, events}): TemplateResult => {
         // @ts-expect-error
@@ -120,11 +120,11 @@ thingie.addEventListener('click', (event) => {
 });
 
 // @ts-expect-error
-const TestElementNoRender = defineFunctionalElement({
+const TestElementNoRender = defineElement({
     tagName: 'element-vir-test-element-no-render',
 });
 
-const TestElement = defineFunctionalElement({
+const TestElement = defineElement({
     tagName: 'element-vir-test-element',
     styles: css``,
     stateInit: {

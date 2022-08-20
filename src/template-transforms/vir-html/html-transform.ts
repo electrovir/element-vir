@@ -1,6 +1,6 @@
 import {collapseWhiteSpace, safeMatch} from 'augment-vir';
 import {HTMLTemplateResult} from 'lit';
-import {functionalElementRequired} from '../../require-functional-element';
+import {declarativeElementRequired} from '../../require-declarative-element';
 import {ConstructorWithTagName, hasStaticTagName} from '../has-static-tag-name';
 import {
     CheckAndTransform,
@@ -52,11 +52,11 @@ function extractCustomElementTags(input: string): string[] {
 }
 
 function stringValidator(input: string): void {
-    if (functionalElementRequired) {
+    if (declarativeElementRequired) {
         const customElementTagNames = extractCustomElementTags(input);
         if (customElementTagNames.length) {
             console.error(
-                `Custom element tags must be interpolated from functional elements: ${customElementTagNames.join(
+                `Custom element tags must be interpolated from declarative elements: ${customElementTagNames.join(
                     ', ',
                 )}`,
             );

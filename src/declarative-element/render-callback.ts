@@ -1,13 +1,13 @@
 import {getObjectTypedKeys} from 'augment-vir';
 import {TemplateResult} from 'lit';
 import {TypedEvent} from '../typed-event/typed-event';
+import {DeclarativeElement} from './declarative-element';
 import {
     EventDescriptorMap,
     EventInitMapEventDetailExtractor,
     EventsInitMap,
 } from './element-events';
 import {PropertyInitMapBase} from './element-properties';
-import {FunctionalElement} from './functional-element';
 
 export type RenderCallback<
     InputsGeneric extends PropertyInitMapBase = any,
@@ -55,7 +55,7 @@ export type RenderParams<
     props: Readonly<PropertyInitGeneric>;
     setProps: SetPropCallback<PropertyInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
-    host: FunctionalElement<
+    host: DeclarativeElement<
         InputsGeneric,
         PropertyInitGeneric,
         EventsInitGeneric,
@@ -83,7 +83,7 @@ export function createRenderParams<
     HostClassKeys extends string,
     CssVarKeys extends string,
 >(
-    element: FunctionalElement<
+    element: DeclarativeElement<
         InputsGeneric,
         PropertyInitGeneric,
         EventsInitGeneric,
