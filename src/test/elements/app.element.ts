@@ -2,7 +2,7 @@ import {
     assign,
     assignWithCleanup,
     css,
-    defineElement,
+    defineElementNoInputs,
     html,
     listen,
     onResize,
@@ -14,7 +14,7 @@ import {TestChildElement} from './child.element';
 
 requireAllCustomElementsToBeDeclarativeElements();
 
-export const AppElement = defineElement({
+export const AppElement = defineElementNoInputs({
     tagName: 'element-vir-test-app',
     styles: css`
         :host {

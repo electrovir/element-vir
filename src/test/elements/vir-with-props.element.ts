@@ -1,6 +1,6 @@
-import {defineElement, html} from '../..';
+import {defineElementNoInputs, html} from '../..';
 
-export const VirWithProps = defineElement({
+export const VirWithProps = defineElementNoInputs({
     tagName: 'vir-with-props',
     stateInit: {
         first: 1,

@@ -1,6 +1,6 @@
-import {css, defineElement, html} from '..';
+import {css, defineElementNoInputs, html} from '..';
 
-export const MyAppWithHostClasses = defineElement({
+export const MyAppWithHostClasses = defineElementNoInputs({
     tagName: 'my-app-with-host-classes',
     stateInit: {
         myProp: 'hello there',

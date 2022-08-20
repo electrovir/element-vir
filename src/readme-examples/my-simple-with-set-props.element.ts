@@ -1,6 +1,6 @@
-import {defineElement, html, listen} from '..';
+import {defineElementNoInputs, html, listen} from '..';
 
-export const MySimpleWithPropsElement = defineElement({
+export const MySimpleWithPropsElement = defineElementNoInputs({
     tagName: 'my-simple-element-with-props',
     stateInit: {
         currentUsername: 'dev',

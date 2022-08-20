@@ -1,6 +1,6 @@
-import {css, defineElement, html} from '..';
+import {css, defineElementNoInputs, html} from '..';
 
-export const MyAppWithCssVars = defineElement({
+export const MyAppWithCssVars = defineElementNoInputs({
     tagName: 'my-app-with-css-vars',
     cssVars: {
         /**

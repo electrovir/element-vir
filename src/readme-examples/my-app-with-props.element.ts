@@ -1,7 +1,7 @@
-import {assign, defineElement, html} from '..';
+import {assign, defineElementNoInputs, html} from '..';
 import {MySimpleWithPropsElement} from './my-simple-with-props.element';
 
-export const MyAppWithPropsElement = defineElement({
+export const MyAppWithPropsElement = defineElementNoInputs({
     tagName: 'my-app-with-props-element',
     renderCallback: () => html`
         <h1>My App</h1>

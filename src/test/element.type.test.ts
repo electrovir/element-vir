@@ -4,8 +4,8 @@ import {
     assign,
     assignWithCleanup,
     DeclarativeElement,
-    defineElement,
     defineElementEvent,
+    defineElementNoInputs,
     defineTypedEvent,
     EventObjectEventDetailExtractor,
     html,
@@ -17,7 +17,7 @@ import {AppElement} from './elements/app.element';
 import {TestChildElement} from './elements/child.element';
 
 // host classes test
-const WithHostClassesAndCssVars = defineElement({
+const WithHostClassesAndCssVars = defineElementNoInputs({
     tagName: 'derp-whatever',
     hostClasses: {
         stuff: false,
@@ -40,7 +40,7 @@ WithHostClassesAndCssVars.cssVarNames.derp;
 WithHostClassesAndCssVars.cssVarValues.derp;
 
 // @ts-expect-error
-const TestElementNoTagName = defineElement({
+const TestElementNoTagName = defineElementNoInputs({
     renderCallback: (): TemplateResult => {
         return html``;
     },
@@ -68,7 +68,7 @@ const instance: typeof AppElement.instanceType = AppElement;
 // @ts-expect-error
 const instance: DeclarativeElement = AppElement;
 
-const TestElementVoidEvent = defineElement({
+const TestElementVoidEvent = defineElementNoInputs({
     tagName: 'test-element-void-event',
     events: {
         thingHappened: defineElementEvent<void>(),
@@ -84,7 +84,7 @@ const TestElementVoidEvent = defineElement({
     },
 });
 
-const TestElementInvalidTagName = defineElement({
+const TestElementInvalidTagName = defineElementNoInputs({
     // @ts-expect-error
     tagName: 'invalidTagNameMissingDash',
     renderCallback: () => html``,
@@ -92,7 +92,7 @@ const TestElementInvalidTagName = defineElement({
 
 const MyElementEvent = defineTypedEvent<string>()('customEvent');
 
-const TestElementNoEventsOrProps = defineElement({
+const TestElementNoEventsOrProps = defineElementNoInputs({
     tagName: 'test-element-no-events-or-props',
     renderCallback: ({props, genericDispatch, dispatch, events}): TemplateResult => {
         // @ts-expect-error
@@ -120,11 +120,11 @@ thingie.addEventListener('click', (event) => {
 });
 
 // @ts-expect-error
-const TestElementNoRender = defineElement({
+const TestElementNoRender = defineElementNoInputs({
     tagName: 'element-vir-test-element-no-render',
 });
 
-const TestElement = defineElement({
+const TestElement = defineElementNoInputs({
     tagName: 'element-vir-test-element',
     styles: css``,
     stateInit: {

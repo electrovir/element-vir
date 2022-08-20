@@ -1,6 +1,6 @@
-import {css, defineElement, html} from '..';
+import {css, defineElementNoInputs, html} from '..';
 
-export const MySimpleWithStylesElement = defineElement({
+export const MySimpleWithStylesElement = defineElementNoInputs({
     tagName: 'my-simple-with-styles-element',
     styles: css`
         :host {

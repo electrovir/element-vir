@@ -1,4 +1,4 @@
-import {defineElement, html} from '..';
+import {defineElementNoInputs, html} from '..';
 import {
     defineElementEvent,
     EventInitMapEventDetailExtractor,
@@ -6,7 +6,7 @@ import {
 } from './element-events';
 
 function main() {
-    const customElement = defineElement({
+    const customElement = defineElementNoInputs({
         tagName: 'test-element',
         events: {
             testEventName: defineElementEvent<number>(),

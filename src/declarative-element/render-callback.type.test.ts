@@ -1,10 +1,10 @@
-import {defineElement, defineElementEvent, html} from '..';
+import {defineElementEvent, defineElementNoInputs, html} from '..';
 import {TypedEvent} from '../typed-event/typed-event';
 import {createEventDescriptorMap} from './element-events';
 import {createRenderParams} from './render-callback';
 
 function main() {
-    const customElement = defineElement({
+    const customElement = defineElementNoInputs({
         tagName: 'test-element',
         events: {
             testEventName: defineElementEvent<number>(),

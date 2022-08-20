@@ -29,20 +29,20 @@ Make sure to install this as a normal dependency (not just a dev dependency) bec
 
 # Usage
 
-Most usage of this package is done through the [`defineElement` function](https://github.com/electrovir/element-vir/blob/main/src/declarative-element/define-declarative-element.ts#L25-L30). See the [`DeclarativeElementInit` type](https://github.com/electrovir/element-vir/blob/main/src/declarative-element/declarative-element-init.ts#L7-L20) for that function's inputs. These inputs are also described below with examples.
+Most usage of this package is done through the [`defineElementNoInputs` function](https://github.com/electrovir/element-vir/blob/main/src/declarative-element/define-declarative-element.ts#L25-L30). See the [`DeclarativeElementInit` type](https://github.com/electrovir/element-vir/blob/main/src/declarative-element/declarative-element-init.ts#L7-L20) for that function's inputs. These inputs are also described below with examples.
 
 All of [`lit`](https://lit.dev)'s syntax and functionality is also available for use if you wish.
 
 ## Simple element definition
 
-Use `defineElement` to define your element. Tt must be given an object with at least `tagName` and `renderCallback` properties (the types enforce this). Here is a bare-minimum example custom element:
+Use `defineElementNoInputs` to define your element. Tt must be given an object with at least `tagName` and `renderCallback` properties (the types enforce this). Here is a bare-minimum example custom element:
 
 <!-- example-link: src/readme-examples/my-simple.element.ts -->
 
 ```TypeScript
-import {defineElement, html} from 'element-vir';
+import {defineElementNoInputs, html} from 'element-vir';
 
-export const MySimpleElement = defineElement({
+export const MySimpleElement = defineElementNoInputs({
     tagName: 'my-simple-element',
     renderCallback: () => html`
         <span>Hello there!</span>
@@ -59,10 +59,10 @@ To use already defined elements (like `my-simple-element` above), they must be i
 <!-- example-link: src/readme-examples/my-app.element.ts -->
 
 ```TypeScript
-import {defineElement, html} from 'element-vir';
+import {defineElementNoInputs, html} from 'element-vir';
 import {MySimpleElement} from './my-simple.element';
 
-export const MyAppElement = defineElement({
+export const MyAppElement = defineElementNoInputs({
     tagName: 'my-app-element',
     renderCallback: () => html`
         <h1>My App</h1>
@@ -82,9 +82,9 @@ Styles are added through the `styles` property when defining a declarative eleme
 <!-- example-link: src/readme-examples/my-simple-app-with-styles.element.ts -->
 
 ```TypeScript
-import {css, defineElement, html} from 'element-vir';
+import {css, defineElementNoInputs, html} from 'element-vir';
 
-export const MySimpleWithStylesElement = defineElement({
+export const MySimpleWithStylesElement = defineElementNoInputs({
     tagName: 'my-simple-with-styles-element',
     styles: css`
         :host {
@@ -111,10 +111,10 @@ Functional element definitions can be used in the `css` tagged template just lik
 <!-- example-link: src/readme-examples/my-simple-app-with-styles-and-interpolated-selector.element.ts -->
 
 ```TypeScript
-import {css, defineElement, html} from 'element-vir';
+import {css, defineElementNoInputs, html} from 'element-vir';
 import {MySimpleElement} from './my-simple.element';
 
-export const MySimpleWithStylesAndInterpolatedSelectorElement = defineElement({
+export const MySimpleWithStylesAndInterpolatedSelectorElement = defineElementNoInputs({
     tagName: 'my-simple-with-styles-and-interpolated-selector-element',
     styles: css`
         ${MySimpleElement} {
@@ -136,9 +136,9 @@ To use a custom element's properties, grab `props` from `renderCallback`'s param
 <!-- example-link: src/readme-examples/my-simple-with-props.element.ts -->
 
 ```TypeScript
-import {defineElement, html} from 'element-vir';
+import {defineElementNoInputs, html} from 'element-vir';
 
-export const MySimpleWithPropsElement = defineElement({
+export const MySimpleWithPropsElement = defineElementNoInputs({
     tagName: 'my-simple-element-with-props',
     props: {
         currentUsername: 'dev',
@@ -157,9 +157,9 @@ Grab `setProps` from `renderCallback`'s parameters to update the values in `prop
 <!-- example-link: src/readme-examples/my-simple-with-set-props.element.ts -->
 
 ```TypeScript
-import {defineElement, html, listen} from 'element-vir';
+import {defineElementNoInputs, html, listen} from 'element-vir';
 
-export const MySimpleWithPropsElement = defineElement({
+export const MySimpleWithPropsElement = defineElementNoInputs({
     tagName: 'my-simple-element-with-props',
     props: {
         currentUsername: 'dev',
@@ -184,10 +184,10 @@ Use the `assign` directive to assign properties to child custom elements:
 <!-- example-link: src/readme-examples/my-app-with-props.element.ts -->
 
 ```TypeScript
-import {assign, defineElement, html} from 'element-vir';
+import {assign, defineElementNoInputs, html} from 'element-vir';
 import {MySimpleWithPropsElement} from './my-simple-with-props.element';
 
-export const MyAppWithPropsElement = defineElement({
+export const MyAppWithPropsElement = defineElementNoInputs({
     tagName: 'my-app-with-props-element',
     renderCallback: () => html`
         <h1>My App</h1>
@@ -209,9 +209,9 @@ To dispatch an event, grab `dispatch` from `renderCallback`'s parameters.
 <!-- example-link: src/readme-examples/my-simple-with-events.element.ts -->
 
 ```TypeScript
-import {defineElementEvent, defineElement, html, listen} from 'element-vir';
+import {defineElementEvent, defineElementNoInputs, html, listen} from 'element-vir';
 
-export const MySimpleWithEventsElement = defineElement({
+export const MySimpleWithEventsElement = defineElementNoInputs({
     tagName: 'my-simple-element-with-events',
     events: {
         logoutClick: defineElementEvent<void>(),
@@ -235,10 +235,10 @@ Use the `listen` directive to listen to typed events emitted by your custom elem
 <!-- example-link: src/readme-examples/my-app-with-events.element.ts -->
 
 ```TypeScript
-import {defineElement, html, listen} from 'element-vir';
+import {defineElementNoInputs, html, listen} from 'element-vir';
 import {MySimpleWithEventsElement} from './my-simple-with-events.element';
 
-export const MyAppWithEventsElement = defineElement({
+export const MyAppWithEventsElement = defineElementNoInputs({
     tagName: 'my-app-with-events-element',
     props: {
         myNumber: -1,
@@ -282,10 +282,10 @@ Both dispatching a custom event and listening to a custom event:
 <!-- example-link: src/readme-examples/custom-event-usage.element.ts -->
 
 ```TypeScript
-import {defineElement, html, listen} from 'element-vir';
+import {defineElementNoInputs, html, listen} from 'element-vir';
 import {MyCustomEvent} from './custom-event-no-element';
 
-export const MyElementWithCustomEvents = defineElement({
+export const MyElementWithCustomEvents = defineElementNoInputs({
     tagName: 'my-app-with-custom-events',
     renderCallback: ({genericDispatch}) => html`
         <div
@@ -314,9 +314,9 @@ Apply host classes in the element's stylesheet by using a callback for the style
 <!-- example-link: src/readme-examples/host-class-definition.ts -->
 
 ```TypeScript
-import {css, defineElement, html} from 'element-vir';
+import {css, defineElementNoInputs, html} from 'element-vir';
 
-export const MyAppWithHostClasses = defineElement({
+export const MyAppWithHostClasses = defineElementNoInputs({
     tagName: 'my-app-with-host-classes',
     props: {
         myProp: 'hello there',
@@ -361,9 +361,9 @@ Typed CSS vars are created in a similar way as host classes:
 <!-- example-link: src/readme-examples/css-vars-definition.ts -->
 
 ```TypeScript
-import {css, defineElement, html} from 'element-vir';
+import {css, defineElementNoInputs, html} from 'element-vir';
 
-export const MyAppWithCssVars = defineElement({
+export const MyAppWithCssVars = defineElementNoInputs({
     tagName: 'my-app-with-css-vars',
     cssVars: {
         /**
@@ -397,9 +397,9 @@ This triggers only once when the element it's attached has actually been created
 <!-- example-link: src/readme-examples/my-simple-with-on-dom-created.element.ts -->
 
 ```TypeScript
-import {defineElement, html, onDomCreated} from 'element-vir';
+import {defineElementNoInputs, html, onDomCreated} from 'element-vir';
 
-export const MySimpleWithOnDomCreatedElement = defineElement({
+export const MySimpleWithOnDomCreatedElement = defineElementNoInputs({
     tagName: 'my-simple-with-on-dom-created-element',
     renderCallback: () => html`
         <span
@@ -421,9 +421,9 @@ This directive fulfills a common use case of triggering callbacks when something
 <!-- example-link: src/readme-examples/my-simple-with-on-resize.element.ts -->
 
 ```TypeScript
-import {defineElement, html, onResize} from 'element-vir';
+import {defineElementNoInputs, html, onResize} from 'element-vir';
 
-export const MySimpleWithOnResizeElement = defineElement({
+export const MySimpleWithOnResizeElement = defineElementNoInputs({
     tagName: 'my-simple-with-on-dom-created-element',
     renderCallback: () => html`
         <span
@@ -454,10 +454,10 @@ This directive is the same as the `assign` directive but it accepts an additiona
 <!-- example-link: src/readme-examples/my-app-with-cleanup.element.ts -->
 
 ```TypeScript
-import {assign, assignWithCleanup, defineElement, html} from 'element-vir';
+import {assign, assignWithCleanup, defineElementNoInputs, html} from 'element-vir';
 import {MySimpleWithPropsElement} from './my-simple-with-props.element';
 
-export const MyAppWithPropsElement = defineElement({
+export const MyAppWithPropsElement = defineElementNoInputs({
     tagName: 'my-app-with-cleanup',
     renderCallback: () => html`
         <h1>My App</h1>

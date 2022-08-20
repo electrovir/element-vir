@@ -1,6 +1,6 @@
-import {defineElement, defineElementEvent, html, listen} from '..';
+import {defineElementEvent, defineElementNoInputs, html, listen} from '..';
 
-export const MySimpleWithEventsElement = defineElement({
+export const MySimpleWithEventsElement = defineElementNoInputs({
     tagName: 'my-simple-element-with-events',
     events: {
         logoutClick: defineElementEvent<void>(),

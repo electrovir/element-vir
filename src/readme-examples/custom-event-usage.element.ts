@@ -1,7 +1,7 @@
-import {defineElement, html, listen} from '..';
+import {defineElementNoInputs, html, listen} from '..';
 import {MyCustomEvent} from './custom-event-no-element';
 
-export const MyElementWithCustomEvents = defineElement({
+export const MyElementWithCustomEvents = defineElementNoInputs({
     tagName: 'my-app-with-custom-events',
     renderCallback: ({genericDispatch}) => html`
         <div

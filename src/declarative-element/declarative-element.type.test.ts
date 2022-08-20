@@ -1,8 +1,8 @@
 import {html} from '..';
-import {defineElement} from './define-element';
+import {defineElementNoInputs} from './define-element-no-inputs';
 import {defineElementEvent} from './element-events';
 
-const definedDeclarativeElementWithProps = defineElement({
+const definedDeclarativeElementWithProps = defineElementNoInputs({
     renderCallback: () => html``,
     stateInit: {
         thing: '',
@@ -13,7 +13,7 @@ const definedDeclarativeElementWithProps = defineElement({
     tagName: 'defined-declarative-element',
 });
 
-const definedDeclarativeElementWithoutProps = defineElement({
+const definedDeclarativeElementWithoutProps = defineElementNoInputs({
     renderCallback: () => html``,
     tagName: 'defined-declarative-element',
 });

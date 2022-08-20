@@ -1,7 +1,7 @@
-import {defineElement, html, listen} from '..';
+import {defineElementNoInputs, html, listen} from '..';
 import {MySimpleWithEventsElement} from './my-simple-with-events.element';
 
-export const MyAppWithEventsElement = defineElement({
+export const MyAppWithEventsElement = defineElementNoInputs({
     tagName: 'my-app-with-events-element',
     stateInit: {
         myNumber: -1,

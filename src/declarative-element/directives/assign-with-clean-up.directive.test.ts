@@ -1,7 +1,7 @@
 import {assert, fixture} from '@open-wc/testing';
 import {sendMouse} from '@web/test-runner-commands';
 import {randomString} from 'augment-vir';
-import {defineElement, html, listen} from '../..';
+import {defineElementNoInputs, html, listen} from '../..';
 import {
     assertRejects,
     getAssertedDeclarativeElement,
@@ -12,7 +12,7 @@ import {
 import {VirWithProps} from '../../test/elements/vir-with-props.element';
 import {assignWithCleanup} from './assign-with-clean-up.directive';
 
-const AssignWithCleanupTestElement = defineElement({
+const AssignWithCleanupTestElement = defineElementNoInputs({
     tagName: 'vir-assign-with-cleanup-test',
     stateInit: {
         first: 1,

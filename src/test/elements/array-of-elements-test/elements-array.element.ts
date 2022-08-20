@@ -1,6 +1,6 @@
-import {defineElement, html} from '../../..';
+import {defineElementNoInputs, html} from '../../..';
 
-const ArrayAElement = defineElement({
+const ArrayAElement = defineElementNoInputs({
     tagName: 'element-vir-test-a',
     renderCallback: () => {
         return html`
@@ -9,7 +9,7 @@ const ArrayAElement = defineElement({
     },
 });
 
-const ArrayBElement = defineElement({
+const ArrayBElement = defineElementNoInputs({
     tagName: 'element-vir-test-b',
     renderCallback: () => {
         return html`
@@ -18,7 +18,7 @@ const ArrayBElement = defineElement({
     },
 });
 
-const ArrayCElement = defineElement({
+const ArrayCElement = defineElementNoInputs({
     tagName: 'element-vir-test-c',
     renderCallback: () => {
         return html`
@@ -27,7 +27,7 @@ const ArrayCElement = defineElement({
     },
 });
 
-const ArrayDElement = defineElement({
+const ArrayDElement = defineElementNoInputs({
     tagName: 'element-vir-test-d',
     renderCallback: () => {
         return html`

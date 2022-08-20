@@ -1,5 +1,6 @@
 import {CSSResult} from 'lit';
 import {CssVarsInitMap} from './css-vars';
+import {DeclarativeElementDefinitionOptions} from './definition-options';
 import {EventsInitMap} from './element-events';
 import {PropertyInitMapBase} from './element-properties';
 import {HostClassesInitMap} from './host-classes';
@@ -48,4 +49,5 @@ export type DeclarativeElementInit<
         HostClassKeys,
         CssVarKeys
     >;
+    options?: Partial<DeclarativeElementDefinitionOptions> | undefined;
 };
