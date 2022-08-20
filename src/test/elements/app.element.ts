@@ -9,6 +9,7 @@ import {
     requireAllCustomElementsToBeFunctionalElement,
 } from '../..';
 import {MyCustomEvent} from '../customEvent';
+import {allTestArrayElements} from './array-of-elements-test/elements-array.element';
 import {TestChildElement} from './child.element';
 
 requireAllCustomElementsToBeFunctionalElement();
@@ -87,8 +88,7 @@ export const AppElement = defineFunctionalElement({
                     toggle second child
                 </button>
                 
-                <hr>
-                <${TestChildElement}
+                <hr>                <${TestChildElement}
                     ${assign(TestChildElement, {
                         button: undefined,
                         inputNumber: props.funnyNumber,
@@ -153,6 +153,9 @@ export const AppElement = defineFunctionalElement({
                         width: 0,
                     })}
                 ></${TestChildElement}>
+                ${allTestArrayElements.map((element) => {
+                    return html`<${element} data-tag-name=${element.tagName}></${element}>`;
+                })}
             </main>
         `;
     },

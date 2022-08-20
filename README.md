@@ -290,7 +290,7 @@ export const MyElementWithCustomEvents = defineFunctionalElement({
     renderCallback: ({genericDispatch}) => html`
         <div
             ${listen(MyCustomEvent, (event) => {
-                console.log(`Got a number! ${event.detail}`);
+                console.info(`Got a number! ${event.detail}`);
             })}
         >
             <div
@@ -405,7 +405,7 @@ export const MySimpleWithOnDomCreatedElement = defineFunctionalElement({
         <span
             ${onDomCreated((element) => {
                 // logs a span element
-                console.log(element);
+                console.info(element);
             })}
         >
             Hello there!
@@ -430,7 +430,7 @@ export const MySimpleWithOnResizeElement = defineFunctionalElement({
             ${onResize((entry) => {
                 // this will track resizing of this span
                 // the entry parameter contains target and contentRect properties
-                console.log(entry);
+                console.info(entry);
             })}
         >
             Hello there!

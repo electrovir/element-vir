@@ -1,4 +1,7 @@
+import {typedHasOwnProperties} from 'augment-vir';
 import {filterOutArrayIndexes} from '../augments/array';
+import {FunctionalElementMarkerSymbol} from '../funtional-element-marker-symbol';
+import {getAlreadyMappedTemplate, setMappedTemplate} from './nested-mapped-templates';
 
 export type TemplateTransform = {
     templateStrings: TemplateStringsArray;
@@ -33,6 +36,17 @@ export function makeCheckTransform<T>(
     };
 }
 
+type WeakMapElementKey = {
+    tagName: string;
+    [FunctionalElementMarkerSymbol]: true;
+};
+
+type NestedTemplatesWeakMap = WeakMap<
+    WeakMapElementKey,
+    TemplateTransform | NestedTemplatesWeakMap
+>;
+type TemplatesWeakMap = WeakMap<TemplateStringsArray, TemplateTransform | NestedTemplatesWeakMap>;
+
 /**
  * The transformed templates are written to a map so that we can preserve reference equality between
  * calls. Without maintaining reference equality between html`` calls, lit-element reconstructs all
@@ -41,19 +55,39 @@ export function makeCheckTransform<T>(
  * This is a WeakMap because we only care about the transformed array value as long as the original
  * template array key exists.
  */
-const transformedTemplateStrings = new WeakMap<TemplateStringsArray, TemplateTransform>();
+const transformedTemplateStrings: TemplatesWeakMap = new WeakMap();
+
+function extractElementValues(values: unknown[]): WeakMapElementKey[] {
+    return values.filter((value): value is WeakMapElementKey => {
+        return (
+            typedHasOwnProperties(value, [
+                'tagName',
+                FunctionalElementMarkerSymbol,
+            ]) &&
+            !!value.tagName &&
+            !!value[FunctionalElementMarkerSymbol]
+        );
+    });
+}
 
 export function getTransformedTemplate<PossibleValues>(
     templateStringsKey: TemplateStringsArray,
     values: PossibleValues[],
     fallbackTransform: () => TemplateTransform,
 ) {
-    const alreadyTransformedTemplateStrings = transformedTemplateStrings.get(templateStringsKey);
+    const alreadyTransformedTemplateStrings = getAlreadyMappedTemplate(templateStringsKey, values);
+
     const templateTransform: TemplateTransform =
         alreadyTransformedTemplateStrings ?? fallbackTransform();
 
     if (!alreadyTransformedTemplateStrings) {
-        transformedTemplateStrings.set(templateStringsKey, templateTransform);
+        const result = setMappedTemplate(templateStringsKey, values, templateTransform);
+        console.log('setting');
+        if (!result.result) {
+            throw new Error(`Failed to set template transform: ${result.reason}`);
+        } else {
+            transformedTemplateStrings.set(templateStringsKey, templateTransform);
+        }
     }
 
     const transformedValuesArray: PossibleValues[] = filterOutArrayIndexes(

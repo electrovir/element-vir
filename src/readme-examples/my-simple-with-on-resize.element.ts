@@ -7,7 +7,7 @@ export const MySimpleWithOnResizeElement = defineFunctionalElement({
             ${onResize((entry) => {
                 // this will track resizing of this span
                 // the entry parameter contains target and contentRect properties
-                console.log(entry);
+                console.info(entry);
             })}
         >
             Hello there!

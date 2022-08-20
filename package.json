@@ -33,17 +33,16 @@
         "test": "npm run test:types && virmator test-web",
         "test:full": "npm test && npm run spellcheck && virmator format check && npm run update-docs -- --check",
         "test:types": "tsc --noEmit",
-        "test:web": "web-test-runner --config .virmator/src/web-test-runner.config.mjs",
         "update-docs": "virmator code-in-markdown README.md --index src/index.ts"
     },
     "dependencies": {
-        "augment-vir": "2.3.0",
-        "lit": "2.2.8"
+        "augment-vir": "2.5.0",
+        "lit": "2.3.1"
     },
     "devDependencies": {
         "@open-wc/testing": "3.1.6",
-        "@web/dev-server-esbuild": "0.3.1",
-        "@web/test-runner": "0.13.31",
-        "virmator": "3.0.5"
+        "@web/dev-server-esbuild": "0.3.2",
+        "@web/test-runner": "0.14.0",
+        "virmator": "3.0.6"
     }
 }

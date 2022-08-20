@@ -6,7 +6,7 @@ export const MyElementWithCustomEvents = defineFunctionalElement({
     renderCallback: ({genericDispatch}) => html`
         <div
             ${listen(MyCustomEvent, (event) => {
-                console.log(`Got a number! ${event.detail}`);
+                console.info(`Got a number! ${event.detail}`);
             })}
         >
             <div

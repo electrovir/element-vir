@@ -6,7 +6,7 @@ export const MySimpleWithOnDomCreatedElement = defineFunctionalElement({
         <span
             ${onDomCreated((element) => {
                 // logs a span element
-                console.log(element);
+                console.info(element);
             })}
         >
             Hello there!

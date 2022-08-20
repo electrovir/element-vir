@@ -1,6 +1,7 @@
 import {kebabCaseToCamelCase} from 'augment-vir';
 import {css, TemplateResult} from 'lit';
 import {property} from 'lit/decorators.js';
+import {FunctionalElementMarkerSymbol} from '../funtional-element-marker-symbol';
 import {createCssVarNamesMap, createCssVarValuesMap} from './css-vars';
 import {defaultOptions, FunctionalElementDefinitionOptions} from './definition-options';
 import {createEventDescriptorMap, EventsInitMap} from './element-events';
@@ -223,6 +224,10 @@ export function defineFunctionalElement<
             capitalizeFirstLetter: true,
         }),
         writable: true,
+    });
+    Object.defineProperty(anonymousClass, FunctionalElementMarkerSymbol, {
+        value: true,
+        writable: false,
     });
 
     window.customElements.define(initInput.tagName, anonymousClass);

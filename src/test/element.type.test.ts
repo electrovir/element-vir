@@ -151,7 +151,7 @@ const TestElement = defineFunctionalElement({
             </span>
             <button
                 ${listen(MyElementEvent, (event) => {
-                    console.log(event);
+                    console.debug(event);
                 })}
                 @click=${() => {
                     dispatch(new TestElement.events.stringEvent(randomString()));
