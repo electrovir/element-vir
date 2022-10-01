@@ -109,6 +109,20 @@ describe(AppElement.tagName, () => {
         }, 'the child input number did not change');
     });
 
+    it('inputs should be spreadable', async () => {
+        const rendered = await renderApp();
+        const childElement = queryTree(rendered, [
+            TestChildElement.tagName,
+        ]);
+
+        assertInstanceOf(childElement, TestChildElement);
+        const currentInputs = {...childElement.instanceInputs};
+        assert.deepStrictEqual(currentInputs, {
+            displayNumber: childElement.instanceInputs.displayNumber,
+            width: childElement.instanceInputs.width,
+        });
+    });
+
     it('should render unique elements with identical strings', async () => {
         const rendered = await renderApp();
 
