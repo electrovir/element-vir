@@ -1,5 +1,4 @@
 import {noChange} from 'lit';
-import {property} from 'lit/decorators.js';
 import {directive, Directive, PartInfo} from 'lit/directive.js';
 import {DeclarativeElement, DeclarativeElementDefinition} from '../declarative-element';
 import {extractDeclarativeElement} from './directive-helpers';
@@ -50,9 +49,5 @@ export function assignInputsObject<
             `Assignment mismatch. Assignment was made for ${element.tagName.toLowerCase()} but it's attached to ${expectedElementConstructor.tagName.toLowerCase()}`,
         );
     }
-    Object.keys(assignmentObject).forEach((key) => {
-        property()(element, key);
-        element.instanceInputs[key] = assignmentObject[key];
-    });
-    element.markInputsAsHavingBeenSet();
+    element.assignInputs(assignmentObject);
 }

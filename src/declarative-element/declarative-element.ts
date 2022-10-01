@@ -139,6 +139,7 @@ export abstract class DeclarativeElement<
     public abstract override render(): TemplateResult | Promise<TemplateResult>;
     public abstract readonly instanceState: PropertyInitGeneric;
     public abstract readonly instanceInputs: InputsGeneric;
+    public abstract assignInputs(inputs: InputsGeneric): void;
     public abstract readonly haveInputsBeenSet: boolean;
     public abstract markInputsAsHavingBeenSet(): void;
     public abstract readonly creator: DeclarativeElementDefinition<

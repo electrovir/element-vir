@@ -1,4 +1,4 @@
-import {kebabCaseToCamelCase} from 'augment-vir';
+import {getObjectTypedKeys, kebabCaseToCamelCase} from 'augment-vir';
 import {css, TemplateResult} from 'lit';
 import {property} from 'lit/decorators.js';
 import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';
@@ -192,6 +192,14 @@ export function defineElementNoInputs<
 
         // this is set below in Object.defineProperties
         public readonly creator = {} as unknown as ThisElementDefinition;
+
+        public assignInputs(inputs: InputsGeneric): void {
+            getObjectTypedKeys(inputs).forEach((key) => {
+                property()(this, key);
+                this.instanceInputs[key] = inputs[key];
+            });
+            this.markInputsAsHavingBeenSet();
+        }
 
         public readonly instanceInputs: InputsGeneric = createElementUpdaterProxy<InputsGeneric>(
             this,
