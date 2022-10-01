@@ -50,24 +50,42 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
      */
     const elementAsProps = element as DeclarativeElement & PropertyInitGeneric;
 
-    const propsProxy = new Proxy(
-        {},
-        {
-            get: (_target, propertyName: keyof PropertyInitGeneric | symbol) => {
-                if (verifyExists) {
-                    assertValidPropertyName(propertyName, element, element.tagName);
-                }
-                return elementAsProps[propertyName];
-            },
-            set: (_target, propertyName: keyof PropertyInitGeneric | symbol, value) => {
-                if (verifyExists) {
-                    assertValidPropertyName(propertyName, element, element.tagName);
-                }
-                elementAsProps[propertyName] = value;
-                return true;
-            },
+    const propsProxy = new Proxy({} as Record<PropertyKey, unknown>, {
+        get: (target, propertyName: keyof PropertyInitGeneric | symbol) => {
+            if (verifyExists) {
+                assertValidPropertyName(propertyName, element, element.tagName);
+            }
+            const targetValue = target[propertyName];
+            if (typeof targetValue === 'function') {
+                return targetValue.bind(target);
+            }
+
+            return elementAsProps[propertyName];
         },
-    );
+        set: (target, propertyName: keyof PropertyInitGeneric | symbol, value) => {
+            if (verifyExists) {
+                assertValidPropertyName(propertyName, element, element.tagName);
+            }
+            target[propertyName] = value;
+            elementAsProps[propertyName] = value;
+            return true;
+        },
+        ownKeys: (target) => Reflect.ownKeys(target),
+        getOwnPropertyDescriptor(target, propertyName) {
+            if (propertyName in target) {
+                return {
+                    get value() {
+                        return target[propertyName];
+                    },
+                    configurable: true,
+                    enumerable: true,
+                };
+            }
+
+            return undefined;
+        },
+        has: (target, propertyName) => Reflect.has(target, propertyName),
+    });
 
     return propsProxy as PropertyInitGeneric;
 }
