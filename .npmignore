@@ -12,3 +12,7 @@ graphics/
 src/
 test-files/
 tsconfig*.json
+
+/public/
+index.html
+*testing*
