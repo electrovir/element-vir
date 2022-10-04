@@ -191,7 +191,7 @@ export function defineElementNoInputs<
         }
 
         // this is set below in Object.defineProperties
-        public readonly creator = {} as unknown as ThisElementDefinition;
+        public readonly definition = {} as unknown as ThisElementDefinition;
 
         public assignInputs(inputs: InputsGeneric): void {
             getObjectTypedKeys(inputs).forEach((key) => {
@@ -218,8 +218,9 @@ export function defineElementNoInputs<
 
             Object.keys(stateInit).forEach((propName: keyof StateGeneric) => {
                 property()(this, propName);
-                (this as StateGeneric)[propName] = stateInit[propName];
+                (this as unknown as StateGeneric)[propName] = stateInit[propName];
             });
+            this.definition = anonymousClass as unknown as ThisElementDefinition;
         }
     };
 
@@ -233,10 +234,6 @@ export function defineElementNoInputs<
                 capitalizeFirstLetter: true,
             }),
             writable: true,
-        },
-        creator: {
-            value: anonymousClass as unknown as ThisElementDefinition,
-            writable: false,
         },
         isStrictInstance: {
             value: (element: unknown) => {

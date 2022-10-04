@@ -142,7 +142,7 @@ export abstract class DeclarativeElement<
     public abstract assignInputs(inputs: InputsGeneric): void;
     public abstract readonly haveInputsBeenSet: boolean;
     public abstract markInputsAsHavingBeenSet(): void;
-    public abstract readonly creator: DeclarativeElementDefinition<
+    public abstract readonly definition: DeclarativeElementDefinition<
         InputsGeneric,
         PropertyInitGeneric,
         EventsInitGeneric,

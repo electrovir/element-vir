@@ -116,6 +116,7 @@ describe(AppElement.tagName, () => {
         ]);
 
         assertInstanceOf(childElement, TestChildElement);
+        assert('speak' in childElement.definition.events);
         const currentInputs = {...childElement.instanceInputs};
         assert.deepStrictEqual(currentInputs, {
             displayNumber: childElement.instanceInputs.displayNumber,
