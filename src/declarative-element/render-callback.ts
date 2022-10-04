@@ -1,4 +1,4 @@
-import {getObjectTypedKeys} from 'augment-vir';
+import {getObjectTypedKeys, RequiredAndNotNullBy} from 'augment-vir';
 import {TemplateResult} from 'lit';
 import {TypedEvent} from '../typed-event/typed-event';
 import {DeclarativeElement} from './declarative-element';
@@ -43,12 +43,15 @@ export type RenderParams<
     state: Readonly<StateGeneric>;
     updateState: UpdateStateCallback<StateGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
-    host: DeclarativeElement<
-        InputsGeneric,
-        StateGeneric,
-        EventsInitGeneric,
-        HostClassKeys,
-        CssVarKeys
+    host: RequiredAndNotNullBy<
+        DeclarativeElement<
+            InputsGeneric,
+            StateGeneric,
+            EventsInitGeneric,
+            HostClassKeys,
+            CssVarKeys
+        >,
+        'shadowRoot'
     >;
     dispatch: <EventTypeNameGeneric extends keyof EventsInitGeneric>(
         event: TypedEvent<
@@ -101,7 +104,7 @@ export function createRenderParams<
             });
         },
         inputs: element.instanceInputs,
-        host: element,
+        host: element as RequiredAndNotNullBy<typeof element, 'shadowRoot'>,
         state: element.instanceState,
         events: eventsMap,
     };
