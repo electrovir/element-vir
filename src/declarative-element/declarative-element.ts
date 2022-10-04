@@ -1,4 +1,4 @@
-import {RequiredBy} from 'augment-vir';
+import {RequiredAndNotNullBy, RequiredBy} from 'augment-vir';
 import {CSSResult, LitElement, TemplateResult} from 'lit';
 import {CssVarNameOrValueMap} from './css-vars';
 import {DeclarativeElementInit} from './declarative-element-init';
@@ -7,29 +7,40 @@ import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './element-prope
 import {HostClassNamesMap} from './host-classes';
 import {RenderCallback} from './render-callback';
 
+export type HostInstanceType<
+    InputsGeneric extends PropertyInitMapBase,
+    StateGeneric extends PropertyInitMapBase,
+    EventsInitGeneric extends EventsInitMap,
+    HostClassKeys extends string,
+    CssVarKeys extends string,
+> = RequiredAndNotNullBy<
+    DeclarativeElement<InputsGeneric, StateGeneric, EventsInitGeneric, HostClassKeys, CssVarKeys>,
+    'shadowRoot'
+>;
+
 export type DeclarativeElementDefinition<
     InputsGeneric extends PropertyInitMapBase = any,
-    PropertyInitGeneric extends PropertyInitMapBase = any,
+    StateInitGeneric extends PropertyInitMapBase = any,
     EventsInitGeneric extends EventsInitMap = any,
     HostClassKeys extends string = string,
     CssVarKeys extends string = string,
-> = (new () => DeclarativeElement<
+> = (new () => HostInstanceType<
     InputsGeneric,
-    PropertyInitGeneric,
+    StateInitGeneric,
     EventsInitGeneric,
     HostClassKeys,
     CssVarKeys
 >) &
     StaticDeclarativeElementProperties<
         InputsGeneric,
-        PropertyInitGeneric,
+        StateInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
     > & {
-        instanceType: DeclarativeElement<
+        instanceType: HostInstanceType<
             InputsGeneric,
-            PropertyInitGeneric,
+            StateInitGeneric,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys

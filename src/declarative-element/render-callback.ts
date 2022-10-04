@@ -1,7 +1,7 @@
 import {getObjectTypedKeys, RequiredAndNotNullBy} from 'augment-vir';
 import {TemplateResult} from 'lit';
 import {TypedEvent} from '../typed-event/typed-event';
-import {DeclarativeElement} from './declarative-element';
+import {DeclarativeElement, HostInstanceType} from './declarative-element';
 import {
     EventDescriptorMap,
     EventInitMapEventDetailExtractor,
@@ -35,23 +35,20 @@ export type UpdateStateCallback<StateGeneric extends PropertyInitMapBase> = (
 
 export type RenderParams<
     InputsGeneric extends PropertyInitMapBase,
-    StateGeneric extends PropertyInitMapBase,
+    StateInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
 > = {
-    state: Readonly<StateGeneric>;
-    updateState: UpdateStateCallback<StateGeneric>;
+    state: Readonly<StateInitGeneric>;
+    updateState: UpdateStateCallback<StateInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
-    host: RequiredAndNotNullBy<
-        DeclarativeElement<
-            InputsGeneric,
-            StateGeneric,
-            EventsInitGeneric,
-            HostClassKeys,
-            CssVarKeys
-        >,
-        'shadowRoot'
+    host: HostInstanceType<
+        InputsGeneric,
+        StateInitGeneric,
+        EventsInitGeneric,
+        HostClassKeys,
+        CssVarKeys
     >;
     dispatch: <EventTypeNameGeneric extends keyof EventsInitGeneric>(
         event: TypedEvent<
