@@ -104,6 +104,13 @@ export abstract class DeclarativeElement<
         string,
         string
     >['inputsType'];
+    public static readonly stateType: StaticDeclarativeElementProperties<
+        PropertyInitMapBase,
+        PropertyInitMapBase,
+        EventsInitMap,
+        string,
+        string
+    >['stateType'];
     public static readonly events: StaticDeclarativeElementProperties<
         PropertyInitMapBase,
         PropertyInitMapBase,
@@ -164,7 +171,7 @@ export abstract class DeclarativeElement<
 
 export interface StaticDeclarativeElementProperties<
     InputsGeneric extends PropertyInitMapBase,
-    PropertyInitGeneric extends PropertyInitMapBase,
+    StateInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
@@ -172,17 +179,17 @@ export interface StaticDeclarativeElementProperties<
     /** Pass through the render callback for direct unit testability */
     readonly renderCallback: RenderCallback<
         InputsGeneric,
-        PropertyInitGeneric,
+        StateInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
     >;
     events: EventDescriptorMap<EventsInitGeneric>;
-    stateInit: ElementPropertyDescriptorMap<PropertyInitGeneric>;
+    stateInit: ElementPropertyDescriptorMap<StateInitGeneric>;
     init: RequiredBy<
         DeclarativeElementInit<
             InputsGeneric,
-            PropertyInitGeneric,
+            StateInitGeneric,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys
@@ -190,11 +197,12 @@ export interface StaticDeclarativeElementProperties<
         'stateInit' | 'events'
     >;
     inputsType: InputsGeneric;
+    stateType: StateInitGeneric;
     isStrictInstance: (
         element: unknown,
     ) => element is DeclarativeElement<
         InputsGeneric,
-        PropertyInitGeneric,
+        StateInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys

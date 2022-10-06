@@ -150,6 +150,11 @@ export function defineElementNoInputs<
                 `"inputsType" was called on ${initInput.tagName} as a value but it is only for types.`,
             );
         }
+        public static override get stateType(): StateGeneric {
+            throw new Error(
+                `"stateType" was called on ${initInput.tagName} as a value but it is only for types.`,
+            );
+        }
 
         public initCalled = false;
 
