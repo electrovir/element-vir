@@ -195,6 +195,15 @@ export function defineElementNoInputs<
             return renderResult;
         }
 
+        public override disconnectedCallback(): void {
+            super.disconnectedCallback();
+            if (initInput.cleanupCallback) {
+                const renderParams = this.createRenderParams();
+                initInput.cleanupCallback(renderParams);
+            }
+            this.initCalled = false;
+        }
+
         // this is set below in Object.defineProperties
         public readonly definition = {} as unknown as ThisElementDefinition;
 

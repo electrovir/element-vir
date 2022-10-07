@@ -1,5 +1,7 @@
 # element-vir
 
+A wrapper for [lit-element](http://lit.dev) that adds type-safe custom element usage and I/O with declarative custom element definition.
+
 Heroic. Reactive. Declarative. Type safe. Web components without compromise.
 
 No need for an extra build step,<br>
@@ -10,8 +12,6 @@ no need for a dedicated, unique syntax.<br>
 _**It's just TypeScript.**_
 
 Uses the power of _native_ JavaScript custom web elements, _native_ JavaScript template literals, _native_ JavaScript functions<sup>\*</sup>, _native_ HTML, and [lit-element](http://lit.dev).
-
-In reality this is basically a [lit-element](http://lit.dev) wrapper that adds type-safe element tag usage and I/O with declarative style component definition.
 
 [Works in every major web browser except Internet Explorer.](https://caniuse.com/mdn-api_window_customelements)
 
@@ -29,13 +29,13 @@ Make sure to install this as a normal dependency (not just a dev dependency) bec
 
 # Usage
 
-Most usage of this package is done through the [`defineElementNoInputs` function](https://github.com/electrovir/element-vir/blob/main/src/declarative-element/define-declarative-element.ts#L25-L30). See the [`DeclarativeElementInit` type](https://github.com/electrovir/element-vir/blob/main/src/declarative-element/declarative-element-init.ts#L7-L20) for that function's inputs. These inputs are also described below with examples.
+Most usage of this package is done through the `defineElement` or `defineElementNoInputs` functions. See the `DeclarativeElementInit` type for that function's inputs. These inputs are also described below with examples.
 
 All of [`lit`](https://lit.dev)'s syntax and functionality is also available for use if you wish.
 
 ## Simple element definition
 
-Use `defineElementNoInputs` to define your element if you're not setting inputs (or just for now as you're getting started). It must be given an object with at least `tagName` and `renderCallback` properties (the types enforce this). Here is a bare-minimum example custom element:
+Use `defineElementNoInputs` to define your element if it's not going to accept any inputs (or just for now as you're getting started). It must be given an object with at least `tagName` and `renderCallback` properties (the types enforce this). Here is a bare-minimum example custom element:
 
 <!-- example-link: src/readme-examples/my-simple.element.ts -->
 
@@ -198,6 +198,40 @@ export const MyAppWithAssignmentElement = defineElementNoInputs({
         >
         </${MySimpleWithInputsElement}>
     `,
+});
+```
+
+## Other callbacks
+
+There are two other callbacks you can define that are sort of similar to lifecycle callbacks. They are much simpler than lifecycle callbacks however.
+
+-   `initCallback`: called right before the first render, has all state and inputs setup.
+-   `cleanupCallback`: called when an element is removed from the DOM. (This is the same as the `disconnectedCallback` in standard HTMLElement classes.)
+
+<!-- example-link: src/readme-examples/my-app-with-cleanup-callback.element.ts -->
+
+```TypeScript
+import {defineElementNoInputs, html} from 'element-vir';
+
+export const MyAppWithAssignmentCleanupCallbackElement = defineElementNoInputs({
+    tagName: 'my-app-with-cleanup-callback',
+    stateInit: {
+        intervalId: undefined as undefined | number,
+    },
+    initCallback: ({updateState}) => {
+        updateState({
+            intervalId: window.setInterval(() => console.log('hi'), 1000),
+        });
+    },
+    renderCallback: () => html`
+        <h1>My App</h1>
+    `,
+    cleanupCallback: ({state, updateState}) => {
+        window.clearInterval(state.intervalId);
+        updateState({
+            intervalId: undefined,
+        });
+    },
 });
 ```
 

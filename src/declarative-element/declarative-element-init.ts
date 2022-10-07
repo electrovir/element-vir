@@ -49,5 +49,12 @@ export type DeclarativeElementInit<
         HostClassKeys,
         CssVarKeys
     >;
+    cleanupCallback?: InitCallback<
+        InputsGeneric,
+        StateInit,
+        EventsInitGeneric,
+        HostClassKeys,
+        CssVarKeys
+    >;
     options?: Partial<DeclarativeElementDefinitionOptions> | undefined;
 };
