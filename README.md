@@ -359,7 +359,8 @@ export const MyAppWithHostClasses = defineElementNoInputs({
     hostClasses: {
         /**
          * Setting the value to false means this host class will not ever automatically be applied.
-         * It will simply be a static member on the element for manual application in consumers when desired.
+         * It will simply be a static member on the element for manual application in consumers when
+         * desired.
          */
         styleVariationA: false,
         /**

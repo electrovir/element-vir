@@ -1,4 +1,4 @@
-import {typedHasOwnProperties} from 'augment-vir';
+import {typedHasProperties} from 'augment-vir';
 import {filterOutArrayIndexes} from '../augments/array';
 import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';
 import {getAlreadyMappedTemplate, setMappedTemplate} from './nested-mapped-templates';
@@ -60,7 +60,7 @@ const transformedTemplateStrings: TemplatesWeakMap = new WeakMap();
 function extractElementValues(values: unknown[]): WeakMapElementKey[] {
     return values.filter((value): value is WeakMapElementKey => {
         return (
-            typedHasOwnProperties(value, [
+            typedHasProperties(value, [
                 'tagName',
                 DeclarativeElementMarkerSymbol,
             ]) &&

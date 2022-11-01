@@ -1,14 +1,13 @@
 import {assert, fixture} from '@open-wc/testing';
-import {sendMouse} from '@web/test-runner-commands';
 import {randomString} from 'augment-vir';
 import {defineElementNoInputs, html, listen} from '../..';
 import {
     assertRejects,
+    clickElement,
     getAssertedDeclarativeElement,
-    getCenterOfElement,
     queryWithAssert,
     testIdSelector,
-} from '../../augments/testing';
+} from '../../augments/testing.test-helper';
 import {VirWithInputs} from '../../test/elements/vir-with-inputs.element';
 import {assignWithCleanup} from './assign-with-clean-up.directive';
 
@@ -87,15 +86,10 @@ describe(assignWithCleanup.name, () => {
             element,
         );
 
-        await sendMouse({
-            position: getCenterOfElement(updateButton),
-            type: 'click',
-        });
+        await clickElement(updateButton);
         assert.notStrictEqual(originalValue, element.instanceState.nothing);
-        await sendMouse({
-            position: getCenterOfElement(updateButton),
-            type: 'click',
-        });
+
+        await clickElement(updateButton);
         assert.notStrictEqual(originalValue, element.instanceState.nothing);
 
         assert.strictEqual(element.instanceState.generatedStrings.size, 1);

@@ -1,4 +1,4 @@
-import {assertInstanceOf} from './testing';
+import {assertInstanceOf} from './testing.test-helper';
 
 describe(assertInstanceOf.name, () => {
     it('should actually ensure instanceof', () => {

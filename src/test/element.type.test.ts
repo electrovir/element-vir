@@ -23,10 +23,21 @@ const WithHostClassesAndCssVars = defineElementNoInputs({
     hostClasses: {
         stuff: false,
     },
+    stateInit: {
+        color: 'purple',
+    },
     cssVars: {
         myCssVar: 'blue',
     },
-    renderCallback: () => html``,
+    renderCallback: ({state, updateState}) => {
+        // purple
+        console.log(state.color);
+        updateState({color: 'green'});
+        // green
+        console.log(state.color);
+
+        return html``;
+    },
 });
 
 WithHostClassesAndCssVars.hostClasses.stuff;
@@ -43,7 +54,7 @@ WithHostClassesAndCssVars.cssVarValues.derp;
 // @ts-expect-error
 const TestElementNoTagName = defineElementNoInputs({
     renderCallback: (): TemplateResult => {
-        return html``;
+        return html`<${WithHostClassesAndCssVars} class=${WithHostClassesAndCssVars.hostClasses.stuff}></${WithHostClassesAndCssVars}>`;
     },
 });
 
@@ -61,7 +72,7 @@ type AppElementProps = {
     showChild: boolean;
 };
 
-const stateInit: (keyof AppElementProps)[] = getObjectTypedKeys(AppElement.stateInit);
+const stateInit: ReadonlyArray<keyof AppElementProps> = getObjectTypedKeys(AppElement.stateInit);
 
 // element constructor should not be able to be assigned to an instance
 // @ts-expect-error

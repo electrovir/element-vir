@@ -1,8 +1,7 @@
 import {assert, expect, fixture, waitUntil} from '@open-wc/testing';
-import {sendMouse} from '@web/test-runner-commands';
 import {RequiredAndNotNullBy} from 'augment-vir';
 import {html} from '../..';
-import {assertInstanceOf} from '../../augments/testing';
+import {assertInstanceOf, clickElement} from '../../augments/testing.test-helper';
 import {AppElement} from './app.element';
 import {TestChildElement} from './child.element';
 
@@ -47,14 +46,6 @@ function assertHasShadowRoot<T extends Element>(
     assertDefined(element.shadowRoot, message);
 }
 
-function getCenterOfElement(element: Element): [number, number] {
-    const rect = element.getBoundingClientRect();
-    return [
-        Math.floor((rect.left + rect.right) / 2),
-        Math.floor((rect.bottom + rect.top) / 2),
-    ];
-}
-
 describe(AppElement.tagName, () => {
     async function renderApp() {
         return await fixture(html`<${AppElement}></${AppElement}>`);
@@ -90,10 +81,8 @@ describe(AppElement.tagName, () => {
             const assignNewNumberButton = queryTree(context, ['button']);
             assertInstanceOf(assignNewNumberButton, HTMLButtonElement);
             expect(assignNewNumberButton.innerText).to.contain('assign NEW number to child');
-            await sendMouse({
-                position: getCenterOfElement(assignNewNumberButton),
-                type: 'click',
-            });
+
+            await clickElement(assignNewNumberButton);
         }
         const rendered = await renderApp();
 

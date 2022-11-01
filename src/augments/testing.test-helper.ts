@@ -1,4 +1,5 @@
 import {assert} from '@open-wc/testing';
+import {sendMouse} from '@web/test-runner-commands';
 import {DeclarativeElementDefinition} from '../declarative-element/declarative-element';
 
 /**
@@ -46,6 +47,13 @@ export function getCenterOfElement(element: Element): [number, number] {
         Math.floor((rect.left + rect.right) / 2),
         Math.floor((rect.bottom + rect.top) / 2),
     ];
+}
+
+export async function clickElement(element: Element) {
+    await sendMouse({
+        position: getCenterOfElement(element),
+        type: 'click',
+    });
 }
 
 export function queryWithAssert<T extends Element>(

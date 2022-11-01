@@ -1,7 +1,13 @@
 {
+    "extends": "./.virmator/tsconfig-base.json",
     "compilerOptions": {
         "experimentalDecorators": true,
         "module": "ESNext"
     },
-    "extends": "./.virmator/tsconfig-base.json"
+    "exclude": [
+        "./configs",
+        "./dist",
+        "./node_modules",
+        "./test-files"
+    ]
 }

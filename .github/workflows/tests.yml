@@ -23,4 +23,4 @@ jobs:
               run: |
                   npm ci
                   npx playwright install --with-deps
-                  npm run test:full
+                  npm run test:all

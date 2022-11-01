@@ -16,7 +16,8 @@ type PossibleListenerCallbacks<
  * typed events (pass in a return value from defineTypedEvent).
  *
  * @param definedTypedEvent Needs to come either from a declarative element (like
- *   MyDeclarativeElement.events.eventName) or from a typed event created via the defineTypedEvent function.
+ *   MyDeclarativeElement.events.eventName) or from a typed event created via the defineTypedEvent
+ *   function.
  * @param listener The callback to fire when an event is caught. Assuming the definedTypedEvent
  *   input is properly typed, the event given to this callback will also be typed.
  */
