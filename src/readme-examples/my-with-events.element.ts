@@ -1,7 +1,7 @@
 import {defineElementEvent, defineElementNoInputs, html, listen} from '..';
 
-export const MySimpleWithEventsElement = defineElementNoInputs({
-    tagName: 'my-simple-element-with-events',
+export const MyWithEventsElement = defineElementNoInputs({
+    tagName: 'my-with-events',
     events: {
         logoutClick: defineElementEvent<void>(),
         randomNumber: defineElementEvent<number>(),

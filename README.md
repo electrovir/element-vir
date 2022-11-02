@@ -43,7 +43,7 @@ Use `defineElementNoInputs` to define your element if it's not going to accept a
 import {defineElementNoInputs, html} from 'element-vir';
 
 export const MySimpleElement = defineElementNoInputs({
-    tagName: 'my-simple-element',
+    tagName: 'my-simple',
     renderCallback: () => html`
         <span>Hello there!</span>
     `,
@@ -63,7 +63,7 @@ import {defineElementNoInputs, html} from 'element-vir';
 import {MySimpleElement} from './my-simple.element';
 
 export const MyAppElement = defineElementNoInputs({
-    tagName: 'my-app-element',
+    tagName: 'my-app',
     renderCallback: () => html`
         <h1>My App</h1>
         <${MySimpleElement}></${MySimpleElement}>
@@ -79,13 +79,13 @@ If you wish to bypass this interpolation, make sure to [import the `html` tagged
 
 Styles are added through the `styles` property when defining a declarative element (similar to [how they are defined in `lit`](https://lit.dev/docs/components/styles/)):
 
-<!-- example-link: src/readme-examples/my-simple-app-with-styles.element.ts -->
+<!-- example-link: src/readme-examples/my-with-styles.element.ts -->
 
 ```TypeScript
 import {css, defineElementNoInputs, html} from 'element-vir';
 
-export const MySimpleWithStylesElement = defineElementNoInputs({
-    tagName: 'my-simple-with-styles-element',
+export const MyWithStylesElement = defineElementNoInputs({
+    tagName: 'my-with-styles',
     styles: css`
         :host {
             display: flex;
@@ -108,14 +108,14 @@ export const MySimpleWithStylesElement = defineElementNoInputs({
 
 Declarative element definitions can be used in the `css` tagged template just like in the `html` tagged template. This will be replaced by the element's tag name:
 
-<!-- example-link: src/readme-examples/my-simple-app-with-styles-and-interpolated-selector.element.ts -->
+<!-- example-link: src/readme-examples/my-with-styles-and-interpolated-selector.element.ts -->
 
 ```TypeScript
 import {css, defineElementNoInputs, html} from 'element-vir';
 import {MySimpleElement} from './my-simple.element';
 
-export const MySimpleWithStylesAndInterpolatedSelectorElement = defineElementNoInputs({
-    tagName: 'my-simple-with-styles-and-interpolated-selector-element',
+export const MyWithStylesAndInterpolatedSelectorElement = defineElementNoInputs({
+    tagName: 'my-with-styles-and-interpolated-selector',
     styles: css`
         ${MySimpleElement} {
             background-color: blue;
@@ -133,16 +133,16 @@ Define element inputs by using `defineElement` to define a declarative element. 
 
 To use an element's inputs for use in its template, grab `inputs` from `renderCallback`'s parameters and interpolate it into your HTML template:
 
-<!-- example-link: src/readme-examples/my-simple-with-inputs.element.ts -->
+<!-- example-link: src/readme-examples/my-with-inputs.element.ts -->
 
 ```TypeScript
 import {defineElement, html} from 'element-vir';
 
-export const MySimpleWithInputsElement = defineElement<{
+export const MyWithInputsElement = defineElement<{
     username: string;
     email: string;
 }>()({
-    tagName: 'my-simple-element-with-inputs',
+    tagName: 'my-with-inputs',
     renderCallback: ({inputs}) => html`
         <span>Hello there ${inputs.username}!</span>
     `,
@@ -153,13 +153,13 @@ export const MySimpleWithInputsElement = defineElement<{
 
 Define internal state with the `stateInit` property when defining an element. Grab it with `state` in `renderCallback` to use state. Grab `updateState` in `renderCallback` to update state:
 
-<!-- example-link: src/readme-examples/my-simple-with-update-state.element.ts -->
+<!-- example-link: src/readme-examples/my-with-update-state.element.ts -->
 
 ```TypeScript
 import {defineElementNoInputs, html, listen} from 'element-vir';
 
-export const MySimpleWithUpdateStateElement = defineElementNoInputs({
-    tagName: 'my-simple-element-with-update-state',
+export const MyWithUpdateStateElement = defineElementNoInputs({
+    tagName: 'my-with-update-state',
     stateInit: {
         username: 'dev',
         email: undefined as string | undefined,
@@ -180,23 +180,23 @@ export const MySimpleWithUpdateStateElement = defineElementNoInputs({
 
 Use the `assign` directive to assign properties to child custom elements:
 
-<!-- example-link: src/readme-examples/my-app-with-assignment.element.ts -->
+<!-- example-link: src/readme-examples/my-with-assignment.element.ts -->
 
 ```TypeScript
 import {assign, defineElementNoInputs, html} from 'element-vir';
-import {MySimpleWithInputsElement} from './my-simple-with-inputs.element';
+import {MyWithInputsElement} from './my-with-inputs.element';
 
-export const MyAppWithAssignmentElement = defineElementNoInputs({
-    tagName: 'my-app-with-assignment-element',
+export const MyWithAssignmentElement = defineElementNoInputs({
+    tagName: 'my-with-assignment',
     renderCallback: () => html`
         <h1>My App</h1>
-        <${MySimpleWithInputsElement}
-            ${assign(MySimpleWithInputsElement, {
+        <${MyWithInputsElement}
+            ${assign(MyWithInputsElement, {
                 email: 'user@example.com',
                 username: 'user',
             })}
         >
-        </${MySimpleWithInputsElement}>
+        </${MyWithInputsElement}>
     `,
 });
 ```
@@ -208,13 +208,13 @@ There are two other callbacks you can define that are sort of similar to lifecyc
 -   `initCallback`: called right before the first render, has all state and inputs setup.
 -   `cleanupCallback`: called when an element is removed from the DOM. (This is the same as the `disconnectedCallback` in standard HTMLElement classes.)
 
-<!-- example-link: src/readme-examples/my-app-with-cleanup-callback.element.ts -->
+<!-- example-link: src/readme-examples/my-with-cleanup-callback.element.ts -->
 
 ```TypeScript
 import {defineElementNoInputs, html} from 'element-vir';
 
-export const MyAppWithAssignmentCleanupCallbackElement = defineElementNoInputs({
-    tagName: 'my-app-with-cleanup-callback',
+export const MyWithAssignmentCleanupCallbackElement = defineElementNoInputs({
+    tagName: 'my-with-cleanup-callback',
     stateInit: {
         intervalId: undefined as undefined | number,
     },
@@ -241,13 +241,13 @@ Define events with `events` when defining a declarative element. Each event must
 
 To dispatch an event, grab `dispatch` from `renderCallback`'s parameters.
 
-<!-- example-link: src/readme-examples/my-simple-with-events.element.ts -->
+<!-- example-link: src/readme-examples/my-with-events.element.ts -->
 
 ```TypeScript
 import {defineElementEvent, defineElementNoInputs, html, listen} from 'element-vir';
 
-export const MySimpleWithEventsElement = defineElementNoInputs({
-    tagName: 'my-simple-element-with-events',
+export const MyWithEventsElement = defineElementNoInputs({
+    tagName: 'my-with-events',
     events: {
         logoutClick: defineElementEvent<void>(),
         randomNumber: defineElementEvent<number>(),
@@ -267,29 +267,24 @@ export const MySimpleWithEventsElement = defineElementNoInputs({
 
 Use the `listen` directive to listen to typed events emitted by your custom elements:
 
-<!-- example-link: src/readme-examples/my-app-with-events.element.ts -->
+<!-- example-link: src/readme-examples/my-with-events.element.ts -->
 
 ```TypeScript
-import {defineElementNoInputs, html, listen} from 'element-vir';
-import {MySimpleWithEventsElement} from './my-simple-with-events.element';
+import {defineElementEvent, defineElementNoInputs, html, listen} from 'element-vir';
 
-export const MyAppWithEventsElement = defineElementNoInputs({
-    tagName: 'my-app-with-events-element',
-    stateInit: {
-        myNumber: -1,
+export const MyWithEventsElement = defineElementNoInputs({
+    tagName: 'my-with-events',
+    events: {
+        logoutClick: defineElementEvent<void>(),
+        randomNumber: defineElementEvent<number>(),
     },
-    renderCallback: ({state, updateState}) => html`
-        <h1>My App</h1>
-        <${MySimpleWithEventsElement}
-            ${listen(MySimpleWithEventsElement.events.logoutClick, () => {
-                console.info('logout triggered');
-            })}
-            ${listen(MySimpleWithEventsElement.events.randomNumber, (event) => {
-                updateState({myNumber: event.detail});
-            })}
-        >
-        </${MySimpleWithEventsElement}>
-        <span>${state.myNumber}</span>
+    renderCallback: ({dispatch, events}) => html`
+        <button ${listen('click', () => dispatch(new events.logoutClick(undefined)))}>
+            log out
+        </button>
+        <button ${listen('click', () => dispatch(new events.randomNumber(Math.random())))}>
+            generate random number
+        </button>
     `,
 });
 ```
@@ -302,35 +297,35 @@ Create a custom event type with `defineTypedEvent`. Make sure to include the typ
 
 ### Creating a typed event
 
-<!-- example-link: src/readme-examples/custom-event-no-element.ts -->
+<!-- example-link: src/readme-examples/my-custom-action.event.ts -->
 
 ```TypeScript
 import {defineTypedEvent} from 'element-vir';
 
-export const MyCustomEvent = defineTypedEvent<number>()('myCustomEventName');
+export const MyCustomActionEvent = defineTypedEvent<number>()('my-custom-action');
 ```
 
 ### Using a typed event
 
 Both dispatching a custom event and listening to a custom event:
 
-<!-- example-link: src/readme-examples/custom-event-usage.element.ts -->
+<!-- example-link: src/readme-examples/my-with-custom-events.element.ts -->
 
 ```TypeScript
 import {defineElementNoInputs, html, listen} from 'element-vir';
-import {MyCustomEvent} from './custom-event-no-element';
+import {MyCustomActionEvent} from './my-custom-action.event';
 
-export const MyElementWithCustomEvents = defineElementNoInputs({
-    tagName: 'my-app-with-custom-events',
+export const MyWithCustomEventsElement = defineElementNoInputs({
+    tagName: 'my-with-custom-events',
     renderCallback: ({genericDispatch}) => html`
         <div
-            ${listen(MyCustomEvent, (event) => {
+            ${listen(MyCustomActionEvent, (event) => {
                 console.info(`Got a number! ${event.detail}`);
             })}
         >
             <div
                 ${listen('click', () => {
-                    genericDispatch(new MyCustomEvent(Math.random()));
+                    genericDispatch(new MyCustomActionEvent(Math.random()));
                 })}
             ></div>
         </div>
@@ -340,19 +335,21 @@ export const MyElementWithCustomEvents = defineElementNoInputs({
 
 ## Host classes
 
+### Defining host classes
+
 Host classes can be defined and used with type safety. Host classes are used to provide alternative styles for components. They are purely driven by CSS and are thus applied via the `class` HTML attribute.
 
 Host classes that are defined with a callback will automatically get applied if that callback returns true after a render is executed. These are executed _after_ `renderCallback` is executed. When a definition is set to `false`, it's left to the element's consumer to apply the host class.
 
 Apply host classes in the element's stylesheet by using a callback for the styles property.
 
-<!-- example-link: src/readme-examples/host-class-definition.ts -->
+<!-- example-link: src/readme-examples/my-with-host-class-definition.element.ts -->
 
 ```TypeScript
 import {css, defineElementNoInputs, html} from 'element-vir';
 
-export const MyAppWithHostClasses = defineElementNoInputs({
-    tagName: 'my-app-with-host-classes',
+export const MyWithHostClassDefinitionElement = defineElementNoInputs({
+    tagName: 'my-with-host-class-definition',
     stateInit: {
         myProp: 'hello there',
     },
@@ -375,7 +372,7 @@ export const MyAppWithHostClasses = defineElementNoInputs({
      * Apply styles to the host classes by using a callback for "styles". The callback's argument
      * contains the host classes defined above in the "hostClasses" property.
      */
-    styles: ({hostClass}) => css`
+    styles: ({hostClassSelectors: hostClass}) => css`
         ${hostClass.automaticallyAppliedVariation} {
             color: blue;
         }
@@ -390,17 +387,37 @@ export const MyAppWithHostClasses = defineElementNoInputs({
 });
 ```
 
+### Applying host classes
+
+To apply a host class in a parent element, access the child element's `.hostClasses` property:
+
+<!-- example-link: src/readme-examples/my-with-host-class-usage.element.ts -->
+
+```TypeScript
+import {defineElementNoInputs, html} from 'element-vir';
+import {MyWithHostClassDefinitionElement} from './my-with-host-class-definition.element';
+
+export const MyWithHostClassUsageElement = defineElementNoInputs({
+    tagName: 'my-with-host-class-usage',
+    renderCallback: () => html`
+        <${MyWithHostClassDefinitionElement}
+            class=${MyWithHostClassDefinitionElement.hostClasses.styleVariationA}
+        ></${MyWithHostClassDefinitionElement}>
+    `,
+});
+```
+
 ## CSS Vars
 
 Typed CSS vars are created in a similar way as host classes:
 
-<!-- example-link: src/readme-examples/css-vars-definition.ts -->
+<!-- example-link: src/readme-examples/my-with-css-vars.element.ts -->
 
 ```TypeScript
 import {css, defineElementNoInputs, html} from 'element-vir';
 
-export const MyAppWithCssVars = defineElementNoInputs({
-    tagName: 'my-app-with-css-vars',
+export const MyWithCssVarsElement = defineElementNoInputs({
+    tagName: 'my-with-css-vars',
     cssVars: {
         /**
          * The value assigned here ('blue') becomes the fallback value for this CSS var when used
@@ -408,7 +425,7 @@ export const MyAppWithCssVars = defineElementNoInputs({
          */
         myCssVar: 'blue',
     },
-    styles: ({cssVarName, cssVarValue}) => css`
+    styles: ({cssVarNames: cssVarName, cssVarValues: cssVarValue}) => css`
         :host {
             /* Set CSS vars (or reference the name directly) via "cssVarName" */
             ${cssVarName.myCssVar}: yellow;
@@ -430,13 +447,13 @@ This directive should be used instead of trying to use `querySelector` directly 
 
 This triggers only once when the element it's attached has actually been created in the DOM. If it's attached element changes, the callback will be triggered again.
 
-<!-- example-link: src/readme-examples/my-simple-with-on-dom-created.element.ts -->
+<!-- example-link: src/readme-examples/my-with-on-dom-created.element.ts -->
 
 ```TypeScript
 import {defineElementNoInputs, html, onDomCreated} from 'element-vir';
 
-export const MySimpleWithOnDomCreatedElement = defineElementNoInputs({
-    tagName: 'my-simple-with-on-dom-created-element',
+export const MyWithOnDomCreatedElement = defineElementNoInputs({
+    tagName: 'my-with-on-dom-created',
     renderCallback: () => html`
         <span
             ${onDomCreated((element) => {
@@ -454,13 +471,13 @@ export const MySimpleWithOnDomCreatedElement = defineElementNoInputs({
 
 This directive fulfills a common use case of triggering callbacks when something resizes. Instead of just tracking the _globally_ resizing window though, this allows you to track resizes of an individual element. The callback here is passed an object with a portion of the [`ResizeObserverEntry`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry) properties (since not all properties are supported well in browsers).
 
-<!-- example-link: src/readme-examples/my-simple-with-on-resize.element.ts -->
+<!-- example-link: src/readme-examples/my-with-on-resize.element.ts -->
 
 ```TypeScript
 import {defineElementNoInputs, html, onResize} from 'element-vir';
 
-export const MySimpleWithOnResizeElement = defineElementNoInputs({
-    tagName: 'my-simple-with-on-dom-created-element',
+export const MyWithOnResizeElement = defineElementNoInputs({
+    tagName: 'my-with-on-resize',
     renderCallback: () => html`
         <span
             ${onResize((entry) => {
@@ -487,19 +504,19 @@ Listen to a specific event emitted from a custom element. This is explained in t
 
 This directive is the same as the `assign` directive but it accepts an additional `cleanupCallback` input. Use this directive to assign values which need some kind of cleanup when they're overwritten. For example, a 3D rendering engine which uses the canvas that should free up memory when it's swapped out.
 
-<!-- example-link: src/readme-examples/my-app-with-cleanup.element.ts -->
+<!-- example-link: src/readme-examples/my-with-cleanup.element.ts -->
 
 ```TypeScript
 import {assignWithCleanup, defineElementNoInputs, html} from 'element-vir';
-import {MySimpleWithInputsElement} from './my-simple-with-inputs.element';
+import {MyWithInputsElement} from './my-with-inputs.element';
 
-export const MyAppWithAssignmentCleanupElement = defineElementNoInputs({
-    tagName: 'my-app-with-cleanup',
+export const MyWithCleanupElement = defineElementNoInputs({
+    tagName: 'my-with-cleanup',
     renderCallback: () => html`
         <h1>My App</h1>
-        <${MySimpleWithInputsElement}
+        <${MyWithInputsElement}
             ${assignWithCleanup(
-                MySimpleWithInputsElement,
+                MyWithInputsElement,
                 {
                     email: 'user@example.com',
                     username: 'user',
@@ -512,7 +529,7 @@ export const MyAppWithAssignmentCleanupElement = defineElementNoInputs({
                 },
             )}
         >
-        </${MySimpleWithInputsElement}>
+        </${MyWithInputsElement}>
     `,
 });
 ```

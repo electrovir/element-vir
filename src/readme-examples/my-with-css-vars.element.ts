@@ -1,7 +1,7 @@
 import {css, defineElementNoInputs, html} from '..';
 
-export const MyAppWithCssVars = defineElementNoInputs({
-    tagName: 'my-app-with-css-vars',
+export const MyWithCssVarsElement = defineElementNoInputs({
+    tagName: 'my-with-css-vars',
     cssVars: {
         /**
          * The value assigned here ('blue') becomes the fallback value for this CSS var when used
@@ -9,7 +9,7 @@ export const MyAppWithCssVars = defineElementNoInputs({
          */
         myCssVar: 'blue',
     },
-    styles: ({cssVarName, cssVarValue}) => css`
+    styles: ({cssVarNames: cssVarName, cssVarValues: cssVarValue}) => css`
         :host {
             /* Set CSS vars (or reference the name directly) via "cssVarName" */
             ${cssVarName.myCssVar}: yellow;

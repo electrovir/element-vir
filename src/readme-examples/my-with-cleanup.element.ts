@@ -1,13 +1,13 @@
 import {assignWithCleanup, defineElementNoInputs, html} from '..';
-import {MySimpleWithInputsElement} from './my-simple-with-inputs.element';
+import {MyWithInputsElement} from './my-with-inputs.element';
 
-export const MyAppWithAssignmentCleanupElement = defineElementNoInputs({
-    tagName: 'my-app-with-cleanup',
+export const MyWithCleanupElement = defineElementNoInputs({
+    tagName: 'my-with-cleanup',
     renderCallback: () => html`
         <h1>My App</h1>
-        <${MySimpleWithInputsElement}
+        <${MyWithInputsElement}
             ${assignWithCleanup(
-                MySimpleWithInputsElement,
+                MyWithInputsElement,
                 {
                     email: 'user@example.com',
                     username: 'user',
@@ -20,6 +20,6 @@ export const MyAppWithAssignmentCleanupElement = defineElementNoInputs({
                 },
             )}
         >
-        </${MySimpleWithInputsElement}>
+        </${MyWithInputsElement}>
     `,
 });

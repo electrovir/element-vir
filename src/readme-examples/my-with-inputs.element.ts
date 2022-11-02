@@ -1,10 +1,10 @@
 import {defineElement, html} from '..';
 
-export const MySimpleWithInputsElement = defineElement<{
+export const MyWithInputsElement = defineElement<{
     username: string;
     email: string;
 }>()({
-    tagName: 'my-simple-element-with-inputs',
+    tagName: 'my-with-inputs',
     renderCallback: ({inputs}) => html`
         <span>Hello there ${inputs.username}!</span>
     `,

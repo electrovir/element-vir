@@ -1,17 +1,17 @@
 import {defineElementNoInputs, html, listen} from '..';
-import {MyCustomEvent} from './custom-event-no-element';
+import {MyCustomActionEvent} from './my-custom-action.event';
 
-export const MyElementWithCustomEvents = defineElementNoInputs({
-    tagName: 'my-app-with-custom-events',
+export const MyWithCustomEventsElement = defineElementNoInputs({
+    tagName: 'my-with-custom-events',
     renderCallback: ({genericDispatch}) => html`
         <div
-            ${listen(MyCustomEvent, (event) => {
+            ${listen(MyCustomActionEvent, (event) => {
                 console.info(`Got a number! ${event.detail}`);
             })}
         >
             <div
                 ${listen('click', () => {
-                    genericDispatch(new MyCustomEvent(Math.random()));
+                    genericDispatch(new MyCustomActionEvent(Math.random()));
                 })}
             ></div>
         </div>

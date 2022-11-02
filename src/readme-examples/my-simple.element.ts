@@ -1,7 +1,7 @@
 import {defineElementNoInputs, html} from '..';
 
 export const MySimpleElement = defineElementNoInputs({
-    tagName: 'my-simple-element',
+    tagName: 'my-simple',
     renderCallback: () => html`
         <span>Hello there!</span>
     `,

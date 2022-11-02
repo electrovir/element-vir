@@ -1,7 +1,7 @@
 import {css, defineElementNoInputs, html} from '..';
 
-export const MySimpleWithStylesElement = defineElementNoInputs({
-    tagName: 'my-simple-with-styles-element',
+export const MyWithStylesElement = defineElementNoInputs({
+    tagName: 'my-with-styles',
     styles: css`
         :host {
             display: flex;

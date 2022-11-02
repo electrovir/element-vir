@@ -1,7 +1,7 @@
 import {defineElementNoInputs, html} from '..';
 
-export const MyAppWithAssignmentCleanupCallbackElement = defineElementNoInputs({
-    tagName: 'my-app-with-cleanup-callback',
+export const MyWithAssignmentCleanupCallbackElement = defineElementNoInputs({
+    tagName: 'my-with-cleanup-callback',
     stateInit: {
         intervalId: undefined as undefined | number,
     },

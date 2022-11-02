@@ -1,7 +1,7 @@
 import {defineElementNoInputs, html, listen} from '..';
 
-export const MySimpleWithUpdateStateElement = defineElementNoInputs({
-    tagName: 'my-simple-element-with-update-state',
+export const MyWithUpdateStateElement = defineElementNoInputs({
+    tagName: 'my-with-update-state',
     stateInit: {
         username: 'dev',
         email: undefined as string | undefined,

@@ -1,7 +1,7 @@
 import {defineElementNoInputs, html, onResize} from '..';
 
-export const MySimpleWithOnResizeElement = defineElementNoInputs({
-    tagName: 'my-simple-with-on-dom-created-element',
+export const MyWithOnResizeElement = defineElementNoInputs({
+    tagName: 'my-with-on-resize',
     renderCallback: () => html`
         <span
             ${onResize((entry) => {

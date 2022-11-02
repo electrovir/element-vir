@@ -1,7 +1,7 @@
 import {css, defineElementNoInputs, html} from '..';
 
-export const MyAppWithHostClasses = defineElementNoInputs({
-    tagName: 'my-app-with-host-classes',
+export const MyWithHostClassDefinitionElement = defineElementNoInputs({
+    tagName: 'my-with-host-class-definition',
     stateInit: {
         myProp: 'hello there',
     },
@@ -24,7 +24,7 @@ export const MyAppWithHostClasses = defineElementNoInputs({
      * Apply styles to the host classes by using a callback for "styles". The callback's argument
      * contains the host classes defined above in the "hostClasses" property.
      */
-    styles: ({hostClass}) => css`
+    styles: ({hostClassSelectors: hostClass}) => css`
         ${hostClass.automaticallyAppliedVariation} {
             color: blue;
         }
