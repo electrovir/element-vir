@@ -5,9 +5,10 @@ import {PropertyInitMapBase} from './element-properties';
 import {HostClassesInitMap, HostClassNamesMap} from './host-classes';
 
 export type StylesCallbackInput<HostClassKeys extends string, CssVarKeys extends string> = {
-    hostClass: Record<HostClassKeys, CSSResult>;
-    cssVarName: Record<CssVarKeys, CSSResult>;
-    cssVarValue: Record<CssVarKeys, CSSResult>;
+    hostClassSelectors: Record<HostClassKeys, CSSResult>;
+    hostClassNames: Record<HostClassKeys, CSSResult>;
+    cssVarNames: Record<CssVarKeys, CSSResult>;
+    cssVarValues: Record<CssVarKeys, CSSResult>;
 };
 
 export type StylesCallback<HostClassKeys extends string, CssVarKeys extends string> = (
@@ -27,11 +28,14 @@ export function hostClassNamesToStylesInput<
     cssVarValues: CssVarNameOrValueMap<CssVarKeys>;
 }): StylesCallbackInput<HostClassKeys, CssVarKeys> {
     return {
-        hostClass: mapObject(hostClassNames, (key, name) => {
+        hostClassSelectors: mapObject(hostClassNames, (key, name) => {
             return unsafeCSS(`:host(.${name})`);
         }),
-        cssVarName: cssVarNames,
-        cssVarValue: cssVarValues,
+        hostClassNames: mapObject(hostClassNames, (key, name) => {
+            return unsafeCSS(name);
+        }),
+        cssVarNames: cssVarNames,
+        cssVarValues: cssVarValues,
     };
 }
 

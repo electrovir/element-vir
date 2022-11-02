@@ -8,7 +8,7 @@ export const TestChildElement = defineElement<{
     displayNumber: number;
 }>()({
     tagName: 'element-vir-test-child',
-    styles: ({hostClass, cssVarValue}) => {
+    styles: ({hostClassSelectors, hostClassNames, cssVarValues}) => {
         return css`
             :host {
                 display: flex;
@@ -17,14 +17,18 @@ export const TestChildElement = defineElement<{
             }
 
             span {
-                background-color: ${cssVarValue.derp};
+                background-color: ${cssVarValues.derp};
             }
 
-            ${hostClass.testHostClass} {
+            ${hostClassSelectors.testHostClass} {
                 color: blue;
             }
 
-            ${hostClass.automaticallyApplied} {
+            :host(.${hostClassNames.testHostClass}:hover) {
+                color: pink;
+            }
+
+            ${hostClassSelectors.automaticallyApplied} {
                 font-weight: bold;
             }
         `;
