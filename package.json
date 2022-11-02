@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "6.2.2",
+    "version": "6.3.0",
     "keywords": [
         "custom",
         "web",
@@ -41,7 +41,7 @@
         "test:web": "virmator test-web"
     },
     "dependencies": {
-        "augment-vir": "^3.0.5",
+        "augment-vir": "^3.0.6",
         "lit": "2.4.0"
     },
     "devDependencies": {
