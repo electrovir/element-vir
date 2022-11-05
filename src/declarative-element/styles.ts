@@ -1,4 +1,4 @@
-import {getObjectTypedKeys, mapObject} from 'augment-vir';
+import {getObjectTypedKeys, mapObjectValues} from 'augment-vir';
 import {CSSResult, unsafeCSS} from 'lit';
 import {CssVarNameOrValueMap} from './css-vars';
 import {PropertyInitMapBase} from './element-properties';
@@ -28,10 +28,10 @@ export function hostClassNamesToStylesInput<
     cssVarValues: CssVarNameOrValueMap<CssVarKeys>;
 }): StylesCallbackInput<HostClassKeys, CssVarKeys> {
     return {
-        hostClassSelectors: mapObject(hostClassNames, (key, name) => {
+        hostClassSelectors: mapObjectValues(hostClassNames, (key, name) => {
             return unsafeCSS(`:host(.${name})`);
         }),
-        hostClassNames: mapObject(hostClassNames, (key, name) => {
+        hostClassNames: mapObjectValues(hostClassNames, (key, name) => {
             return unsafeCSS(name);
         }),
         cssVarNames: cssVarNames,

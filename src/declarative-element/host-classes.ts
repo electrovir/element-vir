@@ -1,4 +1,4 @@
-import {mapObject} from 'augment-vir';
+import {mapObjectValues} from 'augment-vir';
 import {PropertyInitMapBase} from './element-properties';
 import {toHtmlSafeWithTagName, WithTagName} from './tag-name';
 
@@ -55,7 +55,7 @@ export function createHostClassNamesMap<
     hostClassesInit?: HostClassesInitGeneric,
 ): HostClassNamesMap<TagName, HostClassKeys> {
     if (hostClassesInit) {
-        return mapObject(hostClassesInit, (key) => {
+        return mapObjectValues(hostClassesInit, (key) => {
             return toHtmlSafeWithTagName(tagName, String(key));
         }) as HostClassNamesMap<TagName, HostClassKeys>;
     } else {

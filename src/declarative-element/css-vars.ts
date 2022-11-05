@@ -1,4 +1,4 @@
-import {mapObject} from 'augment-vir';
+import {mapObjectValues} from 'augment-vir';
 import {CSSResult, unsafeCSS} from 'lit';
 import {toHtmlSafeWithTagName} from './tag-name';
 
@@ -13,7 +13,7 @@ export function createCssVarNamesMap<TagName extends string, CssVarKeys extends 
     cssVarsInit: CssVarsInitMap<CssVarKeys> | undefined,
 ): CssVarNameOrValueMap<CssVarKeys> {
     if (cssVarsInit) {
-        return mapObject(cssVarsInit, (key) => {
+        return mapObjectValues(cssVarsInit, (key) => {
             return unsafeCSS(`--${toHtmlSafeWithTagName(tagName, String(key))}`);
         }) as CssVarNameOrValueMap<CssVarKeys>;
     } else {
@@ -29,7 +29,7 @@ export function createCssVarValuesMap<CssVarKeys extends string>(
         return {} as CssVarNameOrValueMap<CssVarKeys>;
     }
 
-    return mapObject(cssVarInitMap, (key, fallbackValue) => {
+    return mapObjectValues(cssVarInitMap, (key, fallbackValue) => {
         const name = cssVarNamesMap[key];
         return unsafeCSS(`var(${name}, ${fallbackValue})`);
     });
