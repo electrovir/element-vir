@@ -1,4 +1,4 @@
-import {mapObjectValues} from 'augment-vir';
+import {mapObjectValues} from '@augment-vir/common';
 import {PropertyInitMapBase} from './element-properties';
 import {toHtmlSafeWithTagName, WithTagName} from './tag-name';
 

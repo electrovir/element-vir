@@ -1,4 +1,4 @@
-import {camelCaseToKebabCase} from 'augment-vir';
+import {camelCaseToKebabCase} from '@augment-vir/common';
 
 export type WithTagName<TagName extends string, Suffix extends string> = `${TagName}-${Suffix}`;
 

@@ -1,7 +1,10 @@
+*.tgz
+*.tsbuildinfo
 .DS_Store
-/*.tgz
 /Icon?
 coverage/
 dist/
 graphics/
 node_modules/
+
+/*.tgz

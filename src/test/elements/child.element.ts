@@ -1,4 +1,4 @@
-import {randomString} from 'augment-vir';
+import {randomString} from '@augment-vir/browser';
 import {css} from 'lit';
 import {defineElement, defineElementEvent, html, listen, onDomCreated} from '../..';
 import {MyCustomEvent} from '../customEvent';

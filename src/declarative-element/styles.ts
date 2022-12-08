@@ -1,4 +1,4 @@
-import {getObjectTypedKeys, mapObjectValues} from 'augment-vir';
+import {getObjectTypedKeys, mapObjectValues} from '@augment-vir/common';
 import {CSSResult, unsafeCSS} from 'lit';
 import {CssVarNameOrValueMap} from './css-vars';
 import {PropertyInitMapBase} from './element-properties';

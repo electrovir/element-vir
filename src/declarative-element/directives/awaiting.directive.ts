@@ -1,4 +1,4 @@
-import {extractErrorMessage, isPromiseLike, typedHasProperty} from 'augment-vir';
+import {extractErrorMessage, isPromiseLike, typedHasProperty} from '@augment-vir/common';
 
 export type MaybePromise<T> =
     | (T extends Promise<infer ValueType> ? T | ValueType : Promise<T> | T)

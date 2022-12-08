@@ -1,4 +1,4 @@
-import {getObjectTypedKeys, kebabCaseToCamelCase} from 'augment-vir';
+import {getObjectTypedKeys, kebabCaseToCamelCase} from '@augment-vir/common';
 import {css, TemplateResult} from 'lit';
 import {property} from 'lit/decorators.js';
 import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';

@@ -1,4 +1,4 @@
-import {collapseWhiteSpace, safeMatch} from 'augment-vir';
+import {collapseWhiteSpace, safeMatch} from '@augment-vir/common';
 import {HTMLTemplateResult} from 'lit';
 import {declarativeElementRequired} from '../../require-declarative-element';
 import {ConstructorWithTagName, hasStaticTagName} from '../has-static-tag-name';

@@ -1,4 +1,4 @@
-import {getObjectTypedKeys, RequiredAndNotNullBy} from 'augment-vir';
+import {getObjectTypedKeys, RequiredAndNotNullBy} from '@augment-vir/common';
 import {TemplateResult} from 'lit';
 import {TypedEvent} from '../typed-event/typed-event';
 import {DeclarativeElement, HostInstanceType} from './declarative-element';

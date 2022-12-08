@@ -1,4 +1,4 @@
-import {typedHasProperties} from 'augment-vir';
+import {typedHasProperties} from '@augment-vir/common';
 import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';
 import {TemplateTransform} from './transform-template';
 

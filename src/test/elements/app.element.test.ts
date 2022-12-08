@@ -1,7 +1,8 @@
+import {typedAssertInstanceOf} from '@augment-vir/browser-testing';
+import {RequiredAndNotNullBy} from '@augment-vir/common';
 import {assert, expect, fixture, waitUntil} from '@open-wc/testing';
-import {RequiredAndNotNullBy} from 'augment-vir';
 import {html} from '../..';
-import {assertInstanceOf, clickElement} from '../../augments/testing.test-helper';
+import {clickElement} from '../../augments/testing.test-helper';
 import {AppElement} from './app.element';
 import {TestChildElement} from './child.element';
 
@@ -56,7 +57,7 @@ describe(AppElement.tagName, () => {
             return context;
         }
         const appElement = context.querySelector(AppElement.tagName);
-        assertInstanceOf(appElement, AppElement);
+        typedAssertInstanceOf(appElement, AppElement);
         assertHasShadowRoot(appElement);
         return appElement;
     }
@@ -67,11 +68,11 @@ describe(AppElement.tagName, () => {
                 TestChildElement.tagName,
                 'span:nth-of-type(3)',
             ]);
-            assertInstanceOf(inputNumberSpan, HTMLSpanElement);
+            typedAssertInstanceOf(inputNumberSpan, HTMLSpanElement);
             expect(inputNumberSpan.innerText).to.contain('input number');
             assert.strictEqual(inputNumberSpan.childNodes.length, 3);
             const lastNode = inputNumberSpan.childNodes[2];
-            assertInstanceOf(lastNode, Text);
+            typedAssertInstanceOf(lastNode, Text);
             const inputNumber = Number(lastNode.nodeValue);
             assert.isNotNaN(inputNumber);
             return inputNumber;
@@ -79,7 +80,7 @@ describe(AppElement.tagName, () => {
 
         async function clickAssignNewNumberButton(context: HTMLElement) {
             const assignNewNumberButton = queryTree(context, ['button']);
-            assertInstanceOf(assignNewNumberButton, HTMLButtonElement);
+            typedAssertInstanceOf(assignNewNumberButton, HTMLButtonElement);
             expect(assignNewNumberButton.innerText).to.contain('assign NEW number to child');
 
             await clickElement(assignNewNumberButton);
@@ -104,7 +105,7 @@ describe(AppElement.tagName, () => {
             TestChildElement.tagName,
         ]);
 
-        assertInstanceOf(childElement, TestChildElement);
+        typedAssertInstanceOf(childElement, TestChildElement);
         assert('speak' in childElement.definition.events);
         const currentInputs = {...childElement.instanceInputs};
         assert.deepStrictEqual(currentInputs, {

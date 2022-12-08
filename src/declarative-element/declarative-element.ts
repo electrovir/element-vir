@@ -1,4 +1,4 @@
-import {RequiredAndNotNullBy, RequiredBy} from 'augment-vir';
+import {RequiredAndNotNullBy, RequiredBy} from '@augment-vir/common';
 import {CSSResult, LitElement, TemplateResult} from 'lit';
 import {CssVarNameOrValueMap} from './css-vars';
 import {DeclarativeElementInit} from './declarative-element-init';

@@ -1,4 +1,5 @@
-import {getObjectTypedKeys, randomString} from 'augment-vir';
+import {randomString} from '@augment-vir/browser';
+import {getObjectTypedKeys} from '@augment-vir/common';
 import {css, TemplateResult} from 'lit';
 import {
     assign,

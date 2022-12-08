@@ -1,4 +1,4 @@
-import {typedHasProperties} from 'augment-vir';
+import {typedHasProperties} from '@augment-vir/common';
 import {filterOutArrayIndexes} from '../augments/array';
 import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';
 import {getAlreadyMappedTemplate, setMappedTemplate} from './nested-mapped-templates';

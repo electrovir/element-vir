@@ -1,18 +1,20 @@
 **/*/readme-examples/
 **/*/test/
+*.d.ts.map
 *.test-helper.*
 *.test.*
+*.tgz
+*.tsbuildinfo
 .*
-/*.tgz
 /Icon?
 /configs/
 /coverage/
 /cspell.config.js
 /graphics/
+/public/
 /src/
 bash-scripts/
 test-files/
 tsconfig*.json
 
-/public/
 index.html

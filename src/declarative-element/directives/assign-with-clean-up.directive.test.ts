@@ -1,5 +1,5 @@
+import {randomString} from '@augment-vir/browser';
 import {assert, fixture} from '@open-wc/testing';
-import {randomString} from 'augment-vir';
 import {defineElementNoInputs, html, listen} from '../..';
 import {
     assertRejects,

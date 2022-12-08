@@ -1,23 +1,7 @@
+import {typedAssertInstanceOf} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
 import {sendMouse} from '@web/test-runner-commands';
 import {DeclarativeElementDefinition} from '../declarative-element/declarative-element';
-
-/**
- * Wrapper for assert.instanceOf that also works with TypeScript in setting the proper types.
- *
- * Do not use this in production code! It should only be used in testing code.
- */
-export function assertInstanceOf<T>(
-    value: unknown,
-    constructor: new (...args: any) => T,
-    message?: string,
-): asserts value is T {
-    assert.instanceOf(value, constructor, message);
-}
-
-export function isInstanceOf<T>(value: unknown, constructor: new (...args: any) => T): value is T {
-    return value instanceof constructor;
-}
 
 export function getAssertedDeclarativeElement<
     DeclarativeElementGeneric extends DeclarativeElementDefinition,
@@ -26,12 +10,13 @@ export function getAssertedDeclarativeElement<
     searchIn: Element,
 ): DeclarativeElementGeneric['instanceType'] {
     if (searchIn.tagName.toLowerCase() === searchFor.tagName.toLowerCase()) {
-        assertInstanceOf(searchIn, searchFor);
+        typedAssertInstanceOf(searchIn, searchFor);
         return searchIn as DeclarativeElementGeneric['instanceType'];
     }
 
     const result = queryTree(searchIn, [searchFor.tagName]);
-    assertInstanceOf(result, searchFor);
+    typedAssertInstanceOf(result, searchFor);
+    result;
     assert.strictEqual(result!.tagName, searchFor.tagName);
 
     return result as DeclarativeElementGeneric['instanceType'];
@@ -65,7 +50,7 @@ export function queryWithAssert<T extends Element>(
         query = [query];
     }
     const result = queryTree(searchIn, query);
-    assertInstanceOf(result, constructor);
+    typedAssertInstanceOf(result, constructor);
 
     return result;
 }
