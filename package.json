@@ -43,7 +43,7 @@
     "dependencies": {
         "@augment-vir/browser": "^6.1.5",
         "@augment-vir/common": "^6.1.5",
-        "lit": "2.4.1"
+        "lit": "2.5.0"
     },
     "devDependencies": {
         "@augment-vir/browser-testing": "^6.1.5",
@@ -59,9 +59,9 @@
         "chai": "^4.3.7",
         "cspell": "^6.17.0",
         "istanbul-smart-text-reporter": "^1.0.1",
-        "markdown-code-example-inserter": "^0.1.12",
-        "mocha": "^10.1.0",
-        "mocha-spec-reporter-with-file-names": "^0.0.2",
+        "markdown-code-example-inserter": "^0.1.13",
+        "mocha": "^10.2.0",
+        "mocha-spec-reporter-with-file-names": "^0.0.3",
         "nyc": "^15.1.0",
         "prettier": "^2.8.1",
         "prettier-plugin-jsdoc": "^0.4.2",
@@ -71,7 +71,7 @@
         "prettier-plugin-sort-json": "^0.0.3",
         "prettier-plugin-toml": "^0.3.1",
         "ts-node": "^10.9.1",
-        "virmator": "^5.0.3",
-        "vite": "^3.2.5"
+        "virmator": "^5.2.1",
+        "vite": "^4.0.1"
     }
 }

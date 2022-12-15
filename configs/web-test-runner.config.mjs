@@ -1,8 +1,14 @@
-import baseConfig from 'virmator/base-configs/web-test-runner-base.mjs';
+import {pathToFileURL} from 'url';
+import {getWebTestRunnerConfigWithCoveragePercent} from 'virmator/base-configs/base-web-test-runner.mjs';
 
 /** @type {import('@web/test-runner').TestRunnerConfig} */
 const webTestRunnerConfig = {
-    ...baseConfig,
+    ...getWebTestRunnerConfigWithCoveragePercent(0),
 };
 
 export default webTestRunnerConfig;
+
+// check if the current file is being run directly as a script
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+    console.info(JSON.stringify(webTestRunnerConfig));
+}

@@ -33,6 +33,16 @@ export type DeclarativeElementInit<
      * will only be manually set.
      */
     hostClasses?: HostClassesInitMap<HostClassKeys, InputsGeneric, StateInit>;
+    /**
+     * CSS Vars for the component. Keys of this object should be camelCased (or whatever your casing
+     * convention is). They will be transformed, at runtime, to CSS vars with kebab-casing, to match
+     * CSS standards.
+     *
+     * Values of this object represent the default fallback value for the given CSS var. These are
+     * then passed to the styles property, which must be a callback to take advantage of these.
+     * cssVarValues or cssVarNames can then be destructured from the styles property's callback
+     * input.
+     */
     cssVars?: CssVarsInitMap<CssVarKeys>;
     /** Called as part of the first renderCallback call, before the first renderCallback call. */
     initCallback?: InitCallback<

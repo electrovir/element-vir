@@ -2,7 +2,7 @@ import {mapObjectValues} from '@augment-vir/common';
 import {CSSResult, unsafeCSS} from 'lit';
 import {toHtmlSafeWithTagName} from './tag-name';
 
-export type CssVarsInitMap<CssVarKeys extends string> = Record<CssVarKeys, string>;
+export type CssVarsInitMap<CssVarKeys extends string> = Record<CssVarKeys, string | CSSResult>;
 
 export type CssVarName<TagName extends string> = `--${TagName}-string`;
 

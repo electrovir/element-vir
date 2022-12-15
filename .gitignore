@@ -6,5 +6,4 @@ coverage/
 dist/
 graphics/
 node_modules/
-
-/*.tgz
+src/all-files-for-code-coverage.test.ts
