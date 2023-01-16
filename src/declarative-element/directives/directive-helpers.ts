@@ -23,7 +23,7 @@ export function extractElement<ElementType = HTMLElement>(
     directiveName: string,
     constructorClass: (new () => ElementType) | (abstract new () => ElementType),
 ): ElementType {
-    assertsIsElementPartInfo(partInfo, directiveName);
+    assertIsElementPartInfo(partInfo, directiveName);
     const element = (partInfo as ElementPartInfo & ExtraPartInfoProperties).element;
     if (!(element instanceof constructorClass)) {
         throw new Error(`${directiveName} attached to non ${constructorClass.name} element.`);
@@ -31,7 +31,7 @@ export function extractElement<ElementType = HTMLElement>(
     return element as ElementType;
 }
 
-export function assertsIsElementPartInfo(
+export function assertIsElementPartInfo(
     partInfo: PartInfo,
     directiveName: string,
 ): asserts partInfo is ElementPartInfo & ExtraPartInfoProperties {

@@ -107,15 +107,15 @@ const MyElementEvent = defineTypedEvent<string>()('customEvent');
 
 const TestElementNoEventsOrState = defineElementNoInputs({
     tagName: 'test-element-no-events-or-state',
-    renderCallback: ({state, genericDispatch, dispatch, events}): TemplateResult => {
+    renderCallback: ({state, dispatch, events}): TemplateResult => {
         // @ts-expect-error
         console.info(events.thing);
         // @ts-expect-error
         console.info(state.thing);
         // should only allow strings
         // @ts-expect-error
-        genericDispatch(new MyElementEvent(5));
-        genericDispatch(new MyElementEvent('derp'));
+        dispatch(new MyElementEvent(5));
+        dispatch(new MyElementEvent('derp'));
         // @ts-expect-error
         events.thingHappened; // this property does not exist
         // @ts-expect-error
@@ -182,14 +182,12 @@ const TestElement = defineElement<{
 
                     // @ts-expect-error
                     dispatch(new TestElement.events.numberEvent(randomString()));
-                    // @ts-expect-error
                     dispatch(new TypedEvent(TestElement.events.numberEvent, randomString()));
                     // @ts-expect-error
                     dispatch(new events.numberEvent(randomString()));
 
                     // @ts-expect-error
                     dispatch(new TypedEvent(TestElement.events.numberEvent));
-                    // @ts-expect-error
                     dispatch(new TypedEvent(TestElement.events.stringEvent, 4));
                     // @ts-expect-error
                     dispatch(new TypedEvent(TestElement.events.stringEvent));
@@ -215,11 +213,11 @@ function listenTest() {
         // @ts-expect-error
         const detailString: string = event.detail;
         const myEvent: TypedEvent<
-            typeof TestElement.events.numberEvent['type'],
+            (typeof TestElement.events.numberEvent)['type'],
             EventObjectEventDetailExtractor<typeof TestElement.events.numberEvent>
         > = event;
         // @ts-expect-error
-        const myEventString: TypedEvent<typeof TestElement.events.numberEvent['type'], string> =
+        const myEventString: TypedEvent<(typeof TestElement.events.numberEvent)['type'], string> =
             event;
     });
     listen(TestElement.events.yo, (event) => {
@@ -227,11 +225,11 @@ function listenTest() {
         // @ts-expect-error
         const detailString: string = event.detail;
         const myEvent: TypedEvent<
-            typeof TestElement.events.yo['type'],
+            (typeof TestElement.events.yo)['type'],
             EventObjectEventDetailExtractor<typeof TestElement.events.yo>
         > = event;
         // @ts-expect-error
-        const myEventString: ElementEvent<typeof TestElement.events.yo['eventName'], string> =
+        const myEventString: ElementEvent<(typeof TestElement.events.yo)['eventName'], string> =
             event;
     });
 }

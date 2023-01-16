@@ -2,12 +2,13 @@ import {getObjectTypedKeys, RequiredAndNotNullBy} from '@augment-vir/common';
 import {TemplateResult} from 'lit';
 import {TypedEvent} from '../typed-event/typed-event';
 import {DeclarativeElement, HostInstanceType} from './declarative-element';
+import {AsyncProp, ensureAsyncProp, SetAsyncPropInputs} from './properties/async-prop';
 import {
     EventDescriptorMap,
     EventInitMapEventDetailExtractor,
     EventsInitMap,
-} from './element-events';
-import {PropertyInitMapBase} from './element-properties';
+} from './properties/element-events';
+import {PropertyInitMapBase} from './properties/element-properties';
 
 export type RenderCallback<
     InputsGeneric extends PropertyInitMapBase = any,
@@ -51,17 +52,28 @@ export type RenderParams<
         CssVarKeys
     >;
     dispatch: <EventTypeNameGeneric extends keyof EventsInitGeneric>(
-        event: TypedEvent<
-            EventTypeNameGeneric extends string ? EventTypeNameGeneric : never,
-            EventInitMapEventDetailExtractor<EventTypeNameGeneric, EventsInitGeneric>
-        >,
+        event:
+            | TypedEvent<
+                  EventTypeNameGeneric extends string ? EventTypeNameGeneric : never,
+                  EventInitMapEventDetailExtractor<EventTypeNameGeneric, EventsInitGeneric>
+              >
+            | Event,
     ) => boolean;
     inputs: InputsGeneric;
     /**
-     * Same as dispatchElementEvent but without the extra types. This allows you to emit any events,
-     * even events from other custom elements.
+     * Updates async props in the state if they have not already been set. Once promises settle,
+     * this automatically updates the state. In order to re-trigger an async prop, set it to
+     * undefined first.
      */
-    genericDispatch: (event: Event) => boolean;
+    ensureAsyncProp: (
+        values: Partial<{
+            [StateKey in keyof StateInitGeneric as StateInitGeneric[StateKey] extends AsyncProp<any>
+                ? StateKey
+                : never]: StateInitGeneric[StateKey] extends AsyncProp<infer ValueGeneric>
+                ? SetAsyncPropInputs<ValueGeneric>
+                : never;
+        }>,
+    ) => void;
 };
 
 export function createRenderParams<
@@ -80,6 +92,12 @@ export function createRenderParams<
     >,
     eventsMap: EventDescriptorMap<EventsInitGeneric>,
 ): RenderParams<InputsGeneric, StateGeneric, EventsInitGeneric, HostClassKeys, CssVarKeys> {
+    function updateState(partialProps: Parameters<UpdateStateCallback<StateGeneric>>[0]) {
+        getObjectTypedKeys(partialProps).forEach((propKey) => {
+            element.instanceState[propKey] = partialProps[propKey] as StateGeneric[typeof propKey];
+        });
+    }
+
     const renderParams: RenderParams<
         InputsGeneric,
         StateGeneric,
@@ -87,23 +105,31 @@ export function createRenderParams<
         HostClassKeys,
         CssVarKeys
     > = {
-        /**
-         * These two dispatch properties do the same thing but their interfaces are different.
-         * DispatchEvent's type interface is much stricter.
-         */
         dispatch: (event) => element.dispatchEvent(event),
-        genericDispatch: (event) => element.dispatchEvent(event),
-        updateState: (partialProps) => {
-            getObjectTypedKeys(partialProps).forEach((propKey) => {
-                element.instanceState[propKey] = partialProps[
-                    propKey
-                ] as StateGeneric[typeof propKey];
-            });
-        },
+        updateState,
         inputs: element.instanceInputs,
         host: element as RequiredAndNotNullBy<typeof element, 'shadowRoot'>,
         state: element.instanceState,
         events: eventsMap,
+        ensureAsyncProp: (values) => {
+            Object.entries(values).forEach(
+                ([
+                    stateKey,
+                    newSet,
+                ]) => {
+                    if (!(stateKey in element.instanceState)) {
+                        throw new Error(`Invalid key given to ensureAsyncProp: ${stateKey}`);
+                    }
+
+                    ensureAsyncProp<any, any>({
+                        state: element.instanceState as any,
+                        updateState: updateState as any,
+                        stateProp: stateKey,
+                        ...(newSet as SetAsyncPropInputs<any>),
+                    });
+                },
+            );
+        },
     };
     return renderParams;
 }

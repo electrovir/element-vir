@@ -1,5 +1,5 @@
 import {directive, Directive, PartInfo} from 'lit/directive.js';
-import {assertsIsElementPartInfo} from './directive-helpers';
+import {assertIsElementPartInfo} from './directive-helpers';
 
 export type OnDomCreatedCallback = (element: Element) => void;
 
@@ -13,11 +13,11 @@ export const onDomCreated = directive(
         constructor(partInfo: PartInfo) {
             super(partInfo);
 
-            assertsIsElementPartInfo(partInfo, directiveName);
+            assertIsElementPartInfo(partInfo, directiveName);
         }
 
         override update(partInfo: PartInfo, [callback]: [OnDomCreatedCallback]) {
-            assertsIsElementPartInfo(partInfo, directiveName);
+            assertIsElementPartInfo(partInfo, directiveName);
             const newElement = partInfo.element;
             if (newElement !== this.element) {
                 // use requestAnimationFrame here so it can fire property changes outside of a render loop

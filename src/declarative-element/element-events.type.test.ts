@@ -3,7 +3,7 @@ import {
     defineElementEvent,
     EventInitMapEventDetailExtractor,
     EventsInitMap,
-} from './element-events';
+} from './properties/element-events';
 
 function main() {
     const customElement = defineElementNoInputs({

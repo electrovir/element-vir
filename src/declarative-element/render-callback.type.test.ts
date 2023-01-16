@@ -1,42 +1,46 @@
+import {assertTypeOf} from '@augment-vir/browser-testing';
 import {defineElementEvent, defineElementNoInputs, html} from '..';
 import {TypedEvent} from '../typed-event/typed-event';
-import {createEventDescriptorMap} from './element-events';
+import {createEventDescriptorMap} from './properties/element-events';
 import {createRenderParams} from './render-callback';
 
-function main() {
-    const customElement = defineElementNoInputs({
-        tagName: 'test-element',
-        events: {
-            testEventName: defineElementEvent<number>(),
-            testEventName2: defineElementEvent<number>(),
-        },
-        renderCallback: ({events}) => {
-            const testEventThing = events.testEventName;
+describe('RenderParams', () => {
+    it('should produce proper types', () => {
+        defineElementNoInputs({
+            tagName: 'test-element',
+            events: {
+                testEventName: defineElementEvent<number>(),
+                testEventName2: defineElementEvent<number>(),
+            },
+            renderCallback: ({events}) => {
+                const testEventThing = events.testEventName;
 
-            const eventInstance = new testEventThing(4);
-            // @ts-expect-error
-            const badEventInstance1 = new testEventThing(undefined);
-            // @ts-expect-error
-            const badEventInstance2 = new testEventThing('not a number input');
+                new testEventThing(4);
+                // @ts-expect-error
+                new testEventThing(undefined);
+                // @ts-expect-error
+                new testEventThing('not a number input');
 
-            return html``;
-        },
+                return html``;
+            },
+        });
+
+        const renderParams = createRenderParams(
+            {} as any,
+            createEventDescriptorMap({
+                testEventName: defineElementEvent<number>(),
+            }),
+        );
+
+        const myEvent = renderParams.events.testEventName;
+        const myEventInstance = new myEvent(4);
+        // @ts-expect-error
+        new myEvent('no number here');
+
+        renderParams.dispatch(myEventInstance);
+        renderParams.dispatch(new TypedEvent(renderParams.events.testEventName, 2));
+        renderParams.dispatch(new Event('generic event type'));
+        // there are no async props in this element
+        assertTypeOf<Parameters<typeof renderParams.ensureAsyncProp>>().toEqualTypeOf<[{}]>();
     });
-
-    const renderParams = createRenderParams(
-        // {} as DeclarativeElementInstanceFromInit<{}>,
-        {} as any,
-        createEventDescriptorMap({
-            testEventName: defineElementEvent<number>(),
-        }),
-    );
-
-    const myEvent = renderParams.events.testEventName;
-    const myEventInstance = new myEvent(4);
-    // @ts-expect-error
-    const myBadEventInstance1 = new myEvent('no number here');
-
-    renderParams.dispatch(myEventInstance);
-    renderParams.dispatch(new TypedEvent(renderParams.events.testEventName, 2));
-    renderParams.genericDispatch(new Event('generic event type'));
-}
+});

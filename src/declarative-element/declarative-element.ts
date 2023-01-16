@@ -1,10 +1,10 @@
 import {RequiredAndNotNullBy, RequiredBy} from '@augment-vir/common';
 import {CSSResult, LitElement, TemplateResult} from 'lit';
-import {CssVarNameOrValueMap} from './css-vars';
 import {DeclarativeElementInit} from './declarative-element-init';
-import {EventDescriptorMap, EventsInitMap} from './element-events';
-import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './element-properties';
-import {HostClassNamesMap} from './host-classes';
+import {CssVarNameOrValueMap} from './properties/css-vars';
+import {EventDescriptorMap, EventsInitMap} from './properties/element-events';
+import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './properties/element-properties';
+import {HostClassNamesMap} from './properties/host-classes';
 import {RenderCallback} from './render-callback';
 
 export type HostInstanceType<
@@ -64,7 +64,7 @@ function staticImplements<T>() {
 >()
 export abstract class DeclarativeElement<
     InputsGeneric extends PropertyInitMapBase = any,
-    PropertyInitGeneric extends PropertyInitMapBase = any,
+    StateInitGeneric extends PropertyInitMapBase = any,
     EventsInitGeneric extends EventsInitMap = any,
     HostClassKeys extends string = string,
     CssVarKeys extends string = string,
@@ -155,14 +155,14 @@ export abstract class DeclarativeElement<
     >['cssVarValues'];
 
     public abstract override render(): TemplateResult | Promise<TemplateResult>;
-    public abstract readonly instanceState: PropertyInitGeneric;
+    public abstract readonly instanceState: StateInitGeneric;
     public abstract readonly instanceInputs: InputsGeneric;
     public abstract assignInputs(inputs: InputsGeneric): void;
     public abstract readonly haveInputsBeenSet: boolean;
     public abstract markInputsAsHavingBeenSet(): void;
     public abstract readonly definition: DeclarativeElementDefinition<
         InputsGeneric,
-        PropertyInitGeneric,
+        StateInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys

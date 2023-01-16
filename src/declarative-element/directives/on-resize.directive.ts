@@ -1,5 +1,5 @@
 import {directive, Directive, PartInfo} from 'lit/directive.js';
-import {assertsIsElementPartInfo} from './directive-helpers';
+import {assertIsElementPartInfo} from './directive-helpers';
 
 export type OnResizeCallback = (
     /** Only these two properties are supported in all major modern browsers */
@@ -17,7 +17,7 @@ export const onResize = directive(
         constructor(partInfo: PartInfo) {
             super(partInfo);
 
-            assertsIsElementPartInfo(partInfo, directiveName);
+            assertIsElementPartInfo(partInfo, directiveName);
         }
 
         fireCallback(entries: ResizeObserverEntry[]) {
@@ -32,7 +32,7 @@ export const onResize = directive(
         }
 
         override update(partInfo: PartInfo, [callback]: [OnResizeCallback]) {
-            assertsIsElementPartInfo(partInfo, directiveName);
+            assertIsElementPartInfo(partInfo, directiveName);
             this.callback = callback;
             const newElement = partInfo.element;
             // if the element changes we need to observe the new one

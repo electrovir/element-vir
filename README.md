@@ -317,7 +317,7 @@ import {MyCustomActionEvent} from './my-custom-action.event';
 
 export const MyWithCustomEventsElement = defineElementNoInputs({
     tagName: 'my-with-custom-events',
-    renderCallback: ({genericDispatch}) => html`
+    renderCallback: ({dispatch}) => html`
         <div
             ${listen(MyCustomActionEvent, (event) => {
                 console.info(`Got a number! ${event.detail}`);
@@ -325,7 +325,7 @@ export const MyWithCustomEventsElement = defineElementNoInputs({
         >
             <div
                 ${listen('click', () => {
-                    genericDispatch(new MyCustomActionEvent(Math.random()));
+                    dispatch(new MyCustomActionEvent(Math.random()));
                 })}
             ></div>
         </div>
@@ -534,6 +534,85 @@ export const MyWithCleanupElement = defineElementNoInputs({
 });
 ```
 
+### renderIf
+
+Use the `renderIf` directive to easily render a template if a given condition is true.
+
+<!-- example-link: src/readme-examples/my-with-render-if.element.ts -->
+
+```TypeScript
+import {defineElement, html, renderIf} from 'element-vir';
+
+export const MyWithRenderIfElement = defineElement<{shouldRender: boolean}>()({
+    tagName: 'my-simple-with-render-if',
+    renderCallback: ({inputs}) => html`
+        ${renderIf(
+            inputs.shouldRender,
+            html`
+                I'm conditionally rendered!
+            `,
+        )}
+    `,
+});
+```
+
+### renderAsyncProp
+
+Use the `renderAsyncProp` directive in conjunction with the `asyncProp` property definer and the `ensureAsyncProp` render callback property to seamlessly render and update element state:
+
+<!-- example-link: src/readme-examples/my-with-async-prop.element.ts -->
+
+```TypeScript
+import {asyncProp, defineElement, html, renderAsyncProp} from 'element-vir';
+
+async function loadSomething(endpoint: string) {
+    // load something from the network
+    const data = await (
+        await fetch(
+            [
+                '',
+                'api',
+                endpoint,
+            ].join('/'),
+        )
+    ).json();
+    return data;
+}
+
+export const MyWithAsyncPropElement = defineElement<{endpointToHit: string}>()({
+    tagName: 'my-simple-with-render-if',
+    stateInit: {
+        data: asyncProp(),
+    },
+    renderCallback: ({inputs, state, ensureAsyncProp}) => {
+        /**
+         * This creates a promise which automatically updates the state.loadsLater prop once the
+         * promise resolves.
+         */
+        ensureAsyncProp({
+            data: {
+                createPromise: () => loadSomething(inputs.endpointToHit),
+                updateIfThisChanges: inputs.endpointToHit,
+            },
+        });
+
+        return html`
+            Here's the data:
+            <br />
+            ${renderAsyncProp({
+                asyncProp: state.data,
+                fallback: 'Loading...',
+                resolutionRender: (loadedData) => {
+                    return html`
+                        Got the data: ${loadedData}
+                    `;
+                },
+            })}
+        `;
+    },
+});
+```
+
 ## Require all child custom elements to be declarative elements
 
 To require all child elements to be declarative elements defined by this package, call `requireAllCustomElementsToBeDeclarativeElements` anywhere in your app. This is a global setting so do not enable it unless you want it to be true _everywhere_ in your current run-time. This should not be used if you're using custom elements from other libraries (unless they happen to also use this package to define their custom elements).
@@ -551,3 +630,13 @@ requireAllCustomElementsToBeDeclarativeElements();
 ## markdown out of date
 
 If you see this: `Code in Markdown file(s) is out of date. Run without --check to update. code-in-markdown failed.`, run `npm run update-docs` to fix it.
+
+## Testing source map errors
+
+If you see
+
+```
+Error while reading source maps for ...
+```
+
+While running `npm test`, don't worry about it. Those only happen when tests fail.

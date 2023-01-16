@@ -1,6 +1,6 @@
 import {randomString} from '@augment-vir/browser';
 import {assert, fixture} from '@open-wc/testing';
-import {defineElementNoInputs, html, listen} from '../..';
+import {assignWithCleanup, defineElementNoInputs, html, listen} from '../..';
 import {
     assertRejects,
     clickElement,
@@ -9,7 +9,6 @@ import {
     testIdSelector,
 } from '../../augments/testing.test-helper';
 import {VirWithInputs} from '../../test/elements/vir-with-inputs.element';
-import {assignWithCleanup} from './assign-with-clean-up.directive';
 
 const AssignWithCleanupTestElement = defineElementNoInputs({
     tagName: 'vir-assign-with-cleanup-test',

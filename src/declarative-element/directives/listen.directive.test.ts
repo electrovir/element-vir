@@ -1,4 +1,4 @@
-import {defineTypedEvent} from '../../typed-event/typed-event';
+import {defineTypedEvent} from '../..';
 import {listen} from './listen.directive';
 
 function genericListen<EventTypeName extends keyof HTMLElementEventMap>(
@@ -23,7 +23,7 @@ function main() {
     });
 
     // need to extract the types from here
-    (({} as HTMLInputElement).addEventListener('click', (event) => {
+    (({}) as HTMLInputElement).addEventListener('click', (event) => {
         const innerEvent: MouseEvent = event;
-    }));
+    });
 }

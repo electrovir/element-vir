@@ -1,6 +1,6 @@
 import {html} from '..';
 import {defineElementNoInputs} from './define-element-no-inputs';
-import {defineElementEvent} from './element-events';
+import {defineElementEvent} from './properties/element-events';
 
 const definedDeclarativeElementWithProps = defineElementNoInputs({
     renderCallback: () => html``,

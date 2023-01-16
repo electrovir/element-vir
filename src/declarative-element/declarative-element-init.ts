@@ -1,11 +1,11 @@
 import {CSSResult} from 'lit';
-import {CssVarsInitMap} from './css-vars';
 import {DeclarativeElementDefinitionOptions} from './definition-options';
-import {EventsInitMap} from './element-events';
-import {PropertyInitMapBase} from './element-properties';
-import {HostClassesInitMap} from './host-classes';
+import {CssVarsInitMap} from './properties/css-vars';
+import {EventsInitMap} from './properties/element-events';
+import {PropertyInitMapBase} from './properties/element-properties';
+import {HostClassesInitMap} from './properties/host-classes';
+import {StylesCallback} from './properties/styles';
 import {InitCallback, RenderCallback} from './render-callback';
-import {StylesCallback} from './styles';
 
 export type CustomElementTagName = `${string}-${string}`;
 

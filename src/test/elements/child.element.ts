@@ -47,7 +47,7 @@ export const TestChildElement = defineElement<{
         speak: defineElementEvent<string>(),
         eat: defineElementEvent<number>(),
     },
-    renderCallback: ({state, inputs, dispatch, updateState, events, genericDispatch}) => {
+    renderCallback: ({state, inputs, dispatch, updateState, events}) => {
         // log here to make sure it's not rendering too often
         console.info('child rendering');
         return html`
@@ -69,7 +69,7 @@ export const TestChildElement = defineElement<{
             >
                 emit speak event
             </button>
-            <button ${listen('click', () => genericDispatch(new MyCustomEvent(5)))}>
+            <button ${listen('click', () => dispatch(new MyCustomEvent(5)))}>
                 emit custom event (logged to console)
             </button>
             <span>button handle: ${state.button?.tagName}</span>

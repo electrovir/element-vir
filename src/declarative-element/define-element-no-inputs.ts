@@ -2,7 +2,6 @@ import {getObjectTypedKeys, kebabCaseToCamelCase} from '@augment-vir/common';
 import {css, TemplateResult} from 'lit';
 import {property} from 'lit/decorators.js';
 import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';
-import {createCssVarNamesMap, createCssVarValuesMap} from './css-vars';
 import {
     DeclarativeElement,
     DeclarativeElementDefinition,
@@ -15,12 +14,14 @@ import {
     IgnoreInputsNotBeenSetBeforeRenderWarningSymbol,
 } from './definition-options';
 import {assign} from './directives/assign.directive';
-import {createEventDescriptorMap, EventsInitMap} from './element-events';
-import {createElementUpdaterProxy, PropertyInitMapBase} from './element-properties';
 import {hasDeclarativeElementParent} from './has-declarative-element-parent';
-import {createHostClassNamesMap} from './host-classes';
+import {createCssVarNamesMap, createCssVarValuesMap} from './properties/css-vars';
+import {createEventDescriptorMap, EventsInitMap} from './properties/element-events';
+import {PropertyInitMapBase} from './properties/element-properties';
+import {createElementUpdaterProxy} from './properties/element-updater-proxy';
+import {createHostClassNamesMap} from './properties/host-classes';
+import {applyHostClasses, hostClassNamesToStylesInput} from './properties/styles';
 import {createRenderParams, RenderParams} from './render-callback';
-import {applyHostClasses, hostClassNamesToStylesInput} from './styles';
 
 export function defineElementNoInputs<
     InputsGeneric extends PropertyInitMapBase = {},
@@ -232,7 +233,7 @@ export function defineElementNoInputs<
 
             Object.keys(stateInit).forEach((propName: keyof StateGeneric) => {
                 property()(this, propName);
-                (this as unknown as StateGeneric)[propName] = stateInit[propName];
+                this.instanceState[propName] = stateInit[propName];
             });
             this.definition = anonymousClass as unknown as ThisElementDefinition;
         }
