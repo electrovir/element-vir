@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "7.0.0",
+    "version": "7.0.1",
     "keywords": [
         "custom",
         "web",
@@ -25,7 +25,7 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "compile": "rm -rf dist && tsc --project tsconfig.json",
+        "compile": "rm -rf dist && rm tsconfig.tsbuildinfo && tsc --project tsconfig.json",
         "docs:update": "virmator code-in-markdown",
         "format": "virmator format",
         "publish": "virmator publish \"npm run compile && npm run test:all\"",
