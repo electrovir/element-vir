@@ -1,5 +1,9 @@
 import {when} from 'lit/directives/when.js';
 
-export function renderIf<T>(condition: boolean, result: T) {
-    return when(condition, () => result);
+export function renderIf(condition: boolean, ifTrue: unknown, ifFalse?: unknown) {
+    return when(
+        condition,
+        () => ifTrue,
+        () => ifFalse,
+    );
 }
