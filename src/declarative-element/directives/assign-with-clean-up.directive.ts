@@ -18,12 +18,13 @@ export type CleanupCallback<T> = (oldValue: T) => void;
 export function assignWithCleanup<DeclarativeElementGeneric extends DeclarativeElementDefinition>(
     elementDefinition: DeclarativeElementGeneric,
     inputsObject: DeclarativeElementGeneric extends DeclarativeElementDefinition<
+        any,
         infer InputsGeneric
     >
         ? InputsGeneric
         : never,
     cleanupCallback: CleanupCallback<
-        DeclarativeElementGeneric extends DeclarativeElementDefinition<infer InputsGeneric>
+        DeclarativeElementGeneric extends DeclarativeElementDefinition<any, infer InputsGeneric>
             ? InputsGeneric
             : never
     >,

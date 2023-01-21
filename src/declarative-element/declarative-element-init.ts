@@ -10,21 +10,22 @@ import {InitCallback, RenderCallback} from './render-callback';
 export type CustomElementTagName = `${string}-${string}`;
 
 export type DeclarativeElementInit<
+    TagNameGeneric extends CustomElementTagName,
     InputsGeneric extends PropertyInitMapBase,
-    StateInit extends PropertyInitMapBase,
+    StateInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
-    HostClassKeys extends string,
-    CssVarKeys extends string,
+    HostClassKeysGeneric extends string,
+    CssVarKeysGeneric extends string,
 > = {
     /**
      * HTML tag name. This should not be used directly, as interpolating it with the html tagged
      * template from this package is preferred.
      */
-    tagName: CustomElementTagName;
+    tagName: TagNameGeneric;
     /** Static styles. These should not and cannot change. */
-    styles?: CSSResult | StylesCallback<HostClassKeys, CssVarKeys>;
+    styles?: CSSResult | StylesCallback<HostClassKeysGeneric, CssVarKeysGeneric>;
     /** Element properties. (These can be thought of as "inputs".) */
-    stateInit?: StateInit;
+    stateInit?: StateInitGeneric;
     /** Events that the element can dispatch. (These can be thought of as "outputs".) */
     events?: EventsInitGeneric;
     /**
@@ -32,7 +33,7 @@ export type DeclarativeElementInit<
      * based on current instance state or inputs, or just undefined to indicate that the host class
      * will only be manually set.
      */
-    hostClasses?: HostClassesInitMap<HostClassKeys, InputsGeneric, StateInit>;
+    hostClasses?: HostClassesInitMap<HostClassKeysGeneric, InputsGeneric, StateInitGeneric>;
     /**
      * CSS Vars for the component. Keys of this object should be camelCased (or whatever your casing
      * convention is). They will be transformed, at runtime, to CSS vars with kebab-casing, to match
@@ -43,28 +44,31 @@ export type DeclarativeElementInit<
      * cssVarValues or cssVarNames can then be destructured from the styles property's callback
      * input.
      */
-    cssVars?: CssVarsInitMap<CssVarKeys>;
+    cssVars?: CssVarsInitMap<CssVarKeysGeneric>;
     /** Called as part of the first renderCallback call, before the first renderCallback call. */
     initCallback?: InitCallback<
+        TagNameGeneric,
         InputsGeneric,
-        StateInit,
+        StateInitGeneric,
         EventsInitGeneric,
-        HostClassKeys,
-        CssVarKeys
+        HostClassKeysGeneric,
+        CssVarKeysGeneric
     >;
     renderCallback: RenderCallback<
+        TagNameGeneric,
         InputsGeneric,
-        StateInit,
+        StateInitGeneric,
         EventsInitGeneric,
-        HostClassKeys,
-        CssVarKeys
+        HostClassKeysGeneric,
+        CssVarKeysGeneric
     >;
     cleanupCallback?: InitCallback<
+        TagNameGeneric,
         InputsGeneric,
-        StateInit,
+        StateInitGeneric,
         EventsInitGeneric,
-        HostClassKeys,
-        CssVarKeys
+        HostClassKeysGeneric,
+        CssVarKeysGeneric
     >;
     options?: Partial<DeclarativeElementDefinitionOptions> | undefined;
 };

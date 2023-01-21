@@ -1,5 +1,5 @@
 import {DeclarativeElementDefinition} from './declarative-element';
-import {DeclarativeElementInit} from './declarative-element-init';
+import {CustomElementTagName, DeclarativeElementInit} from './declarative-element-init';
 import {defineElementNoInputs} from './define-element-no-inputs';
 import {IgnoreInputsNotBeenSetBeforeRenderWarningSymbol} from './definition-options';
 import {EventsInitMap} from './properties/element-events';
@@ -7,24 +7,27 @@ import {PropertyInitMapBase} from './properties/element-properties';
 
 export function defineElement<InputsGeneric extends PropertyInitMapBase = {}>() {
     return <
-        PropertyInitGeneric extends PropertyInitMapBase = {},
+        TagNameGeneric extends CustomElementTagName,
+        StateInitGeneric extends PropertyInitMapBase = {},
         EventsInitGeneric extends EventsInitMap = {},
-        HostClassKeys extends string = '',
-        CssVarKeys extends string = '',
+        HostClassKeysGeneric extends string = '',
+        CssVarKeysGeneric extends string = '',
     >(
         initInput: DeclarativeElementInit<
+            TagNameGeneric,
             InputsGeneric,
-            PropertyInitGeneric,
+            StateInitGeneric,
             EventsInitGeneric,
-            HostClassKeys,
-            CssVarKeys
+            HostClassKeysGeneric,
+            CssVarKeysGeneric
         >,
     ): DeclarativeElementDefinition<
+        TagNameGeneric,
         InputsGeneric,
-        PropertyInitGeneric,
+        StateInitGeneric,
         EventsInitGeneric,
-        HostClassKeys,
-        CssVarKeys
+        HostClassKeysGeneric,
+        CssVarKeysGeneric
     > => {
         return defineElementNoInputs({
             ...initInput,

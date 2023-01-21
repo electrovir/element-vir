@@ -2,6 +2,7 @@ import {getObjectTypedKeys, RequiredAndNotNullBy} from '@augment-vir/common';
 import {TemplateResult} from 'lit';
 import {TypedEvent} from '../typed-event/typed-event';
 import {DeclarativeElement, HostInstanceType} from './declarative-element';
+import {CustomElementTagName} from './declarative-element-init';
 import {AsyncProp, ensureAsyncProp, SetAsyncPropInputs} from './properties/async-prop';
 import {
     EventDescriptorMap,
@@ -10,24 +11,46 @@ import {
 } from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
 
+export type RenderOutput =
+    | TemplateResult
+    | string
+    | ReadonlyArray<TemplateResult>
+    | ReadonlyArray<string>;
+
 export type RenderCallback<
+    TagNameGeneric extends CustomElementTagName = any,
     InputsGeneric extends PropertyInitMapBase = any,
     StateGeneric extends PropertyInitMapBase = any,
     EventsInitGeneric extends EventsInitMap = any,
     HostClassKeys extends string = any,
     CssVarKeys extends string = any,
 > = (
-    params: RenderParams<InputsGeneric, StateGeneric, EventsInitGeneric, HostClassKeys, CssVarKeys>,
-) => TemplateResult;
+    params: RenderParams<
+        TagNameGeneric,
+        InputsGeneric,
+        StateGeneric,
+        EventsInitGeneric,
+        HostClassKeys,
+        CssVarKeys
+    >,
+) => RenderOutput;
 
 export type InitCallback<
+    TagNameGeneric extends CustomElementTagName,
     InputsGeneric extends PropertyInitMapBase,
     StateGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
 > = (
-    params: RenderParams<InputsGeneric, StateGeneric, EventsInitGeneric, HostClassKeys, CssVarKeys>,
+    params: RenderParams<
+        TagNameGeneric,
+        InputsGeneric,
+        StateGeneric,
+        EventsInitGeneric,
+        HostClassKeys,
+        CssVarKeys
+    >,
 ) => void;
 
 export type UpdateStateCallback<StateGeneric extends PropertyInitMapBase> = (
@@ -35,6 +58,7 @@ export type UpdateStateCallback<StateGeneric extends PropertyInitMapBase> = (
 ) => void;
 
 export type RenderParams<
+    TagNameGeneric extends CustomElementTagName,
     InputsGeneric extends PropertyInitMapBase,
     StateInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
@@ -45,6 +69,7 @@ export type RenderParams<
     updateState: UpdateStateCallback<StateInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
     host: HostInstanceType<
+        TagNameGeneric,
         InputsGeneric,
         StateInitGeneric,
         EventsInitGeneric,
@@ -77,6 +102,7 @@ export type RenderParams<
 };
 
 export function createRenderParams<
+    TagNameGeneric extends CustomElementTagName,
     InputsGeneric extends PropertyInitMapBase,
     StateGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
@@ -84,6 +110,7 @@ export function createRenderParams<
     CssVarKeys extends string,
 >(
     element: DeclarativeElement<
+        TagNameGeneric,
         InputsGeneric,
         StateGeneric,
         EventsInitGeneric,
@@ -91,7 +118,14 @@ export function createRenderParams<
         CssVarKeys
     >,
     eventsMap: EventDescriptorMap<EventsInitGeneric>,
-): RenderParams<InputsGeneric, StateGeneric, EventsInitGeneric, HostClassKeys, CssVarKeys> {
+): RenderParams<
+    TagNameGeneric,
+    InputsGeneric,
+    StateGeneric,
+    EventsInitGeneric,
+    HostClassKeys,
+    CssVarKeys
+> {
     function updateState(partialProps: Parameters<UpdateStateCallback<StateGeneric>>[0]) {
         getObjectTypedKeys(partialProps).forEach((propKey) => {
             element.instanceState[propKey] = partialProps[propKey] as StateGeneric[typeof propKey];
@@ -99,6 +133,7 @@ export function createRenderParams<
     }
 
     const renderParams: RenderParams<
+        TagNameGeneric,
         InputsGeneric,
         StateGeneric,
         EventsInitGeneric,

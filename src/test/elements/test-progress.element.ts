@@ -1,4 +1,4 @@
-import {defineElementNoInputs, html, requireAllCustomElementsToBeDeclarativeElements} from '../..';
+import {defineElement, html, requireAllCustomElementsToBeDeclarativeElements} from '../..';
 
 requireAllCustomElementsToBeDeclarativeElements();
 
@@ -7,7 +7,7 @@ export type TestTypesProgressInputs = {
     thingB?: number;
 };
 
-export const TestTypesProgress = defineElementNoInputs<TestTypesProgressInputs>({
+export const TestTypesProgress = defineElement<TestTypesProgressInputs>()({
     tagName: 'vir-test-types-progress',
     renderCallback: () => {
         return html``;

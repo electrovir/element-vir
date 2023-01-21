@@ -437,6 +437,46 @@ export const MyWithCssVarsElement = defineElementNoInputs({
 });
 ```
 
+## Custom Type Requirements
+
+Use `wrapDefineElement` to compose `defineElement` and `defineElementNoInputs`. This is particularly useful to adding restrictions on the element `tagName`, but it can be used for restricting any of the inputs:
+
+<!-- example-link: src/readme-examples/my-custom-define.ts -->
+
+```TypeScript
+import {wrapDefineElement} from 'element-vir';
+
+export type VirTagName = `vir-${string}`;
+
+export const {defineElement: defineVirElement, defineElementNoInputs: defineVirElementNoInputs} =
+    wrapDefineElement<VirTagName>();
+
+// add an optional assert callback
+export const {
+    defineElement: defineVerifiedVirElement,
+    defineElementNoInputs: defineVerifiedVirElementNoInputs,
+} = wrapDefineElement<VirTagName>({
+    assertInputs: (inputs) => {
+        if (!inputs.tagName.startsWith('vir-')) {
+            throw new Error(`all custom elements must start with "vir-"`);
+        }
+    },
+});
+
+// add an optional transform callback
+export const {
+    defineElement: defineTransformedVirElement,
+    defineElementNoInputs: defineTransformedVirElementNoInputs,
+} = wrapDefineElement<VirTagName>({
+    transformInputs: (inputs) => {
+        return {
+            ...inputs,
+            tagName: inputs.tagName.startsWith('vir-') ? `vir-${inputs.tagName}` : inputs.tagName,
+        };
+    },
+});
+```
+
 ## Directives
 
 The following custom [`lit` directives](https://lit.dev/docs/templates/custom-directives/) are contained within this package.

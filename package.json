@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "7.0.2",
+    "version": "8.0.0",
     "keywords": [
         "custom",
         "web",
@@ -31,20 +31,21 @@
         "publish": "virmator publish \"npm run compile && npm run test:all\"",
         "start": "npm install && virmator frontend",
         "test": "npm run test:types && virmator test-web",
-        "test:all": "npm run test:types && npm test && npm run test:spelling && npm run test:format && npm run test:docs",
+        "test:all": "npm run test:types && npm run test:coverage && npm run test:spelling && npm run test:format && npm run test:docs",
+        "test:coverage": "virmator test-web coverage",
         "test:docs": "virmator code-in-markdown check",
         "test:format": "virmator format check",
         "test:spelling": "virmator spellcheck",
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/browser": "^10.0.0",
-        "@augment-vir/common": "^10.0.0",
+        "@augment-vir/browser": "^11.0.0",
+        "@augment-vir/common": "^11.0.0",
         "lit": "2.6.1"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^10.0.0",
-        "@augment-vir/node-js": "^10.0.0",
+        "@augment-vir/browser-testing": "^11.0.0",
+        "@augment-vir/node-js": "^11.0.0",
         "@istanbuljs/nyc-config-typescript": "^1.0.2",
         "@open-wc/testing": "^3.1.7",
         "@types/mocha": "^10.0.1",
@@ -66,9 +67,9 @@
         "prettier-plugin-sort-json": "^1.0.0",
         "prettier-plugin-toml": "^0.3.1",
         "ts-node": "^10.9.1",
-        "type-fest": "^3.5.2",
+        "type-fest": "^3.5.3",
         "typescript": "^4.9.4",
-        "virmator": "^5.3.3",
+        "virmator": "^5.4.0",
         "vite": "^4.0.4"
     }
 }
