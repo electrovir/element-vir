@@ -50,8 +50,8 @@ export function wrapDefineElement<
     InputsRequirementGeneric extends PropertyInitMapBase = {},
     StateInitRequirementGeneric extends PropertyInitMapBase = {},
     EventsInitRequirementGeneric extends EventsInitMap = {},
-    HostClassKeysRequirementGeneric extends string = '',
-    CssVarKeysRequirementGeneric extends string = '',
+    HostClassKeysRequirementGeneric extends string = string,
+    CssVarKeysRequirementGeneric extends string = string,
 >(options?: WrapDefineElementOptions | undefined) {
     const {assertInputs, transformInputs}: WrapDefineElementOptions = {
         assertInputs: options?.assertInputs ?? (() => {}),

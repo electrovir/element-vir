@@ -1,7 +1,16 @@
 import {randomString} from '@augment-vir/browser';
 import {assertTypeOf} from '@augment-vir/browser-testing';
 import {assert, fixture as renderFixture} from '@open-wc/testing';
-import {assign, defineElement, defineElementNoInputs, html, wrapDefineElement} from '..';
+import {
+    assign,
+    css,
+    defineElement,
+    defineElementEvent,
+    defineElementNoInputs,
+    html,
+    listen,
+    wrapDefineElement,
+} from '..';
 import {getAssertedDeclarativeElement} from '../augments/testing.test-helper';
 
 describe(wrapDefineElement.name, () => {
@@ -41,6 +50,39 @@ describe(wrapDefineElement.name, () => {
             }),
         );
 
+        assertTypeOf(
+            myDefineElementNoInputs({
+                tagName: `my-tag-${randomString()}`,
+                hostClasses: {
+                    doThing: false,
+                },
+                cssVars: {
+                    myCssVar: 'blue',
+                },
+                styles: ({cssVarNames, cssVarValues, hostClassNames, hostClassSelectors}) => css`
+                    ${hostClassSelectors.doThing} {
+                        color: ${cssVarValues.myCssVar};
+                    }
+
+                    :host(${hostClassNames.doThing}) {
+                        ${cssVarNames.myCssVar}: green;
+                    }
+                `,
+                events: {
+                    outputOne: defineElementEvent<string>(),
+                },
+                renderCallback: () => '',
+            }),
+        ).toEqualTypeOf(
+            defineElementNoInputs({
+                tagName: `my-tag-${randomString()}`,
+                hostClasses: {
+                    doThing: false,
+                },
+                renderCallback: () => '',
+            }),
+        );
+
         myDefineElementNoInputs({
             // @ts-expect-error
             tagName: 'bad-tag',
@@ -51,6 +93,9 @@ describe(wrapDefineElement.name, () => {
     it('should still create a valid element', async () => {
         const MySpecificElement = myDefineElement<MySpecificInputs>()({
             tagName: `my-tag-${randomString()}`,
+            events: {
+                myOutput: defineElementEvent<number>(),
+            },
             renderCallback: () => '',
         });
 
@@ -60,6 +105,9 @@ describe(wrapDefineElement.name, () => {
             <${MySpecificElement}
                 ${assign(MySpecificElement, {
                     noInputsActually: assignedInput,
+                })}
+                ${listen(MySpecificElement.events.myOutput, (event) => {
+                    assertTypeOf(event.detail).toEqualTypeOf<number>();
                 })}
             ></${MySpecificElement}>
         `);
