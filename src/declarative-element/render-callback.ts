@@ -3,7 +3,11 @@ import {TemplateResult} from 'lit';
 import {TypedEvent} from '../typed-event/typed-event';
 import {DeclarativeElement, HostInstanceType} from './declarative-element';
 import {CustomElementTagName} from './declarative-element-init';
-import {AsyncProp, ensureAsyncProp, SetAsyncPropInputs} from './properties/async-prop';
+import {
+    AsyncStateInputs,
+    AsyncStateSetValue,
+    MaybeAsyncStateToSync,
+} from './properties/async-state';
 import {
     EventDescriptorMap,
     EventInitMapEventDetailExtractor,
@@ -54,7 +58,7 @@ export type InitCallback<
 ) => void;
 
 export type UpdateStateCallback<StateGeneric extends PropertyInitMapBase> = (
-    newState: Partial<StateGeneric>,
+    newState: Partial<AsyncStateInputs<StateGeneric>>,
 ) => void;
 
 export type RenderParams<
@@ -65,7 +69,7 @@ export type RenderParams<
     HostClassKeys extends string,
     CssVarKeys extends string,
 > = {
-    state: Readonly<StateInitGeneric>;
+    state: Readonly<MaybeAsyncStateToSync<StateInitGeneric>>;
     updateState: UpdateStateCallback<StateInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
     host: HostInstanceType<
@@ -85,20 +89,6 @@ export type RenderParams<
             | Event,
     ) => boolean;
     inputs: InputsGeneric;
-    /**
-     * Updates async props in the state if they have not already been set. Once promises settle,
-     * this automatically updates the state. In order to re-trigger an async prop, set it to
-     * undefined first.
-     */
-    ensureAsyncProp: (
-        values: Partial<{
-            [StateKey in keyof StateInitGeneric as StateInitGeneric[StateKey] extends AsyncProp<any>
-                ? StateKey
-                : never]: StateInitGeneric[StateKey] extends AsyncProp<infer ValueGeneric>
-                ? SetAsyncPropInputs<ValueGeneric>
-                : never;
-        }>,
-    ) => void;
 };
 
 export function createRenderParams<
@@ -126,9 +116,19 @@ export function createRenderParams<
     HostClassKeys,
     CssVarKeys
 > {
-    function updateState(partialProps: Parameters<UpdateStateCallback<StateGeneric>>[0]) {
-        getObjectTypedKeys(partialProps).forEach((propKey) => {
-            element.instanceState[propKey] = partialProps[propKey] as StateGeneric[typeof propKey];
+    function updateState(newStatePartial: Parameters<UpdateStateCallback<StateGeneric>>[0]) {
+        getObjectTypedKeys(newStatePartial).forEach((stateKey) => {
+            const newValue = newStatePartial[
+                stateKey
+            ] as MaybeAsyncStateToSync<StateGeneric>[typeof stateKey];
+
+            const asyncState = element.asyncStateProperties[stateKey];
+
+            if (asyncState) {
+                asyncState.setValue(newValue as AsyncStateSetValue<any>);
+            } else {
+                element.instanceState[stateKey] = newValue;
+            }
         });
     }
 
@@ -146,25 +146,6 @@ export function createRenderParams<
         host: element as RequiredAndNotNullBy<typeof element, 'shadowRoot'>,
         state: element.instanceState,
         events: eventsMap,
-        ensureAsyncProp: (values) => {
-            Object.entries(values).forEach(
-                ([
-                    stateKey,
-                    newSet,
-                ]) => {
-                    if (!(stateKey in element.instanceState)) {
-                        throw new Error(`Invalid key given to ensureAsyncProp: ${stateKey}`);
-                    }
-
-                    ensureAsyncProp<any, any>({
-                        state: element.instanceState as any,
-                        updateState: updateState as any,
-                        stateProp: stateKey,
-                        ...(newSet as SetAsyncPropInputs<any>),
-                    });
-                },
-            );
-        },
     };
     return renderParams;
 }

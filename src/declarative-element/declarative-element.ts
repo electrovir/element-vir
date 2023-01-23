@@ -1,6 +1,7 @@
 import {RequiredAndNotNullBy, RequiredBy} from '@augment-vir/common';
 import {CSSResult, LitElement} from 'lit';
 import {CustomElementTagName, DeclarativeElementInit} from './declarative-element-init';
+import {AsyncStateProperties, MaybeAsyncStateToSync} from './properties/async-state';
 import {CssVarNameOrValueMap} from './properties/css-vars';
 import {EventDescriptorMap, EventsInitMap} from './properties/element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './properties/element-properties';
@@ -10,7 +11,7 @@ import {RenderCallback, RenderOutput} from './render-callback';
 export type HostInstanceType<
     TagNameGeneric extends CustomElementTagName,
     InputsGeneric extends PropertyInitMapBase,
-    StateGeneric extends PropertyInitMapBase,
+    StateInitMaybeAsyncGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
@@ -18,7 +19,7 @@ export type HostInstanceType<
     DeclarativeElement<
         TagNameGeneric,
         InputsGeneric,
-        StateGeneric,
+        StateInitMaybeAsyncGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
@@ -29,14 +30,14 @@ export type HostInstanceType<
 export type DeclarativeElementDefinition<
     TagNameGeneric extends CustomElementTagName = any,
     InputsGeneric extends PropertyInitMapBase = any,
-    StateInitGeneric extends PropertyInitMapBase = any,
+    StateInitMaybeAsyncGeneric extends PropertyInitMapBase = any,
     EventsInitGeneric extends EventsInitMap = any,
     HostClassKeys extends string = string,
     CssVarKeys extends string = string,
 > = (new () => HostInstanceType<
     TagNameGeneric,
     InputsGeneric,
-    StateInitGeneric,
+    StateInitMaybeAsyncGeneric,
     EventsInitGeneric,
     HostClassKeys,
     CssVarKeys
@@ -44,7 +45,7 @@ export type DeclarativeElementDefinition<
     StaticDeclarativeElementProperties<
         TagNameGeneric,
         InputsGeneric,
-        StateInitGeneric,
+        StateInitMaybeAsyncGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
@@ -52,7 +53,7 @@ export type DeclarativeElementDefinition<
         instanceType: HostInstanceType<
             TagNameGeneric,
             InputsGeneric,
-            StateInitGeneric,
+            StateInitMaybeAsyncGeneric,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys
@@ -78,7 +79,7 @@ function staticImplements<T>() {
 export abstract class DeclarativeElement<
     TagNameGeneric extends CustomElementTagName = CustomElementTagName,
     InputsGeneric extends PropertyInitMapBase = any,
-    StateInitGeneric extends PropertyInitMapBase = any,
+    StateInitMaybeAsyncGeneric extends PropertyInitMapBase = any,
     EventsInitGeneric extends EventsInitMap = any,
     HostClassKeys extends string = string,
     CssVarKeys extends string = string,
@@ -181,7 +182,10 @@ export abstract class DeclarativeElement<
     >['cssVarValues'];
 
     public abstract override render(): RenderOutput;
-    public abstract readonly instanceState: StateInitGeneric;
+    public abstract readonly instanceState: MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>;
+    public abstract readonly asyncStateProperties: AsyncStateProperties<
+        keyof StateInitMaybeAsyncGeneric
+    >;
     public abstract readonly instanceInputs: InputsGeneric;
     public abstract assignInputs(inputs: InputsGeneric): void;
     public abstract readonly haveInputsBeenSet: boolean;
@@ -189,7 +193,7 @@ export abstract class DeclarativeElement<
     public abstract readonly definition: DeclarativeElementDefinition<
         TagNameGeneric,
         InputsGeneric,
-        StateInitGeneric,
+        StateInitMaybeAsyncGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
@@ -199,7 +203,7 @@ export abstract class DeclarativeElement<
 export interface StaticDeclarativeElementProperties<
     TagNameGeneric extends CustomElementTagName,
     InputsGeneric extends PropertyInitMapBase,
-    StateInitGeneric extends PropertyInitMapBase,
+    StateInitMaybeAsyncGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
@@ -208,18 +212,18 @@ export interface StaticDeclarativeElementProperties<
     readonly renderCallback: RenderCallback<
         TagNameGeneric,
         InputsGeneric,
-        StateInitGeneric,
+        StateInitMaybeAsyncGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys
     >;
     events: EventDescriptorMap<EventsInitGeneric>;
-    stateInit: ElementPropertyDescriptorMap<StateInitGeneric>;
+    stateInit: ElementPropertyDescriptorMap<StateInitMaybeAsyncGeneric>;
     init: RequiredBy<
         DeclarativeElementInit<
             TagNameGeneric,
             InputsGeneric,
-            StateInitGeneric,
+            StateInitMaybeAsyncGeneric,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys
@@ -227,13 +231,13 @@ export interface StaticDeclarativeElementProperties<
         'stateInit' | 'events'
     >;
     inputsType: InputsGeneric;
-    stateType: StateInitGeneric;
+    stateType: MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>;
     isStrictInstance: (
         element: unknown,
     ) => element is DeclarativeElement<
         TagNameGeneric,
         InputsGeneric,
-        StateInitGeneric,
+        StateInitMaybeAsyncGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys

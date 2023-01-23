@@ -25,9 +25,9 @@ const htmlChecksAndTransforms: CheckAndTransform<any>[] = [
                     currentValue,
                 });
                 throw new Error(
-                    `Got interpolated tag name but it wasn't of type VirElement: ${
+                    `Got interpolated tag name but it wasn't of type VirElement: '${
                         (currentValue as any).prototype.constructor.name
-                    }`,
+                    }'`,
                 );
             }
 

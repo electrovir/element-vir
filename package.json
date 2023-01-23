@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "8.0.2",
+    "version": "9.0.0",
     "keywords": [
         "custom",
         "web",
@@ -30,7 +30,7 @@
         "format": "virmator format",
         "publish": "virmator publish \"npm run compile && npm run test:all\"",
         "start": "npm install && virmator frontend",
-        "test": "npm run test:types && virmator test-web",
+        "test": "virmator test-web",
         "test:all": "npm run test:types && npm run test:coverage && npm run test:spelling && npm run test:format && npm run test:docs",
         "test:coverage": "virmator test-web coverage",
         "test:docs": "virmator code-in-markdown check",
@@ -39,13 +39,13 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/browser": "^11.0.0",
-        "@augment-vir/common": "^11.0.0",
+        "@augment-vir/browser": "^11.1.2",
+        "@augment-vir/common": "^11.1.2",
         "lit": "2.6.1"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^11.0.0",
-        "@augment-vir/node-js": "^11.0.0",
+        "@augment-vir/browser-testing": "^11.1.2",
+        "@augment-vir/node-js": "^11.1.2",
         "@istanbuljs/nyc-config-typescript": "^1.0.2",
         "@open-wc/testing": "^3.1.7",
         "@types/mocha": "^10.0.1",

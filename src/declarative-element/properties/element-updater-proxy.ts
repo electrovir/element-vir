@@ -8,14 +8,14 @@ function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase
 ): asserts propKey is keyof PropertyInitGeneric {
     if (typeof propKey !== 'string' && typeof propKey !== 'number' && typeof propKey !== 'symbol') {
         throw new Error(
-            `Property name must be a string, got type "${typeof propKey}" from: "${String(
+            `Property name must be a string, got type '${typeof propKey}' from: '${String(
                 propKey,
-            )}" for ${elementTagName.toLowerCase()}`,
+            )}' for '${elementTagName.toLowerCase()}'`,
         );
     }
     if (!(propKey in element)) {
         throw new Error(
-            `Property "${String(propKey)}" does not exist on ${elementTagName.toLowerCase()}.`,
+            `Property '${String(propKey)}' does not exist on '${elementTagName.toLowerCase()}'.`,
         );
     }
 }
@@ -31,25 +31,41 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
      */
     const elementAsProps = element as DeclarativeElement & PropertyInitGeneric;
 
-    const propsProxy = new Proxy({} as Record<PropertyKey, unknown>, {
-        get: (target, propertyName: keyof PropertyInitGeneric | symbol) => {
-            if (verifyExists) {
-                assertValidPropertyName(propertyName, element, element.tagName);
-            }
+    function valueGetter(target: any, propertyName: keyof PropertyInitGeneric | symbol) {
+        if (verifyExists) {
+            assertValidPropertyName(propertyName, element, element.tagName);
+        }
 
+        const asyncState = element.asyncStateProperties[propertyName];
+
+        if (asyncState) {
+            return asyncState.getValue();
+        } else {
             return elementAsProps[propertyName];
-        },
+        }
+    }
+
+    const propsProxy = new Proxy({} as Record<PropertyKey, unknown>, {
+        get: valueGetter,
         set: (target, propertyName: keyof PropertyInitGeneric | symbol, newValue) => {
             if (verifyExists) {
                 assertValidPropertyName(propertyName, element, element.tagName);
             }
+
             /**
              * Don't worry about storing the value (no need to have duplicates of teh values) but at
              * least set the property on target so we can detect it in "ownKeys" and
              * "getOwnPropertyDescriptor".
              */
             target[propertyName] = undefined;
-            elementAsProps[propertyName] = newValue;
+
+            const asyncState = element.asyncStateProperties[propertyName];
+
+            if (asyncState) {
+                asyncState.setValue(newValue);
+            } else {
+                elementAsProps[propertyName] = newValue;
+            }
 
             return true;
         },
@@ -60,7 +76,7 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
             if (propertyName in target) {
                 return {
                     get value() {
-                        return elementAsProps[propertyName];
+                        return valueGetter(target, propertyName);
                     },
                     configurable: true,
                     enumerable: true,
