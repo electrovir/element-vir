@@ -107,6 +107,18 @@ describe(asyncState.name, () => {
                     >
                         Force Update
                     </button>
+                    <button
+                        id="assign-resolved-value"
+                        ${listen('click', () => {
+                            updateState({
+                                myAsyncState: {
+                                    resolvedValue: Math.random(),
+                                },
+                            });
+                        })}
+                    >
+                        Assign Resolved Value
+                    </button>
                 `;
             },
         });
@@ -130,9 +142,11 @@ describe(asyncState.name, () => {
         const instance = getAssertedDeclarativeElement(ElementWithAsyncState, rendered);
         const newPromiseButton = instance.shadowRoot.querySelector('#new-promise');
         const forceUpdateButton = instance.shadowRoot.querySelector('#force-update');
+        const assignResolvedButton = instance.shadowRoot.querySelector('#assign-resolved-value');
 
         typedAssertNotNullish(newPromiseButton);
         typedAssertNotNullish(forceUpdateButton);
+        typedAssertNotNullish(assignResolvedButton);
 
         // initial render
         typedAssertNotNullish(deferredPromiseWrappers[0]);
@@ -215,5 +229,15 @@ describe(asyncState.name, () => {
 
         await waitUntil(() => renderCount === 8);
         assert.strictEqual(instance.instanceState.myAsyncState, finalResolutionValue);
+
+        // assign an already resolved value; element should update once and immediately use the resolved value
+        await clickElement(assignResolvedButton);
+
+        assert.lengthOf(
+            deferredPromiseWrappers,
+            5,
+            'no new deferred promises should have been created',
+        );
+        assert.typeOf(instance.instanceState.myAsyncState, 'number');
     });
 });

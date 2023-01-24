@@ -17,3 +17,9 @@ export function ensureInstanceOf<T>(
         throw new TypeError(errorMessage);
     }
 }
+
+export type PickAndBlockOthers<OriginalObject, PickKeys extends keyof OriginalObject> = Pick<
+    OriginalObject,
+    PickKeys
+> &
+    Partial<Record<Exclude<keyof OriginalObject, PickKeys>, never>>;

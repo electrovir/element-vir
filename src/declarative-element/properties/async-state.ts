@@ -8,41 +8,34 @@ import {
     UnPromise,
 } from '@augment-vir/common';
 import {JsonValue, Promisable} from 'type-fest';
+import {PickAndBlockOthers} from '../../augments/type';
 import {PropertyInitMapBase} from './element-properties';
 
 export type AsyncState<ValueGeneric> = Error | Promisable<UnPromise<ValueGeneric>>;
 
+type AllSetValueProperties<ValueGeneric> = {
+    /** Set a new value directly without using any promises. */
+    resolvedValue: UnPromise<ValueGeneric>;
+    createPromise: () => Promise<UnPromise<ValueGeneric>>;
+    /**
+     * When trigger changes (according to deep equality checking through JSON stringify), the
+     * createPromise callback will be called and the element's state will be updated again.
+     * Otherwise, the createPromise callback will only be called the first time.
+     *
+     * Set this to undefined to disabled automatic updating. Meaning, createPromise will only be
+     * called the first time.
+     */
+    trigger: JsonValue | Readonly<JsonValue> | undefined;
+    newPromise: Promise<UnPromise<ValueGeneric>>;
+    /** Clear the current value and trigger createPromise to get called again on the next render. */
+    forceUpdate: true;
+};
+
 export type AsyncStateSetValue<ValueGeneric> =
-    | {
-          createPromise: () => Promise<UnPromise<ValueGeneric>>;
-          /**
-           * When trigger changes (according to deep equality checking through JSON stringify), the
-           * createPromise callback will be called and the element's state will be updated again.
-           * Otherwise, the createPromise callback will only be called the first time.
-           *
-           * Set this to undefined to disabled automatic updating. Meaning, createPromise will only
-           * be called the first time.
-           */
-          trigger: JsonValue | Readonly<JsonValue> | undefined;
-          newPromise?: never;
-          forceUpdate?: never;
-      }
-    | {
-          createPromise?: never;
-          trigger?: never;
-          forceUpdate?: never;
-          newPromise: Promise<UnPromise<ValueGeneric>>;
-      }
-    | {
-          createPromise?: never;
-          trigger?: never;
-          newPromise?: never;
-          /**
-           * Clear the current value and trigger createPromise to get called again on the next
-           * render.
-           */
-          forceUpdate: true;
-      };
+    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'createPromise' | 'trigger'>
+    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'newPromise'>
+    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'forceUpdate'>
+    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'resolvedValue'>;
 
 export type MaybeAsyncStateToSync<PropertyMapInit extends PropertyInitMapBase> = {
     [Prop in keyof PropertyMapInit]: PropertyMapInit[Prop] extends
@@ -116,6 +109,8 @@ export class AsyncStateHandler<ValueGeneric> {
             // abort setting the promise if we already have set this promise
             return;
         }
+        this.#resolutionValue = undefined;
+        this.#rejectionError = undefined;
         this.#lastSetPromise = newPromise;
 
         if (this.#waitingForValuePromise.isSettled()) {
@@ -126,10 +121,7 @@ export class AsyncStateHandler<ValueGeneric> {
             .then((value) => {
                 // make sure we're still actually waiting for this promise
                 if (this.#lastSetPromise === newPromise) {
-                    this.#rejectionError = undefined;
-                    this.#resolutionValue = value;
-                    this.#waitingForValuePromise.resolve(value);
-                    this.#fireListeners();
+                    this.#resolveValue(value);
                 }
             })
             .catch((reason) => {
@@ -149,6 +141,18 @@ export class AsyncStateHandler<ValueGeneric> {
             });
     }
 
+    #resolveValue(value: UnPromise<ValueGeneric>) {
+        if (value !== this.#resolutionValue) {
+            this.#rejectionError = undefined;
+            this.#resolutionValue = value;
+            if (this.#waitingForValuePromise.isSettled()) {
+                this.#waitingForValuePromise = createDeferredPromiseWrapper();
+            }
+            this.#waitingForValuePromise.resolve(value);
+            this.#fireListeners();
+        }
+    }
+
     public setValue(setInputs: AsyncStateSetValue<ValueGeneric>) {
         if ('createPromise' in setInputs) {
             if (
@@ -165,6 +169,8 @@ export class AsyncStateHandler<ValueGeneric> {
             this.#setPromise(setInputs.newPromise);
             // force a re-render
             this.#fireListeners();
+        } else if ('resolvedValue' in setInputs) {
+            this.#resolveValue(setInputs.resolvedValue);
         } else {
             if (setInputs.forceUpdate) {
                 this.#lastTrigger = notSetSymbol;

@@ -52,6 +52,17 @@ export const AsyncChild = defineElement<{
             >
                 Same Number Promise
             </button>
+            <button
+                ${listen('click', () => {
+                    updateState({
+                        loadThing: {
+                            resolvedValue: Math.random(),
+                        },
+                    });
+                })}
+            >
+                New Resolved Value
+            </button>
         `;
     },
 });
