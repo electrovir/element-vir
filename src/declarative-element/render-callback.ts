@@ -1,5 +1,6 @@
 import {getObjectTypedKeys, RequiredAndNotNullBy} from '@augment-vir/common';
 import {TemplateResult} from 'lit';
+import {Primitive} from 'type-fest';
 import {TypedEvent} from '../typed-event/typed-event';
 import {DeclarativeElement, HostInstanceType} from './declarative-element';
 import {CustomElementTagName} from './declarative-element-init';
@@ -17,9 +18,9 @@ import {PropertyInitMapBase} from './properties/element-properties';
 
 export type RenderOutput =
     | TemplateResult
-    | string
+    | Primitive
     | ReadonlyArray<TemplateResult>
-    | ReadonlyArray<string>;
+    | ReadonlyArray<Primitive>;
 
 export type RenderCallback<
     TagNameGeneric extends CustomElementTagName = any,

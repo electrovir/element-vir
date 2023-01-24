@@ -33,18 +33,17 @@ describe(asyncState.name, () => {
 
             dispatch(new events.previousAsyncState(state.myAsyncState));
 
-            return html`
-                ${renderAsyncState(
-                    state.myAsyncState,
-                    'Loading...',
-                    (value) => {
-                        return html`
-                            Got ${value.toFixed(0)}
-                        `;
-                    },
-                    (error) => error.message,
-                )}
-            `;
+            return renderAsyncState(
+                state.myAsyncState,
+                'Loading...',
+                (value) => {
+                    // return {what: 'hello'};
+                    return html`
+                        Got ${value.toFixed(0)}
+                    `;
+                },
+                // (error) => error.message,
+            );
         },
     });
 
