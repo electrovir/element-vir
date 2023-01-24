@@ -36,7 +36,7 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
             assertValidPropertyName(propertyName, element, element.tagName);
         }
 
-        const asyncState = element.asyncStateProperties[propertyName];
+        const asyncState = element.asyncStateHandlerMap[propertyName];
 
         if (asyncState) {
             return asyncState.getValue();
@@ -59,7 +59,7 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
              */
             target[propertyName] = undefined;
 
-            const asyncState = element.asyncStateProperties[propertyName];
+            const asyncState = element.asyncStateHandlerMap[propertyName];
 
             if (asyncState) {
                 asyncState.setValue(newValue);

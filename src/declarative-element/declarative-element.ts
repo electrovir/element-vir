@@ -1,7 +1,7 @@
 import {RequiredAndNotNullBy, RequiredBy} from '@augment-vir/common';
 import {CSSResult, LitElement} from 'lit';
 import {CustomElementTagName, DeclarativeElementInit} from './declarative-element-init';
-import {AsyncStateProperties, MaybeAsyncStateToSync} from './properties/async-state';
+import {AsyncStateHandlerMap, MaybeAsyncStateToSync} from './properties/async-state';
 import {CssVarNameOrValueMap} from './properties/css-vars';
 import {EventDescriptorMap, EventsInitMap} from './properties/element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './properties/element-properties';
@@ -183,9 +183,7 @@ export abstract class DeclarativeElement<
 
     public abstract override render(): RenderOutput;
     public abstract readonly instanceState: MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>;
-    public abstract readonly asyncStateProperties: AsyncStateProperties<
-        keyof StateInitMaybeAsyncGeneric
-    >;
+    public abstract readonly asyncStateHandlerMap: AsyncStateHandlerMap<StateInitMaybeAsyncGeneric>;
     public abstract readonly instanceInputs: InputsGeneric;
     public abstract assignInputs(inputs: InputsGeneric): void;
     public abstract readonly haveInputsBeenSet: boolean;

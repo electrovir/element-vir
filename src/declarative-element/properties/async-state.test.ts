@@ -5,7 +5,7 @@ import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {
     asyncState,
     AsyncState,
-    AsyncStateHandler,
+    AsyncStateInit,
     defineElement,
     defineElementEvent,
     defineElementNoInputs,
@@ -33,7 +33,7 @@ describe(asyncState.name, () => {
         });
 
         assertTypeOf(elementWithAsyncState.stateInit.myAsyncState).toEqualTypeOf<
-            StaticElementPropertyDescriptor<string, AsyncStateHandler<SomethingObject>>
+            StaticElementPropertyDescriptor<string, AsyncStateInit<SomethingObject>>
         >();
 
         assertTypeOf<(typeof elementWithAsyncState)['stateType']['myAsyncState']>().toEqualTypeOf<

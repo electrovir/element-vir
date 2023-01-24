@@ -146,6 +146,11 @@ export const AppElement = defineElementNoInputs({
                         trigger: state.funnyNumber,
                     })}
                 ></${AsyncChild}>
+                <${AsyncChild}
+                    ${assign(AsyncChild, {
+                        trigger: state.funnyNumber,
+                    })}
+                ></${AsyncChild}>
                 <hr>
                 <span>Speak events received: ${state.eventsReceived}</span>
                 <span>Last speak message received: ${state.lastReceivedMessage}</span>

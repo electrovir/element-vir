@@ -122,7 +122,7 @@ export function createRenderParams<
                 stateKey
             ] as MaybeAsyncStateToSync<StateGeneric>[typeof stateKey];
 
-            const asyncState = element.asyncStateProperties[stateKey];
+            const asyncState = element.asyncStateHandlerMap[stateKey];
 
             if (asyncState) {
                 asyncState.setValue(newValue as AsyncStateSetValue<any>);

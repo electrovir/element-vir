@@ -15,11 +15,7 @@ import {
 } from './definition-options';
 import {assign} from './directives/assign.directive';
 import {hasDeclarativeElementParent} from './has-declarative-element-parent';
-import {
-    AsyncStateProperties,
-    mapToAsyncStateProperties,
-    MaybeAsyncStateToSync,
-} from './properties/async-state';
+import {MaybeAsyncStateToSync, toAsyncStateHandlerMap} from './properties/async-state';
 import {createCssVarNamesMap, createCssVarValuesMap} from './properties/css-vars';
 import {createEventDescriptorMap, EventsInitMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
@@ -92,9 +88,6 @@ export function defineElementNoInputs<
         HostClassKeys,
         CssVarKeys
     >['renderCallback'] = initInput.renderCallback;
-
-    const asyncStateProperties: AsyncStateProperties<keyof MaybeAsyncStateInitGeneric> =
-        mapToAsyncStateProperties(initInput.stateInit);
 
     const anonymousClass = class extends DeclarativeElement<
         TagNameGeneric,
@@ -245,7 +238,7 @@ export function defineElementNoInputs<
             this.markInputsAsHavingBeenSet();
         }
 
-        public readonly asyncStateProperties = asyncStateProperties;
+        public readonly asyncStateHandlerMap = toAsyncStateHandlerMap(initInput.stateInit);
 
         public readonly instanceInputs: InputsGeneric = createElementUpdaterProxy<InputsGeneric>(
             this,
@@ -268,7 +261,7 @@ export function defineElementNoInputs<
             getObjectTypedKeys(stateInit).forEach((stateKey) => {
                 property()(this, stateKey);
 
-                const asyncStateClassInstance = asyncStateProperties[stateKey];
+                const asyncStateClassInstance = this.asyncStateHandlerMap[stateKey];
 
                 if (asyncStateClassInstance) {
                     this.instanceState[stateKey] = asyncStateClassInstance.getValue();

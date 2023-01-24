@@ -4,6 +4,7 @@ import {
     DeferredPromiseWrapper,
     ensureError,
     filterObject,
+    mapObjectValues,
     UnPromise,
 } from '@augment-vir/common';
 import {JsonValue, Promisable} from 'type-fest';
@@ -44,39 +45,43 @@ export type AsyncStateSetValue<ValueGeneric> =
       };
 
 export type MaybeAsyncStateToSync<PropertyMapInit extends PropertyInitMapBase> = {
-    [Prop in keyof PropertyMapInit]: PropertyMapInit[Prop] extends AsyncStateHandler<
-        infer ValueGeneric
-    >
+    [Prop in keyof PropertyMapInit]: PropertyMapInit[Prop] extends
+        | AsyncStateHandler<infer ValueGeneric>
+        | AsyncStateInit<infer ValueGeneric>
         ? AsyncState<ValueGeneric>
         : PropertyMapInit[Prop];
 };
 
 export type AsyncStateInputs<PropertyMapInit extends PropertyInitMapBase> = {
-    [Prop in keyof PropertyMapInit]: PropertyMapInit[Prop] extends AsyncStateHandler<
-        infer ValueGeneric
-    >
+    [Prop in keyof PropertyMapInit]: PropertyMapInit[Prop] extends
+        | AsyncStateHandler<infer ValueGeneric>
+        | AsyncStateInit<infer ValueGeneric>
         ? AsyncStateSetValue<ValueGeneric>
         : PropertyMapInit[Prop];
 };
 
-export type AsyncStateProperties<KeysGeneric extends keyof PropertyInitMapBase> = Partial<
-    Record<KeysGeneric, AsyncStateHandler<any>>
+export type AsyncStateHandlerMap<OriginalObjectGeneric extends PropertyInitMapBase> = Partial<
+    Record<keyof OriginalObjectGeneric, AsyncStateHandler<any>>
 >;
 
-export function mapToAsyncStateProperties(
+export function toAsyncStateHandlerMap(
     propertyInitMap?: PropertyInitMapBase | undefined,
-): AsyncStateProperties<keyof PropertyInitMapBase> {
+): AsyncStateHandlerMap<PropertyInitMapBase> {
     if (!propertyInitMap) {
         return {};
     }
-    const asyncStateProperties = filterObject(
+    const asyncStateInit = filterObject(
         propertyInitMap,
-        (key, value): value is AsyncStateHandler<any> => {
-            return value instanceof AsyncStateHandler;
+        (key, value): value is AsyncStateInit<any> => {
+            return value instanceof AsyncStateInit;
         },
-    ) as AsyncStateProperties<keyof PropertyInitMapBase>;
+    ) as Record<keyof PropertyInitMapBase, AsyncStateInit<any>>;
 
-    return asyncStateProperties;
+    const asyncStateHandlers = mapObjectValues(asyncStateInit, (key, value) => {
+        return new AsyncStateHandler(value.initialValue);
+    });
+
+    return asyncStateHandlers;
 }
 
 const notSetSymbol = Symbol('not set');
@@ -192,8 +197,12 @@ export class AsyncStateHandler<ValueGeneric> {
     }
 }
 
+export class AsyncStateInit<ValueGeneric> {
+    constructor(public readonly initialValue?: Promise<UnPromise<ValueGeneric>> | undefined) {}
+}
+
 export function asyncState<ValueGeneric>(
     initialValue?: Promise<UnPromise<ValueGeneric>> | undefined,
 ) {
-    return new AsyncStateHandler<ValueGeneric>(initialValue);
+    return new AsyncStateInit<ValueGeneric>(initialValue);
 }
