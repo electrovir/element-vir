@@ -13,6 +13,8 @@ import {PropertyInitMapBase} from './element-properties';
 
 export type AsyncState<ValueGeneric> = Error | Promisable<UnPromise<ValueGeneric>>;
 
+type ActualJsonValue = JsonValue | Partial<Record<string, JsonValue | undefined>>;
+
 type AllSetValueProperties<ValueGeneric> = {
     /** Set a new value directly without using any promises. */
     resolvedValue: UnPromise<ValueGeneric>;
@@ -25,7 +27,7 @@ type AllSetValueProperties<ValueGeneric> = {
      * Set this to undefined to disabled automatic updating. Meaning, createPromise will only be
      * called the first time.
      */
-    trigger: JsonValue | Readonly<JsonValue> | undefined;
+    trigger: ActualJsonValue | Readonly<ActualJsonValue> | undefined;
     newPromise: Promise<UnPromise<ValueGeneric>>;
     /** Clear the current value and trigger createPromise to get called again on the next render. */
     forceUpdate: true;

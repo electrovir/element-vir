@@ -26,10 +26,19 @@ describe('RenderParams', () => {
                 assertTypeOf<
                     NonNullable<Parameters<typeof updateState>[0]['myAsyncState']>
                 >().toEqualTypeOf<AsyncStateSetValue<number>>();
+
                 updateState({
                     myAsyncState: {
                         createPromise: () => Promise.resolve(5),
                         trigger: 'hi',
+                    },
+                });
+
+                updateState({
+                    myAsyncState: {
+                        createPromise: () => Promise.resolve(5),
+                        // allow undefined as a property value
+                        trigger: {derp: undefined},
                     },
                 });
 
