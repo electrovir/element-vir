@@ -24,8 +24,21 @@ describe(asyncState.name, () => {
             stateInit: {
                 myAsyncState: asyncState<SomethingObject>(),
             },
-            renderCallback: ({state}) => {
-                state.myAsyncState;
+            renderCallback: ({state, updateState}) => {
+                type Dimensions = {width: number; length: number};
+                const bigType = {} as {
+                    imageUrl: string;
+                    max?: Dimensions | undefined;
+                    min?: Dimensions | undefined;
+                    originalImageSize?: Dimensions | undefined;
+                };
+
+                updateState({
+                    myAsyncState: {
+                        createPromise: () => Promise.resolve({something: 4}),
+                        trigger: bigType,
+                    },
+                });
 
                 assertTypeOf(state.myAsyncState).toEqualTypeOf<AsyncState<SomethingObject>>();
                 return html``;
