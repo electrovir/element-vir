@@ -14,6 +14,7 @@ import {
     StaticElementPropertyDescriptor,
 } from '../..';
 import {assertRejects, getAssertedDeclarativeElement} from '../../augments/testing.test-helper';
+import {isRenderReady} from './async-state';
 
 describe(asyncState.name, () => {
     it('should have proper types', () => {
@@ -72,7 +73,7 @@ describe(asyncState.name, () => {
                 deferredPromiseCreated: defineElementEvent<DeferredPromiseWrapper<number>>(),
                 wasRendered: defineElementEvent<void>(),
             },
-            renderCallback: ({inputs, dispatch, events, updateState}) => {
+            renderCallback: ({inputs, dispatch, events, state, updateState}) => {
                 let newDeferredPromise: DeferredPromiseWrapper<number> | undefined;
 
                 updateState({
@@ -84,6 +85,10 @@ describe(asyncState.name, () => {
                         trigger: inputs.promiseUpdateTrigger ?? startingNumber,
                     },
                 });
+
+                if (isRenderReady(state.myAsyncState)) {
+                    assertTypeOf(state.myAsyncState).toEqualTypeOf<number>();
+                }
 
                 if (newDeferredPromise) {
                     dispatch(new events.deferredPromiseCreated(newDeferredPromise));

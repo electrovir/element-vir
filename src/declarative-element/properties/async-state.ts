@@ -4,6 +4,7 @@ import {
     DeferredPromiseWrapper,
     ensureError,
     filterObject,
+    isPromiseLike,
     JsonCompatibleValue,
     mapObjectValues,
     UnPromise,
@@ -13,6 +14,16 @@ import {PickAndBlockOthers} from '../../augments/type';
 import {PropertyInitMapBase} from './element-properties';
 
 export type AsyncState<ValueGeneric> = Error | Promisable<UnPromise<ValueGeneric>>;
+
+export function isRenderReady<T>(asyncStateInput: AsyncState<T>): asyncStateInput is UnPromise<T> {
+    if (asyncStateInput instanceof Error) {
+        return false;
+    } else if (isPromiseLike(asyncStateInput)) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
 type AllSetValueProperties<ValueGeneric> = {
     /** Set a new value directly without using any promises. */
