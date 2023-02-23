@@ -67,29 +67,25 @@ export const AppElement = defineElementNoInputs({
         // log here to make sure it's not rendering too often
         console.info(`app rendering ${state.width}`);
         return html`
-            <main ${onResize((entry) => {
-                updateState({width: entry.contentRect.width});
-            })}>
+            <main
+                ${onResize((entry) => {
+                    updateState({width: entry.contentRect.width});
+                })}
+            >
                 Welcome to the test app.
-                <button
-                    ${listen('click', () => updateState({funnyNumber: Math.random()}))}
-                >
+                <button ${listen('click', () => updateState({funnyNumber: Math.random()}))}>
                     assign NEW number to child
                 </button>
                 <!-- Verify that the child component does not rerender when we pass it the same value. -->
                 <!-- Check the console logs to verify.-->
-                <button
-                    ${listen('click', () => updateState({funnyNumber: 4}))}
-                >
+                <button ${listen('click', () => updateState({funnyNumber: 4}))}>
                     assign SAME number to child
                 </button>
-                <button
-                    ${listen('click', () => updateState({showChild: !state.showChild}))}
-                >
+                <button ${listen('click', () => updateState({showChild: !state.showChild}))}>
                     toggle second child
                 </button>
-                
-                <hr>
+
+                <hr />
                 <${TestChildElement}
                     ${assign(TestChildElement, {
                         displayNumber: state.funnyNumber,
@@ -113,34 +109,32 @@ export const AppElement = defineElementNoInputs({
                         );
                     })}
                 ></${TestChildElement}>
-                <hr>
-                ${
-                    state.showChild
-                        ? html`
-                              <span>Child just with clean up assign (no event listeners)</span>
-                              <br />
-                              <!-- prettier-ignore -->
-                              <!-- intentionally not interpolated to make sure we're logging errors for it -->
-                              <element-vir-test-child
-                                  class="darker weird-colors"
-                                  ${assignWithCleanup(
-                                      TestChildElement,
-                                      {
-                                          displayNumber: state.funnyNumber,
-                                          width: -1,
-                                      },
-                                      (lastValue) => {
-                                          console.info(
-                                              'assign with cleanup last value in app',
-                                              lastValue,
-                                          );
-                                      },
-                                  )}
-                              ></element-vir-test-child>
-                              <hr />
-                          `
-                        : ''
-                }
+                <hr />
+                ${state.showChild
+                    ? html`
+                          <span>Child just with clean up assign (no event listeners)</span>
+                          <br />
+                          <!-- prettier-ignore -->
+                          <!-- intentionally not interpolated to make sure we're logging errors for it -->
+                          <element-vir-test-child
+                              class="darker weird-colors"
+                              ${assignWithCleanup(
+                                  TestChildElement,
+                                  {
+                                      displayNumber: state.funnyNumber,
+                                      width: -1,
+                                  },
+                                  (lastValue) => {
+                                      console.info(
+                                          'assign with cleanup last value in app',
+                                          lastValue,
+                                      );
+                                  },
+                              )}
+                          ></element-vir-test-child>
+                          <hr />
+                      `
+                    : ''}
                 <${AsyncChild}
                     ${assign(AsyncChild, {
                         trigger: state.funnyNumber,
@@ -151,11 +145,11 @@ export const AppElement = defineElementNoInputs({
                         trigger: state.funnyNumber,
                     })}
                 ></${AsyncChild}>
-                <hr>
+                <hr />
                 <span>Speak events received: ${state.eventsReceived}</span>
                 <span>Last speak message received: ${state.lastReceivedMessage}</span>
                 <span>app width: ${state.width}</span>
-                
+
                 <${TestChildElement}
                     class=${TestChildElement.hostClasses.testHostClass}
                     ${assign(TestChildElement, {
@@ -164,7 +158,9 @@ export const AppElement = defineElementNoInputs({
                     })}
                 ></${TestChildElement}>
                 ${allTestArrayElements.map((element) => {
-                    return html`<${element} data-tag-name=${element.tagName}></${element}>`;
+                    return html`
+                        <${element} data-tag-name=${element.tagName}></${element}>
+                    `;
                 })}
             </main>
         `;

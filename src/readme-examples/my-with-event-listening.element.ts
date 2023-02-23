@@ -15,8 +15,7 @@ export const MyWithEventListeningElement = defineElementNoInputs({
             ${listen(MyWithEventsElement.events.randomNumber, (event) => {
                 updateState({myNumber: event.detail});
             })}
-        >
-        </${MyWithEventsElement}>
+        ></${MyWithEventsElement}>
         <span>${state.myNumber}</span>
     `,
 });

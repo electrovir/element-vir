@@ -195,8 +195,7 @@ export const MyWithAssignmentElement = defineElementNoInputs({
                 email: 'user@example.com',
                 username: 'user',
             })}
-        >
-        </${MyWithInputsElement}>
+        ></${MyWithInputsElement}>
     `,
 });
 ```
@@ -568,8 +567,7 @@ export const MyWithCleanupElement = defineElementNoInputs({
                     previousValue.username.trim();
                 },
             )}
-        >
-        </${MyWithInputsElement}>
+        ></${MyWithInputsElement}>
     `,
 });
 ```

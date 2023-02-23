@@ -49,7 +49,11 @@ function assertHasShadowRoot<T extends Element>(
 
 describe(AppElement.tagName, () => {
     async function renderApp() {
-        return await fixture(html`<${AppElement}></${AppElement}>`);
+        return await fixture(
+            html`
+                <${AppElement}></${AppElement}>
+            `,
+        );
     }
 
     function getAppElement(context: Element) {

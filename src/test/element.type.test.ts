@@ -55,7 +55,11 @@ WithHostClassesAndCssVars.cssVarValues.derp;
 // @ts-expect-error
 const TestElementNoTagName = defineElementNoInputs({
     renderCallback: (): TemplateResult => {
-        return html`<${WithHostClassesAndCssVars} class=${WithHostClassesAndCssVars.hostClasses.stuff}></${WithHostClassesAndCssVars}>`;
+        return html`
+            <${WithHostClassesAndCssVars}
+                class=${WithHostClassesAndCssVars.hostClasses.stuff}
+            ></${WithHostClassesAndCssVars}>
+        `;
     },
 });
 

@@ -19,7 +19,6 @@ export const MyWithCleanupElement = defineElementNoInputs({
                     previousValue.username.trim();
                 },
             )}
-        >
-        </${MyWithInputsElement}>
+        ></${MyWithInputsElement}>
     `,
 });

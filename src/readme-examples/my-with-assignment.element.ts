@@ -10,7 +10,6 @@ export const MyWithAssignmentElement = defineElementNoInputs({
                 email: 'user@example.com',
                 username: 'user',
             })}
-        >
-        </${MyWithInputsElement}>
+        ></${MyWithInputsElement}>
     `,
 });
