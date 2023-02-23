@@ -62,6 +62,7 @@ export const AppElement = defineElementNoInputs({
         lastReceivedMessage: '',
         width: -1,
         showChild: true,
+        derp: {hi: 'yo'} as Record<string, string>,
     },
     renderCallback: ({state, updateState}) => {
         // log here to make sure it's not rendering too often

@@ -75,6 +75,7 @@ type AppElementProps = {
     lastReceivedMessage: string;
     width: number;
     showChild: boolean;
+    derp: Record<string, string>;
 };
 
 const stateInit: ReadonlyArray<keyof AppElementProps> = getObjectTypedKeys(AppElement.stateInit);

@@ -15,6 +15,8 @@ import {PropertyInitMapBase} from './element-properties';
 
 export type AsyncState<ValueGeneric> = Error | Promisable<UnPromise<ValueGeneric>>;
 
+const asyncMarkerSymbol = Symbol('element-vir-async-state-marker');
+
 export function isRenderReady<T>(asyncStateInput: AsyncState<T>): asyncStateInput is UnPromise<T> {
     if (asyncStateInput instanceof Error) {
         return false;
@@ -103,6 +105,8 @@ export class AsyncStateHandler<ValueGeneric> {
 
     #waitingForValuePromise: DeferredPromiseWrapper<UnPromise<ValueGeneric>> =
         createDeferredPromiseWrapper();
+
+    public readonly asyncMarkerSymbol = asyncMarkerSymbol;
 
     constructor(initialValue: Promise<UnPromise<ValueGeneric>> | undefined) {
         if (initialValue) {
@@ -217,6 +221,7 @@ export class AsyncStateHandler<ValueGeneric> {
 
 export class AsyncStateInit<ValueGeneric> {
     constructor(public readonly initialValue?: Promise<UnPromise<ValueGeneric>> | undefined) {}
+    public readonly asyncMarkerSymbol = asyncMarkerSymbol;
 }
 
 export function asyncState<ValueGeneric>(

@@ -1,4 +1,4 @@
-import {typedAssertInstanceOf} from '@augment-vir/browser-testing';
+import {assertTypeOf, typedAssertInstanceOf} from '@augment-vir/browser-testing';
 import {RequiredAndNotNullBy} from '@augment-vir/common';
 import {assert, expect, fixture, waitUntil} from '@open-wc/testing';
 import {html} from '../..';
@@ -92,6 +92,8 @@ describe(AppElement.tagName, () => {
         const rendered = await renderApp();
 
         const appElement = getAppElement(rendered);
+
+        assertTypeOf(appElement.instanceState.derp).toEqualTypeOf<Record<string, string>>();
 
         const firstInputNumber = getDisplayedInputNumber(appElement);
 
