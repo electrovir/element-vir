@@ -179,6 +179,7 @@ export function defineElementNoInputs<
         }
 
         public initCalled = false;
+        public hasRendered = false;
 
         public haveInputsBeenSet = false;
         public markInputsAsHavingBeenSet(): void {
@@ -199,6 +200,7 @@ export function defineElementNoInputs<
                     `${initInput.tagName} got rendered before its input object was set. This was most likely caused by forgetting to use the "${assign.name}" directive on it. If no inputs are intended, use "${defineElementNoInputs.name}" to define ${initInput.tagName}.`,
                 );
             }
+            this.hasRendered = true;
 
             const renderParams = this.createRenderParams();
 
@@ -216,6 +218,15 @@ export function defineElementNoInputs<
                 inputs: renderParams.inputs,
             });
             return renderResult;
+        }
+
+        public override connectedCallback(): void {
+            super.connectedCallback();
+            if (this.hasRendered && !this.initCalled && initInput.initCallback) {
+                this.initCalled = true;
+                const renderParams = this.createRenderParams();
+                initInput.initCallback(renderParams);
+            }
         }
 
         public override disconnectedCallback(): void {
