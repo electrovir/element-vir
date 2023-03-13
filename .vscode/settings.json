@@ -41,5 +41,8 @@
     "typescript.tsdk": "node_modules/typescript/lib",
     "[ruby]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "files.associations": {
+        "*.svg": "html"
     }
 }
