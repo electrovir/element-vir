@@ -10,7 +10,6 @@ import {
 } from '../..';
 import {MyCustomEvent} from '../customEvent';
 import {allTestArrayElements} from './array-of-elements-test/elements-array.element';
-import {AsyncChild} from './async-child.element';
 import {TestChildElement} from './child.element';
 
 requireAllCustomElementsToBeDeclarativeElements();
@@ -136,16 +135,6 @@ export const AppElement = defineElementNoInputs({
                           <hr />
                       `
                     : ''}
-                <${AsyncChild}
-                    ${assign(AsyncChild, {
-                        trigger: state.funnyNumber,
-                    })}
-                ></${AsyncChild}>
-                <${AsyncChild}
-                    ${assign(AsyncChild, {
-                        trigger: state.funnyNumber,
-                    })}
-                ></${AsyncChild}>
                 <hr />
                 <span>Speak events received: ${state.eventsReceived}</span>
                 <span>Last speak message received: ${state.lastReceivedMessage}</span>
