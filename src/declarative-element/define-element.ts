@@ -12,6 +12,7 @@ export function defineElement<InputsGeneric extends PropertyInitMapBase = {}>() 
         EventsInitGeneric extends EventsInitMap = {},
         HostClassKeysGeneric extends string = '',
         CssVarKeysGeneric extends string = '',
+        RenderOutputGeneric = any,
     >(
         initInput: DeclarativeElementInit<
             TagNameGeneric,
@@ -19,7 +20,8 @@ export function defineElement<InputsGeneric extends PropertyInitMapBase = {}>() 
             StateInitGeneric,
             EventsInitGeneric,
             HostClassKeysGeneric,
-            CssVarKeysGeneric
+            CssVarKeysGeneric,
+            RenderOutputGeneric
         >,
     ): DeclarativeElementDefinition<
         TagNameGeneric,
@@ -27,7 +29,8 @@ export function defineElement<InputsGeneric extends PropertyInitMapBase = {}>() 
         StateInitGeneric,
         EventsInitGeneric,
         HostClassKeysGeneric,
-        CssVarKeysGeneric
+        CssVarKeysGeneric,
+        RenderOutputGeneric
     > => {
         return defineElementNoInputs({
             ...initInput,

@@ -15,6 +15,7 @@ export type WrapDefineElementOptions<
     EventsInitRequirementGeneric extends EventsInitMap = {},
     HostClassKeysRequirementGeneric extends string = '',
     CssVarKeysRequirementGeneric extends string = '',
+    RenderOutputGeneric = any,
 > = PartialAndNullable<{
     assertInputs: (
         inputInit: DeclarativeElementInit<
@@ -23,7 +24,8 @@ export type WrapDefineElementOptions<
             StateInitRequirementGeneric,
             EventsInitRequirementGeneric,
             HostClassKeysRequirementGeneric,
-            CssVarKeysRequirementGeneric
+            CssVarKeysRequirementGeneric,
+            RenderOutputGeneric
         >,
     ) => void;
     transformInputs: (
@@ -33,7 +35,8 @@ export type WrapDefineElementOptions<
             StateInitRequirementGeneric,
             EventsInitRequirementGeneric,
             HostClassKeysRequirementGeneric,
-            CssVarKeysRequirementGeneric
+            CssVarKeysRequirementGeneric,
+            RenderOutputGeneric
         >,
     ) => DeclarativeElementInit<
         TagNameRequirementGeneric,
@@ -41,7 +44,8 @@ export type WrapDefineElementOptions<
         StateInitRequirementGeneric,
         EventsInitRequirementGeneric,
         HostClassKeysRequirementGeneric,
-        CssVarKeysRequirementGeneric
+        CssVarKeysRequirementGeneric,
+        RenderOutputGeneric
     >;
 }>;
 
@@ -52,6 +56,7 @@ export function wrapDefineElement<
     EventsInitRequirementGeneric extends EventsInitMap = {},
     HostClassKeysRequirementGeneric extends string = string,
     CssVarKeysRequirementGeneric extends string = string,
+    RenderOutputGeneric = any,
 >(options?: WrapDefineElementOptions | undefined) {
     const {assertInputs, transformInputs}: WrapDefineElementOptions = {
         assertInputs: options?.assertInputs ?? (() => {}),
@@ -73,20 +78,22 @@ export function wrapDefineElement<
                     StateInitGeneric,
                     EventsInitGeneric,
                     HostClassKeysGeneric,
-                    CssVarKeysGeneric
+                    CssVarKeysGeneric,
+                    RenderOutputGeneric
                 >,
             ) => {
-                assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any>);
+                assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
                 return defineElement<InputsGeneric>()(
                     transformInputs(
-                        inputs as DeclarativeElementInit<any, any, any, any, any, any>,
+                        inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
                     ) as unknown as DeclarativeElementInit<
                         TagNameGeneric,
                         InputsGeneric,
                         StateInitGeneric,
                         EventsInitGeneric,
                         HostClassKeysGeneric,
-                        CssVarKeysGeneric
+                        CssVarKeysGeneric,
+                        RenderOutputGeneric
                     >,
                 );
             };
@@ -105,20 +112,22 @@ export function wrapDefineElement<
                 StateInitGeneric,
                 EventsInitGeneric,
                 HostClassKeysGeneric,
-                CssVarKeysGeneric
+                CssVarKeysGeneric,
+                RenderOutputGeneric
             >,
         ) => {
-            assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any>);
+            assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
             return defineElementNoInputs(
                 transformInputs(
-                    inputs as DeclarativeElementInit<any, any, any, any, any, any>,
+                    inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
                 ) as unknown as DeclarativeElementInit<
                     TagNameGeneric,
                     InputsGeneric,
                     StateInitGeneric,
                     EventsInitGeneric,
                     HostClassKeysGeneric,
-                    CssVarKeysGeneric
+                    CssVarKeysGeneric,
+                    RenderOutputGeneric
                 >,
             );
         },

@@ -1,6 +1,4 @@
 import {getObjectTypedKeys, RequiredAndNotNullBy} from '@augment-vir/common';
-import {TemplateResult} from 'lit';
-import {Primitive} from 'type-fest';
 import {TypedEvent} from '../typed-event/typed-event';
 import {DeclarativeElement, HostInstanceType} from './declarative-element';
 import {CustomElementTagName} from './declarative-element-init';
@@ -11,13 +9,6 @@ import {
 } from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
 
-// try to make this be anything except promises
-export type RenderOutput =
-    | TemplateResult
-    | Primitive
-    | ReadonlyArray<TemplateResult>
-    | ReadonlyArray<Primitive>;
-
 export type RenderCallback<
     TagNameGeneric extends CustomElementTagName = any,
     InputsGeneric extends PropertyInitMapBase = any,
@@ -25,6 +16,7 @@ export type RenderCallback<
     EventsInitGeneric extends EventsInitMap = any,
     HostClassKeys extends string = any,
     CssVarKeys extends string = any,
+    RenderOutputGeneric = any,
 > = (
     params: RenderParams<
         TagNameGeneric,
@@ -32,9 +24,10 @@ export type RenderCallback<
         StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        RenderOutputGeneric
     >,
-) => RenderOutput;
+) => RenderOutputGeneric;
 
 export type InitCallback<
     TagNameGeneric extends CustomElementTagName,
@@ -43,6 +36,7 @@ export type InitCallback<
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
+    RenderOutputGeneric,
 > = (
     params: RenderParams<
         TagNameGeneric,
@@ -50,7 +44,8 @@ export type InitCallback<
         StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        RenderOutputGeneric
     >,
 ) => void;
 
@@ -65,6 +60,7 @@ export type RenderParams<
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
+    RenderOutputGeneric,
 > = {
     state: Readonly<StateInitGeneric>;
     updateState: UpdateStateCallback<StateInitGeneric>;
@@ -75,7 +71,8 @@ export type RenderParams<
         StateInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        RenderOutputGeneric
     >;
     dispatch: <EventTypeNameGeneric extends keyof EventsInitGeneric>(
         event:
@@ -95,6 +92,7 @@ export function createRenderParams<
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
+    RenderOutputGeneric,
 >(
     element: DeclarativeElement<
         TagNameGeneric,
@@ -102,7 +100,8 @@ export function createRenderParams<
         StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        RenderOutputGeneric
     >,
     eventsMap: EventDescriptorMap<EventsInitGeneric>,
 ): RenderParams<
@@ -111,7 +110,8 @@ export function createRenderParams<
     StateGeneric,
     EventsInitGeneric,
     HostClassKeys,
-    CssVarKeys
+    CssVarKeys,
+    RenderOutputGeneric
 > {
     function updateState(newStatePartial: Parameters<UpdateStateCallback<StateGeneric>>[0]) {
         getObjectTypedKeys(newStatePartial).forEach((stateKey) => {
@@ -127,7 +127,8 @@ export function createRenderParams<
         StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        RenderOutputGeneric
     > = {
         dispatch: (event) => element.dispatchEvent(event),
         updateState,

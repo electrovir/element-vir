@@ -8,6 +8,7 @@ import {
     html,
     TypedEvent,
 } from '..';
+import {RenderCallback} from './render-callback';
 
 describe('RenderParams', () => {
     it('should produce proper types', () => {
@@ -45,22 +46,35 @@ describe('RenderParams', () => {
     });
 
     it('should have proper types for an empty element', () => {
-        const renderParams = createRenderParams(
-            {} as any,
-            createEventDescriptorMap({
-                testEventName: defineElementEvent<number>(),
-            }),
-        );
+        function doNotExecuteThis() {
+            const renderParams = createRenderParams(
+                {} as any,
+                createEventDescriptorMap({
+                    testEventName: defineElementEvent<number>(),
+                }),
+            );
 
-        const myEvent = renderParams.events.testEventName;
-        const myEventInstance = new myEvent(4);
-        // @ts-expect-error
-        new myEvent('no number here');
+            const myEvent = renderParams.events.testEventName;
+            const myEventInstance = new myEvent(4);
+            // @ts-expect-error
+            new myEvent('no number here');
 
-        renderParams.dispatch(myEventInstance);
-        renderParams.dispatch(new TypedEvent(renderParams.events.testEventName, 2));
-        renderParams.dispatch(new Event('generic event type'));
-        // there are no props in this element
-        assert.isEmpty(Object.keys(renderParams.state));
+            renderParams.dispatch(myEventInstance);
+            renderParams.dispatch(new TypedEvent(renderParams.events.testEventName, 2));
+            renderParams.dispatch(new Event('generic event type'));
+            // there are no props in this element
+            assert.isEmpty(Object.keys(renderParams.state));
+        }
+    });
+});
+
+describe('RenderCallback', () => {
+    it('requires a return of something', () => {
+        const renderSomething: RenderCallback = () => {
+            return undefined;
+        };
+        const renderSomething2: RenderCallback = () => {
+            return;
+        };
     });
 });

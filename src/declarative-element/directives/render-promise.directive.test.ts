@@ -81,6 +81,31 @@ describe(renderPromise.name, () => {
 
         assert.include(fixture.shadowRoot?.textContent, rejectionReason);
     });
+
+    it('requires the render callback to return something', () => {
+        // @ts-expect-error
+        renderPromise(Promise.resolve('hi'), () => {});
+        // this should be good
+        renderPromise(Promise.resolve('hi'), () => {
+            return 'something';
+        });
+        // this should be good
+        renderPromise(Promise.resolve('hi'), ({promise, error, resolved}) => {
+            if (promise) {
+                return html`
+                    still loading
+                `;
+            } else if (resolved) {
+                return html`
+                    done: ${resolved}
+                `;
+            } else {
+                return html`
+                    error: ${extractErrorMessage(error)}
+                `;
+            }
+        });
+    });
 });
 
 describe(renderCachedPromise.name, () => {

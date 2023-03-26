@@ -1,4 +1,5 @@
 import {CSSResult} from 'lit';
+import {RequireNonVoidReturn} from '../augments/type';
 import {DeclarativeElementDefinitionOptions} from './definition-options';
 import {CssVarsInitMap} from './properties/css-vars';
 import {EventsInitMap} from './properties/element-events';
@@ -16,6 +17,7 @@ export type DeclarativeElementInit<
     EventsInitGeneric extends EventsInitMap,
     HostClassKeysGeneric extends string,
     CssVarKeysGeneric extends string,
+    RenderOutputGeneric,
 > = {
     /**
      * HTML tag name. This should not be used directly, as interpolating it with the html tagged
@@ -52,15 +54,20 @@ export type DeclarativeElementInit<
         StateInitGeneric,
         EventsInitGeneric,
         HostClassKeysGeneric,
-        CssVarKeysGeneric
+        CssVarKeysGeneric,
+        RenderOutputGeneric
     >;
-    renderCallback: RenderCallback<
-        TagNameGeneric,
-        InputsGeneric,
-        StateInitGeneric,
-        EventsInitGeneric,
-        HostClassKeysGeneric,
-        CssVarKeysGeneric
+    renderCallback: RequireNonVoidReturn<
+        RenderOutputGeneric,
+        RenderCallback<
+            TagNameGeneric,
+            InputsGeneric,
+            StateInitGeneric,
+            EventsInitGeneric,
+            HostClassKeysGeneric,
+            CssVarKeysGeneric,
+            RenderOutputGeneric
+        >
     >;
     cleanupCallback?: InitCallback<
         TagNameGeneric,
@@ -68,7 +75,8 @@ export type DeclarativeElementInit<
         StateInitGeneric,
         EventsInitGeneric,
         HostClassKeysGeneric,
-        CssVarKeysGeneric
+        CssVarKeysGeneric,
+        RenderOutputGeneric
     >;
     options?: Partial<DeclarativeElementDefinitionOptions> | undefined;
 };

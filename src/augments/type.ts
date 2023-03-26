@@ -23,3 +23,9 @@ export type PickAndBlockOthers<OriginalObject, PickKeys extends keyof OriginalOb
     PickKeys
 > &
     Partial<Record<Exclude<keyof OriginalObject, PickKeys>, never>>;
+
+export type RequireNonVoidReturn<NonVoid, ActualType> = void extends NonVoid
+    ? NonVoid extends void
+        ? 'missing return statement'
+        : ActualType
+    : ActualType;

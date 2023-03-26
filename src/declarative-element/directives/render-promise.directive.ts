@@ -2,18 +2,27 @@ import {ensureError} from '@augment-vir/common';
 import {CachedPromise, GetCachedPromiseInput} from '@electrovir/cached-promise';
 import {until} from 'lit/directives/until.js';
 import {RequireExactlyOne} from 'type-fest';
-import {RenderOutput} from '../render-callback';
+import {RequireNonVoidReturn} from '../../augments/type';
 
-export type RenderPromiseInput<T> = RequireExactlyOne<{
-    promise: Promise<T>;
-    resolved: T;
+export type RenderPromiseInput<ValueType> = RequireExactlyOne<{
+    promise: Promise<ValueType>;
+    resolved: ValueType;
     error: Error;
 }>;
 
-export function renderPromise<T>(
-    maybePromise: Promise<T> | T,
-    renderer: (input: RenderPromiseInput<T>) => RenderOutput,
+export type RenderPromiseRenderer<ValueType, RenderOutput> = RequireNonVoidReturn<
+    RenderOutput,
+    (input: RenderPromiseInput<ValueType>) => RenderOutput
+>;
+
+export function renderPromise<ValueType, RenderOutput>(
+    maybePromise: Promise<ValueType> | ValueType,
+    renderer: RenderPromiseRenderer<ValueType, RenderOutput>,
 ) {
+    if (typeof renderer === 'string') {
+        throw new Error(`Cannot pass string renderer`);
+    }
+
     if (maybePromise instanceof Promise) {
         return until(
             maybePromise
@@ -34,18 +43,18 @@ export function renderPromise<T>(
     }
 }
 
-export type RenderCachedPromiseInputs<T> = {
-    cachedPromise: CachedPromise<T>;
-    render: (input: RenderPromiseInput<T>) => RenderOutput;
-} & GetCachedPromiseInput<T>;
+export type RenderCachedPromiseInputs<ValueType, RenderOutput> = {
+    cachedPromise: CachedPromise<ValueType>;
+    render: RenderPromiseRenderer<ValueType, RenderOutput>;
+} & GetCachedPromiseInput<ValueType>;
 
-export function renderCachedPromise<T>({
+export function renderCachedPromise<ValueType, RenderOutput>({
     cachedPromise,
     render,
     triggers,
     createPromise,
-}: RenderCachedPromiseInputs<T>) {
-    return renderPromise<T>(
+}: RenderCachedPromiseInputs<ValueType, RenderOutput>) {
+    return renderPromise<ValueType, RenderOutput>(
         cachedPromise.get({
             createPromise,
             triggers,
