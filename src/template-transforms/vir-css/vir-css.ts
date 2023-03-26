@@ -1,11 +1,11 @@
 import {CSSResult, CSSResultGroup, css as litCss} from 'lit';
-import {DeclarativeElementDefinition} from '../../declarative-element/declarative-element';
+import {ConstructorWithTagName} from '../has-static-tag-name';
 import {getTransformedTemplate} from '../transform-template';
 import {transformCssTemplate} from './css-transform';
 
 export function css(
     inputTemplateStrings: TemplateStringsArray,
-    ...inputValues: (number | CSSResultGroup | DeclarativeElementDefinition)[]
+    ...inputValues: (number | CSSResultGroup | ConstructorWithTagName)[]
 ): CSSResult {
     const transformedTemplate = getTransformedTemplate(inputTemplateStrings, inputValues, () => {
         return transformCssTemplate(inputTemplateStrings, inputValues);
