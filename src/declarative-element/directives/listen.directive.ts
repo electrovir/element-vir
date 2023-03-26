@@ -66,13 +66,13 @@ type ListenerMetaData = {
  */
 const listenDirective = directive(
     class extends Directive {
-        public readonly element: HTMLElement;
+        public readonly element: Element;
         public lastListenerMetaData: ListenerMetaData | undefined;
 
         constructor(partInfo: PartInfo) {
             super(partInfo);
 
-            this.element = extractElement(partInfo, 'listen', HTMLElement);
+            this.element = extractElement(partInfo, 'listen');
         }
 
         public resetListener(listenerMetaData: ListenerMetaData) {

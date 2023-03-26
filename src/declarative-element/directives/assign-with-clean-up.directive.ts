@@ -1,9 +1,9 @@
 import {noChange} from 'lit';
 import {AsyncDirective} from 'lit/async-directive.js';
 import {directive, PartInfo} from 'lit/directive.js';
-import {DeclarativeElement, DeclarativeElementDefinition} from '../declarative-element';
+import {DeclarativeElementDefinition} from '../declarative-element';
 import {assignInputsObject} from './assign.directive';
-import {extractDeclarativeElement} from './directive-helpers';
+import {extractElement} from './directive-helpers';
 
 export type CleanupCallback<T> = (oldValue: T) => void;
 
@@ -37,14 +37,14 @@ export function assignWithCleanup<DeclarativeElementGeneric extends DeclarativeE
 }
 
 class AssignWithCleanupDirectiveClass extends AsyncDirective {
-    private readonly element: DeclarativeElement;
+    private readonly element: Element;
     private lastValue: unknown;
     private lastCallback: CleanupCallback<any> | undefined;
     private hasBeenAssigned = false;
 
     constructor(partInfo: PartInfo) {
         super(partInfo);
-        this.element = extractDeclarativeElement(partInfo, 'assign');
+        this.element = extractElement(partInfo, 'assign');
     }
 
     override disconnected() {

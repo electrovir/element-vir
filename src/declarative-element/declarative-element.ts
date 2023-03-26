@@ -184,7 +184,7 @@ export abstract class DeclarativeElement<
     public abstract readonly instanceState: StateInitGeneric;
     public abstract readonly instanceInputs: InputsGeneric;
     public abstract assignInputs(inputs: InputsGeneric): void;
-    public abstract readonly haveInputsBeenSet: boolean;
+    public abstract haveInputsBeenSet: boolean;
     public abstract markInputsAsHavingBeenSet(): void;
     public abstract readonly definition: DeclarativeElementDefinition<
         TagNameGeneric,

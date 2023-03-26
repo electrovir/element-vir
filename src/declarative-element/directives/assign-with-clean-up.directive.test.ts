@@ -2,7 +2,6 @@ import {randomString} from '@augment-vir/browser';
 import {assert, fixture} from '@open-wc/testing';
 import {assignWithCleanup, defineElementNoInputs, html, listen} from '../..';
 import {
-    assertRejects,
     clickElement,
     getAssertedDeclarativeElement,
     queryWithAssert,
@@ -106,25 +105,6 @@ describe(assignWithCleanup.name, () => {
             element.instanceState.firedCount.cleanup,
             2,
             'cleaned up a different amount of times than expected',
-        );
-    });
-
-    it('should fail if assigned to the wrong element', async () => {
-        await assertRejects(
-            () =>
-                fixture(html`
-                    <${VirWithInputs}
-                        ${assignWithCleanup(
-                            AssignWithCleanupTestElement,
-                            {
-                                errors: [],
-                            } as any,
-                            () => {},
-                        )}
-                    ></${VirWithInputs}>
-                `),
-            Error,
-            /Assignment mismatch. Assignment was made for vir-with-inputs but it\'s attached to vir-assign-with-cleanup-test/,
         );
     });
 });

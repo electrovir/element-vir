@@ -275,7 +275,6 @@ function assignTest() {
         stringInput: '',
     });
 
-    // @ts-expect-error
     assign(TestElement);
     assign(TestElement, {
         numberInput: 5,

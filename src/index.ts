@@ -1,3 +1,4 @@
+export * from '@electrovir/cached-promise';
 export * from './built-in-lit-directives';
 export * from './declarative-element/declarative-element';
 export * from './declarative-element/declarative-element-init';

@@ -1,32 +1,47 @@
 import {noChange} from 'lit';
-import {directive, Directive, PartInfo} from 'lit/directive.js';
-import {DeclarativeElement, DeclarativeElementDefinition} from '../declarative-element';
-import {extractDeclarativeElement} from './directive-helpers';
+import {directive, Directive, DirectiveResult, PartInfo} from 'lit/directive.js';
+import {DeclarativeElementDefinition} from '../declarative-element';
+import {assignInputs} from '../properties/assign-inputs';
+import {extractElement} from './directive-helpers';
 
 /** Assign an object matching an element's inputs to its inputs. */
 export function assign<DeclarativeElementGeneric extends DeclarativeElementDefinition>(
     declarativeElement: DeclarativeElementGeneric,
     inputsObject: DeclarativeElementGeneric['inputsType'],
-) {
+): DirectiveResult;
+export function assign<DeclarativeElementGeneric extends DeclarativeElementDefinition>(
+    inputsObject: Record<string, any>,
+): DirectiveResult;
+export function assign<DeclarativeElementGeneric extends DeclarativeElementDefinition>(
+    declarativeElementOrInputs: DeclarativeElementGeneric | Record<string, any>,
+    inputsObject?: DeclarativeElementGeneric['inputsType'],
+): DirectiveResult {
     /**
      * The directive generics (in listenDirective) are not strong enough to maintain their values.
      * Thus, the directive call is wrapped in this function.
      */
-    return assignDirective(declarativeElement, inputsObject);
+    if (inputsObject) {
+        return assignDirective(
+            declarativeElementOrInputs as DeclarativeElementGeneric,
+            inputsObject,
+        );
+    } else {
+        return assignDirective(undefined, declarativeElementOrInputs as Record<string, any>);
+    }
 }
 
 const assignDirective = directive(
     class extends Directive {
-        public readonly element: DeclarativeElement;
+        public readonly element: Element;
 
         constructor(partInfo: PartInfo) {
             super(partInfo);
 
-            this.element = extractDeclarativeElement(partInfo, 'assign');
+            this.element = extractElement(partInfo, 'assign');
         }
 
         render(
-            elementDefinition: DeclarativeElementDefinition,
+            elementDefinition: DeclarativeElementDefinition | undefined,
             inputsObject: Record<PropertyKey, unknown>,
         ) {
             assignInputsObject(elementDefinition, this.element, inputsObject);
@@ -36,18 +51,11 @@ const assignDirective = directive(
 );
 
 export function assignInputsObject<
-    DeclarativeElementInstanceGeneric extends DeclarativeElement,
     DeclarativeElementDefinitionGeneric extends DeclarativeElementDefinition,
 >(
-    expectedElementConstructor: DeclarativeElementDefinitionGeneric,
-    element: DeclarativeElementInstanceGeneric,
+    expectedElementConstructor: DeclarativeElementDefinitionGeneric | undefined,
+    element: Element,
     assignmentObject: DeclarativeElementDefinitionGeneric['inputsType'],
 ) {
-    if (element.tagName.toLowerCase() !== expectedElementConstructor.tagName.toLowerCase()) {
-        console.error(element, expectedElementConstructor);
-        throw new Error(
-            `Assignment mismatch. Assignment was made for ${element.tagName.toLowerCase()} but it's attached to ${expectedElementConstructor.tagName.toLowerCase()}`,
-        );
-    }
-    element.assignInputs(assignmentObject);
+    assignInputs(element, assignmentObject);
 }

@@ -15,6 +15,7 @@ import {
 } from './definition-options';
 import {assign} from './directives/assign.directive';
 import {hasDeclarativeElementParent} from './has-declarative-element-parent';
+import {assignInputs, markInputsAsHavingBeenSet} from './properties/assign-inputs';
 import {createCssVarNamesMap, createCssVarValuesMap} from './properties/css-vars';
 import {EventsInitMap, createEventDescriptorMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
@@ -182,9 +183,7 @@ export function defineElementNoInputs<
 
         public haveInputsBeenSet = false;
         public markInputsAsHavingBeenSet(): void {
-            if (!this.haveInputsBeenSet) {
-                this.haveInputsBeenSet = true;
-            }
+            markInputsAsHavingBeenSet(this);
         }
         public render() {
             try {
@@ -247,11 +246,7 @@ export function defineElementNoInputs<
         public readonly definition = {} as unknown as ThisElementDefinition;
 
         public assignInputs(inputs: InputsGeneric): void {
-            getObjectTypedKeys(inputs).forEach((key) => {
-                property()(this, key);
-                this.instanceInputs[key] = inputs[key];
-            });
-            this.markInputsAsHavingBeenSet();
+            assignInputs(this, inputs);
         }
 
         public readonly instanceInputs: InputsGeneric = createElementUpdaterProxy<InputsGeneric>(
