@@ -90,6 +90,22 @@ describe(wrapDefineElement.name, () => {
         });
     });
 
+    it('requires non-void returning renderCallback', () => {
+        myDefineElementNoInputs({
+            tagName: `my-thing-${randomString()}`,
+            // renderCallback missing a return is not allowed
+            // @ts-expect-error
+            renderCallback() {},
+        });
+        myDefineElementNoInputs({
+            tagName: `my-thing-${randomString()}`,
+            // returning undefined is chill
+            renderCallback() {
+                return undefined;
+            },
+        });
+    });
+
     it('should still create a valid element', async () => {
         const MySpecificElement = myDefineElement<MySpecificInputs>()({
             tagName: `my-tag-${randomString()}`,

@@ -56,7 +56,7 @@ export function wrapDefineElement<
     EventsInitRequirementGeneric extends EventsInitMap = {},
     HostClassKeysRequirementGeneric extends string = string,
     CssVarKeysRequirementGeneric extends string = string,
-    RenderOutputGeneric = any,
+    RenderOutputRequirementGeneric = any,
 >(options?: WrapDefineElementOptions | undefined) {
     const {assertInputs, transformInputs}: WrapDefineElementOptions = {
         assertInputs: options?.assertInputs ?? (() => {}),
@@ -71,6 +71,7 @@ export function wrapDefineElement<
                 EventsInitGeneric extends EventsInitRequirementGeneric,
                 HostClassKeysGeneric extends HostClassKeysRequirementGeneric,
                 CssVarKeysGeneric extends CssVarKeysRequirementGeneric,
+                RenderOutputGeneric extends RenderOutputRequirementGeneric,
             >(
                 inputs: DeclarativeElementInit<
                     TagNameGeneric,
@@ -105,6 +106,7 @@ export function wrapDefineElement<
             EventsInitGeneric extends EventsInitRequirementGeneric,
             HostClassKeysGeneric extends HostClassKeysRequirementGeneric,
             CssVarKeysGeneric extends CssVarKeysRequirementGeneric,
+            RenderOutputGeneric extends RenderOutputRequirementGeneric,
         >(
             inputs: DeclarativeElementInit<
                 TagNameGeneric,
