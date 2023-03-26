@@ -1,4 +1,4 @@
-import {css as litCss, CSSResult, CSSResultGroup} from 'lit';
+import {CSSResult, CSSResultGroup, css as litCss} from 'lit';
 import {DeclarativeElementDefinition} from '../../declarative-element/declarative-element';
 import {getTransformedTemplate} from '../transform-template';
 import {transformCssTemplate} from './css-transform';

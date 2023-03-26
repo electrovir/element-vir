@@ -2,7 +2,7 @@ import {getObjectTypedKeys, mapObjectValues} from '@augment-vir/common';
 import {CSSResult, unsafeCSS} from 'lit';
 import {CssVarNameOrValueMap} from './css-vars';
 import {PropertyInitMapBase} from './element-properties';
-import {HostClassesInitMap, HostClassNamesMap} from './host-classes';
+import {HostClassNamesMap, HostClassesInitMap} from './host-classes';
 
 export type StylesCallbackInput<HostClassKeys extends string, CssVarKeys extends string> = {
     hostClassSelectors: Record<HostClassKeys, CSSResult>;

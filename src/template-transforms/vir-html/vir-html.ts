@@ -1,4 +1,4 @@
-import {html as litHtml, HTMLTemplateResult} from 'lit';
+import {HTMLTemplateResult, html as litHtml} from 'lit';
 import {getTransformedTemplate} from '../transform-template';
 import {transformHtmlTemplate} from './html-transform';
 

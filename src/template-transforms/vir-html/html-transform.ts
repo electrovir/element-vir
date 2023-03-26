@@ -4,8 +4,8 @@ import {declarativeElementRequired} from '../../require-declarative-element';
 import {ConstructorWithTagName, hasStaticTagName} from '../has-static-tag-name';
 import {
     CheckAndTransform,
-    makeCheckTransform,
     TemplateTransform,
+    makeCheckTransform,
     transformTemplate,
 } from '../transform-template';
 

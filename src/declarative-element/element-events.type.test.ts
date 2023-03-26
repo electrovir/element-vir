@@ -1,8 +1,8 @@
 import {defineElementNoInputs, html} from '..';
 import {
-    defineElementEvent,
     EventInitMapEventDetailExtractor,
     EventsInitMap,
+    defineElementEvent,
 } from './properties/element-events';
 
 function main() {
