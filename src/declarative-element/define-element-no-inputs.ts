@@ -1,4 +1,4 @@
-import {getObjectTypedKeys, kebabCaseToCamelCase} from '@augment-vir/common';
+import {ensureError, getObjectTypedKeys, kebabCaseToCamelCase} from '@augment-vir/common';
 import {css} from 'lit';
 import {property} from 'lit/decorators.js';
 import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';
@@ -10,18 +10,18 @@ import {
 import {CustomElementTagName, DeclarativeElementInit} from './declarative-element-init';
 import {
     DeclarativeElementDefinitionOptions,
-    defaultDeclarativeElementDefinitionOptions,
     IgnoreInputsNotBeenSetBeforeRenderWarningSymbol,
+    defaultDeclarativeElementDefinitionOptions,
 } from './definition-options';
 import {assign} from './directives/assign.directive';
 import {hasDeclarativeElementParent} from './has-declarative-element-parent';
 import {createCssVarNamesMap, createCssVarValuesMap} from './properties/css-vars';
-import {createEventDescriptorMap, EventsInitMap} from './properties/element-events';
+import {EventsInitMap, createEventDescriptorMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
 import {createElementUpdaterProxy} from './properties/element-updater-proxy';
 import {createHostClassNamesMap} from './properties/host-classes';
 import {applyHostClasses, hostClassNamesToStylesInput} from './properties/styles';
-import {createRenderParams, RenderParams} from './render-callback';
+import {RenderParams, createRenderParams} from './render-callback';
 
 export function defineElementNoInputs<
     TagNameGeneric extends CustomElementTagName = '-',
@@ -187,36 +187,42 @@ export function defineElementNoInputs<
             }
         }
         public render() {
-            if (
-                // This ignores elements at the root of a page, as they can't receive inputs from
-                // other elements (cause they have no custom element ancestors).
-                hasDeclarativeElementParent(this) &&
-                !this.haveInputsBeenSet &&
-                !elementOptions[IgnoreInputsNotBeenSetBeforeRenderWarningSymbol]
-            ) {
-                console.warn(
-                    this,
-                    `${initInput.tagName} got rendered before its input object was set. This was most likely caused by forgetting to use the "${assign.name}" directive on it. If no inputs are intended, use "${defineElementNoInputs.name}" to define ${initInput.tagName}.`,
-                );
+            try {
+                if (
+                    // This ignores elements at the root of a page, as they can't receive inputs from
+                    // other elements (cause they have no custom element ancestors).
+                    hasDeclarativeElementParent(this) &&
+                    !this.haveInputsBeenSet &&
+                    !elementOptions[IgnoreInputsNotBeenSetBeforeRenderWarningSymbol]
+                ) {
+                    console.warn(
+                        this,
+                        `${initInput.tagName} got rendered before its input object was set. This was most likely caused by forgetting to use the "${assign.name}" directive on it. If no inputs are intended, use "${defineElementNoInputs.name}" to define ${initInput.tagName}.`,
+                    );
+                }
+                this.hasRendered = true;
+
+                const renderParams = this.createRenderParams();
+
+                if (!this.initCalled && initInput.initCallback) {
+                    this.initCalled = true;
+                    initInput.initCallback(renderParams);
+                }
+
+                const renderResult = initInput.renderCallback(renderParams);
+                applyHostClasses({
+                    host: renderParams.host,
+                    hostClassesInit: initInput.hostClasses,
+                    hostClassNames,
+                    state: renderParams.state,
+                    inputs: renderParams.inputs,
+                });
+                return renderResult;
+            } catch (caught) {
+                const error: Error = ensureError(caught);
+                error.message = `Failed to render '${initInput.tagName}': ${error.message}`;
+                throw error;
             }
-            this.hasRendered = true;
-
-            const renderParams = this.createRenderParams();
-
-            if (!this.initCalled && initInput.initCallback) {
-                this.initCalled = true;
-                initInput.initCallback(renderParams);
-            }
-
-            const renderResult = initInput.renderCallback(renderParams);
-            applyHostClasses({
-                host: renderParams.host,
-                hostClassesInit: initInput.hostClasses,
-                hostClassNames,
-                state: renderParams.state,
-                inputs: renderParams.inputs,
-            });
-            return renderResult;
         }
 
         public override connectedCallback(): void {

@@ -200,6 +200,36 @@ export const MyWithAssignmentElement = defineElementNoInputs({
 });
 ```
 
+## Rendering promises
+
+A handy directive is built in for rendering promises: `renderPromise`. See how it works below:
+
+<!-- example-link: src/readme-examples/my-async-render.element.ts -->
+
+```TypeScript
+import {defineElementNoInputs, html, renderPromise} from 'element-vir';
+
+export const MyAsyncRenderElement = defineElementNoInputs({
+    tagName: 'my-async-render',
+    stateInit: {
+        data: fetch('https://example.org'),
+    },
+    renderCallback: ({state}) => html`
+        ${renderPromise(state.data, ({promise, error, resolved}) => {
+            if (promise) {
+                return 'Still loading...';
+            } else if (resolved) {
+                return html`
+                    Load done!
+                `;
+            } else {
+                return `Load failed: ${error.message}`;
+            }
+        })}
+    `,
+});
+```
+
 ## Other callbacks
 
 There are two other callbacks you can define that are sort of similar to lifecycle callbacks. They are much simpler than lifecycle callbacks however.

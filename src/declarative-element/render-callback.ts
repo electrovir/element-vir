@@ -11,6 +11,7 @@ import {
 } from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
 
+// try to make this be anything except promises
 export type RenderOutput =
     | TemplateResult
     | Primitive

@@ -1,3 +1,4 @@
+export * from './built-in-lit-directives';
 export * from './declarative-element/declarative-element';
 export * from './declarative-element/declarative-element-init';
 export * from './declarative-element/define-element';
@@ -10,6 +11,7 @@ export * from './declarative-element/directives/listen.directive';
 export * from './declarative-element/directives/on-dom-created.directive';
 export * from './declarative-element/directives/on-resize.directive';
 export * from './declarative-element/directives/render-if.directive';
+export * from './declarative-element/directives/render-promise.directive';
 export * from './declarative-element/properties/css-vars';
 export * from './declarative-element/properties/element-events';
 export * from './declarative-element/properties/element-properties';
