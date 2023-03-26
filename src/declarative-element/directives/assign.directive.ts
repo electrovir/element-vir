@@ -1,18 +1,22 @@
 import {noChange} from 'lit';
 import {directive, Directive, DirectiveResult, PartInfo} from 'lit/directive.js';
-import {DeclarativeElementDefinition} from '../declarative-element';
 import {assignInputs} from '../properties/assign-inputs';
+import {PropertyInitMapBase} from '../properties/element-properties';
 import {extractElement} from './directive-helpers';
 
+export type ElementDefinitionWithInputsType<
+    InputsType extends PropertyInitMapBase = PropertyInitMapBase,
+> = {inputsType: InputsType};
+
 /** Assign an object matching an element's inputs to its inputs. */
-export function assign<DeclarativeElementGeneric extends DeclarativeElementDefinition>(
+export function assign<DeclarativeElementGeneric extends ElementDefinitionWithInputsType>(
     declarativeElement: DeclarativeElementGeneric,
     inputsObject: DeclarativeElementGeneric['inputsType'],
 ): DirectiveResult;
-export function assign<DeclarativeElementGeneric extends DeclarativeElementDefinition>(
+export function assign<DeclarativeElementGeneric extends ElementDefinitionWithInputsType>(
     inputsObject: Record<string, any>,
 ): DirectiveResult;
-export function assign<DeclarativeElementGeneric extends DeclarativeElementDefinition>(
+export function assign<DeclarativeElementGeneric extends ElementDefinitionWithInputsType>(
     declarativeElementOrInputs: DeclarativeElementGeneric | Record<string, any>,
     inputsObject?: DeclarativeElementGeneric['inputsType'],
 ): DirectiveResult {
@@ -22,7 +26,7 @@ export function assign<DeclarativeElementGeneric extends DeclarativeElementDefin
      */
     if (inputsObject) {
         return assignDirective(
-            declarativeElementOrInputs as DeclarativeElementGeneric,
+            declarativeElementOrInputs as ElementDefinitionWithInputsType,
             inputsObject,
         );
     } else {
@@ -41,7 +45,7 @@ const assignDirective = directive(
         }
 
         render(
-            elementDefinition: DeclarativeElementDefinition | undefined,
+            elementDefinition: ElementDefinitionWithInputsType | undefined,
             inputsObject: Record<PropertyKey, unknown>,
         ) {
             assignInputsObject(elementDefinition, this.element, inputsObject);
@@ -51,7 +55,7 @@ const assignDirective = directive(
 );
 
 export function assignInputsObject<
-    DeclarativeElementDefinitionGeneric extends DeclarativeElementDefinition,
+    DeclarativeElementDefinitionGeneric extends ElementDefinitionWithInputsType,
 >(
     expectedElementConstructor: DeclarativeElementDefinitionGeneric | undefined,
     element: Element,

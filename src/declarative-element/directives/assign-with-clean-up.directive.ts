@@ -1,8 +1,7 @@
 import {noChange} from 'lit';
 import {AsyncDirective} from 'lit/async-directive.js';
 import {directive, PartInfo} from 'lit/directive.js';
-import {DeclarativeElementDefinition} from '../declarative-element';
-import {assignInputsObject} from './assign.directive';
+import {assignInputsObject, ElementDefinitionWithInputsType} from './assign.directive';
 import {extractElement} from './directive-helpers';
 
 export type CleanupCallback<T> = (oldValue: T) => void;
@@ -15,16 +14,17 @@ export type CleanupCallback<T> = (oldValue: T) => void;
  *
  * Example use case: 3D graphics applications with classes that setup buffers and the like.
  */
-export function assignWithCleanup<DeclarativeElementGeneric extends DeclarativeElementDefinition>(
+export function assignWithCleanup<
+    DeclarativeElementGeneric extends ElementDefinitionWithInputsType,
+>(
     elementDefinition: DeclarativeElementGeneric,
-    inputsObject: DeclarativeElementGeneric extends DeclarativeElementDefinition<
-        any,
+    inputsObject: DeclarativeElementGeneric extends ElementDefinitionWithInputsType<
         infer InputsGeneric
     >
         ? InputsGeneric
         : never,
     cleanupCallback: CleanupCallback<
-        DeclarativeElementGeneric extends DeclarativeElementDefinition<any, infer InputsGeneric>
+        DeclarativeElementGeneric extends ElementDefinitionWithInputsType<infer InputsGeneric>
             ? InputsGeneric
             : never
     >,
@@ -54,7 +54,7 @@ class AssignWithCleanupDirectiveClass extends AsyncDirective {
     }
 
     render(
-        elementDefinition: DeclarativeElementDefinition,
+        elementDefinition: ElementDefinitionWithInputsType,
         inputsObject: Record<PropertyKey, unknown>,
         cleanupCallback: CleanupCallback<any>,
     ) {
