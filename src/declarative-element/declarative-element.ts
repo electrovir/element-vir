@@ -76,7 +76,7 @@ function staticImplements<T>() {
     >
 >()
 export abstract class DeclarativeElement<
-    TagNameGeneric extends CustomElementTagName = CustomElementTagName,
+    TagNameGeneric extends CustomElementTagName = any,
     InputsGeneric extends PropertyInitMapBase = any,
     StateInitGeneric extends PropertyInitMapBase = any,
     EventsInitGeneric extends EventsInitMap = any,
