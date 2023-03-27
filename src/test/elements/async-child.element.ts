@@ -1,46 +1,68 @@
-import {randomInteger} from '@augment-vir/browser';
-import {createDeferredPromiseWrapper, wait} from '@augment-vir/common';
-import {createCachedPromise} from '@electrovir/cached-promise';
-import {defineElementNoInputs, html, listen} from '../..';
-import {renderPromise} from '../../declarative-element/directives/render-promise.directive';
+import {wait, waitValue} from '@augment-vir/common';
+import {asyncState, defineElement, html, listen, renderAsyncState} from '../..';
 
-export const TestAsyncChildElement = defineElementNoInputs({
-    tagName: 'element-vir-test-async-child',
+const sameNumberPromise = waitValue(1_500, 86);
+
+export const AsyncChild = defineElement<{
+    trigger: number;
+}>()({
+    tagName: 'async-child',
     stateInit: {
-        asyncValue: createDeferredPromiseWrapper<number>(),
-        trigger: '',
-        loadStuff: createCachedPromise<string>(),
+        loadThing: asyncState<number>(),
     },
-    renderCallback({state, updateState}) {
+    renderCallback: ({state, inputs, updateState}) => {
+        updateState({
+            loadThing: {
+                createPromise: async () => {
+                    await wait(1_500);
+                    return Math.pow(inputs.trigger, 2);
+                },
+                trigger: inputs.trigger,
+            },
+        });
+
         return html`
-            ${renderPromise(state.asyncValue.promise, ({error, promise, resolved}) => {
-                return html`
-                    ${resolved ? `Loaded ${resolved}` : 'Loading...'}
-
-                    <input
-                        ${listen('input', (event) => {
-                            const inputElement = event.currentTarget as HTMLInputElement;
-
-                            updateState({
-                                trigger: inputElement.value,
-                            });
-                        })}
-                    />
-                    <button
-                        ${listen('click', async () => {
-                            const newDeferred = createDeferredPromiseWrapper<number>();
-                            updateState({
-                                asyncValue: newDeferred,
-                            });
-
-                            await wait(1000);
-                            newDeferred.resolve(randomInteger({max: 100, min: 0}));
-                        })}
-                    >
-                        Click to resolve
-                    </button>
-                `;
-            })}
+            <p>${renderAsyncState(state.loadThing, 'Loading...')}</p>
+            <button
+                ${listen('click', () => {
+                    updateState({loadThing: {forceUpdate: true}});
+                })}
+            >
+                Force update
+            </button>
+            <button
+                ${listen('click', () => {
+                    updateState({
+                        loadThing: {
+                            newPromise: waitValue(1_500, 42),
+                        },
+                    });
+                })}
+            >
+                New Number Promise
+            </button>
+            <button
+                ${listen('click', () => {
+                    updateState({
+                        loadThing: {
+                            newPromise: sameNumberPromise,
+                        },
+                    });
+                })}
+            >
+                Same Number Promise
+            </button>
+            <button
+                ${listen('click', () => {
+                    updateState({
+                        loadThing: {
+                            resolvedValue: Math.random(),
+                        },
+                    });
+                })}
+            >
+                New Resolved Value
+            </button>
         `;
     },
 });

@@ -36,7 +36,13 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
             assertValidPropertyName(propertyName, element, element.tagName);
         }
 
-        return elementAsProps[propertyName];
+        const asyncState = element.asyncStateHandlerMap[propertyName];
+
+        if (asyncState) {
+            return asyncState.getValue();
+        } else {
+            return elementAsProps[propertyName];
+        }
     }
 
     const propsProxy = new Proxy({} as Record<PropertyKey, unknown>, {
@@ -53,7 +59,13 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
              */
             target[propertyName] = undefined;
 
-            elementAsProps[propertyName] = newValue;
+            const asyncState = element.asyncStateHandlerMap[propertyName];
+
+            if (asyncState) {
+                asyncState.setValue(newValue);
+            } else {
+                elementAsProps[propertyName] = newValue;
+            }
 
             return true;
         },

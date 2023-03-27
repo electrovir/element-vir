@@ -200,36 +200,6 @@ export const MyWithAssignmentElement = defineElementNoInputs({
 });
 ```
 
-## Rendering promises
-
-A handy directive is built in for rendering promises: `renderPromise`. See how it works below:
-
-<!-- example-link: src/readme-examples/my-async-render.element.ts -->
-
-```TypeScript
-import {defineElementNoInputs, html, renderPromise} from 'element-vir';
-
-export const MyAsyncRenderElement = defineElementNoInputs({
-    tagName: 'my-async-render',
-    stateInit: {
-        data: fetch('https://example.org'),
-    },
-    renderCallback: ({state}) => html`
-        ${renderPromise(state.data, ({promise, error, resolved}) => {
-            if (promise) {
-                return 'Still loading...';
-            } else if (resolved) {
-                return html`
-                    Load done!
-                `;
-            } else {
-                return `Load failed: ${error.message}`;
-            }
-        })}
-    `,
-});
-```
-
 ## Other callbacks
 
 There are two other callbacks you can define that are sort of similar to lifecycle callbacks. They are much simpler than lifecycle callbacks however.
@@ -621,6 +591,74 @@ export const MyWithRenderIfElement = defineElement<{shouldRender: boolean}>()({
             `,
         )}
     `,
+});
+```
+
+### asyncState
+
+Use the `renderAsyncState` directive in conjunction with the `asyncState` property definer to seamlessly render and update element state based on async values:
+
+<!-- example-link: src/readme-examples/my-with-async-prop.element.ts -->
+
+```TypeScript
+import {asyncState, defineElement, html, listen, renderAsyncState} from 'element-vir';
+
+type EndpointData = number[];
+
+async function loadSomething(endpoint: string): Promise<EndpointData> {
+    // load something from the network
+    const data = await (
+        await fetch(
+            [
+                '',
+                'api',
+                endpoint,
+            ].join('/'),
+        )
+    ).json();
+    return data;
+}
+
+export const MyWithAsyncStateElement = defineElement<{endpoint: string}>()({
+    tagName: 'my-simple-with-render-if',
+    stateInit: {
+        data: asyncState<EndpointData>(),
+    },
+    renderCallback: ({inputs, state, updateState}) => {
+        /**
+         * This creates a promise which automatically updates the state.loadsLater prop once the
+         * promise resolves. It only creates a new promise if the "trigger" value changes.
+         */
+        updateState({
+            data: {
+                createPromise: () => loadSomething(inputs.endpoint),
+                trigger: inputs.endpoint,
+            },
+        });
+
+        return html`
+            Here's the data:
+            <br />
+            ${renderAsyncState(state.data, 'Loading...', (loadedData) => {
+                return html`
+                    Got the data: ${loadedData}
+                `;
+            })}
+            <br />
+            <button
+                ${listen('click', () => {
+                    updateState({
+                        data: {
+                            /** You can force asyncState to update by passing in forceUpdate: true. */
+                            forceUpdate: true,
+                        },
+                    });
+                })}
+            >
+                Refresh
+            </button>
+        `;
+    },
 });
 ```
 

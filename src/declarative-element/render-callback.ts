@@ -3,6 +3,11 @@ import {TypedEvent} from '../typed-event/typed-event';
 import {DeclarativeElement, HostInstanceType} from './declarative-element';
 import {CustomElementTagName} from './declarative-element-init';
 import {
+    AsyncStateInputs,
+    AsyncStateSetValue,
+    MaybeAsyncStateToSync,
+} from './properties/async-state';
+import {
     EventDescriptorMap,
     EventInitMapEventDetailExtractor,
     EventsInitMap,
@@ -50,7 +55,7 @@ export type InitCallback<
 ) => void;
 
 export type UpdateStateCallback<StateGeneric extends PropertyInitMapBase> = (
-    newState: Partial<StateGeneric>,
+    newState: Partial<AsyncStateInputs<StateGeneric>>,
 ) => void;
 
 export type RenderParams<
@@ -62,7 +67,7 @@ export type RenderParams<
     CssVarKeys extends string,
     RenderOutputGeneric,
 > = {
-    state: Readonly<StateInitGeneric>;
+    state: Readonly<MaybeAsyncStateToSync<StateInitGeneric>>;
     updateState: UpdateStateCallback<StateInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
     host: HostInstanceType<
@@ -115,9 +120,17 @@ export function createRenderParams<
 > {
     function updateState(newStatePartial: Parameters<UpdateStateCallback<StateGeneric>>[0]) {
         getObjectTypedKeys(newStatePartial).forEach((stateKey) => {
-            const newValue = newStatePartial[stateKey] as StateGeneric[typeof stateKey];
+            const newValue = newStatePartial[
+                stateKey
+            ] as MaybeAsyncStateToSync<StateGeneric>[typeof stateKey];
 
-            element.instanceState[stateKey] = newValue;
+            const asyncState = element.asyncStateHandlerMap[stateKey];
+
+            if (asyncState) {
+                asyncState.setValue(newValue as AsyncStateSetValue<any>);
+            } else {
+                element.instanceState[stateKey] = newValue;
+            }
         });
     }
 

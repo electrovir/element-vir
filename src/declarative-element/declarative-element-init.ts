@@ -1,6 +1,7 @@
 import {CSSResult} from 'lit';
 import {RequireNonVoidReturn} from '../augments/type';
 import {DeclarativeElementDefinitionOptions} from './definition-options';
+import {MaybeAsyncStateToSync} from './properties/async-state';
 import {CssVarsInitMap} from './properties/css-vars';
 import {EventsInitMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
@@ -13,7 +14,7 @@ export type CustomElementTagName = `${string}-${string}`;
 export type DeclarativeElementInit<
     TagNameGeneric extends CustomElementTagName,
     InputsGeneric extends PropertyInitMapBase,
-    StateInitGeneric extends PropertyInitMapBase,
+    StateInitMaybeAsyncGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
     HostClassKeysGeneric extends string,
     CssVarKeysGeneric extends string,
@@ -27,7 +28,7 @@ export type DeclarativeElementInit<
     /** Static styles. These should not and cannot change. */
     styles?: CSSResult | StylesCallback<HostClassKeysGeneric, CssVarKeysGeneric>;
     /** Element properties. (These can be thought of as "inputs".) */
-    stateInit?: StateInitGeneric;
+    stateInit?: StateInitMaybeAsyncGeneric;
     /** Events that the element can dispatch. (These can be thought of as "outputs".) */
     events?: EventsInitGeneric;
     /**
@@ -35,7 +36,11 @@ export type DeclarativeElementInit<
      * based on current instance state or inputs, or just undefined to indicate that the host class
      * will only be manually set.
      */
-    hostClasses?: HostClassesInitMap<HostClassKeysGeneric, InputsGeneric, StateInitGeneric>;
+    hostClasses?: HostClassesInitMap<
+        HostClassKeysGeneric,
+        InputsGeneric,
+        MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>
+    >;
     /**
      * CSS Vars for the component. Keys of this object should be camelCased (or whatever your casing
      * convention is). They will be transformed, at runtime, to CSS vars with kebab-casing, to match
@@ -51,7 +56,7 @@ export type DeclarativeElementInit<
     initCallback?: InitCallback<
         TagNameGeneric,
         InputsGeneric,
-        StateInitGeneric,
+        StateInitMaybeAsyncGeneric,
         EventsInitGeneric,
         HostClassKeysGeneric,
         CssVarKeysGeneric,
@@ -62,7 +67,7 @@ export type DeclarativeElementInit<
         RenderCallback<
             TagNameGeneric,
             InputsGeneric,
-            StateInitGeneric,
+            StateInitMaybeAsyncGeneric,
             EventsInitGeneric,
             HostClassKeysGeneric,
             CssVarKeysGeneric,
@@ -72,7 +77,7 @@ export type DeclarativeElementInit<
     cleanupCallback?: InitCallback<
         TagNameGeneric,
         InputsGeneric,
-        StateInitGeneric,
+        StateInitMaybeAsyncGeneric,
         EventsInitGeneric,
         HostClassKeysGeneric,
         CssVarKeysGeneric,

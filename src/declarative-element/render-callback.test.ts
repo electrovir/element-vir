@@ -1,21 +1,24 @@
 import {assertTypeOf} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
+import {Promisable} from 'type-fest';
 import {
+    asyncState,
+    AsyncStateSetValue,
     createEventDescriptorMap,
     createRenderParams,
     defineElementEvent,
     defineElementNoInputs,
     html,
+    RenderCallback,
     TypedEvent,
 } from '..';
-import {RenderCallback} from './render-callback';
 
 describe('RenderParams', () => {
     it('should produce proper types', () => {
         defineElementNoInputs({
             tagName: 'test-element',
             stateInit: {
-                myNumber: 5,
+                myAsyncState: asyncState<number>(),
             },
             events: {
                 testEventName: defineElementEvent<number>(),
@@ -24,14 +27,25 @@ describe('RenderParams', () => {
             renderCallback: ({events, state, updateState}) => {
                 const testEventThing = events.testEventName;
 
-                assertTypeOf(state.myNumber).toEqualTypeOf<number>();
+                assertTypeOf(state.myAsyncState).toEqualTypeOf<Promisable<number> | Error>();
 
                 assertTypeOf<
-                    NonNullable<Parameters<typeof updateState>[0]['myNumber']>
-                >().toEqualTypeOf<number>();
+                    NonNullable<Parameters<typeof updateState>[0]['myAsyncState']>
+                >().toEqualTypeOf<AsyncStateSetValue<number>>();
 
                 updateState({
-                    myNumber: 6,
+                    myAsyncState: {
+                        createPromise: () => Promise.resolve(5),
+                        trigger: 'hi',
+                    },
+                });
+
+                updateState({
+                    myAsyncState: {
+                        createPromise: () => Promise.resolve(5),
+                        // allow undefined as a property value
+                        trigger: {derp: undefined},
+                    },
                 });
 
                 new testEventThing(4);
@@ -62,7 +76,7 @@ describe('RenderParams', () => {
             renderParams.dispatch(myEventInstance);
             renderParams.dispatch(new TypedEvent(renderParams.events.testEventName, 2));
             renderParams.dispatch(new Event('generic event type'));
-            // there are no props in this element
+            // there are no async props in this element
             assert.isEmpty(Object.keys(renderParams.state));
         }
     });
