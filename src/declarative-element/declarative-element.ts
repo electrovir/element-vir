@@ -64,9 +64,11 @@ export type DeclarativeElementDefinition<
     };
 
 function staticImplements<T>() {
-    return <U extends T>(constructor: U) => {
-        constructor;
-    };
+    function ensureIncludesStaticProperties<U extends T>(classValue: U, context: any) {
+        return classValue;
+    }
+
+    return ensureIncludesStaticProperties;
 }
 
 @staticImplements<
