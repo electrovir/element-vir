@@ -120,8 +120,7 @@ export function defineElementNoInputs<
             MaybeAsyncStateInitGeneric,
             EventsInitGeneric,
             HostClassKeys,
-            CssVarKeys,
-            RenderOutputGeneric
+            CssVarKeys
         > {
             return createRenderParams(this, eventsMap);
         }

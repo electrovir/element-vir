@@ -15,7 +15,6 @@ export type HostInstanceType<
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
-    RenderOutputGeneric,
 > = RequiredAndNotNullBy<
     DeclarativeElement<
         TagNameGeneric,
@@ -24,7 +23,7 @@ export type HostInstanceType<
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys,
-        RenderOutputGeneric
+        any
     >,
     'shadowRoot'
 >;
@@ -43,8 +42,7 @@ export type DeclarativeElementDefinition<
     StateInitMaybeAsyncGeneric,
     EventsInitGeneric,
     HostClassKeys,
-    CssVarKeys,
-    RenderOutputGeneric
+    CssVarKeys
 >) &
     StaticDeclarativeElementProperties<
         TagNameGeneric,
@@ -61,8 +59,7 @@ export type DeclarativeElementDefinition<
             StateInitMaybeAsyncGeneric,
             EventsInitGeneric,
             HostClassKeys,
-            CssVarKeys,
-            RenderOutputGeneric
+            CssVarKeys
         >;
     };
 

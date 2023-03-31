@@ -59,8 +59,7 @@ export type DeclarativeElementInit<
         StateInitMaybeAsyncGeneric,
         EventsInitGeneric,
         HostClassKeysGeneric,
-        CssVarKeysGeneric,
-        void
+        CssVarKeysGeneric
     >;
     renderCallback: RequireNonVoidReturn<
         RenderOutputGeneric,
@@ -80,8 +79,7 @@ export type DeclarativeElementInit<
         StateInitMaybeAsyncGeneric,
         EventsInitGeneric,
         HostClassKeysGeneric,
-        CssVarKeysGeneric,
-        void
+        CssVarKeysGeneric
     >;
     options?: Partial<DeclarativeElementDefinitionOptions> | undefined;
 };
