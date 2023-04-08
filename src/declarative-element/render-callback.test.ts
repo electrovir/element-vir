@@ -1,6 +1,5 @@
 import {assertTypeOf} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
-import {Promisable} from 'type-fest';
 import {
     asyncState,
     AsyncStateSetValue,
@@ -19,6 +18,8 @@ describe('RenderParams', () => {
             tagName: 'test-element',
             stateInit: {
                 myAsyncState: asyncState<number>(),
+                myAsyncState2: asyncState(Promise.resolve(3)),
+                myAsyncState3: asyncState(3),
             },
             events: {
                 testEventName: defineElementEvent<number>(),
@@ -27,7 +28,9 @@ describe('RenderParams', () => {
             renderCallback: ({events, state, updateState}) => {
                 const testEventThing = events.testEventName;
 
-                assertTypeOf(state.myAsyncState).toEqualTypeOf<Promisable<number> | Error>();
+                assertTypeOf(state.myAsyncState).toEqualTypeOf<Promise<number> | number | Error>();
+                assertTypeOf(state.myAsyncState2).toEqualTypeOf<Promise<number> | number | Error>();
+                assertTypeOf(state.myAsyncState3).toEqualTypeOf<Promise<number> | number | Error>();
 
                 assertTypeOf<
                     NonNullable<Parameters<typeof updateState>[0]['myAsyncState']>

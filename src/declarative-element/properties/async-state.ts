@@ -9,11 +9,13 @@ import {
     mapObjectValues,
     UnPromise,
 } from '@augment-vir/common';
-import {Promisable} from 'type-fest';
 import {PickAndBlockOthers} from '../../augments/type';
 import {PropertyInitMapBase} from './element-properties';
 
-export type AsyncState<ValueGeneric> = Error | Promisable<UnPromise<ValueGeneric>>;
+export type AsyncState<ValueGeneric> =
+    | Error
+    | UnPromise<ValueGeneric>
+    | Promise<UnPromise<ValueGeneric>>;
 
 const asyncMarkerSymbol = Symbol('element-vir-async-state-marker');
 
@@ -79,10 +81,10 @@ export function toAsyncStateHandlerMap(
     }
     const asyncStateInit = filterObject(
         propertyInitMap,
-        (key, value): value is AsyncStateInit<any> => {
+        (key, value): value is AsyncStateInit<unknown> => {
             return value instanceof AsyncStateInit;
         },
-    ) as Record<keyof PropertyInitMapBase, AsyncStateInit<any>>;
+    ) as Record<keyof PropertyInitMapBase, AsyncStateInit<unknown>>;
 
     const asyncStateHandlers = mapObjectValues(asyncStateInit, (key, value) => {
         return new AsyncStateHandler(value.initialValue);
@@ -95,7 +97,7 @@ const notSetSymbol = Symbol('not set');
 
 export class AsyncStateHandler<ValueGeneric> {
     #lastTrigger:
-        | Extract<AsyncStateSetValue<any>, {trigger: any}>['trigger']
+        | Extract<AsyncStateSetValue<unknown>, {trigger: unknown}>['trigger']
         | typeof notSetSymbol
         | undefined = notSetSymbol;
     #resolutionValue: UnPromise<ValueGeneric> | undefined;
@@ -108,9 +110,15 @@ export class AsyncStateHandler<ValueGeneric> {
 
     public readonly asyncMarkerSymbol = asyncMarkerSymbol;
 
-    constructor(initialValue: Promise<UnPromise<ValueGeneric>> | undefined) {
+    constructor(
+        initialValue: Promise<UnPromise<ValueGeneric>> | UnPromise<ValueGeneric> | undefined,
+    ) {
         if (initialValue) {
-            this.setValue({newPromise: initialValue});
+            if (initialValue instanceof Promise) {
+                this.setValue({newPromise: initialValue});
+            } else {
+                this.setValue({resolvedValue: initialValue});
+            }
         }
     }
 
@@ -220,12 +228,17 @@ export class AsyncStateHandler<ValueGeneric> {
 }
 
 export class AsyncStateInit<ValueGeneric> {
-    constructor(public readonly initialValue?: Promise<UnPromise<ValueGeneric>> | undefined) {}
+    constructor(
+        public readonly initialValue?:
+            | Promise<UnPromise<ValueGeneric>>
+            | UnPromise<ValueGeneric>
+            | undefined,
+    ) {}
     public readonly asyncMarkerSymbol = asyncMarkerSymbol;
 }
 
 export function asyncState<ValueGeneric>(
-    initialValue?: Promise<UnPromise<ValueGeneric>> | undefined,
+    initialValue?: Promise<UnPromise<ValueGeneric>> | UnPromise<ValueGeneric> | undefined,
 ) {
     return new AsyncStateInit<ValueGeneric>(initialValue);
 }
