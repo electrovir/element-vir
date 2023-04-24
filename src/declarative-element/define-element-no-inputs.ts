@@ -16,7 +16,7 @@ import {
 import {assign} from './directives/assign.directive';
 import {hasDeclarativeElementParent} from './has-declarative-element-parent';
 import {assignInputs, markInputsAsHavingBeenSet} from './properties/assign-inputs';
-import {MaybeAsyncStateToSync, toAsyncStateHandlerMap} from './properties/async-state';
+import {MaybeAsyncStateToSync} from './properties/async-state';
 import {createCssVarNamesMap, createCssVarValuesMap} from './properties/css-vars';
 import {EventsInitMap, createEventDescriptorMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
@@ -269,7 +269,7 @@ export function defineElementNoInputs<
             assignInputs(this, inputs);
         }
 
-        public readonly asyncStateHandlerMap = toAsyncStateHandlerMap(initInput.stateInit);
+        public readonly asyncStateHandlerMap = {};
 
         public readonly instanceInputs: InputsGeneric = createElementUpdaterProxy<InputsGeneric>(
             this,
@@ -292,17 +292,7 @@ export function defineElementNoInputs<
             getObjectTypedKeys(stateInit).forEach((stateKey) => {
                 property()(this, stateKey);
 
-                const asyncStateClassInstance = this.asyncStateHandlerMap[stateKey];
-
-                if (asyncStateClassInstance) {
-                    this.instanceState[stateKey] = asyncStateClassInstance.getValue();
-                    asyncStateClassInstance.addSettleListener(() => {
-                        (this as MaybeAsyncStateToSync<MaybeAsyncStateInitGeneric>)[stateKey] =
-                            asyncStateClassInstance.getValue();
-                    });
-                } else {
-                    this.instanceState[stateKey] = stateInit[stateKey];
-                }
+                this.instanceState[stateKey] = stateInit[stateKey];
             });
             this.definition = anonymousClass as unknown as ThisElementDefinition;
         }

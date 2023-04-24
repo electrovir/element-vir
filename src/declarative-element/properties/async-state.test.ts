@@ -59,8 +59,8 @@ describe(asyncState.name, () => {
         >().toEqualTypeOf<AsyncState<SomethingObject>>();
     });
 
-    it('should properly update and resolve with createPromise and updateTrigger', async () => {
-        const startingNumber = Math.random();
+    it('updates and resolves async state createPromise and updateTrigger', async () => {
+        const startingNumber = 123;
 
         const ElementWithAsyncState = defineElement<{
             promiseUpdateTrigger: number | undefined;
@@ -74,12 +74,11 @@ describe(asyncState.name, () => {
                 wasRendered: defineElementEvent<void>(),
             },
             renderCallback: ({inputs, dispatch, events, state, updateState}) => {
-                let newDeferredPromise: DeferredPromiseWrapper<number> | undefined;
-
                 updateState({
                     myAsyncState: {
                         createPromise: () => {
-                            newDeferredPromise = createDeferredPromiseWrapper<number>();
+                            const newDeferredPromise = createDeferredPromiseWrapper<number>();
+                            dispatch(new events.deferredPromiseCreated(newDeferredPromise));
                             return newDeferredPromise.promise;
                         },
                         trigger: inputs.promiseUpdateTrigger ?? startingNumber,
@@ -88,10 +87,6 @@ describe(asyncState.name, () => {
 
                 if (isRenderReady(state.myAsyncState)) {
                     assertTypeOf(state.myAsyncState).toEqualTypeOf<number>();
-                }
-
-                if (newDeferredPromise) {
-                    dispatch(new events.deferredPromiseCreated(newDeferredPromise));
                 }
 
                 dispatch(new events.wasRendered());
@@ -130,7 +125,7 @@ describe(asyncState.name, () => {
                         ${listen('click', () => {
                             updateState({
                                 myAsyncState: {
-                                    resolvedValue: Math.random(),
+                                    resolvedValue: 1 + Math.random(),
                                 },
                             });
                         })}
@@ -183,7 +178,7 @@ describe(asyncState.name, () => {
 
         // assign a new number; the element should re-render
         instance.assignInputs({
-            promiseUpdateTrigger: Math.random(),
+            promiseUpdateTrigger: 2,
         });
         await waitUntil(() => renderCount === 3, 'Render count failed to reach 3');
 
@@ -192,7 +187,7 @@ describe(asyncState.name, () => {
         assert.instanceOf(instance.instanceState.myAsyncState, Promise);
 
         // resolve the promise; the element should re-render and the state should update
-        const resolutionValue = Math.random();
+        const resolutionValue = 3;
         deferredPromiseWrappers[1].resolve(resolutionValue);
 
         await waitUntil(() => renderCount === 4, 'Render count failed to reach 4');
@@ -202,7 +197,7 @@ describe(asyncState.name, () => {
 
         // assign a new input; element should re-render and create a new promise
         instance.assignInputs({
-            promiseUpdateTrigger: Math.random(),
+            promiseUpdateTrigger: 4,
         });
         await waitUntil(() => renderCount === 5, 'Render count failed to reach 5');
 
@@ -236,13 +231,13 @@ describe(asyncState.name, () => {
         assert.instanceOf(instance.instanceState.myAsyncState, Promise);
 
         // it shouldn't render after resolution of a previous promise
-        deferredPromiseWrappers[3].resolve(Math.random());
+        deferredPromiseWrappers[3].resolve(5);
 
         await assertRejects(() => waitUntil(() => renderCount === 8));
         assert.instanceOf(instance.instanceState.myAsyncState, Promise);
 
         // should render after resolving the current promise
-        const finalResolutionValue = Math.random();
+        const finalResolutionValue = 6;
         deferredPromiseWrappers[4].resolve(finalResolutionValue);
 
         await waitUntil(() => renderCount === 8);
@@ -257,5 +252,110 @@ describe(asyncState.name, () => {
             'no new deferred promises should have been created',
         );
         assert.typeOf(instance.instanceState.myAsyncState, 'number');
+    });
+
+    it('works even if the value is undefined', async () => {
+        const ElementWithUndefinedAsyncState = defineElementNoInputs({
+            tagName: `element-with-undefined-async-state-${randomString()}`,
+            stateInit: {
+                myAsyncState: asyncState<number | undefined>(undefined),
+            },
+            events: {
+                wasRendered: defineElementEvent<void>(),
+            },
+            renderCallback: ({dispatch, events, state, updateState}) => {
+                if (isRenderReady(state.myAsyncState)) {
+                    assertTypeOf(state.myAsyncState).toEqualTypeOf<number | undefined>();
+                }
+
+                dispatch(new events.wasRendered());
+
+                return html`
+                    <button
+                        id="new-promise"
+                        ${listen('click', () => {
+                            const newPromiseWrapper = createDeferredPromiseWrapper<
+                                number | undefined
+                            >();
+
+                            updateState({
+                                myAsyncState: {
+                                    newPromise: newPromiseWrapper.promise,
+                                },
+                            });
+                        })}
+                    >
+                        New Promise
+                    </button>
+                    <button
+                        id="force-update"
+                        ${listen('click', () => {
+                            updateState({
+                                myAsyncState: {
+                                    forceUpdate: true,
+                                },
+                            });
+                        })}
+                    >
+                        Force Update
+                    </button>
+                    <button
+                        id="assign-resolved-value"
+                        ${listen('click', () => {
+                            updateState({
+                                myAsyncState: {
+                                    resolvedValue: Math.random(),
+                                },
+                            });
+                        })}
+                    >
+                        Assign Resolved Value
+                    </button>
+                `;
+            },
+        });
+
+        // render the element
+        let renderCount: number = 0;
+
+        const rendered = await renderFixture(html`
+            <${ElementWithUndefinedAsyncState}
+                ${listen(ElementWithUndefinedAsyncState.events.wasRendered, () => {
+                    renderCount++;
+                })}
+            ></${ElementWithUndefinedAsyncState}>
+        `);
+
+        // get elements
+        const instance = getAssertedDeclarativeElement(ElementWithUndefinedAsyncState, rendered);
+        const newPromiseButton = instance.shadowRoot.querySelector('#new-promise');
+        const forceUpdateButton = instance.shadowRoot.querySelector('#force-update');
+        const assignResolvedButton = instance.shadowRoot.querySelector('#assign-resolved-value');
+
+        typedAssertNotNullish(newPromiseButton);
+        typedAssertNotNullish(forceUpdateButton);
+        typedAssertNotNullish(assignResolvedButton);
+
+        // initial render
+        assert.isUndefined(instance.instanceState.myAsyncState);
+        assert.strictEqual(renderCount, 1);
+
+        // assign a new promise
+        await clickElement(newPromiseButton);
+
+        await waitUntil(() => renderCount === 2);
+        assert.instanceOf(instance.instanceState.myAsyncState, Promise);
+
+        // force an update (but we have no create promise so it should not resolve)
+        await clickElement(forceUpdateButton);
+
+        await waitUntil(() => renderCount === 3);
+        assert.instanceOf(instance.instanceState.myAsyncState, Promise);
+
+        // assign a new resolved value
+        await clickElement(assignResolvedButton);
+
+        await waitUntil(() => renderCount === 4);
+        assert.isNumber(instance.instanceState.myAsyncState);
     });
 });

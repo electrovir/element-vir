@@ -2,11 +2,7 @@ import {getObjectTypedKeys, RequiredAndNotNullBy} from '@augment-vir/common';
 import {TypedEvent} from '../typed-event/typed-event';
 import {DeclarativeElement, HostInstanceType} from './declarative-element';
 import {CustomElementTagName} from './declarative-element-init';
-import {
-    AsyncStateInputs,
-    AsyncStateSetValue,
-    MaybeAsyncStateToSync,
-} from './properties/async-state';
+import {AsyncStateInputs, MaybeAsyncStateToSync} from './properties/async-state';
 import {
     EventDescriptorMap,
     EventInitMapEventDetailExtractor,
@@ -118,13 +114,7 @@ export function createRenderParams<
                 stateKey
             ] as MaybeAsyncStateToSync<StateGeneric>[typeof stateKey];
 
-            const asyncState = element.asyncStateHandlerMap[stateKey];
-
-            if (asyncState) {
-                asyncState.setValue(newValue as AsyncStateSetValue<any>);
-            } else {
-                element.instanceState[stateKey] = newValue;
-            }
+            element.instanceState[stateKey] = newValue;
         });
     }
 

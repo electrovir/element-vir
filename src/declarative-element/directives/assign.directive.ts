@@ -11,14 +11,18 @@ export type ElementDefinitionWithInputsType<
 /** Assign an object matching an element's inputs to its inputs. */
 export function assign<DeclarativeElementGeneric extends ElementDefinitionWithInputsType>(
     declarativeElement: DeclarativeElementGeneric,
-    inputsObject: DeclarativeElementGeneric['inputsType'],
+    inputsObject: {} extends Required<DeclarativeElementGeneric['inputsType']>
+        ? never
+        : DeclarativeElementGeneric['inputsType'],
 ): DirectiveResult;
 export function assign<DeclarativeElementGeneric extends ElementDefinitionWithInputsType>(
     inputsObject: Record<string, any>,
 ): DirectiveResult;
 export function assign<DeclarativeElementGeneric extends ElementDefinitionWithInputsType>(
     declarativeElementOrInputs: DeclarativeElementGeneric | Record<string, any>,
-    inputsObject?: DeclarativeElementGeneric['inputsType'],
+    inputsObject?: {} extends Required<DeclarativeElementGeneric['inputsType']>
+        ? never
+        : DeclarativeElementGeneric['inputsType'],
 ): DirectiveResult {
     /**
      * The directive generics (in listenDirective) are not strong enough to maintain their values.

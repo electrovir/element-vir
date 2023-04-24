@@ -3,10 +3,9 @@ import {
     createDeferredPromiseWrapper,
     DeferredPromiseWrapper,
     ensureError,
-    filterObject,
+    isLengthAtLeast,
     isPromiseLike,
     JsonCompatibleValue,
-    mapObjectValues,
     UnPromise,
 } from '@augment-vir/common';
 import {PickAndBlockOthers} from '../../augments/type';
@@ -18,6 +17,7 @@ export type AsyncState<ValueGeneric> =
     | Promise<UnPromise<ValueGeneric>>;
 
 const asyncMarkerSymbol = Symbol('element-vir-async-state-marker');
+const notSetSymbol = Symbol('not set');
 
 export function isRenderReady<T>(asyncStateInput: AsyncState<T>): asyncStateInput is UnPromise<T> {
     if (asyncStateInput instanceof Error) {
@@ -73,36 +73,18 @@ export type AsyncStateHandlerMap<OriginalObjectGeneric extends PropertyInitMapBa
     Record<keyof OriginalObjectGeneric, AsyncStateHandler<any>>
 >;
 
-export function toAsyncStateHandlerMap(
-    propertyInitMap?: PropertyInitMapBase | undefined,
-): AsyncStateHandlerMap<PropertyInitMapBase> {
-    if (!propertyInitMap) {
-        return {};
-    }
-    const asyncStateInit = filterObject(
-        propertyInitMap,
-        (key, value): value is AsyncStateInit<unknown> => {
-            return value instanceof AsyncStateInit;
-        },
-    ) as Record<keyof PropertyInitMapBase, AsyncStateInit<unknown>>;
-
-    const asyncStateHandlers = mapObjectValues(asyncStateInit, (key, value) => {
-        return new AsyncStateHandler(value.initialValue);
-    });
-
-    return asyncStateHandlers;
-}
-
-const notSetSymbol = Symbol('not set');
+export type AsyncStateHandlerListener<ValueGeneric> = (
+    handler: AsyncStateHandler<ValueGeneric>,
+) => void;
 
 export class AsyncStateHandler<ValueGeneric> {
     #lastTrigger:
         | Extract<AsyncStateSetValue<unknown>, {trigger: unknown}>['trigger']
         | typeof notSetSymbol
         | undefined = notSetSymbol;
-    #resolutionValue: UnPromise<ValueGeneric> | undefined;
-    #rejectionError: Error | undefined;
-    #listeners: (() => void)[] = [];
+    #resolutionValue: UnPromise<ValueGeneric> | typeof notSetSymbol = notSetSymbol;
+    #rejectionError: Error | typeof notSetSymbol = notSetSymbol;
+    #listeners: AsyncStateHandlerListener<ValueGeneric>[] = [];
     #lastSetPromise: Promise<UnPromise<ValueGeneric>> | undefined;
 
     #waitingForValuePromise: DeferredPromiseWrapper<UnPromise<ValueGeneric>> =
@@ -111,20 +93,41 @@ export class AsyncStateHandler<ValueGeneric> {
     public readonly asyncMarkerSymbol = asyncMarkerSymbol;
 
     constructor(
-        initialValue: Promise<UnPromise<ValueGeneric>> | UnPromise<ValueGeneric> | undefined,
+        initialValue:
+            | Promise<UnPromise<ValueGeneric>>
+            | UnPromise<ValueGeneric>
+            | typeof notSetSymbol
+            | AsyncStateInit<ValueGeneric>,
+        listener: AsyncStateHandlerListener<ValueGeneric>,
     ) {
-        if (initialValue) {
-            if (initialValue instanceof Promise) {
-                this.setValue({newPromise: initialValue});
+        this.addSettleListener(listener);
+        this.resetValue(initialValue);
+    }
+
+    public resetValue(
+        rawValue:
+            | Promise<UnPromise<ValueGeneric>>
+            | UnPromise<ValueGeneric>
+            | typeof notSetSymbol
+            | AsyncStateInit<ValueGeneric>,
+    ) {
+        if (rawValue instanceof AsyncStateInit) {
+            rawValue = rawValue.initialValue;
+        }
+
+        this.#resetWaitingForValuePromise();
+        if (rawValue !== notSetSymbol) {
+            if (rawValue instanceof Promise) {
+                this.setValue({newPromise: rawValue});
             } else {
-                this.setValue({resolvedValue: initialValue});
+                this.setValue({resolvedValue: rawValue});
             }
         }
     }
 
     #fireListeners() {
         this.#listeners.forEach((listener) => {
-            listener();
+            listener(this);
         });
     }
 
@@ -133,12 +136,12 @@ export class AsyncStateHandler<ValueGeneric> {
             // abort setting the promise if we already have set this promise
             return;
         }
-        this.#resolutionValue = undefined;
-        this.#rejectionError = undefined;
+        this.#resolutionValue = notSetSymbol;
+        this.#rejectionError = notSetSymbol;
         this.#lastSetPromise = newPromise;
 
         if (this.#waitingForValuePromise.isSettled()) {
-            this.#waitingForValuePromise = createDeferredPromiseWrapper();
+            this.#resetWaitingForValuePromise();
         }
 
         newPromise
@@ -167,14 +170,18 @@ export class AsyncStateHandler<ValueGeneric> {
 
     #resolveValue(value: UnPromise<ValueGeneric>) {
         if (value !== this.#resolutionValue) {
-            this.#rejectionError = undefined;
+            this.#rejectionError = notSetSymbol;
             this.#resolutionValue = value;
             if (this.#waitingForValuePromise.isSettled()) {
-                this.#waitingForValuePromise = createDeferredPromiseWrapper();
+                this.#resetWaitingForValuePromise();
             }
             this.#waitingForValuePromise.resolve(value);
             this.#fireListeners();
         }
+    }
+
+    #resetWaitingForValuePromise(): void {
+        this.#waitingForValuePromise = createDeferredPromiseWrapper();
     }
 
     public setValue(setInputs: AsyncStateSetValue<ValueGeneric>) {
@@ -195,50 +202,56 @@ export class AsyncStateHandler<ValueGeneric> {
             this.#fireListeners();
         } else if ('resolvedValue' in setInputs) {
             this.#resolveValue(setInputs.resolvedValue);
-        } else {
-            if (setInputs.forceUpdate) {
-                this.#lastTrigger = notSetSymbol;
-                this.#resolutionValue = undefined;
-                if (!this.#waitingForValuePromise.isSettled()) {
-                    this.#waitingForValuePromise.reject('Canceled by force update');
-                }
-                this.#waitingForValuePromise = createDeferredPromiseWrapper();
-                // force a re-render
-                this.#fireListeners();
+        } else if ('forceUpdate' in setInputs) {
+            this.#lastTrigger = notSetSymbol;
+            this.#resolutionValue = notSetSymbol;
+            if (!this.#waitingForValuePromise.isSettled()) {
+                this.#waitingForValuePromise.reject('Canceled by force update');
             }
+            this.#resetWaitingForValuePromise();
+            // force a re-render
+            this.#fireListeners();
+        } else {
+            this.resetValue(setInputs);
         }
     }
 
     public getValue(): AsyncState<ValueGeneric> {
         if (this.#waitingForValuePromise.isSettled()) {
-            if (this.#rejectionError) {
+            if (this.#rejectionError !== notSetSymbol) {
                 return this.#rejectionError;
-            } else return this.#resolutionValue!;
+            } else if (this.#resolutionValue === notSetSymbol) {
+                throw new Error('Promise says it has settled but resolution value was not set!');
+            } else {
+                return this.#resolutionValue;
+            }
         } else {
             return this.#waitingForValuePromise.promise;
         }
     }
 
-    public addSettleListener(callback: () => void) {
+    public addSettleListener(callback: AsyncStateHandlerListener<ValueGeneric>) {
         this.#listeners.push(callback);
     }
-    public removeSettleListener(callback: (value: AsyncState<ValueGeneric>) => void) {
+    public removeSettleListener(callback: AsyncStateHandlerListener<ValueGeneric>) {
         this.#listeners = this.#listeners.filter((listener) => listener !== callback);
     }
 }
 
 export class AsyncStateInit<ValueGeneric> {
     constructor(
-        public readonly initialValue?:
+        public readonly initialValue:
             | Promise<UnPromise<ValueGeneric>>
             | UnPromise<ValueGeneric>
-            | undefined,
+            | typeof notSetSymbol,
     ) {}
     public readonly asyncMarkerSymbol = asyncMarkerSymbol;
 }
 
 export function asyncState<ValueGeneric>(
-    initialValue?: Promise<UnPromise<ValueGeneric>> | UnPromise<ValueGeneric> | undefined,
+    ...args: [Promise<UnPromise<ValueGeneric>> | UnPromise<ValueGeneric>] | []
 ) {
-    return new AsyncStateInit<ValueGeneric>(initialValue);
+    const initValue = isLengthAtLeast(args, 1) ? args[0] : notSetSymbol;
+
+    return new AsyncStateInit<ValueGeneric>(initValue);
 }

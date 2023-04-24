@@ -11,6 +11,7 @@ export const AsyncChild = defineElement<{
         loadThing: asyncState<number>(),
     },
     renderCallback: ({state, inputs, updateState}) => {
+        console.log('rendering async child');
         updateState({
             loadThing: {
                 createPromise: async () => {

@@ -1,4 +1,6 @@
+import {isObject} from '@augment-vir/common';
 import {DeclarativeElement} from '../declarative-element';
+import {AsyncStateHandler, AsyncStateInit} from './async-state';
 import {PropertyInitMapBase} from './element-properties';
 
 function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase>(
@@ -20,6 +22,15 @@ function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase
     }
 }
 
+const elementUpdaterProxyMarker = Symbol('element-updater-proxy');
+
+export function isElementUpdaterProxy(input: unknown): input is PropertyInitMapBase {
+    if (!isObject(input)) {
+        return false;
+    }
+    return (input as any)[elementUpdaterProxyMarker] === true;
+}
+
 export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyInitMapBase>(
     element: DeclarativeElement,
     verifyExists: boolean,
@@ -31,40 +42,57 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
      */
     const elementAsProps = element as DeclarativeElement & PropertyInitGeneric;
 
-    function valueGetter(target: any, propertyName: keyof PropertyInitGeneric | symbol) {
-        if (verifyExists) {
-            assertValidPropertyName(propertyName, element, element.tagName);
+    function valueGetter(target: any, propertyKey: keyof PropertyInitGeneric | symbol) {
+        if (propertyKey === elementUpdaterProxyMarker) {
+            return true;
         }
 
-        const asyncState = element.asyncStateHandlerMap[propertyName];
+        if (verifyExists) {
+            assertValidPropertyName(propertyKey, element, element.tagName);
+        }
+
+        const asyncState = element.asyncStateHandlerMap[propertyKey];
 
         if (asyncState) {
             return asyncState.getValue();
         } else {
-            return elementAsProps[propertyName];
+            return elementAsProps[propertyKey];
         }
     }
 
     const propsProxy = new Proxy({} as Record<PropertyKey, unknown>, {
         get: valueGetter,
-        set: (target, propertyName: keyof PropertyInitGeneric | symbol, newValue) => {
+        set: (target, propertyKey: keyof PropertyInitGeneric | symbol, newValue) => {
             if (verifyExists) {
-                assertValidPropertyName(propertyName, element, element.tagName);
+                assertValidPropertyName(propertyKey, element, element.tagName);
             }
 
             /**
-             * Don't worry about storing the value (no need to have duplicates of teh values) but at
-             * least set the property on target so we can detect it in "ownKeys" and
-             * "getOwnPropertyDescriptor".
+             * We need to at least set the property on target so we can detect it in "ownKeys" and
+             * "getOwnPropertyDescriptor". We don't need duplicates of the values stored in target
+             * but doing so makes console logging more effective it actually works).
              */
-            target[propertyName] = undefined;
+            target[propertyKey] = newValue;
+            const existingAsyncStateHandler = element.asyncStateHandlerMap[propertyKey];
 
-            const asyncState = element.asyncStateHandlerMap[propertyName];
-
-            if (asyncState) {
-                asyncState.setValue(newValue);
+            // if we're creating a new async prop
+            if (newValue instanceof AsyncStateInit) {
+                if (existingAsyncStateHandler) {
+                    existingAsyncStateHandler.resetValue(newValue);
+                } else {
+                    const newHandler = new AsyncStateHandler(newValue, (handler) => {
+                        // set the prop directly on the element so that lit catches updates
+                        (element as DeclarativeElement & PropertyInitGeneric)[propertyKey] =
+                            handler.getValue();
+                    });
+                    element.asyncStateHandlerMap[propertyKey] = newHandler;
+                }
             } else {
-                elementAsProps[propertyName] = newValue;
+                if (existingAsyncStateHandler) {
+                    existingAsyncStateHandler.setValue(newValue);
+                } else {
+                    elementAsProps[propertyKey] = newValue;
+                }
             }
 
             return true;

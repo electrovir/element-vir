@@ -204,7 +204,9 @@ export abstract class DeclarativeElement<
     public abstract readonly instanceState: MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>;
     public abstract readonly asyncStateHandlerMap: AsyncStateHandlerMap<StateInitMaybeAsyncGeneric>;
     public abstract readonly instanceInputs: InputsGeneric;
-    public abstract assignInputs(inputs: InputsGeneric): void;
+    public abstract assignInputs(
+        inputs: {} extends Required<InputsGeneric> ? never : InputsGeneric,
+    ): void;
     public abstract haveInputsBeenSet: boolean;
     public abstract markInputsAsHavingBeenSet(): void;
     public abstract readonly definition: DeclarativeElementDefinition<
