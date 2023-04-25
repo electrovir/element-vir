@@ -272,7 +272,7 @@ export function defineElementNoInputs<
         public readonly definition: ThisElementInstance['definition'] =
             {} as unknown as ThisElementDefinition;
 
-        public assignInputs(inputs: InputsGeneric): void {
+        public assignInputs(inputs: Partial<InputsGeneric>): void {
             assignInputs(this, inputs);
         }
 

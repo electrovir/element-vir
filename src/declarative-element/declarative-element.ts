@@ -209,7 +209,7 @@ export abstract class DeclarativeElement<
     public abstract readonly asyncStateHandlerMap: AsyncStateHandlerMap<StateInitMaybeAsyncGeneric>;
     public abstract readonly instanceInputs: InputsGeneric;
     public abstract assignInputs(
-        inputs: {} extends Required<InputsGeneric> ? never : InputsGeneric,
+        inputs: {} extends Required<InputsGeneric> ? never : Partial<InputsGeneric>,
     ): void;
     public abstract haveInputsBeenSet: boolean;
     public abstract markInputsAsHavingBeenSet(): void;
