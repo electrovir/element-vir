@@ -1,4 +1,3 @@
-import {isObject} from '@augment-vir/common';
 import {DeclarativeElement} from '../declarative-element';
 import {AsyncStateHandler, AsyncStateInit} from './async-state';
 import {PropertyInitMapBase} from './element-properties';
@@ -22,15 +21,6 @@ function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase
     }
 }
 
-const elementUpdaterProxyMarker = Symbol('element-updater-proxy');
-
-export function isElementUpdaterProxy(input: unknown): input is PropertyInitMapBase {
-    if (!isObject(input)) {
-        return false;
-    }
-    return (input as any)[elementUpdaterProxyMarker] === true;
-}
-
 export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyInitMapBase>(
     element: DeclarativeElement,
     verifyExists: boolean,
@@ -43,10 +33,6 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
     const elementAsProps = element as DeclarativeElement & PropertyInitGeneric;
 
     function valueGetter(target: any, propertyKey: keyof PropertyInitGeneric | symbol) {
-        if (propertyKey === elementUpdaterProxyMarker) {
-            return true;
-        }
-
         if (verifyExists) {
             assertValidPropertyName(propertyKey, element, element.tagName);
         }
