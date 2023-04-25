@@ -6,7 +6,7 @@ import {CssVarNameOrValueMap} from './properties/css-vars';
 import {EventDescriptorMap, EventsInitMap} from './properties/element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './properties/element-properties';
 import {HostClassNamesMap} from './properties/host-classes';
-import {RenderCallback} from './render-callback';
+import {RenderCallback, RenderParams} from './render-callback';
 
 export type HostInstanceType<
     TagNameGeneric extends CustomElementTagName,
@@ -200,6 +200,10 @@ export abstract class DeclarativeElement<
         unknown
     >['cssVarValues'];
 
+    public abstract lastRenderedProps: Pick<
+        RenderParams<any, InputsGeneric, StateInitMaybeAsyncGeneric, any, any, any>,
+        'inputs' | 'state'
+    >;
     public abstract override render(): unknown;
     public abstract readonly instanceState: MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>;
     public abstract readonly asyncStateHandlerMap: AsyncStateHandlerMap<StateInitMaybeAsyncGeneric>;
