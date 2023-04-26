@@ -12,6 +12,7 @@ export * from './declarative-element/directives/on-dom-created.directive';
 export * from './declarative-element/directives/on-resize.directive';
 export * from './declarative-element/directives/render-async-state.directive';
 export * from './declarative-element/directives/render-if.directive';
+export * from './declarative-element/is-declarative-element';
 export * from './declarative-element/properties/async-state';
 export * from './declarative-element/properties/css-vars';
 export * from './declarative-element/properties/element-events';
