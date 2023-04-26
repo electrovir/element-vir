@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "12.1.1",
+    "version": "12.1.2",
     "keywords": [
         "custom",
         "web",
@@ -41,7 +41,7 @@
     "dependencies": {
         "@augment-vir/browser": "^13.3.0",
         "@augment-vir/common": "^13.3.0",
-        "lit": "2.7.2"
+        "lit": "2.7.3"
     },
     "devDependencies": {
         "@augment-vir/browser-testing": "^13.3.0",
@@ -71,10 +71,10 @@
         "prettier-plugin-sort-json": "^1.0.0",
         "prettier-plugin-toml": "^0.3.1",
         "ts-node": "^10.9.1",
-        "type-fest": "^3.8.0",
+        "type-fest": "^3.9.0",
         "typescript": "^5.0.4",
-        "virmator": "^6.4.3",
-        "vite": "^4.3.1",
+        "virmator": "^6.4.4",
+        "vite": "^4.3.2",
         "vite-tsconfig-paths": "^4.2.0"
     }
 }
