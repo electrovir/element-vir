@@ -96,6 +96,7 @@ export class AsyncStateHandler<ValueGeneric> {
         initialValue:
             | Promise<UnPromise<ValueGeneric>>
             | UnPromise<ValueGeneric>
+            | ValueGeneric
             | typeof notSetSymbol
             | AsyncStateInit<ValueGeneric>,
         listener: AsyncStateHandlerListener<ValueGeneric>,
@@ -108,6 +109,7 @@ export class AsyncStateHandler<ValueGeneric> {
         rawValue:
             | Promise<UnPromise<ValueGeneric>>
             | UnPromise<ValueGeneric>
+            | ValueGeneric
             | typeof notSetSymbol
             | AsyncStateInit<ValueGeneric>,
     ) {
@@ -120,7 +122,7 @@ export class AsyncStateHandler<ValueGeneric> {
             if (rawValue instanceof Promise) {
                 this.setValue({newPromise: rawValue});
             } else {
-                this.setValue({resolvedValue: rawValue});
+                this.setValue({resolvedValue: rawValue as UnPromise<ValueGeneric>});
             }
         }
     }
@@ -243,13 +245,14 @@ export class AsyncStateInit<ValueGeneric> {
         public readonly initialValue:
             | Promise<UnPromise<ValueGeneric>>
             | UnPromise<ValueGeneric>
+            | ValueGeneric
             | typeof notSetSymbol,
     ) {}
     public readonly asyncMarkerSymbol = asyncMarkerSymbol;
 }
 
 export function asyncState<ValueGeneric>(
-    ...args: [Promise<UnPromise<ValueGeneric>> | UnPromise<ValueGeneric>] | []
+    ...args: [Promise<UnPromise<ValueGeneric>> | UnPromise<ValueGeneric> | ValueGeneric] | []
 ) {
     const initValue = isLengthAtLeast(args, 1) ? args[0] : notSetSymbol;
 
