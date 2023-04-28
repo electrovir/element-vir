@@ -33,7 +33,7 @@ export function defineElementNoInputs<
     HostClassKeys extends string = '',
     CssVarKeys extends string = '',
     RenderOutputGeneric = any,
-    HasInputsDefiner extends boolean = false,
+    InputsDefinerFunction extends ((input: any) => any) | undefined = undefined,
 >(
     initInput: DeclarativeElementInit<
         TagNameGeneric,
@@ -43,7 +43,7 @@ export function defineElementNoInputs<
         HostClassKeys,
         CssVarKeys,
         RenderOutputGeneric,
-        HasInputsDefiner
+        InputsDefinerFunction
     >,
 ): DeclarativeElementDefinition<
     TagNameGeneric,
@@ -53,7 +53,7 @@ export function defineElementNoInputs<
     HostClassKeys,
     CssVarKeys,
     RenderOutputGeneric,
-    HasInputsDefiner
+    InputsDefinerFunction
 > {
     type ThisElementDefinition = DeclarativeElementDefinition<
         TagNameGeneric,
@@ -63,7 +63,7 @@ export function defineElementNoInputs<
         HostClassKeys,
         CssVarKeys,
         RenderOutputGeneric,
-        HasInputsDefiner
+        InputsDefinerFunction
     >;
     type ThisElementStaticClass = typeof DeclarativeElement<
         TagNameGeneric,
@@ -73,7 +73,7 @@ export function defineElementNoInputs<
         HostClassKeys,
         CssVarKeys,
         RenderOutputGeneric,
-        HasInputsDefiner
+        InputsDefinerFunction
     >;
     type ThisElementInstance = InstanceType<ThisElementStaticClass>;
 
@@ -106,8 +106,12 @@ export function defineElementNoInputs<
         HostClassKeys,
         CssVarKeys,
         RenderOutputGeneric,
-        HasInputsDefiner
+        InputsDefinerFunction
     >['renderCallback'] = initInput.renderCallback;
+
+    const typedDefineInputs: InputsDefinerFunction =
+        initInput.inputsDefiner ??
+        (((inputs: InputsGeneric) => inputs as InputsGeneric) as InputsDefinerFunction);
 
     const anonymousClass = class extends DeclarativeElement<
         TagNameGeneric,
@@ -117,7 +121,7 @@ export function defineElementNoInputs<
         HostClassKeys,
         CssVarKeys,
         RenderOutputGeneric,
-        HasInputsDefiner
+        InputsDefinerFunction
     > {
         public static override readonly tagName = initInput.tagName;
         public static override readonly styles = calculatedStyles;
@@ -129,7 +133,7 @@ export function defineElementNoInputs<
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys,
-            HasInputsDefiner
+            InputsDefinerFunction
         > {
             return createRenderParams(this, eventsMap);
         }
@@ -144,10 +148,11 @@ export function defineElementNoInputs<
             HostClassKeys,
             CssVarKeys,
             RenderOutputGeneric,
-            HasInputsDefiner
+            InputsDefinerFunction
         >['events'] = eventsMap;
         public static override readonly renderCallback: ThisElementStaticClass['renderCallback'] =
             typedRenderCallback as ThisElementStaticClass['renderCallback'];
+        public static override readonly defineInputs: InputsDefinerFunction = typedDefineInputs;
         public static override readonly hostClasses: StaticDeclarativeElementProperties<
             TagNameGeneric,
             InputsGeneric,
@@ -156,7 +161,7 @@ export function defineElementNoInputs<
             HostClassKeys,
             CssVarKeys,
             RenderOutputGeneric,
-            HasInputsDefiner
+            InputsDefinerFunction
         >['hostClasses'] = hostClassNames;
         public static override readonly cssVarNames: StaticDeclarativeElementProperties<
             TagNameGeneric,
@@ -166,7 +171,7 @@ export function defineElementNoInputs<
             HostClassKeys,
             CssVarKeys,
             RenderOutputGeneric,
-            HasInputsDefiner
+            InputsDefinerFunction
         >['cssVarNames'] = cssVarNames;
         public static override readonly stateInit: StaticDeclarativeElementProperties<
             TagNameGeneric,
@@ -176,7 +181,7 @@ export function defineElementNoInputs<
             string,
             string,
             RenderOutputGeneric,
-            HasInputsDefiner
+            InputsDefinerFunction
         >['stateInit'] = initInput.stateInit as StaticDeclarativeElementProperties<
             TagNameGeneric,
             PropertyInitMapBase,
@@ -185,7 +190,7 @@ export function defineElementNoInputs<
             string,
             string,
             RenderOutputGeneric,
-            HasInputsDefiner
+            InputsDefinerFunction
         >['stateInit'];
         public static override readonly cssVarValues: StaticDeclarativeElementProperties<
             TagNameGeneric,
@@ -195,7 +200,7 @@ export function defineElementNoInputs<
             HostClassKeys,
             CssVarKeys,
             RenderOutputGeneric,
-            HasInputsDefiner
+            InputsDefinerFunction
         >['cssVarValues'] = cssVarNames;
         public get instanceType() {
             throw new Error(

@@ -5,7 +5,10 @@ import {IgnoreInputsNotBeenSetBeforeRenderWarningSymbol} from './definition-opti
 import {EventsInitMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
 
-type ElementDefiner<InputsGeneric extends PropertyInitMapBase, HasInputsDefiner extends boolean> = <
+type ElementDefiner<
+    InputsGeneric extends PropertyInitMapBase,
+    InputsDefinerFunction extends ((input: any) => any) | undefined,
+> = <
     TagNameGeneric extends CustomElementTagName,
     StateInitGeneric extends PropertyInitMapBase = {},
     EventsInitGeneric extends EventsInitMap = {},
@@ -21,7 +24,7 @@ type ElementDefiner<InputsGeneric extends PropertyInitMapBase, HasInputsDefiner 
         HostClassKeysGeneric,
         CssVarKeysGeneric,
         RenderOutputGeneric,
-        HasInputsDefiner
+        InputsDefinerFunction
     >,
 ) => DeclarativeElementDefinition<
     TagNameGeneric,
@@ -31,18 +34,18 @@ type ElementDefiner<InputsGeneric extends PropertyInitMapBase, HasInputsDefiner 
     HostClassKeysGeneric,
     CssVarKeysGeneric,
     RenderOutputGeneric,
-    HasInputsDefiner
+    InputsDefinerFunction
 >;
 export function defineElement<InputsGeneric extends PropertyInitMapBase = {}>(): ElementDefiner<
     InputsGeneric,
-    false
+    undefined
 >;
 export function defineElement<InputsDefinerFunction extends (input: any) => any>(
-    inputsDefinerFunction?: InputsDefinerFunction,
-): ElementDefiner<ReturnType<InputsDefinerFunction>, true>;
+    inputsDefinerFunction: InputsDefinerFunction,
+): ElementDefiner<ReturnType<InputsDefinerFunction>, InputsDefinerFunction>;
 export function defineElement<InputsDefinerFunction extends (input: any) => any>(
-    inputsDefinerFunction?: InputsDefinerFunction,
-): ElementDefiner<ReturnType<InputsDefinerFunction>, true> {
+    inputsDefinerFunction?: undefined,
+): ElementDefiner<ReturnType<InputsDefinerFunction>, InputsDefinerFunction> {
     type InputsGeneric = ReturnType<InputsDefinerFunction>;
 
     return <
@@ -62,7 +65,7 @@ export function defineElement<InputsDefinerFunction extends (input: any) => any>
                 HostClassKeysGeneric,
                 CssVarKeysGeneric,
                 RenderOutputGeneric,
-                boolean
+                any
             >,
             'inputsDefiner'
         >,
@@ -74,7 +77,7 @@ export function defineElement<InputsDefinerFunction extends (input: any) => any>
         HostClassKeysGeneric,
         CssVarKeysGeneric,
         RenderOutputGeneric,
-        boolean
+        InputsDefinerFunction
     > => {
         return defineElementNoInputs({
             ...initInput,

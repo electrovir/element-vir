@@ -15,7 +15,7 @@ export type HostInstanceType<
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
-    HasInputsDefiner extends boolean,
+    InputsDefinerFunction extends ((input: any) => any) | undefined = undefined,
 > = RequiredAndNotNullBy<
     DeclarativeElement<
         TagNameGeneric,
@@ -29,7 +29,7 @@ export type HostInstanceType<
          * HostInstanceType is vague enough that it can actually be used.
          */
         any,
-        HasInputsDefiner
+        InputsDefinerFunction
     >,
     'shadowRoot'
 >;
@@ -42,7 +42,7 @@ export type DeclarativeElementDefinition<
     HostClassKeys extends string = string,
     CssVarKeys extends string = string,
     RenderOutputGeneric = any,
-    HasInputsDefiner extends boolean = boolean,
+    InputsDefinerFunction extends ((input: any) => any) | undefined = undefined,
 > = (new () => HostInstanceType<
     TagNameGeneric,
     InputsGeneric,
@@ -50,7 +50,7 @@ export type DeclarativeElementDefinition<
     EventsInitGeneric,
     HostClassKeys,
     CssVarKeys,
-    HasInputsDefiner
+    InputsDefinerFunction
 >) &
     StaticDeclarativeElementProperties<
         TagNameGeneric,
@@ -60,7 +60,7 @@ export type DeclarativeElementDefinition<
         HostClassKeys,
         CssVarKeys,
         RenderOutputGeneric,
-        HasInputsDefiner
+        InputsDefinerFunction
     > & {
         instanceType: HostInstanceType<
             TagNameGeneric,
@@ -69,7 +69,7 @@ export type DeclarativeElementDefinition<
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys,
-            HasInputsDefiner
+            InputsDefinerFunction
         >;
     };
 
@@ -90,7 +90,7 @@ function staticImplements<T>() {
         string,
         string,
         unknown,
-        boolean
+        any
     >
 >()
 export abstract class DeclarativeElement<
@@ -101,7 +101,7 @@ export abstract class DeclarativeElement<
     HostClassKeys extends string = string,
     CssVarKeys extends string = string,
     RenderOutputGeneric = any,
-    HasInputsDefiner extends boolean = boolean,
+    InputsDefinerFunction extends ((input: any) => any) | undefined = any,
 > extends LitElement {
     public static readonly tagName: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -111,7 +111,7 @@ export abstract class DeclarativeElement<
         string,
         string,
         unknown,
-        boolean
+        any
     >['tagName'];
     public static override readonly styles: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -121,7 +121,7 @@ export abstract class DeclarativeElement<
         string,
         string,
         unknown,
-        boolean
+        any
     >['styles'];
     public static readonly isStrictInstance: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -131,7 +131,7 @@ export abstract class DeclarativeElement<
         string,
         string,
         unknown,
-        boolean
+        any
     >['isStrictInstance'];
     public static readonly renderCallback: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -141,8 +141,18 @@ export abstract class DeclarativeElement<
         string,
         string,
         unknown,
-        boolean
+        any
     >['renderCallback'];
+    public static readonly defineInputs: StaticDeclarativeElementProperties<
+        CustomElementTagName,
+        PropertyInitMapBase,
+        PropertyInitMapBase,
+        EventsInitMap,
+        string,
+        string,
+        unknown,
+        any
+    >['defineInputs'];
     public static readonly inputsType: StaticDeclarativeElementProperties<
         CustomElementTagName,
         PropertyInitMapBase,
@@ -151,7 +161,7 @@ export abstract class DeclarativeElement<
         string,
         string,
         unknown,
-        boolean
+        any
     >['inputsType'];
     public static readonly stateType: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -161,7 +171,7 @@ export abstract class DeclarativeElement<
         string,
         string,
         unknown,
-        boolean
+        any
     >['stateType'];
     public static readonly events: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -171,7 +181,7 @@ export abstract class DeclarativeElement<
         string,
         string,
         unknown,
-        boolean
+        any
     >['events'];
     public static readonly stateInit: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -181,7 +191,7 @@ export abstract class DeclarativeElement<
         string,
         string,
         unknown,
-        boolean
+        any
     >['stateInit'];
     public static readonly init: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -191,7 +201,7 @@ export abstract class DeclarativeElement<
         string,
         string,
         unknown,
-        boolean
+        any
     >['init'];
     public static readonly hostClasses: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -201,7 +211,7 @@ export abstract class DeclarativeElement<
         string,
         string,
         unknown,
-        boolean
+        any
     >['hostClasses'];
     public static readonly cssVarNames: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -211,7 +221,7 @@ export abstract class DeclarativeElement<
         string,
         string,
         unknown,
-        boolean
+        any
     >['cssVarNames'];
     public static readonly cssVarValues: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -221,7 +231,7 @@ export abstract class DeclarativeElement<
         string,
         string,
         unknown,
-        boolean
+        any
     >['cssVarValues'];
 
     public abstract lastRenderedProps: Pick<
@@ -245,7 +255,7 @@ export abstract class DeclarativeElement<
         HostClassKeys,
         CssVarKeys,
         RenderOutputGeneric,
-        HasInputsDefiner
+        InputsDefinerFunction
     >;
 }
 
@@ -257,7 +267,7 @@ export interface StaticDeclarativeElementProperties<
     HostClassKeys extends string,
     CssVarKeys extends string,
     RenderOutputGeneric,
-    HasInputsDefiner extends boolean,
+    InputsDefinerFunction extends ((input: any) => any) | undefined,
 > {
     /** Pass through the render callback for direct unit testability */
     readonly renderCallback: RenderCallback<
@@ -268,8 +278,9 @@ export interface StaticDeclarativeElementProperties<
         HostClassKeys,
         CssVarKeys,
         RenderOutputGeneric,
-        HasInputsDefiner
+        InputsDefinerFunction
     >;
+    readonly defineInputs: InputsDefinerFunction;
     events: EventDescriptorMap<EventsInitGeneric>;
     stateInit: ElementPropertyDescriptorMap<StateInitMaybeAsyncGeneric>;
     init: RequiredBy<
@@ -281,7 +292,7 @@ export interface StaticDeclarativeElementProperties<
             HostClassKeys,
             CssVarKeys,
             RenderOutputGeneric,
-            HasInputsDefiner
+            InputsDefinerFunction
         >,
         'stateInit' | 'events'
     >;
@@ -297,7 +308,7 @@ export interface StaticDeclarativeElementProperties<
         HostClassKeys,
         CssVarKeys,
         RenderOutputGeneric,
-        HasInputsDefiner
+        InputsDefinerFunction
     >;
     hostClasses: HostClassNamesMap<string, HostClassKeys>;
     cssVarNames: CssVarNameOrValueMap<CssVarKeys>;

@@ -19,7 +19,7 @@ export type DeclarativeElementInit<
     HostClassKeysGeneric extends string,
     CssVarKeysGeneric extends string,
     RenderOutputGeneric,
-    HasInputsDefiner extends boolean,
+    InputsDefinerFunction extends ((input: any) => any) | undefined,
 > = {
     /**
      * HTML tag name. This should not be used directly, as interpolating it with the html tagged
@@ -61,7 +61,7 @@ export type DeclarativeElementInit<
         EventsInitGeneric,
         HostClassKeysGeneric,
         CssVarKeysGeneric,
-        HasInputsDefiner
+        InputsDefinerFunction
     >;
     renderCallback: RequireNonVoidReturn<
         RenderOutputGeneric,
@@ -73,7 +73,7 @@ export type DeclarativeElementInit<
             HostClassKeysGeneric,
             CssVarKeysGeneric,
             RenderOutputGeneric,
-            HasInputsDefiner
+            InputsDefinerFunction
         >
     >;
     cleanupCallback?: InitCallback<
@@ -83,8 +83,8 @@ export type DeclarativeElementInit<
         EventsInitGeneric,
         HostClassKeysGeneric,
         CssVarKeysGeneric,
-        HasInputsDefiner
+        InputsDefinerFunction
     >;
     options?: Partial<DeclarativeElementDefinitionOptions> | undefined;
-    inputsDefiner?: undefined | ((input: InputsGeneric) => InputsGeneric);
+    inputsDefiner?: undefined | InputsDefinerFunction;
 };

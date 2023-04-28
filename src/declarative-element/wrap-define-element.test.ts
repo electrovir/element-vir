@@ -32,6 +32,23 @@ describe(wrapDefineElement.name, () => {
             }),
         );
 
+        function inputsDefiner<T>(inputs: T) {
+            return {thing: inputs};
+        }
+
+        // // inputsDefiners are not supported yet in wrapped elements
+        // assertTypeOf(
+        //     myDefineElement(inputsDefiner)({
+        //         tagName: `my-tag-${randomString()}`,
+        //         renderCallback: () => '',
+        //     }),
+        // ).toEqualTypeOf(
+        //     defineElement(inputsDefiner)({
+        //         tagName: `my-tag-${randomString()}`,
+        //         renderCallback: () => '',
+        //     }),
+        // );
+
         myDefineElement<MySpecificInputs>()({
             // @ts-expect-error
             tagName: 'bad-tag',

@@ -76,3 +76,5 @@ export const TestChildElement = defineElement<{
         `;
     },
 });
+
+type blah = typeof TestChildElement.defineInputs;
