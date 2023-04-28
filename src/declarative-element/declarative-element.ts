@@ -15,6 +15,7 @@ export type HostInstanceType<
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
+    HasInputsDefiner extends boolean,
 > = RequiredAndNotNullBy<
     DeclarativeElement<
         TagNameGeneric,
@@ -23,7 +24,12 @@ export type HostInstanceType<
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys,
-        any
+        /**
+         * Intentionally do not have a generic parameter for RenderOutputGeneric here so that
+         * HostInstanceType is vague enough that it can actually be used.
+         */
+        any,
+        HasInputsDefiner
     >,
     'shadowRoot'
 >;
@@ -36,13 +42,15 @@ export type DeclarativeElementDefinition<
     HostClassKeys extends string = string,
     CssVarKeys extends string = string,
     RenderOutputGeneric = any,
+    HasInputsDefiner extends boolean = boolean,
 > = (new () => HostInstanceType<
     TagNameGeneric,
     InputsGeneric,
     StateInitMaybeAsyncGeneric,
     EventsInitGeneric,
     HostClassKeys,
-    CssVarKeys
+    CssVarKeys,
+    HasInputsDefiner
 >) &
     StaticDeclarativeElementProperties<
         TagNameGeneric,
@@ -51,7 +59,8 @@ export type DeclarativeElementDefinition<
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys,
-        RenderOutputGeneric
+        RenderOutputGeneric,
+        HasInputsDefiner
     > & {
         instanceType: HostInstanceType<
             TagNameGeneric,
@@ -59,7 +68,8 @@ export type DeclarativeElementDefinition<
             StateInitMaybeAsyncGeneric,
             EventsInitGeneric,
             HostClassKeys,
-            CssVarKeys
+            CssVarKeys,
+            HasInputsDefiner
         >;
     };
 
@@ -79,7 +89,8 @@ function staticImplements<T>() {
         EventsInitMap,
         string,
         string,
-        unknown
+        unknown,
+        boolean
     >
 >()
 export abstract class DeclarativeElement<
@@ -90,6 +101,7 @@ export abstract class DeclarativeElement<
     HostClassKeys extends string = string,
     CssVarKeys extends string = string,
     RenderOutputGeneric = any,
+    HasInputsDefiner extends boolean = boolean,
 > extends LitElement {
     public static readonly tagName: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -98,7 +110,8 @@ export abstract class DeclarativeElement<
         EventsInitMap,
         string,
         string,
-        unknown
+        unknown,
+        boolean
     >['tagName'];
     public static override readonly styles: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -107,7 +120,8 @@ export abstract class DeclarativeElement<
         EventsInitMap,
         string,
         string,
-        unknown
+        unknown,
+        boolean
     >['styles'];
     public static readonly isStrictInstance: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -116,7 +130,8 @@ export abstract class DeclarativeElement<
         EventsInitMap,
         string,
         string,
-        unknown
+        unknown,
+        boolean
     >['isStrictInstance'];
     public static readonly renderCallback: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -125,7 +140,8 @@ export abstract class DeclarativeElement<
         EventsInitMap,
         string,
         string,
-        unknown
+        unknown,
+        boolean
     >['renderCallback'];
     public static readonly inputsType: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -134,7 +150,8 @@ export abstract class DeclarativeElement<
         EventsInitMap,
         string,
         string,
-        unknown
+        unknown,
+        boolean
     >['inputsType'];
     public static readonly stateType: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -143,7 +160,8 @@ export abstract class DeclarativeElement<
         EventsInitMap,
         string,
         string,
-        unknown
+        unknown,
+        boolean
     >['stateType'];
     public static readonly events: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -152,7 +170,8 @@ export abstract class DeclarativeElement<
         EventsInitMap,
         string,
         string,
-        unknown
+        unknown,
+        boolean
     >['events'];
     public static readonly stateInit: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -161,7 +180,8 @@ export abstract class DeclarativeElement<
         EventsInitMap,
         string,
         string,
-        unknown
+        unknown,
+        boolean
     >['stateInit'];
     public static readonly init: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -170,7 +190,8 @@ export abstract class DeclarativeElement<
         EventsInitMap,
         string,
         string,
-        unknown
+        unknown,
+        boolean
     >['init'];
     public static readonly hostClasses: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -179,7 +200,8 @@ export abstract class DeclarativeElement<
         EventsInitMap,
         string,
         string,
-        unknown
+        unknown,
+        boolean
     >['hostClasses'];
     public static readonly cssVarNames: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -188,7 +210,8 @@ export abstract class DeclarativeElement<
         EventsInitMap,
         string,
         string,
-        unknown
+        unknown,
+        boolean
     >['cssVarNames'];
     public static readonly cssVarValues: StaticDeclarativeElementProperties<
         CustomElementTagName,
@@ -197,11 +220,12 @@ export abstract class DeclarativeElement<
         EventsInitMap,
         string,
         string,
-        unknown
+        unknown,
+        boolean
     >['cssVarValues'];
 
     public abstract lastRenderedProps: Pick<
-        RenderParams<any, InputsGeneric, StateInitMaybeAsyncGeneric, any, any, any>,
+        RenderParams<any, InputsGeneric, StateInitMaybeAsyncGeneric, any, any, any, any>,
         'inputs' | 'state'
     >;
     public abstract override render(): unknown;
@@ -220,7 +244,8 @@ export abstract class DeclarativeElement<
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys,
-        RenderOutputGeneric
+        RenderOutputGeneric,
+        HasInputsDefiner
     >;
 }
 
@@ -232,6 +257,7 @@ export interface StaticDeclarativeElementProperties<
     HostClassKeys extends string,
     CssVarKeys extends string,
     RenderOutputGeneric,
+    HasInputsDefiner extends boolean,
 > {
     /** Pass through the render callback for direct unit testability */
     readonly renderCallback: RenderCallback<
@@ -241,7 +267,8 @@ export interface StaticDeclarativeElementProperties<
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys,
-        RenderOutputGeneric
+        RenderOutputGeneric,
+        HasInputsDefiner
     >;
     events: EventDescriptorMap<EventsInitGeneric>;
     stateInit: ElementPropertyDescriptorMap<StateInitMaybeAsyncGeneric>;
@@ -253,7 +280,8 @@ export interface StaticDeclarativeElementProperties<
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys,
-            RenderOutputGeneric
+            RenderOutputGeneric,
+            HasInputsDefiner
         >,
         'stateInit' | 'events'
     >;
@@ -268,7 +296,8 @@ export interface StaticDeclarativeElementProperties<
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys,
-        RenderOutputGeneric
+        RenderOutputGeneric,
+        HasInputsDefiner
     >;
     hostClasses: HostClassNamesMap<string, HostClassKeys>;
     cssVarNames: CssVarNameOrValueMap<CssVarKeys>;

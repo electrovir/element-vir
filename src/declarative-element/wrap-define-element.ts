@@ -15,7 +15,8 @@ export type WrapDefineElementOptions<
     EventsInitRequirementGeneric extends EventsInitMap = {},
     HostClassKeysRequirementGeneric extends string = '',
     CssVarKeysRequirementGeneric extends string = '',
-    RenderOutputGeneric = any,
+    RenderOutputRequirementGeneric = any,
+    HasInputsDefinerRequirementGeneric extends boolean = false,
 > = PartialAndNullable<{
     assertInputs: (
         inputInit: DeclarativeElementInit<
@@ -25,7 +26,8 @@ export type WrapDefineElementOptions<
             EventsInitRequirementGeneric,
             HostClassKeysRequirementGeneric,
             CssVarKeysRequirementGeneric,
-            RenderOutputGeneric
+            RenderOutputRequirementGeneric,
+            HasInputsDefinerRequirementGeneric
         >,
     ) => void;
     transformInputs: (
@@ -36,7 +38,8 @@ export type WrapDefineElementOptions<
             EventsInitRequirementGeneric,
             HostClassKeysRequirementGeneric,
             CssVarKeysRequirementGeneric,
-            RenderOutputGeneric
+            RenderOutputRequirementGeneric,
+            HasInputsDefinerRequirementGeneric
         >,
     ) => DeclarativeElementInit<
         TagNameRequirementGeneric,
@@ -45,7 +48,8 @@ export type WrapDefineElementOptions<
         EventsInitRequirementGeneric,
         HostClassKeysRequirementGeneric,
         CssVarKeysRequirementGeneric,
-        RenderOutputGeneric
+        RenderOutputRequirementGeneric,
+        HasInputsDefinerRequirementGeneric
     >;
 }>;
 
@@ -57,6 +61,7 @@ export function wrapDefineElement<
     HostClassKeysRequirementGeneric extends string = string,
     CssVarKeysRequirementGeneric extends string = string,
     RenderOutputRequirementGeneric = any,
+    HasInputsDefinerRequirementGeneric extends boolean = false,
 >(options?: WrapDefineElementOptions | undefined) {
     const {assertInputs, transformInputs}: WrapDefineElementOptions = {
         assertInputs: options?.assertInputs ?? (() => {}),
@@ -72,6 +77,7 @@ export function wrapDefineElement<
                 HostClassKeysGeneric extends HostClassKeysRequirementGeneric,
                 CssVarKeysGeneric extends CssVarKeysRequirementGeneric,
                 RenderOutputGeneric extends RenderOutputRequirementGeneric,
+                HasInputsDefinerGeneric extends HasInputsDefinerRequirementGeneric,
             >(
                 inputs: DeclarativeElementInit<
                     TagNameGeneric,
@@ -80,13 +86,16 @@ export function wrapDefineElement<
                     EventsInitGeneric,
                     HostClassKeysGeneric,
                     CssVarKeysGeneric,
-                    RenderOutputGeneric
+                    RenderOutputGeneric,
+                    HasInputsDefinerGeneric
                 >,
             ) => {
-                assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
+                assertInputs(
+                    inputs as DeclarativeElementInit<any, any, any, any, any, any, any, any>,
+                );
                 return defineElement<InputsGeneric>()(
                     transformInputs(
-                        inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
+                        inputs as DeclarativeElementInit<any, any, any, any, any, any, any, any>,
                     ) as unknown as DeclarativeElementInit<
                         TagNameGeneric,
                         InputsGeneric,
@@ -94,7 +103,8 @@ export function wrapDefineElement<
                         EventsInitGeneric,
                         HostClassKeysGeneric,
                         CssVarKeysGeneric,
-                        RenderOutputGeneric
+                        RenderOutputGeneric,
+                        HasInputsDefinerGeneric
                     >,
                 );
             };
@@ -107,6 +117,7 @@ export function wrapDefineElement<
             HostClassKeysGeneric extends HostClassKeysRequirementGeneric,
             CssVarKeysGeneric extends CssVarKeysRequirementGeneric,
             RenderOutputGeneric extends RenderOutputRequirementGeneric,
+            HasInputsDefinerGeneric extends HasInputsDefinerRequirementGeneric,
         >(
             inputs: DeclarativeElementInit<
                 TagNameGeneric,
@@ -115,13 +126,14 @@ export function wrapDefineElement<
                 EventsInitGeneric,
                 HostClassKeysGeneric,
                 CssVarKeysGeneric,
-                RenderOutputGeneric
+                RenderOutputGeneric,
+                HasInputsDefinerGeneric
             >,
         ) => {
-            assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
+            assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any, any>);
             return defineElementNoInputs(
                 transformInputs(
-                    inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
+                    inputs as DeclarativeElementInit<any, any, any, any, any, any, any, any>,
                 ) as unknown as DeclarativeElementInit<
                     TagNameGeneric,
                     InputsGeneric,
@@ -129,7 +141,8 @@ export function wrapDefineElement<
                     EventsInitGeneric,
                     HostClassKeysGeneric,
                     CssVarKeysGeneric,
-                    RenderOutputGeneric
+                    RenderOutputGeneric,
+                    HasInputsDefinerGeneric
                 >,
             );
         },

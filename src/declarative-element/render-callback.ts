@@ -18,6 +18,7 @@ export type RenderCallback<
     HostClassKeys extends string = any,
     CssVarKeys extends string = any,
     RenderOutputGeneric = any,
+    HasInputsDefiner extends boolean = any,
 > = (
     params: RenderParams<
         TagNameGeneric,
@@ -25,7 +26,8 @@ export type RenderCallback<
         StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        HasInputsDefiner
     >,
 ) => RenderOutputGeneric;
 
@@ -36,6 +38,7 @@ export type InitCallback<
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
+    HasInputsDefiner extends boolean,
 > = (
     params: RenderParams<
         TagNameGeneric,
@@ -43,7 +46,8 @@ export type InitCallback<
         StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        HasInputsDefiner
     >,
 ) => void;
 
@@ -58,6 +62,7 @@ export type RenderParams<
     EventsInitGeneric extends EventsInitMap,
     HostClassKeys extends string,
     CssVarKeys extends string,
+    HasInputsDefiner extends boolean,
 > = {
     state: Readonly<MaybeAsyncStateToSync<StateInitGeneric>>;
     updateState: UpdateStateCallback<StateInitGeneric>;
@@ -68,7 +73,8 @@ export type RenderParams<
         StateInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        HasInputsDefiner
     >;
     dispatch: <EventTypeNameGeneric extends keyof EventsInitGeneric>(
         event:
@@ -89,6 +95,7 @@ export function createRenderParams<
     HostClassKeys extends string,
     CssVarKeys extends string,
     RenderOutputGeneric,
+    HasInputsDefiner extends boolean,
 >(
     element: DeclarativeElement<
         TagNameGeneric,
@@ -97,7 +104,8 @@ export function createRenderParams<
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys,
-        RenderOutputGeneric
+        RenderOutputGeneric,
+        HasInputsDefiner
     >,
     eventsMap: EventDescriptorMap<EventsInitGeneric>,
 ): RenderParams<
@@ -106,7 +114,8 @@ export function createRenderParams<
     StateGeneric,
     EventsInitGeneric,
     HostClassKeys,
-    CssVarKeys
+    CssVarKeys,
+    HasInputsDefiner
 > {
     function updateState(newStatePartial: Parameters<UpdateStateCallback<StateGeneric>>[0]) {
         getObjectTypedKeys(newStatePartial).forEach((stateKey) => {
@@ -124,7 +133,8 @@ export function createRenderParams<
         StateGeneric,
         EventsInitGeneric,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        HasInputsDefiner
     > = {
         dispatch: (event) => element.dispatchEvent(event),
         updateState,
