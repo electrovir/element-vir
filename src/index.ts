@@ -1,4 +1,5 @@
 export * from './built-in-lit-directives';
+export * from './built-in-lit-types';
 export * from './declarative-element/declarative-element';
 export * from './declarative-element/declarative-element-init';
 export * from './declarative-element/define-element';
@@ -21,6 +22,7 @@ export * from './declarative-element/properties/host-classes';
 export * from './declarative-element/properties/styles';
 export * from './declarative-element/properties/tag-name';
 export * from './declarative-element/render-callback';
+export * from './declarative-element/utilities/template-string';
 export * from './declarative-element/wrap-define-element';
 export {requireAllCustomElementsToBeDeclarativeElements} from './require-declarative-element';
 export * from './template-transforms/vir-css/vir-css';
