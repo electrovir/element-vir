@@ -1,5 +1,6 @@
-export {svg} from 'lit';
+export {svg, unsafeCSS} from 'lit';
 export type {
+    CSSResult,
     CompiledTemplate,
     CompiledTemplateResult,
     HTMLTemplateResult,
