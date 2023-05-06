@@ -2,13 +2,16 @@ import {getObjectTypedKeys, RequiredAndNotNullBy} from '@augment-vir/common';
 import {TypedEvent} from '../typed-event/typed-event';
 import {DeclarativeElement, HostInstanceType} from './declarative-element';
 import {CustomElementTagName} from './declarative-element-init';
-import {AsyncStateInputs, MaybeAsyncStateToSync} from './properties/async-state';
 import {
     EventDescriptorMap,
     EventInitMapEventDetailExtractor,
     EventsInitMap,
 } from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
+import {
+    FlattenObservablePropertyGetters,
+    FlattenObservablePropertySetters,
+} from './properties/observable-property/observable-property-handler';
 
 export type RenderCallback<
     TagNameGeneric extends CustomElementTagName = any,
@@ -48,7 +51,7 @@ export type InitCallback<
 ) => void;
 
 export type UpdateStateCallback<StateGeneric extends PropertyInitMapBase> = (
-    newState: Partial<AsyncStateInputs<StateGeneric>>,
+    newState: Partial<FlattenObservablePropertySetters<StateGeneric>>,
 ) => void;
 
 export type RenderParams<
@@ -59,7 +62,7 @@ export type RenderParams<
     HostClassKeys extends string,
     CssVarKeys extends string,
 > = {
-    state: Readonly<MaybeAsyncStateToSync<StateInitGeneric>>;
+    state: Readonly<FlattenObservablePropertyGetters<StateInitGeneric>>;
     updateState: UpdateStateCallback<StateInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
     host: HostInstanceType<
@@ -78,7 +81,7 @@ export type RenderParams<
               >
             | Event,
     ) => boolean;
-    inputs: InputsGeneric;
+    inputs: Readonly<FlattenObservablePropertyGetters<InputsGeneric>>;
 };
 
 export function createRenderParams<
@@ -112,7 +115,7 @@ export function createRenderParams<
         getObjectTypedKeys(newStatePartial).forEach((stateKey) => {
             const newValue = newStatePartial[
                 stateKey
-            ] as MaybeAsyncStateToSync<StateGeneric>[typeof stateKey];
+            ] as FlattenObservablePropertyGetters<StateGeneric>[typeof stateKey];
 
             element.instanceState[stateKey] = newValue;
         });

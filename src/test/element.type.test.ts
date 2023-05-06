@@ -32,10 +32,10 @@ const WithHostClassesAndCssVars = defineElementNoInputs({
     },
     renderCallback: ({state, updateState}) => {
         // purple
-        console.log(state.color);
+        console.info(state.color);
         updateState({color: 'green'});
         // green
-        console.log(state.color);
+        console.info(state.color);
 
         return html``;
     },

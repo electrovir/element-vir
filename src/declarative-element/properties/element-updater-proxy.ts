@@ -1,6 +1,6 @@
 import {DeclarativeElement} from '../declarative-element';
-import {AsyncStateHandler, AsyncStateInit} from './async-state';
 import {PropertyInitMapBase} from './element-properties';
+import {isObservablePropertyHandler} from './observable-property/observable-property-handler';
 
 function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase>(
     propKey: any,
@@ -37,13 +37,7 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
             assertValidPropertyName(propertyKey, element, element.tagName);
         }
 
-        const asyncState = element.asyncStateHandlerMap[propertyKey];
-
-        if (asyncState) {
-            return asyncState.getValue();
-        } else {
-            return elementAsProps[propertyKey];
-        }
+        return elementAsProps[propertyKey];
     }
 
     const propsProxy = new Proxy({} as Record<PropertyKey, unknown>, {
@@ -53,31 +47,42 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
                 assertValidPropertyName(propertyKey, element, element.tagName);
             }
 
-            /**
-             * We need to at least set the property on target so we can detect it in "ownKeys" and
-             * "getOwnPropertyDescriptor". We don't need duplicates of the values stored in target
-             * but doing so makes console logging more effective it actually works).
-             */
-            target[propertyKey] = newValue;
-            const existingAsyncStateHandler = element.asyncStateHandlerMap[propertyKey];
+            const existingObservablePropertyHandler =
+                element.observablePropertyHandlerMap[propertyKey];
 
-            // if we're creating a new async prop
-            if (newValue instanceof AsyncStateInit) {
-                if (existingAsyncStateHandler) {
-                    existingAsyncStateHandler.resetValue(newValue);
+            function setValueOnElement(value: typeof newValue) {
+                /**
+                 * We need to at least set the property on target so we can detect it in "ownKeys"
+                 * and "getOwnPropertyDescriptor". We don't need duplicates of the values stored in
+                 * target but doing so makes console logging more effective it actually works).
+                 */
+                target[propertyKey] = value;
+                elementAsProps[propertyKey] = value;
+            }
+
+            /** If we're creating a new observable property */
+            if (isObservablePropertyHandler(newValue)) {
+                if (
+                    existingObservablePropertyHandler &&
+                    newValue !== existingObservablePropertyHandler
+                ) {
+                    newValue.addMultipleListeners(
+                        existingObservablePropertyHandler.getAllListeners(),
+                    );
+                    /** Remove listeners from old property handlers so they can be garbage collected. */
+                    existingObservablePropertyHandler.removeAllListeners();
                 } else {
-                    const newHandler = new AsyncStateHandler(newValue, (handler) => {
-                        // set the prop directly on the element so that lit catches updates
-                        (element as DeclarativeElement & PropertyInitGeneric)[propertyKey] =
-                            handler.getValue();
+                    newValue.addListener(true, (newObservableValue) => {
+                        setValueOnElement(newObservableValue);
                     });
-                    element.asyncStateHandlerMap[propertyKey] = newHandler;
                 }
+
+                element.observablePropertyHandlerMap[propertyKey] = newValue;
             } else {
-                if (existingAsyncStateHandler) {
-                    existingAsyncStateHandler.setValue(newValue);
+                if (existingObservablePropertyHandler) {
+                    existingObservablePropertyHandler.setValue(newValue);
                 } else {
-                    elementAsProps[propertyKey] = newValue;
+                    setValueOnElement(newValue);
                 }
             }
 

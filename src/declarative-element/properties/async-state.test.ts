@@ -3,18 +3,18 @@ import {assertTypeOf, clickElement, typedAssertNotNullish} from '@augment-vir/br
 import {DeferredPromiseWrapper, createDeferredPromiseWrapper} from '@augment-vir/common';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {
+    AsyncObservablePropertyHandler,
     AsyncState,
-    AsyncStateInit,
     StaticElementPropertyDescriptor,
     asyncState,
     defineElement,
     defineElementEvent,
     defineElementNoInputs,
     html,
+    isRenderReady,
     listen,
 } from '../..';
 import {assertRejects, getAssertedDeclarativeElement} from '../../augments/testing.test-helper';
-import {isRenderReady} from './async-state';
 
 describe(asyncState.name, () => {
     it('should have proper types', () => {
@@ -47,7 +47,7 @@ describe(asyncState.name, () => {
         });
 
         assertTypeOf(elementWithAsyncState.stateInit.myAsyncState).toEqualTypeOf<
-            StaticElementPropertyDescriptor<string, AsyncStateInit<SomethingObject>>
+            StaticElementPropertyDescriptor<string, AsyncObservablePropertyHandler<SomethingObject>>
         >();
 
         assertTypeOf<(typeof elementWithAsyncState)['stateType']['myAsyncState']>().toEqualTypeOf<

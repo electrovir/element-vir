@@ -16,19 +16,22 @@ import {
 import {assign} from './directives/assign.directive';
 import {hasDeclarativeElementParent} from './has-declarative-element-parent';
 import {assignInputs, markInputsAsHavingBeenSet} from './properties/assign-inputs';
-import {MaybeAsyncStateToSync} from './properties/async-state';
 import {createCssVarNamesMap, createCssVarValuesMap} from './properties/css-vars';
 import {EventsInitMap, createEventDescriptorMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
 import {createElementUpdaterProxy} from './properties/element-updater-proxy';
 import {createHostClassNamesMap} from './properties/host-classes';
+import {
+    AllowObservablePropertySetter,
+    FlattenObservablePropertyGetters,
+} from './properties/observable-property/observable-property-handler';
 import {applyHostClasses, hostClassNamesToStylesInput} from './properties/styles';
 import {RenderParams, createRenderParams} from './render-callback';
 
 export function defineElementNoInputs<
     TagNameGeneric extends CustomElementTagName = '-',
     InputsGeneric extends PropertyInitMapBase = {},
-    StateInitMaybeAsyncGeneric extends PropertyInitMapBase = {},
+    StateInitGeneric extends PropertyInitMapBase = {},
     EventsInitGeneric extends EventsInitMap = {},
     HostClassKeys extends string = '',
     CssVarKeys extends string = '',
@@ -37,7 +40,7 @@ export function defineElementNoInputs<
     initInput: DeclarativeElementInit<
         TagNameGeneric,
         InputsGeneric,
-        StateInitMaybeAsyncGeneric,
+        StateInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys,
@@ -46,7 +49,7 @@ export function defineElementNoInputs<
 ): DeclarativeElementDefinition<
     TagNameGeneric,
     InputsGeneric,
-    StateInitMaybeAsyncGeneric,
+    StateInitGeneric,
     EventsInitGeneric,
     HostClassKeys,
     CssVarKeys,
@@ -55,7 +58,7 @@ export function defineElementNoInputs<
     type ThisElementDefinition = DeclarativeElementDefinition<
         TagNameGeneric,
         InputsGeneric,
-        StateInitMaybeAsyncGeneric,
+        StateInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys,
@@ -64,7 +67,7 @@ export function defineElementNoInputs<
     type ThisElementStaticClass = typeof DeclarativeElement<
         TagNameGeneric,
         InputsGeneric,
-        StateInitMaybeAsyncGeneric,
+        StateInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys,
@@ -96,7 +99,7 @@ export function defineElementNoInputs<
     const typedRenderCallback: StaticDeclarativeElementProperties<
         TagNameGeneric,
         InputsGeneric,
-        StateInitMaybeAsyncGeneric,
+        StateInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys,
@@ -106,7 +109,7 @@ export function defineElementNoInputs<
     const anonymousClass = class extends DeclarativeElement<
         TagNameGeneric,
         InputsGeneric,
-        StateInitMaybeAsyncGeneric,
+        StateInitGeneric,
         EventsInitGeneric,
         HostClassKeys,
         CssVarKeys,
@@ -118,7 +121,7 @@ export function defineElementNoInputs<
         public createRenderParams(): RenderParams<
             TagNameGeneric,
             InputsGeneric,
-            StateInitMaybeAsyncGeneric,
+            StateInitGeneric,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys
@@ -131,7 +134,7 @@ export function defineElementNoInputs<
         public static override readonly events: StaticDeclarativeElementProperties<
             TagNameGeneric,
             InputsGeneric,
-            MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>,
+            FlattenObservablePropertyGetters<StateInitGeneric>,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys,
@@ -142,7 +145,7 @@ export function defineElementNoInputs<
         public static override readonly hostClasses: StaticDeclarativeElementProperties<
             TagNameGeneric,
             InputsGeneric,
-            MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>,
+            FlattenObservablePropertyGetters<StateInitGeneric>,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys,
@@ -151,7 +154,7 @@ export function defineElementNoInputs<
         public static override readonly cssVarNames: StaticDeclarativeElementProperties<
             TagNameGeneric,
             InputsGeneric,
-            MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>,
+            FlattenObservablePropertyGetters<StateInitGeneric>,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys,
@@ -177,7 +180,7 @@ export function defineElementNoInputs<
         public static override readonly cssVarValues: StaticDeclarativeElementProperties<
             TagNameGeneric,
             InputsGeneric,
-            MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>,
+            FlattenObservablePropertyGetters<StateInitGeneric>,
             EventsInitGeneric,
             HostClassKeys,
             CssVarKeys,
@@ -188,12 +191,12 @@ export function defineElementNoInputs<
                 `"instanceType" was called on ${initInput.tagName} as a value but it is only for types.`,
             );
         }
-        public static override get inputsType(): InputsGeneric {
+        public static override get inputsType(): AllowObservablePropertySetter<InputsGeneric> {
             throw new Error(
                 `"inputsType" was called on ${initInput.tagName} as a value but it is only for types.`,
             );
         }
-        public static override get stateType(): MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric> {
+        public static override get stateType(): FlattenObservablePropertyGetters<StateInitGeneric> {
             throw new Error(
                 `"stateType" was called on ${initInput.tagName} as a value but it is only for types.`,
             );
@@ -276,13 +279,17 @@ export function defineElementNoInputs<
             assignInputs(this, inputs);
         }
 
-        public readonly asyncStateHandlerMap: ThisElementInstance['asyncStateHandlerMap'] = {};
+        public readonly observablePropertyHandlerMap: ThisElementInstance['observablePropertyHandlerMap'] =
+            {};
 
         public readonly instanceInputs: ThisElementInstance['instanceInputs'] =
-            createElementUpdaterProxy<InputsGeneric>(this, false);
+            createElementUpdaterProxy<Readonly<FlattenObservablePropertyGetters<InputsGeneric>>>(
+                this,
+                false,
+            );
 
         public readonly instanceState: ThisElementInstance['instanceState'] =
-            createElementUpdaterProxy<MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>>(
+            createElementUpdaterProxy<FlattenObservablePropertyGetters<StateInitGeneric>>(
                 this,
                 true,
             );
@@ -290,9 +297,9 @@ export function defineElementNoInputs<
         constructor() {
             super();
 
-            const stateInit: MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric> =
-                (initInput.stateInit as MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>) ||
-                ({} as MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>);
+            const stateInit: FlattenObservablePropertyGetters<StateInitGeneric> =
+                (initInput.stateInit as FlattenObservablePropertyGetters<StateInitGeneric>) ||
+                ({} as FlattenObservablePropertyGetters<StateInitGeneric>);
 
             getObjectTypedKeys(stateInit).forEach((stateKey) => {
                 property()(this, stateKey);

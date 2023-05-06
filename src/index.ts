@@ -8,6 +8,7 @@ export type {DeclarativeElementDefinitionOptions} from './declarative-element/de
 export * from './declarative-element/directives/assign-with-clean-up.directive';
 export * from './declarative-element/directives/assign.directive';
 export * from './declarative-element/directives/directive-helpers';
+export * from './declarative-element/directives/is-render-ready.directive';
 export * from './declarative-element/directives/listen.directive';
 export * from './declarative-element/directives/on-dom-created.directive';
 export * from './declarative-element/directives/on-resize.directive';

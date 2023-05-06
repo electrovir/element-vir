@@ -8,12 +8,17 @@ import {
     onResize,
     requireAllCustomElementsToBeDeclarativeElements,
 } from '../..';
+import {createObservableProperty} from '../../declarative-element/properties/observable-property/create-observable-property';
 import {MyCustomEvent} from '../customEvent';
 import {allTestArrayElements} from './array-of-elements-test/elements-array.element';
 import {AsyncChild} from './async-child.element';
 import {TestChildElement} from './child.element';
 
 requireAllCustomElementsToBeDeclarativeElements();
+
+const myObservable = createObservableProperty(5);
+
+console.log({myObservable});
 
 export const AppElement = defineElementNoInputs({
     tagName: 'element-vir-test-app',
@@ -91,6 +96,7 @@ export const AppElement = defineElementNoInputs({
                     ${assign(TestChildElement, {
                         displayNumber: state.funnyNumber,
                         width: state.width,
+                        myProp: myObservable,
                     })}
                     ${listen(TestChildElement.events.speak, (event) => {
                         updateState({

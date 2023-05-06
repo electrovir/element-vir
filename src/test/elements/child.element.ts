@@ -6,6 +6,7 @@ import {MyCustomEvent} from '../customEvent';
 export const TestChildElement = defineElement<{
     width: number;
     displayNumber: number;
+    myProp?: number;
 }>()({
     tagName: 'element-vir-test-child',
     styles: ({hostClassSelectors, hostClassNames, cssVarValues}) => {
@@ -51,7 +52,7 @@ export const TestChildElement = defineElement<{
         // log here to make sure it's not rendering too often
         console.info('child rendering');
         return html`
-            <span>Child</span>
+            <span>Child ${inputs.myProp}</span>
             <span>width: ${inputs.width}</span>
             <span>input number: ${inputs.displayNumber}</span>
             <button

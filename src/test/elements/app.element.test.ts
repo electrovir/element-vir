@@ -116,6 +116,7 @@ describe(AppElement.tagName, () => {
         const currentInputs = {...childElement.instanceInputs};
         assert.deepStrictEqual(currentInputs, {
             displayNumber: childElement.instanceInputs.displayNumber,
+            myProp: 5,
             width: childElement.instanceInputs.width,
         });
     });

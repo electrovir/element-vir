@@ -219,7 +219,7 @@ export const MyWithAssignmentCleanupCallbackElement = defineElementNoInputs({
     },
     initCallback: ({updateState}) => {
         updateState({
-            intervalId: window.setInterval(() => console.log('hi'), 1000),
+            intervalId: window.setInterval(() => console.info('hi'), 1000),
         });
     },
     renderCallback: () => html`

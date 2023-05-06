@@ -1,11 +1,11 @@
 import {CSSResult} from 'lit';
 import {RequireNonVoidReturn} from '../augments/type';
 import {DeclarativeElementDefinitionOptions} from './definition-options';
-import {MaybeAsyncStateToSync} from './properties/async-state';
 import {CssVarsInitMap} from './properties/css-vars';
 import {EventsInitMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
 import {HostClassesInitMap} from './properties/host-classes';
+import {FlattenObservablePropertyGetters} from './properties/observable-property/observable-property-handler';
 import {StylesCallback} from './properties/styles';
 import {InitCallback, RenderCallback} from './render-callback';
 
@@ -14,7 +14,7 @@ export type CustomElementTagName = `${string}-${string}`;
 export type DeclarativeElementInit<
     TagNameGeneric extends CustomElementTagName,
     InputsGeneric extends PropertyInitMapBase,
-    StateInitMaybeAsyncGeneric extends PropertyInitMapBase,
+    StateInitGeneric extends PropertyInitMapBase,
     EventsInitGeneric extends EventsInitMap,
     HostClassKeysGeneric extends string,
     CssVarKeysGeneric extends string,
@@ -28,7 +28,7 @@ export type DeclarativeElementInit<
     /** Static styles. These should not and cannot change. */
     styles?: CSSResult | StylesCallback<HostClassKeysGeneric, CssVarKeysGeneric>;
     /** Element properties. (These can be thought of as "inputs".) */
-    stateInit?: StateInitMaybeAsyncGeneric;
+    stateInit?: StateInitGeneric;
     /** Events that the element can dispatch. (These can be thought of as "outputs".) */
     events?: EventsInitGeneric;
     /**
@@ -38,8 +38,8 @@ export type DeclarativeElementInit<
      */
     hostClasses?: HostClassesInitMap<
         HostClassKeysGeneric,
-        InputsGeneric,
-        MaybeAsyncStateToSync<StateInitMaybeAsyncGeneric>
+        FlattenObservablePropertyGetters<InputsGeneric>,
+        FlattenObservablePropertyGetters<StateInitGeneric>
     >;
     /**
      * CSS Vars for the component. Keys of this object should be camelCased (or whatever your casing
@@ -56,7 +56,7 @@ export type DeclarativeElementInit<
     initCallback?: InitCallback<
         TagNameGeneric,
         InputsGeneric,
-        StateInitMaybeAsyncGeneric,
+        StateInitGeneric,
         EventsInitGeneric,
         HostClassKeysGeneric,
         CssVarKeysGeneric
@@ -66,7 +66,7 @@ export type DeclarativeElementInit<
         RenderCallback<
             TagNameGeneric,
             InputsGeneric,
-            StateInitMaybeAsyncGeneric,
+            StateInitGeneric,
             EventsInitGeneric,
             HostClassKeysGeneric,
             CssVarKeysGeneric,
@@ -76,7 +76,7 @@ export type DeclarativeElementInit<
     cleanupCallback?: InitCallback<
         TagNameGeneric,
         InputsGeneric,
-        StateInitMaybeAsyncGeneric,
+        StateInitGeneric,
         EventsInitGeneric,
         HostClassKeysGeneric,
         CssVarKeysGeneric

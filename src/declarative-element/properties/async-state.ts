@@ -4,30 +4,22 @@ import {
     DeferredPromiseWrapper,
     ensureError,
     isLengthAtLeast,
-    isPromiseLike,
     JsonCompatibleValue,
     UnPromise,
 } from '@augment-vir/common';
 import {PickAndBlockOthers} from '../../augments/type';
-import {PropertyInitMapBase} from './element-properties';
+import {
+    ObservablePropertyHandler,
+    observablePropertyHandlerMarkerKey,
+    ObservablePropertyListener,
+} from './observable-property/observable-property-handler';
 
 export type AsyncState<ValueGeneric> =
     | Error
     | UnPromise<ValueGeneric>
     | Promise<UnPromise<ValueGeneric>>;
 
-const asyncMarkerSymbol = Symbol('element-vir-async-state-marker');
 const notSetSymbol = Symbol('not set');
-
-export function isRenderReady<T>(asyncStateInput: AsyncState<T>): asyncStateInput is UnPromise<T> {
-    if (asyncStateInput instanceof Error) {
-        return false;
-    } else if (isPromiseLike(asyncStateInput)) {
-        return false;
-    } else {
-        return true;
-    }
-}
 
 type AllSetValueProperties<ValueGeneric> = {
     /** Set a new value directly without using any promises. */
@@ -53,55 +45,30 @@ export type AsyncStateSetValue<ValueGeneric> =
     | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'forceUpdate'>
     | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'resolvedValue'>;
 
-export type MaybeAsyncStateToSync<PropertyMapInit extends PropertyInitMapBase> = {
-    [Prop in keyof PropertyMapInit]: PropertyMapInit[Prop] extends
-        | AsyncStateHandler<infer ValueGeneric>
-        | AsyncStateInit<infer ValueGeneric>
-        ? AsyncState<ValueGeneric>
-        : PropertyMapInit[Prop];
-};
-
-export type AsyncStateInputs<PropertyMapInit extends PropertyInitMapBase> = {
-    [Prop in keyof PropertyMapInit]: PropertyMapInit[Prop] extends
-        | AsyncStateHandler<infer ValueGeneric>
-        | AsyncStateInit<infer ValueGeneric>
-        ? AsyncStateSetValue<ValueGeneric>
-        : PropertyMapInit[Prop];
-};
-
-export type AsyncStateHandlerMap<OriginalObjectGeneric extends PropertyInitMapBase> = Partial<
-    Record<keyof OriginalObjectGeneric, AsyncStateHandler<any>>
->;
-
-export type AsyncStateHandlerListener<ValueGeneric> = (
-    handler: AsyncStateHandler<ValueGeneric>,
-) => void;
-
-export class AsyncStateHandler<ValueGeneric> {
+export class AsyncObservablePropertyHandler<ValueGeneric>
+    implements asyncObservablePropertyHandler<ValueGeneric>
+{
     #lastTrigger:
         | Extract<AsyncStateSetValue<unknown>, {trigger: unknown}>['trigger']
         | typeof notSetSymbol
         | undefined = notSetSymbol;
     #resolutionValue: UnPromise<ValueGeneric> | typeof notSetSymbol = notSetSymbol;
     #rejectionError: Error | typeof notSetSymbol = notSetSymbol;
-    #listeners: AsyncStateHandlerListener<ValueGeneric>[] = [];
+    #listeners = new Set<ObservablePropertyListener<AsyncState<ValueGeneric>>>();
     #lastSetPromise: Promise<UnPromise<ValueGeneric>> | undefined;
 
     #waitingForValuePromise: DeferredPromiseWrapper<UnPromise<ValueGeneric>> =
         createDeferredPromiseWrapper();
 
-    public readonly asyncMarkerSymbol = asyncMarkerSymbol;
+    [observablePropertyHandlerMarkerKey] = true as const;
 
     constructor(
         initialValue:
             | Promise<UnPromise<ValueGeneric>>
             | UnPromise<ValueGeneric>
             | ValueGeneric
-            | typeof notSetSymbol
-            | AsyncStateInit<ValueGeneric>,
-        listener: AsyncStateHandlerListener<ValueGeneric>,
+            | typeof notSetSymbol,
     ) {
-        this.addSettleListener(listener);
         this.resetValue(initialValue);
     }
 
@@ -110,13 +77,8 @@ export class AsyncStateHandler<ValueGeneric> {
             | Promise<UnPromise<ValueGeneric>>
             | UnPromise<ValueGeneric>
             | ValueGeneric
-            | typeof notSetSymbol
-            | AsyncStateInit<ValueGeneric>,
+            | typeof notSetSymbol,
     ) {
-        if (rawValue instanceof AsyncStateInit) {
-            rawValue = rawValue.initialValue;
-        }
-
         this.#resetWaitingForValuePromise();
         if (rawValue !== notSetSymbol) {
             if (rawValue instanceof Promise) {
@@ -128,8 +90,9 @@ export class AsyncStateHandler<ValueGeneric> {
     }
 
     #fireListeners() {
+        const value = this.getValue();
         this.#listeners.forEach((listener) => {
-            listener(this);
+            listener(value);
         });
     }
 
@@ -196,6 +159,7 @@ export class AsyncStateHandler<ValueGeneric> {
                 const newValue = setInputs.createPromise();
 
                 this.#setPromise(newValue);
+                this.#fireListeners();
             }
         } else if ('newPromise' in setInputs) {
             this.#lastTrigger === notSetSymbol;
@@ -232,29 +196,57 @@ export class AsyncStateHandler<ValueGeneric> {
         }
     }
 
-    public addSettleListener(callback: AsyncStateHandlerListener<ValueGeneric>) {
-        this.#listeners.push(callback);
+    public addListener(
+        fireImmediately: boolean,
+        listener: ObservablePropertyListener<AsyncState<ValueGeneric>>,
+    ) {
+        this.#listeners.add(listener);
+        if (fireImmediately) {
+            listener(this.getValue());
+        }
     }
-    public removeSettleListener(callback: AsyncStateHandlerListener<ValueGeneric>) {
-        this.#listeners = this.#listeners.filter((listener) => listener !== callback);
+
+    public addMultipleListeners(
+        listeners: ReadonlySet<ObservablePropertyListener<AsyncState<ValueGeneric>>>,
+    ): void {
+        listeners.forEach((listener) => this.#listeners.add(listener));
+    }
+
+    public getAllListeners() {
+        return this.#listeners;
+    }
+
+    public removeListener(listener: ObservablePropertyListener<AsyncState<ValueGeneric>>) {
+        if (this.#listeners.has(listener)) {
+            this.#listeners.delete(listener);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public removeAllListeners() {
+        const count = this.#listeners.size;
+
+        this.#listeners.clear();
+
+        return count;
     }
 }
 
-export class AsyncStateInit<ValueGeneric> {
-    constructor(
-        public readonly initialValue:
-            | Promise<UnPromise<ValueGeneric>>
-            | UnPromise<ValueGeneric>
-            | ValueGeneric
-            | typeof notSetSymbol,
-    ) {}
-    public readonly asyncMarkerSymbol = asyncMarkerSymbol;
-}
+export type asyncObservablePropertyHandler<ValueGeneric> = ObservablePropertyHandler<
+    AsyncStateSetValue<ValueGeneric>,
+    AsyncState<ValueGeneric>
+>;
 
 export function asyncState<ValueGeneric>(
     ...args: [Promise<UnPromise<ValueGeneric>> | UnPromise<ValueGeneric> | ValueGeneric] | []
 ) {
+    /**
+     * Distinguish between an explicitly passed value of undefined or simply a lack of any arguments
+     * at all.
+     */
     const initValue = isLengthAtLeast(args, 1) ? args[0] : notSetSymbol;
 
-    return new AsyncStateInit<ValueGeneric>(initValue);
+    return new AsyncObservablePropertyHandler<ValueGeneric>(initValue);
 }
