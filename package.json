@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "12.4.0",
+    "version": "12.4.1",
     "keywords": [
         "custom",
         "web",
@@ -39,13 +39,13 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/browser": "^13.3.0",
-        "@augment-vir/common": "^13.3.0",
-        "lit": "2.7.3"
+        "@augment-vir/browser": "^13.4.0",
+        "@augment-vir/common": "^13.4.0",
+        "lit": "2.7.4"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^13.3.0",
-        "@augment-vir/node-js": "^13.3.0",
+        "@augment-vir/browser-testing": "^13.4.0",
+        "@augment-vir/node-js": "^13.4.0",
         "@istanbuljs/nyc-config-typescript": "^1.0.2",
         "@open-wc/testing": "^3.1.8",
         "@types/mocha": "^10.0.1",
@@ -60,7 +60,7 @@
         "istanbul-smart-text-reporter": "^1.1.1",
         "markdown-code-example-inserter": "^0.3.0",
         "mocha-spec-reporter-with-file-names": "^0.0.3",
-        "npm-check-updates": "^16.10.9",
+        "npm-check-updates": "^16.10.10",
         "nyc": "^15.1.0",
         "prettier": "^2.8.8",
         "prettier-plugin-interpolated-html-tags": "^0.0.3",
@@ -71,10 +71,10 @@
         "prettier-plugin-sort-json": "^1.0.0",
         "prettier-plugin-toml": "^0.3.1",
         "ts-node": "^10.9.1",
-        "type-fest": "^3.9.0",
+        "type-fest": "^3.10.0",
         "typescript": "^5.0.4",
-        "virmator": "^6.5.0",
-        "vite": "^4.3.3",
+        "virmator": "^6.5.1",
+        "vite": "^4.3.5",
         "vite-tsconfig-paths": "^4.2.0"
     }
 }
