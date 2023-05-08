@@ -22,7 +22,7 @@ export type FlattenObservablePropertyGetters<OriginalPropertyMap extends Propert
         infer GetValue
     >
         ? GetValue
-        : OriginalPropertyMap[Prop];
+        : Exclude<OriginalPropertyMap[Prop], ObservablePropertyHandler<any, any>>;
 };
 
 export type FlattenObservablePropertySetters<OriginalPropertyMap extends PropertyInitMapBase> = {
@@ -31,7 +31,7 @@ export type FlattenObservablePropertySetters<OriginalPropertyMap extends Propert
         infer GetValue
     >
         ? SetValue
-        : OriginalPropertyMap[Prop];
+        : Exclude<OriginalPropertyMap[Prop], ObservablePropertyHandler<any, any>>;
 };
 
 export type ObservablePropertyHandler<SetValue, GetValue> = {
