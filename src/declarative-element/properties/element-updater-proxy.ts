@@ -1,6 +1,9 @@
 import {DeclarativeElement} from '../declarative-element';
 import {PropertyInitMapBase} from './element-properties';
-import {isObservablePropertyHandler} from './observable-property/observable-property-handler';
+import {
+    isObservablePropertyHandlerCreator,
+    isObservablePropertyHandlerInstance,
+} from './observable-property/observable-property-handler';
 
 function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase>(
     propKey: any,
@@ -60,8 +63,12 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
                 elementAsProps[propertyKey] = value;
             }
 
-            /** If we're creating a new observable property */
-            if (isObservablePropertyHandler(newValue)) {
+            if (isObservablePropertyHandlerCreator(newValue)) {
+                newValue = newValue.init();
+            }
+
+            /** If we're using an existing observable property */
+            if (isObservablePropertyHandlerInstance(newValue)) {
                 if (
                     existingObservablePropertyHandler &&
                     newValue !== existingObservablePropertyHandler

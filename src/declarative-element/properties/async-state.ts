@@ -9,8 +9,10 @@ import {
 } from '@augment-vir/common';
 import {PickAndBlockOthers} from '../../augments/type';
 import {
-    ObservablePropertyHandler,
-    observablePropertyHandlerMarkerKey,
+    ObservablePropertyHandlerCreator,
+    observablePropertyHandlerCreatorMarkerKey,
+    ObservablePropertyHandlerInstance,
+    observablePropertyHandlerInstanceMarkerKey,
     ObservablePropertyListener,
 } from './observable-property/observable-property-handler';
 
@@ -46,7 +48,11 @@ export type AsyncStateSetValue<ValueGeneric> =
     | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'resolvedValue'>;
 
 export class AsyncObservablePropertyHandler<ValueGeneric>
-    implements asyncObservablePropertyHandler<ValueGeneric>
+    implements
+        ObservablePropertyHandlerInstance<
+            AsyncStateSetValue<ValueGeneric>,
+            AsyncState<ValueGeneric>
+        >
 {
     #lastTrigger:
         | Extract<AsyncStateSetValue<unknown>, {trigger: unknown}>['trigger']
@@ -60,7 +66,7 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
     #waitingForValuePromise: DeferredPromiseWrapper<UnPromise<ValueGeneric>> =
         createDeferredPromiseWrapper();
 
-    [observablePropertyHandlerMarkerKey] = true as const;
+    [observablePropertyHandlerInstanceMarkerKey] = true as const;
 
     constructor(
         initialValue:
@@ -234,19 +240,24 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
     }
 }
 
-export type asyncObservablePropertyHandler<ValueGeneric> = ObservablePropertyHandler<
+export type AsyncObservablePropertyHandlerCreator<ValueGeneric> = ObservablePropertyHandlerCreator<
     AsyncStateSetValue<ValueGeneric>,
     AsyncState<ValueGeneric>
 >;
 
 export function asyncState<ValueGeneric>(
     ...args: [Promise<UnPromise<ValueGeneric>> | UnPromise<ValueGeneric> | ValueGeneric] | []
-) {
+): AsyncObservablePropertyHandlerCreator<ValueGeneric> {
     /**
      * Distinguish between an explicitly passed value of undefined or simply a lack of any arguments
      * at all.
      */
     const initValue = isLengthAtLeast(args, 1) ? args[0] : notSetSymbol;
 
-    return new AsyncObservablePropertyHandler<ValueGeneric>(initValue);
+    return {
+        [observablePropertyHandlerCreatorMarkerKey]: true,
+        init() {
+            return new AsyncObservablePropertyHandler<ValueGeneric>(initValue);
+        },
+    };
 }

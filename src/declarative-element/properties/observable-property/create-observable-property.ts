@@ -1,12 +1,12 @@
 import {
-    ObservablePropertyHandler,
-    observablePropertyHandlerMarkerKey,
+    ObservablePropertyHandlerInstance,
+    observablePropertyHandlerInstanceMarkerKey,
     ObservablePropertyListener,
 } from './observable-property-handler';
 
 export function createObservableProperty<ValueType>(
     initValue: ValueType,
-): ObservablePropertyHandler<ValueType, ValueType> {
+): ObservablePropertyHandlerInstance<ValueType, ValueType> {
     const listeners = new Set<ObservablePropertyListener<ValueType>>();
     let value: ValueType = initValue;
 
@@ -14,8 +14,8 @@ export function createObservableProperty<ValueType>(
         listeners.forEach((listener) => listener(value));
     }
 
-    const propertyHandler: ObservablePropertyHandler<ValueType, ValueType> = {
-        [observablePropertyHandlerMarkerKey]: true,
+    const propertyHandler: ObservablePropertyHandlerInstance<ValueType, ValueType> = {
+        [observablePropertyHandlerInstanceMarkerKey]: true,
         setValue(newValue) {
             if (value !== newValue) {
                 value = newValue;

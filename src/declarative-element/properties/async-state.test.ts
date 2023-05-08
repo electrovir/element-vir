@@ -8,7 +8,6 @@ import {
 import {DeferredPromiseWrapper, createDeferredPromiseWrapper, typedMap} from '@augment-vir/common';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {
-    AsyncObservablePropertyHandler,
     AsyncState,
     StaticElementPropertyDescriptor,
     assign,
@@ -22,6 +21,7 @@ import {
     renderAsyncState,
 } from '../..';
 import {assertRejects, getAssertedDeclarativeElement} from '../../augments/testing.test-helper';
+import {AsyncObservablePropertyHandlerCreator} from './async-state';
 
 describe(asyncState.name, () => {
     it('should have proper types', () => {
@@ -54,7 +54,10 @@ describe(asyncState.name, () => {
         });
 
         assertTypeOf(elementWithAsyncState.stateInit.myAsyncState).toEqualTypeOf<
-            StaticElementPropertyDescriptor<string, AsyncObservablePropertyHandler<SomethingObject>>
+            StaticElementPropertyDescriptor<
+                string,
+                AsyncObservablePropertyHandlerCreator<SomethingObject>
+            >
         >();
 
         assertTypeOf<(typeof elementWithAsyncState)['stateType']['myAsyncState']>().toEqualTypeOf<
