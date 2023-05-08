@@ -1,11 +1,17 @@
 import {randomString} from '@augment-vir/browser';
-import {assertTypeOf, clickElement, typedAssertNotNullish} from '@augment-vir/browser-testing';
-import {DeferredPromiseWrapper, createDeferredPromiseWrapper} from '@augment-vir/common';
+import {
+    assertTypeOf,
+    clickElement,
+    typedAssertInstanceOf,
+    typedAssertNotNullish,
+} from '@augment-vir/browser-testing';
+import {DeferredPromiseWrapper, createDeferredPromiseWrapper, typedMap} from '@augment-vir/common';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {
     AsyncObservablePropertyHandler,
     AsyncState,
     StaticElementPropertyDescriptor,
+    assign,
     asyncState,
     defineElement,
     defineElementEvent,
@@ -13,6 +19,7 @@ import {
     html,
     isRenderReady,
     listen,
+    renderAsyncState,
 } from '../..';
 import {assertRejects, getAssertedDeclarativeElement} from '../../augments/testing.test-helper';
 
@@ -252,6 +259,88 @@ describe(asyncState.name, () => {
             'no new deferred promises should have been created',
         );
         assert.typeOf(instance.instanceState.myAsyncState, 'number');
+    });
+
+    it('does not clash with other instances', async () => {
+        const ElementWithAsyncState = defineElement<{
+            promiseUpdateTrigger: number | undefined;
+        }>()({
+            tagName: `element-with-async-state-${randomString()}`,
+            stateInit: {
+                myRandomNumber: asyncState<string>(),
+            },
+            renderCallback: ({inputs, state, updateState}) => {
+                updateState({
+                    myRandomNumber: {
+                        async createPromise() {
+                            return randomString();
+                        },
+                        trigger: {input: inputs.promiseUpdateTrigger},
+                    },
+                });
+
+                return html`
+                    <span class="value-span">
+                        ${renderAsyncState(state.myRandomNumber, 'loading', (resolved) => resolved)}
+                    </span>
+                `;
+            },
+        });
+
+        const rendered = await renderFixture(html`
+            <div>
+                <${ElementWithAsyncState}
+                    ${assign(ElementWithAsyncState, {promiseUpdateTrigger: undefined})}
+                ></${ElementWithAsyncState}>
+                <${ElementWithAsyncState}
+                    ${assign(ElementWithAsyncState, {promiseUpdateTrigger: undefined})}
+                ></${ElementWithAsyncState}>
+            </div>
+        `);
+
+        // get elements
+        const [
+            instance1,
+            instance2,
+        ] = Array.from(rendered.querySelectorAll(ElementWithAsyncState.tagName));
+
+        typedAssertInstanceOf(instance1, ElementWithAsyncState);
+        typedAssertInstanceOf(instance2, ElementWithAsyncState);
+
+        const [
+            span1,
+            span2,
+        ] = [
+            instance1.shadowRoot.querySelector('.value-span'),
+            instance2.shadowRoot.querySelector('.value-span'),
+        ];
+        typedAssertInstanceOf(span1, HTMLSpanElement);
+        typedAssertInstanceOf(span2, HTMLSpanElement);
+
+        const spans = [
+            span1,
+            span2,
+        ] as const;
+
+        function getSpanTexts() {
+            return typedMap(spans, (span) => span.innerText);
+        }
+
+        const beforeTexts = getSpanTexts();
+
+        assert.notStrictEqual(beforeTexts[0], beforeTexts[1]);
+
+        instance1.instanceInputs.promiseUpdateTrigger = Math.random();
+
+        await waitUntil(() => {
+            return beforeTexts[0] !== span1.innerText;
+        });
+
+        const afterTexts = getSpanTexts();
+
+        assert.notStrictEqual(afterTexts[0], afterTexts[1]);
+        assert.notStrictEqual(beforeTexts[0], afterTexts[0]);
+        assert.strictEqual(beforeTexts[1], afterTexts[1]);
     });
 
     it('works even if the value is undefined', async () => {
