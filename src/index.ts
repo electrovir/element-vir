@@ -20,6 +20,8 @@ export * from './declarative-element/properties/css-vars';
 export * from './declarative-element/properties/element-events';
 export * from './declarative-element/properties/element-properties';
 export * from './declarative-element/properties/host-classes';
+export * from './declarative-element/properties/observable-property/create-observable-property';
+export * from './declarative-element/properties/observable-property/observable-property-handler';
 export * from './declarative-element/properties/styles';
 export * from './declarative-element/properties/tag-name';
 export * from './declarative-element/render-callback';
