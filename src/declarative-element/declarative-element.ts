@@ -261,8 +261,8 @@ export interface StaticDeclarativeElementProperties<
         >,
         'stateInit' | 'events'
     >;
-    inputsType: AllowObservablePropertySetter<InputsGeneric>;
-    stateType: FlattenObservablePropertyGetters<StateInitGeneric>;
+    inputsType: Readonly<AllowObservablePropertySetter<InputsGeneric>>;
+    stateType: Readonly<FlattenObservablePropertyGetters<StateInitGeneric>>;
     isStrictInstance: (
         element: unknown,
     ) => element is DeclarativeElement<
