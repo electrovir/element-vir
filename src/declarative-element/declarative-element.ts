@@ -13,12 +13,12 @@ import {
 import {RenderCallback, RenderParams} from './render-callback';
 
 export type HostInstanceType<
-    TagNameGeneric extends CustomElementTagName,
-    InputsGeneric extends PropertyInitMapBase,
-    StateInitGeneric extends PropertyInitMapBase,
-    EventsInitGeneric extends EventsInitMap,
-    HostClassKeys extends string,
-    CssVarKeys extends string,
+    TagNameGeneric extends CustomElementTagName = any,
+    InputsGeneric extends PropertyInitMapBase = any,
+    StateInitGeneric extends PropertyInitMapBase = any,
+    EventsInitGeneric extends EventsInitMap = any,
+    HostClassKeys extends string = string,
+    CssVarKeys extends string = string,
 > = RequiredAndNotNullBy<
     DeclarativeElement<
         TagNameGeneric,
