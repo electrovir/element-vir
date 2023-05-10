@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "12.4.4",
+    "version": "12.4.5",
     "keywords": [
         "custom",
         "web",
@@ -60,7 +60,7 @@
         "istanbul-smart-text-reporter": "^1.1.1",
         "markdown-code-example-inserter": "^0.3.0",
         "mocha-spec-reporter-with-file-names": "^0.0.3",
-        "npm-check-updates": "^16.10.10",
+        "npm-check-updates": "^16.10.12",
         "nyc": "^15.1.0",
         "prettier": "^2.8.8",
         "prettier-plugin-interpolated-html-tags": "^0.0.3",

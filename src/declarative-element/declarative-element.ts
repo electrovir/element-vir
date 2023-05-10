@@ -12,7 +12,7 @@ import {
 } from './properties/observable-property/observable-property-handler';
 import {RenderCallback, RenderParams} from './render-callback';
 
-export type HostInstanceType<
+export type DeclarativeElementHost<
     TagNameGeneric extends CustomElementTagName = any,
     InputsGeneric extends PropertyInitMapBase = any,
     StateInitGeneric extends PropertyInitMapBase = any,
@@ -40,7 +40,7 @@ export type DeclarativeElementDefinition<
     HostClassKeys extends string = string,
     CssVarKeys extends string = string,
     RenderOutputGeneric = any,
-> = (new () => HostInstanceType<
+> = (new () => DeclarativeElementHost<
     TagNameGeneric,
     InputsGeneric,
     StateInitGeneric,
@@ -57,7 +57,7 @@ export type DeclarativeElementDefinition<
         CssVarKeys,
         RenderOutputGeneric
     > & {
-        instanceType: HostInstanceType<
+        instanceType: DeclarativeElementHost<
             TagNameGeneric,
             InputsGeneric,
             StateInitGeneric,

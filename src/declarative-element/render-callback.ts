@@ -1,6 +1,6 @@
 import {getObjectTypedKeys, RequiredAndNotNullBy} from '@augment-vir/common';
 import {TypedEvent} from '../typed-event/typed-event';
-import {DeclarativeElement, HostInstanceType} from './declarative-element';
+import {DeclarativeElement, DeclarativeElementHost} from './declarative-element';
 import {CustomElementTagName} from './declarative-element-init';
 import {
     EventDescriptorMap,
@@ -65,7 +65,7 @@ export type RenderParams<
     state: Readonly<FlattenObservablePropertyGetters<StateInitGeneric>>;
     updateState: UpdateStateCallback<StateInitGeneric>;
     events: EventDescriptorMap<EventsInitGeneric>;
-    host: HostInstanceType<
+    host: DeclarativeElementHost<
         TagNameGeneric,
         InputsGeneric,
         StateInitGeneric,
