@@ -54,16 +54,16 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
             AsyncState<ValueGeneric>
         >
 {
-    #lastTrigger:
+    private lastTrigger:
         | Extract<AsyncStateSetValue<unknown>, {trigger: unknown}>['trigger']
         | typeof notSetSymbol
         | undefined = notSetSymbol;
-    #resolutionValue: UnPromise<ValueGeneric> | typeof notSetSymbol = notSetSymbol;
-    #rejectionError: Error | typeof notSetSymbol = notSetSymbol;
-    #listeners = new Set<ObservablePropertyListener<AsyncState<ValueGeneric>>>();
-    #lastSetPromise: Promise<UnPromise<ValueGeneric>> | undefined;
+    private resolutionValue: UnPromise<ValueGeneric> | typeof notSetSymbol = notSetSymbol;
+    private rejectionError: Error | typeof notSetSymbol = notSetSymbol;
+    private listeners = new Set<ObservablePropertyListener<AsyncState<ValueGeneric>>>();
+    private lastSetPromise: Promise<UnPromise<ValueGeneric>> | undefined;
 
-    #waitingForValuePromise: DeferredPromiseWrapper<UnPromise<ValueGeneric>> =
+    private waitingForValuePromise: DeferredPromiseWrapper<UnPromise<ValueGeneric>> =
         createDeferredPromiseWrapper();
 
     [observablePropertyHandlerInstanceMarkerKey] = true as const;
@@ -85,7 +85,7 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
             | ValueGeneric
             | typeof notSetSymbol,
     ) {
-        this.#resetWaitingForValuePromise();
+        this.resetWaitingForValuePromise();
         if (rawValue !== notSetSymbol) {
             if (rawValue instanceof Promise) {
                 this.setValue({newPromise: rawValue});
@@ -95,110 +95,110 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
         }
     }
 
-    #fireListeners() {
+    private fireListeners() {
         const value = this.getValue();
-        this.#listeners.forEach((listener) => {
+        this.listeners.forEach((listener) => {
             listener(value);
         });
     }
 
-    #setPromise(newPromise: Promise<UnPromise<ValueGeneric>>) {
-        if (newPromise === this.#lastSetPromise) {
+    private setPromise(newPromise: Promise<UnPromise<ValueGeneric>>) {
+        if (newPromise === this.lastSetPromise) {
             // abort setting the promise if we already have set this promise
             return;
         }
-        this.#resolutionValue = notSetSymbol;
-        this.#rejectionError = notSetSymbol;
-        this.#lastSetPromise = newPromise;
+        this.resolutionValue = notSetSymbol;
+        this.rejectionError = notSetSymbol;
+        this.lastSetPromise = newPromise;
 
-        if (this.#waitingForValuePromise.isSettled()) {
-            this.#resetWaitingForValuePromise();
+        if (this.waitingForValuePromise.isSettled()) {
+            this.resetWaitingForValuePromise();
         }
 
         newPromise
             .then((value) => {
                 // make sure we're still actually waiting for this promise
-                if (this.#lastSetPromise === newPromise) {
-                    this.#resolveValue(value);
+                if (this.lastSetPromise === newPromise) {
+                    this.resolveValue(value);
                 }
             })
             .catch((reason) => {
                 // make sure we're still actually waiting for this promise
-                if (this.#lastSetPromise === newPromise) {
-                    this.#rejectionError = ensureError(reason);
-                    this.#waitingForValuePromise.promise.catch(() => {
+                if (this.lastSetPromise === newPromise) {
+                    this.rejectionError = ensureError(reason);
+                    this.waitingForValuePromise.promise.catch(() => {
                         /**
                          * Don't actually do anything, we just want to make sure the error is
                          * handled so it doesn't throw errors in the browser.
                          */
                     });
 
-                    this.#waitingForValuePromise.reject(reason);
-                    this.#fireListeners();
+                    this.waitingForValuePromise.reject(reason);
+                    this.fireListeners();
                 }
             });
     }
 
-    #resolveValue(value: UnPromise<ValueGeneric>) {
-        if (value !== this.#resolutionValue) {
-            this.#rejectionError = notSetSymbol;
-            this.#resolutionValue = value;
-            if (this.#waitingForValuePromise.isSettled()) {
-                this.#resetWaitingForValuePromise();
+    private resolveValue(value: UnPromise<ValueGeneric>) {
+        if (value !== this.resolutionValue) {
+            this.rejectionError = notSetSymbol;
+            this.resolutionValue = value;
+            if (this.waitingForValuePromise.isSettled()) {
+                this.resetWaitingForValuePromise();
             }
-            this.#waitingForValuePromise.resolve(value);
-            this.#fireListeners();
+            this.waitingForValuePromise.resolve(value);
+            this.fireListeners();
         }
     }
 
-    #resetWaitingForValuePromise(): void {
-        this.#waitingForValuePromise = createDeferredPromiseWrapper();
+    private resetWaitingForValuePromise(): void {
+        this.waitingForValuePromise = createDeferredPromiseWrapper();
     }
 
     public setValue(setInputs: AsyncStateSetValue<ValueGeneric>) {
         if ('createPromise' in setInputs) {
             if (
-                this.#lastTrigger === notSetSymbol ||
-                !areJsonEqual(setInputs.trigger, this.#lastTrigger)
+                this.lastTrigger === notSetSymbol ||
+                !areJsonEqual(setInputs.trigger, this.lastTrigger)
             ) {
-                this.#lastTrigger = setInputs.trigger;
+                this.lastTrigger = setInputs.trigger;
                 const newValue = setInputs.createPromise();
 
-                this.#setPromise(newValue);
-                this.#fireListeners();
+                this.setPromise(newValue);
+                this.fireListeners();
             }
         } else if ('newPromise' in setInputs) {
-            this.#lastTrigger === notSetSymbol;
-            this.#setPromise(setInputs.newPromise);
+            this.lastTrigger === notSetSymbol;
+            this.setPromise(setInputs.newPromise);
             // force a re-render
-            this.#fireListeners();
+            this.fireListeners();
         } else if ('resolvedValue' in setInputs) {
-            this.#resolveValue(setInputs.resolvedValue);
+            this.resolveValue(setInputs.resolvedValue);
         } else if ('forceUpdate' in setInputs) {
-            this.#lastTrigger = notSetSymbol;
-            this.#resolutionValue = notSetSymbol;
-            if (!this.#waitingForValuePromise.isSettled()) {
-                this.#waitingForValuePromise.reject('Canceled by force update');
+            this.lastTrigger = notSetSymbol;
+            this.resolutionValue = notSetSymbol;
+            if (!this.waitingForValuePromise.isSettled()) {
+                this.waitingForValuePromise.reject('Canceled by force update');
             }
-            this.#resetWaitingForValuePromise();
+            this.resetWaitingForValuePromise();
             // force a re-render
-            this.#fireListeners();
+            this.fireListeners();
         } else {
             this.resetValue(setInputs);
         }
     }
 
     public getValue(): AsyncState<ValueGeneric> {
-        if (this.#waitingForValuePromise.isSettled()) {
-            if (this.#rejectionError !== notSetSymbol) {
-                return this.#rejectionError;
-            } else if (this.#resolutionValue === notSetSymbol) {
+        if (this.waitingForValuePromise.isSettled()) {
+            if (this.rejectionError !== notSetSymbol) {
+                return this.rejectionError;
+            } else if (this.resolutionValue === notSetSymbol) {
                 throw new Error('Promise says it has settled but resolution value was not set!');
             } else {
-                return this.#resolutionValue;
+                return this.resolutionValue;
             }
         } else {
-            return this.#waitingForValuePromise.promise;
+            return this.waitingForValuePromise.promise;
         }
     }
 
@@ -206,7 +206,7 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
         fireImmediately: boolean,
         listener: ObservablePropertyListener<AsyncState<ValueGeneric>>,
     ) {
-        this.#listeners.add(listener);
+        this.listeners.add(listener);
         if (fireImmediately) {
             listener(this.getValue());
         }
@@ -215,16 +215,16 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
     public addMultipleListeners(
         listeners: ReadonlySet<ObservablePropertyListener<AsyncState<ValueGeneric>>>,
     ): void {
-        listeners.forEach((listener) => this.#listeners.add(listener));
+        listeners.forEach((listener) => this.listeners.add(listener));
     }
 
     public getAllListeners() {
-        return this.#listeners;
+        return this.listeners;
     }
 
     public removeListener(listener: ObservablePropertyListener<AsyncState<ValueGeneric>>) {
-        if (this.#listeners.has(listener)) {
-            this.#listeners.delete(listener);
+        if (this.listeners.has(listener)) {
+            this.listeners.delete(listener);
             return true;
         } else {
             return false;
@@ -232,9 +232,9 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
     }
 
     public removeAllListeners() {
-        const count = this.#listeners.size;
+        const count = this.listeners.size;
 
-        this.#listeners.clear();
+        this.listeners.clear();
 
         return count;
     }
