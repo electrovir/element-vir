@@ -3,10 +3,16 @@ export const IgnoreInputsNotBeenSetBeforeRenderWarningSymbol = Symbol(
 );
 
 export type DeclarativeElementDefinitionOptions = {
-    // this cannot be set externally because we don't export this symbol outside of the package
+    /** For internal use only. */
     [IgnoreInputsNotBeenSetBeforeRenderWarningSymbol]: boolean;
+    /**
+     * If set to true, state properties keys will be allowed to change at run time. Turning this on
+     * will greatly reduce type safety and should be avoided at all costs.
+     */
+    allowPolymorphicState: boolean;
 };
 
 export const defaultDeclarativeElementDefinitionOptions: DeclarativeElementDefinitionOptions = {
     [IgnoreInputsNotBeenSetBeforeRenderWarningSymbol]: true,
+    allowPolymorphicState: false,
 };

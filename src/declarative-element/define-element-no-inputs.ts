@@ -291,7 +291,7 @@ export function defineElementNoInputs<
         public readonly instanceState: ThisElementInstance['instanceState'] =
             createElementUpdaterProxy<FlattenObservablePropertyGetters<StateInitGeneric>>(
                 this,
-                true,
+                !initInput.options?.allowPolymorphicState,
             );
 
         constructor() {
