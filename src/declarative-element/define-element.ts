@@ -36,8 +36,8 @@ export function defineElement<InputsGeneric extends PropertyInitMapBase = {}>() 
             ...initInput,
             options: {
                 [IgnoreInputsNotBeenSetBeforeRenderWarningSymbol]: false,
+                ...initInput.options,
             },
-            ...initInput.options,
         });
     };
 }
