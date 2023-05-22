@@ -1,13 +1,17 @@
 import {assertTypeOf} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
 import {
+    AnyObservablePropertyType,
+    AsyncState,
     asyncState,
     AsyncStateSetValue,
     createEventDescriptorMap,
+    createObservableProperty,
     createRenderParams,
     defineElementEvent,
     defineElementNoInputs,
     html,
+    ObservablePropertyHandlerInstance,
     RenderCallback,
     TypedEvent,
 } from '..';
@@ -20,12 +24,19 @@ describe('RenderParams', () => {
                 myAsyncState: asyncState<number>(),
                 myAsyncState2: asyncState(Promise.resolve(3)),
                 myAsyncState3: asyncState(3),
+                myNumber: undefined as
+                    | undefined
+                    | ObservablePropertyHandlerInstance<number, number>,
             },
             events: {
                 testEventName: defineElementEvent<number>(),
                 testEventName2: defineElementEvent<number>(),
             },
             renderCallback: ({events, state, updateState}) => {
+                if (state.myNumber == undefined) {
+                    updateState({myNumber: createObservableProperty(6)});
+                }
+
                 const testEventThing = events.testEventName;
 
                 assertTypeOf(state.myAsyncState).toEqualTypeOf<Promise<number> | number | Error>();
@@ -33,14 +44,21 @@ describe('RenderParams', () => {
                 assertTypeOf(state.myAsyncState3).toEqualTypeOf<Promise<number> | number | Error>();
 
                 assertTypeOf<
-                    NonNullable<Parameters<typeof updateState>[0]['myAsyncState']>
-                >().toEqualTypeOf<AsyncStateSetValue<number>>();
+                    Exclude<Parameters<typeof updateState>[0]['myAsyncState'], undefined>
+                >().toEqualTypeOf<
+                    | AsyncStateSetValue<number>
+                    | AnyObservablePropertyType<AsyncStateSetValue<number>, AsyncState<number>>
+                >();
 
                 updateState({
                     myAsyncState: {
                         createPromise: () => Promise.resolve(5),
                         trigger: 'hi',
                     },
+                });
+
+                updateState({
+                    myAsyncState: asyncState(5),
                 });
 
                 updateState({

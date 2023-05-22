@@ -12,7 +12,7 @@ export type ObservablePropertyHandlerMap<OriginalPropertyMap extends PropertyIni
     Record<keyof OriginalPropertyMap, ObservablePropertyHandlerInstance<any, any>>
 >;
 
-type AnyObservablePropertyType<SetValue, GetValue> =
+export type AnyObservablePropertyType<SetValue, GetValue> =
     | ObservablePropertyHandlerCreator<SetValue, GetValue>
     | ObservablePropertyHandlerInstance<SetValue, GetValue>;
 
@@ -32,12 +32,17 @@ export type FlattenObservablePropertyGetters<OriginalPropertyMap extends Propert
 };
 
 export type FlattenObservablePropertySetters<OriginalPropertyMap extends PropertyInitMapBase> = {
-    [Prop in keyof OriginalPropertyMap]: OriginalPropertyMap[Prop] extends AnyObservablePropertyType<
-        infer SetValue,
-        infer GetValue
-    >
-        ? SetValue
-        : Exclude<OriginalPropertyMap[Prop], AnyObservablePropertyType<any, any>>;
+    [Prop in keyof OriginalPropertyMap]: Extract<
+        OriginalPropertyMap[Prop],
+        AnyObservablePropertyType<any, any>
+    > extends never
+        ? OriginalPropertyMap[Prop]
+        : Extract<
+              OriginalPropertyMap[Prop],
+              AnyObservablePropertyType<any, any>
+          > extends AnyObservablePropertyType<infer SetValue, infer GetValue>
+        ? SetValue | AnyObservablePropertyType<SetValue, GetValue>
+        : OriginalPropertyMap[Prop];
 };
 
 export type ObservablePropertyHandlerCreator<SetValue, GetValue> = {
