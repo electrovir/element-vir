@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "12.5.0",
+    "version": "12.5.1",
     "keywords": [
         "custom",
         "web",
@@ -39,13 +39,13 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/browser": "^13.5.0",
-        "@augment-vir/common": "^13.5.0",
+        "@augment-vir/browser": "^14.2.0",
+        "@augment-vir/common": "^14.2.0",
         "lit": "2.7.4"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^13.5.0",
-        "@augment-vir/node-js": "^13.5.0",
+        "@augment-vir/browser-testing": "^14.2.0",
+        "@augment-vir/node-js": "^14.2.0",
         "@istanbuljs/nyc-config-typescript": "^1.0.2",
         "@open-wc/testing": "^3.1.8",
         "@types/mocha": "^10.0.1",
@@ -71,9 +71,9 @@
         "prettier-plugin-sort-json": "^1.0.0",
         "prettier-plugin-toml": "^0.3.1",
         "ts-node": "^10.9.1",
-        "type-fest": "^3.10.0",
+        "type-fest": "^3.11.0",
         "typescript": "^5.0.4",
-        "virmator": "^6.5.1",
+        "virmator": "^6.5.2",
         "vite": "^4.3.8",
         "vite-tsconfig-paths": "^4.2.0"
     }
