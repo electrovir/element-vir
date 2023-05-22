@@ -6,8 +6,8 @@ import {EventDescriptorMap, EventsInitMap} from './properties/element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './properties/element-properties';
 import {HostClassNamesMap} from './properties/host-classes';
 import {
-    AllowObservablePropertySetter,
     FlattenObservablePropertyGetters,
+    FlattenObservablePropertySetters,
     ObservablePropertyHandlerMap,
 } from './properties/observable-property/observable-property-handler';
 import {RenderCallback, RenderParams} from './render-callback';
@@ -261,7 +261,7 @@ export interface StaticDeclarativeElementProperties<
         >,
         'stateInit' | 'events'
     >;
-    inputsType: Readonly<AllowObservablePropertySetter<InputsGeneric>>;
+    inputsType: Readonly<FlattenObservablePropertySetters<InputsGeneric>>;
     stateType: Readonly<FlattenObservablePropertyGetters<StateInitGeneric>>;
     isStrictInstance: (
         element: unknown,

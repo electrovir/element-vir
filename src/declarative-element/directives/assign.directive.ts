@@ -14,7 +14,7 @@ export function assign<DeclarativeElementGeneric extends ElementDefinitionWithIn
     declarativeElement: DeclarativeElementGeneric,
     inputsObject: {} extends Required<DeclarativeElementGeneric['inputsType']>
         ? never
-        : DeclarativeElementGeneric['inputsType'],
+        : AllowObservablePropertySetter<DeclarativeElementGeneric['inputsType']>,
 ): DirectiveResult;
 export function assign<DeclarativeElementGeneric extends ElementDefinitionWithInputsType>(
     inputsObject: Record<string, any>,
