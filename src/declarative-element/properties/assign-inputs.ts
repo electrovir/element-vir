@@ -1,5 +1,4 @@
 import {getObjectTypedKeys} from '@augment-vir/common';
-import {property} from 'lit/decorators.js';
 import {DeclarativeElement} from '../declarative-element';
 
 export function assignInputs(element: Element, inputs: object): void {
@@ -11,11 +10,6 @@ export function assignInputs(element: Element, inputs: object): void {
                 `Cannot set input '${newInputKey}' on '${element.tagName}'. '${element.tagName}' already has a state property with the same name.`,
             );
         }
-        /**
-         * No need to check if it's already a property or not, as the property function already
-         * makes that check.
-         */
-        property()(element, newInputKey);
         if ('instanceInputs' in element) {
             (element.instanceInputs as DeclarativeElement['instanceInputs'])[newInputKey] =
                 inputs[newInputKey];

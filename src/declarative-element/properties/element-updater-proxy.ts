@@ -1,3 +1,4 @@
+import {property} from 'lit/decorators.js';
 import {DeclarativeElement} from '../declarative-element';
 import {PropertyInitMapBase} from './element-properties';
 import {
@@ -35,10 +36,20 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
      */
     const elementAsProps = element as DeclarativeElement & PropertyInitGeneric;
 
-    function valueGetter(target: any, propertyKey: keyof PropertyInitGeneric | symbol) {
+    function verifyProperty(propertyKey: PropertyKey) {
         if (verifyExists) {
             assertValidPropertyName(propertyKey, element, element.tagName);
+        } else {
+            /**
+             * No need to check if it's already a property or not, as the property function already
+             * makes that check.
+             */
+            property()(element, propertyKey);
         }
+    }
+
+    function valueGetter(target: any, propertyKey: keyof PropertyInitGeneric | symbol) {
+        verifyProperty(propertyKey);
 
         return elementAsProps[propertyKey];
     }
@@ -46,9 +57,7 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
     const propsProxy = new Proxy({} as Record<PropertyKey, unknown>, {
         get: valueGetter,
         set: (target, propertyKey: keyof PropertyInitGeneric | symbol, newValue) => {
-            if (verifyExists) {
-                assertValidPropertyName(propertyKey, element, element.tagName);
-            }
+            verifyProperty(propertyKey);
 
             const existingObservablePropertyHandler =
                 element.observablePropertyHandlerMap[propertyKey];
