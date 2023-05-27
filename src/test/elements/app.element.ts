@@ -69,7 +69,7 @@ export const AppElement = defineElementNoInputs({
         showChild: true,
         derp: {hi: 'yo'} as Record<string, string>,
     },
-    renderCallback: ({state, updateState}) => {
+    renderCallback({state, updateState}) {
         // log here to make sure it's not rendering too often
         console.info(`app rendering ${state.width}`);
         return html`

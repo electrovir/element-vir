@@ -6,13 +6,17 @@ import {CssVars} from './css-vars';
 import {PropertyInitMapBase} from './element-properties';
 import {HostClassNamesMap, HostClassesInitMap} from './host-classes';
 
+export type HostClass = {
+    selector: CSSResult;
+    name: CSSResult;
+};
+
 export type StylesCallbackInput<
     TagName extends CustomElementTagName,
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
 > = {
-    hostClassSelectors: Record<HostClassKeys, CSSResult>;
-    hostClassNames: Record<HostClassKeys, CSSResult>;
+    hostClasses: Record<HostClassKeys, HostClass>;
     cssVars: Readonly<CssVars<TagName, CssVarKeys>>;
 };
 
@@ -34,11 +38,11 @@ export function hostClassNamesToStylesInput<
     cssVars: Readonly<CssVars<TagName, CssVarKeys>>;
 }): StylesCallbackInput<TagName, HostClassKeys, CssVarKeys> {
     return {
-        hostClassSelectors: mapObjectValues(hostClassNames, (key, name) => {
-            return unsafeCSS(`:host(.${name})`);
-        }),
-        hostClassNames: mapObjectValues(hostClassNames, (key, name) => {
-            return unsafeCSS(name);
+        hostClasses: mapObjectValues(hostClassNames, (key, name): HostClass => {
+            return {
+                name: unsafeCSS(name),
+                selector: unsafeCSS(`:host(.${name})`),
+            };
         }),
         cssVars,
     };

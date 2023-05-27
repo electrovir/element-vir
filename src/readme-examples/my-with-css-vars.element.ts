@@ -1,6 +1,6 @@
 import {css, defineElementNoInputs, html} from '..';
 
-export const MyWithCssVarsElement = defineElementNoInputs({
+export const MyWithCssVars = defineElementNoInputs({
     tagName: 'my-with-css-vars',
     cssVars: {
         /** The value assigned here ('blue') becomes the fallback value for this CSS var. */
@@ -19,5 +19,7 @@ export const MyWithCssVarsElement = defineElementNoInputs({
             color: ${cssVars['my-with-css-vars-my-var'].value};
         }
     `,
-    renderCallback: () => html``,
+    renderCallback() {
+        return html``;
+    },
 });

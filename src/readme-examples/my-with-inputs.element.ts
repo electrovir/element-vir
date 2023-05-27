@@ -1,11 +1,13 @@
 import {defineElement, html} from '..';
 
-export const MyWithInputsElement = defineElement<{
+export const MyWithInputs = defineElement<{
     username: string;
     email: string;
 }>()({
     tagName: 'my-with-inputs',
-    renderCallback: ({inputs}) => html`
-        <span>Hello there ${inputs.username}!</span>
-    `,
+    renderCallback({inputs}) {
+        return html`
+            <span>Hello there ${inputs.username}!</span>
+        `;
+    },
 });

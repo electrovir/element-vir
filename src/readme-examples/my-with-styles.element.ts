@@ -1,6 +1,6 @@
 import {css, defineElementNoInputs, html} from '..';
 
-export const MyWithStylesElement = defineElementNoInputs({
+export const MyWithStyles = defineElementNoInputs({
     tagName: 'my-with-styles',
     styles: css`
         :host {
@@ -13,8 +13,10 @@ export const MyWithStylesElement = defineElementNoInputs({
             margin-top: 16px;
         }
     `,
-    renderCallback: () => html`
-        <span>Hello there!</span>
-        <span>How are you doing?</span>
-    `,
+    renderCallback() {
+        return html`
+            <span>Hello there!</span>
+            <span>How are you doing?</span>
+        `;
+    },
 });

@@ -24,7 +24,7 @@ describe(asyncState.name, () => {
         events: {
             previousAsyncState: defineElementEvent<AsyncState<number>>(),
         },
-        renderCallback: ({state, updateState, inputs, dispatch, events}) => {
+        renderCallback({state, updateState, inputs, dispatch, events}) {
             updateState({
                 myAsyncState: {
                     newPromise: inputs.setAsyncState,
@@ -84,7 +84,7 @@ describe(asyncState.name, () => {
             stateInit: {
                 asyncState: asyncState<SomethingObject>(),
             },
-            renderCallback: ({state}) => {
+            renderCallback({state}) {
                 assertTypeOf(state.asyncState).toEqualTypeOf<AsyncState<SomethingObject>>();
                 return html`
                     ${renderAsyncState(

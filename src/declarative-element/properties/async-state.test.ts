@@ -32,7 +32,7 @@ describe(asyncState.name, () => {
             stateInit: {
                 myAsyncState: asyncState<SomethingObject>(),
             },
-            renderCallback: ({state, updateState}) => {
+            renderCallback({state, updateState}) {
                 type Dimensions = {width: number; length: number};
                 const bigType = {} as {
                     imageUrl: string;
@@ -83,7 +83,7 @@ describe(asyncState.name, () => {
                 deferredPromiseCreated: defineElementEvent<DeferredPromiseWrapper<number>>(),
                 wasRendered: defineElementEvent<void>(),
             },
-            renderCallback: ({inputs, dispatch, events, state, updateState}) => {
+            renderCallback({inputs, dispatch, events, state, updateState}) {
                 updateState({
                     myAsyncState: {
                         createPromise: () => {
@@ -272,7 +272,7 @@ describe(asyncState.name, () => {
             stateInit: {
                 myRandomNumber: asyncState<string>(),
             },
-            renderCallback: ({inputs, state, updateState}) => {
+            renderCallback({inputs, state, updateState}) {
                 updateState({
                     myRandomNumber: {
                         async createPromise() {
@@ -355,7 +355,7 @@ describe(asyncState.name, () => {
             events: {
                 wasRendered: defineElementEvent<void>(),
             },
-            renderCallback: ({dispatch, events, state, updateState}) => {
+            renderCallback({dispatch, events, state, updateState}) {
                 if (isRenderReady(state.myAsyncState)) {
                     assertTypeOf(state.myAsyncState).toEqualTypeOf<number | undefined>();
                 }

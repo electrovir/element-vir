@@ -10,7 +10,7 @@ export const AsyncChild = defineElement<{
     stateInit: {
         loadThing: asyncState<number>(),
     },
-    renderCallback: ({state, inputs, updateState}) => {
+    renderCallback({state, inputs, updateState}) {
         console.info('rendering async child');
         updateState({
             loadThing: {

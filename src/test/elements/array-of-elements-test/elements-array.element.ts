@@ -2,7 +2,7 @@ import {defineElementNoInputs, html} from '../../..';
 
 const ArrayAElement = defineElementNoInputs({
     tagName: 'element-vir-test-a',
-    renderCallback: () => {
+    renderCallback() {
         return html`
             A
         `;
@@ -11,7 +11,7 @@ const ArrayAElement = defineElementNoInputs({
 
 const ArrayBElement = defineElementNoInputs({
     tagName: 'element-vir-test-b',
-    renderCallback: () => {
+    renderCallback() {
         return html`
             B
         `;
@@ -20,7 +20,7 @@ const ArrayBElement = defineElementNoInputs({
 
 const ArrayCElement = defineElementNoInputs({
     tagName: 'element-vir-test-c',
-    renderCallback: () => {
+    renderCallback() {
         return html`
             C
         `;
@@ -29,7 +29,7 @@ const ArrayCElement = defineElementNoInputs({
 
 const ArrayDElement = defineElementNoInputs({
     tagName: 'element-vir-test-d',
-    renderCallback: () => {
+    renderCallback() {
         return html`
             D
         `;

@@ -11,7 +11,7 @@ function main() {
         events: {
             testEventName: defineElementEvent<number>(),
         },
-        renderCallback: ({events}) => {
+        renderCallback({events}) {
             const testEventThing = events.testEventName;
 
             const eventInstance = new testEventThing(4);

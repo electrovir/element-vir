@@ -34,7 +34,7 @@ const InvalidWithHostClassesAndCssVars = defineElementNoInputs({
         // @ts-expect-error
         derp: 'blue',
     },
-    renderCallback: ({state, updateState}) => {
+    renderCallback({state, updateState}) {
         // purple
         console.info(state.color);
         updateState({color: 'green'});
@@ -57,7 +57,7 @@ const WithHostClassesAndCssVars = defineElementNoInputs({
     cssVars: {
         'derp-whatever-css-var': 'blue',
     },
-    renderCallback: ({state, updateState}) => {
+    renderCallback({state, updateState}) {
         // purple
         console.info(state.color);
         updateState({color: 'green'});
@@ -82,7 +82,7 @@ WithHostClassesAndCssVars.cssVars.derp;
 
 // @ts-expect-error
 const TestElementNoTagName = defineElementNoInputs({
-    renderCallback: (): TemplateResult => {
+    renderCallback(): TemplateResult {
         return html`
             <${WithHostClassesAndCssVars}
                 class=${WithHostClassesAndCssVars.hostClasses['derp-whatever-stuff']}
@@ -119,7 +119,7 @@ const TestElementVoidEvent = defineElementNoInputs({
     events: {
         thingHappened: defineElementEvent<void>(),
     },
-    renderCallback: ({state, dispatch, events}): TemplateResult => {
+    renderCallback({state, dispatch, events}): TemplateResult {
         // @ts-expect-error
         console.info(state.thing);
         dispatch(new events.thingHappened());
@@ -133,14 +133,16 @@ const TestElementVoidEvent = defineElementNoInputs({
 const TestElementInvalidTagName = defineElementNoInputs({
     // @ts-expect-error
     tagName: 'invalidTagNameMissingDash',
-    renderCallback: () => html``,
+    renderCallback() {
+        return html``;
+    },
 });
 
 const MyElementEvent = defineTypedEvent<string>()('customEvent');
 
 const TestElementNoEventsOrState = defineElementNoInputs({
     tagName: 'test-element-no-events-or-state',
-    renderCallback: ({state, dispatch, events}): TemplateResult => {
+    renderCallback({state, dispatch, events}): TemplateResult {
         // @ts-expect-error
         console.info(events.thing);
         // @ts-expect-error
@@ -186,7 +188,7 @@ const TestElement = defineElement<{
         stringEvent: defineElementEvent<string>(),
         numberEvent: defineElementEvent<number>(),
     },
-    renderCallback: ({state, dispatch, events}) => {
+    renderCallback({state, dispatch, events}) {
         // @ts-expect-error
         const stuff: number = state.stringProp;
 

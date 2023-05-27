@@ -16,12 +16,12 @@ async function loadSomething(endpoint: string): Promise<EndpointData> {
     return data;
 }
 
-export const MyWithAsyncStateElement = defineElement<{endpoint: string}>()({
-    tagName: 'my-simple-with-render-if',
+export const MyWithAsyncState = defineElement<{endpoint: string}>()({
+    tagName: 'my-with-async-state',
     stateInit: {
         data: asyncState<EndpointData>(),
     },
-    renderCallback: ({inputs, state, updateState}) => {
+    renderCallback({inputs, state, updateState}) {
         /**
          * This creates a promise which automatically updates the state.loadsLater prop once the
          * promise resolves. It only creates a new promise if the "trigger" value changes.

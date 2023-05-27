@@ -1,14 +1,16 @@
 import {css, defineElementNoInputs, html} from '..';
-import {MySimpleElement} from './my-simple.element';
+import {MySimple} from './my-simple.element';
 
-export const MyWithStylesAndInterpolatedSelectorElement = defineElementNoInputs({
+export const MyWithStylesAndInterpolatedSelector = defineElementNoInputs({
     tagName: 'my-with-styles-and-interpolated-selector',
     styles: css`
-        ${MySimpleElement} {
+        ${MySimple} {
             background-color: blue;
         }
     `,
-    renderCallback: () => html`
-        <${MySimpleElement}></${MySimpleElement}>
-    `,
+    renderCallback() {
+        return html`
+            <${MySimple}></${MySimple}>
+        `;
+    },
 });

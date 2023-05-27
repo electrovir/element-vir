@@ -1,6 +1,6 @@
 import {css, defineElementNoInputs, html} from '..';
 
-export const MyWithHostClassDefinitionElement = defineElementNoInputs({
+export const MyWithHostClassDefinition = defineElementNoInputs({
     tagName: 'my-with-host-class-definition',
     stateInit: {
         myProp: 'hello there',
@@ -23,16 +23,18 @@ export const MyWithHostClassDefinitionElement = defineElementNoInputs({
      * Apply styles to the host classes by using a callback for "styles". The callback's argument
      * contains the host classes defined above in the "hostClasses" property.
      */
-    styles: ({hostClassSelectors}) => css`
-        ${hostClassSelectors['my-with-host-class-definition-automatic']} {
+    styles: ({hostClasses}) => css`
+        ${hostClasses['my-with-host-class-definition-automatic'].selector} {
             color: blue;
         }
 
-        ${hostClassSelectors['my-with-host-class-definition-a']} {
+        ${hostClasses['my-with-host-class-definition-a'].selector} {
             color: red;
         }
     `,
-    renderCallback: ({state}) => html`
-        ${state.myProp}
-    `,
+    renderCallback({state}) {
+        return html`
+            ${state.myProp}
+        `;
+    },
 });

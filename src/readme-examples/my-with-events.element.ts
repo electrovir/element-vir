@@ -1,17 +1,19 @@
 import {defineElementEvent, defineElementNoInputs, html, listen} from '..';
 
-export const MyWithEventsElement = defineElementNoInputs({
+export const MyWithEvents = defineElementNoInputs({
     tagName: 'my-with-events',
     events: {
         logoutClick: defineElementEvent<void>(),
         randomNumber: defineElementEvent<number>(),
     },
-    renderCallback: ({dispatch, events}) => html`
-        <button ${listen('click', () => dispatch(new events.logoutClick(undefined)))}>
-            log out
-        </button>
-        <button ${listen('click', () => dispatch(new events.randomNumber(Math.random())))}>
-            generate random number
-        </button>
-    `,
+    renderCallback({dispatch, events}) {
+        return html`
+            <button ${listen('click', () => dispatch(new events.logoutClick(undefined)))}>
+                log out
+            </button>
+            <button ${listen('click', () => dispatch(new events.randomNumber(Math.random())))}>
+                generate random number
+            </button>
+        `;
+    },
 });

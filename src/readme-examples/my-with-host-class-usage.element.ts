@@ -1,11 +1,13 @@
 import {defineElementNoInputs, html} from '..';
-import {MyWithHostClassDefinitionElement} from './my-with-host-class-definition.element';
+import {MyWithHostClassDefinition} from './my-with-host-class-definition.element';
 
-export const MyWithHostClassUsageElement = defineElementNoInputs({
+export const MyWithHostClassUsage = defineElementNoInputs({
     tagName: 'my-with-host-class-usage',
-    renderCallback: () => html`
-        <${MyWithHostClassDefinitionElement}
-            class=${MyWithHostClassDefinitionElement.hostClasses['my-with-host-class-definition-a']}
-        ></${MyWithHostClassDefinitionElement}>
-    `,
+    renderCallback() {
+        return html`
+            <${MyWithHostClassDefinition}
+                class=${MyWithHostClassDefinition.hostClasses['my-with-host-class-definition-a']}
+            ></${MyWithHostClassDefinition}>
+        `;
+    },
 });

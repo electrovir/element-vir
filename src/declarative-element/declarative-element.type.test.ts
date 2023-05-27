@@ -3,7 +3,9 @@ import {defineElementNoInputs} from './define-element-no-inputs';
 import {defineElementEvent} from './properties/element-events';
 
 const definedDeclarativeElementWithProps = defineElementNoInputs({
-    renderCallback: () => html``,
+    renderCallback() {
+        return html``;
+    },
     stateInit: {
         thing: '',
     },
@@ -14,7 +16,9 @@ const definedDeclarativeElementWithProps = defineElementNoInputs({
 });
 
 const definedDeclarativeElementWithoutProps = defineElementNoInputs({
-    renderCallback: () => html``,
+    renderCallback() {
+        return html``;
+    },
     stateInit: {
         thing: 5,
     },

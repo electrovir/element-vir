@@ -1,10 +1,12 @@
 import {defineElementNoInputs, html} from '..';
-import {MySimpleElement} from './my-simple.element';
+import {MySimple} from './my-simple.element';
 
-export const MyAppElement = defineElementNoInputs({
+export const MyApp = defineElementNoInputs({
     tagName: 'my-app',
-    renderCallback: () => html`
-        <h1>My App</h1>
-        <${MySimpleElement}></${MySimpleElement}>
-    `,
+    renderCallback() {
+        return html`
+            <h1>My App</h1>
+            <${MySimple}></${MySimple}>
+        `;
+    },
 });

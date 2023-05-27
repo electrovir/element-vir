@@ -1,21 +1,23 @@
 import {defineElementNoInputs, html, listen} from '..';
-import {MyWithEventsElement} from './my-with-events.element';
+import {MyWithEvents} from './my-with-events.element';
 
-export const MyWithEventListeningElement = defineElementNoInputs({
+export const MyWithEventListening = defineElementNoInputs({
     tagName: 'my-with-event-listening',
     stateInit: {
         myNumber: -1,
     },
-    renderCallback: ({state, updateState}) => html`
-        <h1>My App</h1>
-        <${MyWithEventsElement}
-            ${listen(MyWithEventsElement.events.logoutClick, () => {
-                console.info('logout triggered');
-            })}
-            ${listen(MyWithEventsElement.events.randomNumber, (event) => {
-                updateState({myNumber: event.detail});
-            })}
-        ></${MyWithEventsElement}>
-        <span>${state.myNumber}</span>
-    `,
+    renderCallback({state, updateState}) {
+        return html`
+            <h1>My App</h1>
+            <${MyWithEvents}
+                ${listen(MyWithEvents.events.logoutClick, () => {
+                    console.info('logout triggered');
+                })}
+                ${listen(MyWithEvents.events.randomNumber, (event) => {
+                    updateState({myNumber: event.detail});
+                })}
+            ></${MyWithEvents}>
+            <span>${state.myNumber}</span>
+        `;
+    },
 });

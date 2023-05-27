@@ -9,7 +9,7 @@ export const TestChildElement = defineElement<{
     myProp?: number;
 }>()({
     tagName: 'element-vir-test-child',
-    styles: ({hostClassSelectors, hostClassNames, cssVars}) => {
+    styles: ({hostClasses, cssVars}) => {
         return css`
             :host {
                 display: flex;
@@ -21,15 +21,15 @@ export const TestChildElement = defineElement<{
                 background-color: ${cssVars['element-vir-test-child-derp'].value};
             }
 
-            ${hostClassSelectors['element-vir-test-child-test']} {
+            ${hostClasses['element-vir-test-child-test'].selector} {
                 color: blue;
             }
 
-            :host(.${hostClassNames['element-vir-test-child-test']}:hover) {
+            :host(.${hostClasses['element-vir-test-child-test'].name}:hover) {
                 color: pink;
             }
 
-            ${hostClassSelectors['element-vir-test-child-automatic']} {
+            ${hostClasses['element-vir-test-child-automatic'].selector} {
                 font-weight: bold;
             }
         `;
@@ -48,7 +48,7 @@ export const TestChildElement = defineElement<{
         speak: defineElementEvent<string>(),
         eat: defineElementEvent<number>(),
     },
-    renderCallback: ({state, inputs, dispatch, updateState, events}) => {
+    renderCallback({state, inputs, dispatch, updateState, events}) {
         // log here to make sure it's not rendering too often
         console.info('child rendering');
         return html`

@@ -23,7 +23,7 @@ const AssignWithCleanupTestElement = defineElementNoInputs({
         },
         equalityCheck: undefined as undefined | ((a: string, b: string) => boolean),
     },
-    renderCallback: ({state, updateState}) => {
+    renderCallback({state, updateState}) {
         return html`
             <button
                 data-test-id="update-button"

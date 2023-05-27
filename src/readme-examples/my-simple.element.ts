@@ -1,8 +1,10 @@
 import {defineElementNoInputs, html} from '..';
 
-export const MySimpleElement = defineElementNoInputs({
+export const MySimple = defineElementNoInputs({
     tagName: 'my-simple',
-    renderCallback: () => html`
-        <span>Hello there!</span>
-    `,
+    renderCallback() {
+        return html`
+            <span>Hello there!</span>
+        `;
+    },
 });

@@ -22,30 +22,40 @@ describe(wrapDefineElement.name, () => {
         assertTypeOf(
             myDefineElement<MySpecificInputs>()({
                 tagName: `my-tag-abc0`,
-                renderCallback: () => '',
+                renderCallback() {
+                    return '';
+                },
             }),
         ).toEqualTypeOf(
             defineElement<MySpecificInputs>()({
                 tagName: `my-tag-abc1`,
-                renderCallback: () => '',
+                renderCallback() {
+                    return '';
+                },
             }),
         );
 
         myDefineElement<MySpecificInputs>()({
             // @ts-expect-error
             tagName: 'bad-tag',
-            renderCallback: () => '',
+            renderCallback() {
+                return '';
+            },
         });
 
         assertTypeOf(
             myDefineElementNoInputs({
                 tagName: `my-tag-abc2`,
-                renderCallback: () => '',
+                renderCallback() {
+                    return '';
+                },
             }),
         ).toEqualTypeOf(
             defineElementNoInputs({
                 tagName: `my-tag-abc3`,
-                renderCallback: () => '',
+                renderCallback() {
+                    return '';
+                },
             }),
         );
 
@@ -58,19 +68,21 @@ describe(wrapDefineElement.name, () => {
                 cssVars: {
                     'my-tag-abc4-var': 'blue',
                 },
-                styles: ({cssVars, hostClassNames, hostClassSelectors}) => css`
-                    ${hostClassSelectors['my-tag-abc4-do-thing']} {
+                styles: ({cssVars, hostClasses}) => css`
+                    ${hostClasses['my-tag-abc4-do-thing'].selector} {
                         color: ${cssVars['my-tag-abc4-var'].value};
                     }
 
-                    :host(${hostClassNames['my-tag-abc4-do-thing']}) {
+                    :host(${hostClasses['my-tag-abc4-do-thing'].name}) {
                         ${cssVars['my-tag-abc4-var'].name}: green;
                     }
                 `,
                 events: {
                     outputOne: defineElementEvent<string>(),
                 },
-                renderCallback: () => '',
+                renderCallback() {
+                    return '';
+                },
             }),
         ).toEqualTypeOf(
             defineElementNoInputs({
@@ -78,14 +90,18 @@ describe(wrapDefineElement.name, () => {
                 hostClasses: {
                     'my-tag-abc5-do-thing': false,
                 },
-                renderCallback: () => '',
+                renderCallback() {
+                    return '';
+                },
             }),
         );
 
         myDefineElementNoInputs({
             // @ts-expect-error
             tagName: 'bad-tag',
-            renderCallback: () => '',
+            renderCallback() {
+                return '';
+            },
         });
     });
 
@@ -111,7 +127,9 @@ describe(wrapDefineElement.name, () => {
             events: {
                 myOutput: defineElementEvent<number>(),
             },
-            renderCallback: () => '',
+            renderCallback() {
+                return '';
+            },
         });
 
         const assignedInput = 'hello';

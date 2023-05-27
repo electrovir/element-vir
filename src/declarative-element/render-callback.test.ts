@@ -32,7 +32,7 @@ describe('RenderParams', () => {
                 testEventName: defineElementEvent<number>(),
                 testEventName2: defineElementEvent<number>(),
             },
-            renderCallback: ({events, state, updateState}) => {
+            renderCallback({events, state, updateState}) {
                 if (state.myNumber == undefined) {
                     updateState({myNumber: createObservableProperty(6)});
                 }
