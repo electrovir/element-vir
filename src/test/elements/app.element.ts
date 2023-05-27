@@ -61,7 +61,7 @@ export const AppElement = defineElementNoInputs({
             ${TestChildElement.cssVars['element-vir-test-child-derp'].name}: yellow;
         }
     `,
-    stateInit: {
+    stateInitStatic: {
         funnyNumber: Math.random(),
         eventsReceived: 0,
         lastReceivedMessage: '',

@@ -7,7 +7,7 @@ export const AsyncChild = defineElement<{
     trigger: number;
 }>()({
     tagName: 'async-child',
-    stateInit: {
+    stateInitStatic: {
         loadThing: asyncState<number>(),
     },
     renderCallback({state, inputs, updateState}) {

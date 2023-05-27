@@ -26,7 +26,7 @@ const InvalidWithHostClassesAndCssVars = defineElementNoInputs({
         // @ts-expect-error
         stuff: false,
     },
-    stateInit: {
+    stateInitStatic: {
         color: 'purple',
     },
     cssVars: {
@@ -51,7 +51,7 @@ const WithHostClassesAndCssVars = defineElementNoInputs({
     hostClasses: {
         'derp-whatever-stuff': false,
     },
-    stateInit: {
+    stateInitStatic: {
         color: 'purple',
     },
     cssVars: {
@@ -106,7 +106,9 @@ type AppElementProps = {
     derp: Record<string, string>;
 };
 
-const stateInit: ReadonlyArray<keyof AppElementProps> = getObjectTypedKeys(AppElement.stateInit);
+const stateInitStatic: ReadonlyArray<keyof AppElementProps> = getObjectTypedKeys(
+    AppElement.stateInitStatic,
+);
 
 // element constructor should not be able to be assigned to an instance
 // @ts-expect-error
@@ -179,7 +181,7 @@ const TestElement = defineElement<{
 }>()({
     tagName: 'element-vir-test-element',
     styles: css``,
-    stateInit: {
+    stateInitStatic: {
         stringProp: 'derp',
         numberProp: undefined as number | undefined,
     },

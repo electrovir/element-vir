@@ -2,7 +2,7 @@ import {defineElementNoInputs, html, listen} from '..';
 
 export const MyWithUpdateState = defineElementNoInputs({
     tagName: 'my-with-update-state',
-    stateInit: {
+    stateInitStatic: {
         username: 'dev',
         /**
          * Use "as" to create state properties that can be types other than the initial value's

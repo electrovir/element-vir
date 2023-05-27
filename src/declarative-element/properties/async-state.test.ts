@@ -29,7 +29,7 @@ describe(asyncState.name, () => {
 
         const elementWithAsyncState = defineElementNoInputs({
             tagName: `element-with-async-state-${randomString()}`,
-            stateInit: {
+            stateInitStatic: {
                 myAsyncState: asyncState<SomethingObject>(),
             },
             renderCallback({state, updateState}) {
@@ -53,7 +53,7 @@ describe(asyncState.name, () => {
             },
         });
 
-        assertTypeOf(elementWithAsyncState.stateInit.myAsyncState).toEqualTypeOf<
+        assertTypeOf(elementWithAsyncState.stateInitStatic.myAsyncState).toEqualTypeOf<
             StaticElementPropertyDescriptor<
                 string,
                 AsyncObservablePropertyHandlerCreator<SomethingObject>
@@ -76,7 +76,7 @@ describe(asyncState.name, () => {
             promiseUpdateTrigger: number | undefined;
         }>()({
             tagName: `element-with-async-state-${randomString()}`,
-            stateInit: {
+            stateInitStatic: {
                 myAsyncState: asyncState<number>(),
             },
             events: {
@@ -269,7 +269,7 @@ describe(asyncState.name, () => {
             promiseUpdateTrigger: number | undefined;
         }>()({
             tagName: `element-with-async-state-${randomString()}`,
-            stateInit: {
+            stateInitStatic: {
                 myRandomNumber: asyncState<string>(),
             },
             renderCallback({inputs, state, updateState}) {
@@ -349,7 +349,7 @@ describe(asyncState.name, () => {
     it('works even if the value is undefined', async () => {
         const ElementWithUndefinedAsyncState = defineElementNoInputs({
             tagName: `element-with-undefined-async-state-${randomString()}`,
-            stateInit: {
+            stateInitStatic: {
                 myAsyncState: asyncState<number | undefined>(undefined),
             },
             events: {

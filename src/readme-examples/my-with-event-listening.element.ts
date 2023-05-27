@@ -3,7 +3,7 @@ import {MyWithEvents} from './my-with-events.element';
 
 export const MyWithEventListening = defineElementNoInputs({
     tagName: 'my-with-event-listening',
-    stateInit: {
+    stateInitStatic: {
         myNumber: -1,
     },
     renderCallback({state, updateState}) {

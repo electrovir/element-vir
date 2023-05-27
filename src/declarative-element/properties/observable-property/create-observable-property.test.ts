@@ -10,7 +10,7 @@ describe(createObservableProperty.name, () => {
 
         const MyElement = defineElement<{thing: string}>()({
             tagName: 'my-element-for-observable-property-test',
-            stateInit: {
+            stateInitStatic: {
                 myThing: stateObservable,
             },
             renderCallback({inputs, state}) {

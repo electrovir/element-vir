@@ -18,7 +18,7 @@ describe(asyncState.name, () => {
         setAsyncState: Promise<number>;
     }>()({
         tagName: 'element-with-async-state',
-        stateInit: {
+        stateInitStatic: {
             myAsyncState: asyncState<number>(),
         },
         events: {
@@ -81,7 +81,7 @@ describe(asyncState.name, () => {
 
         defineElementNoInputs({
             tagName: 'element-with-async-prop',
-            stateInit: {
+            stateInitStatic: {
                 asyncState: asyncState<SomethingObject>(),
             },
             renderCallback({state}) {

@@ -2,7 +2,7 @@ import {defineElementNoInputs, html} from '..';
 
 export const MyWithAssignmentCleanupCallback = defineElementNoInputs({
     tagName: 'my-with-cleanup-callback',
-    stateInit: {
+    stateInitStatic: {
         intervalId: undefined as undefined | number,
     },
     initCallback: ({updateState}) => {

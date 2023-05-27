@@ -6,7 +6,7 @@ const definedDeclarativeElementWithProps = defineElementNoInputs({
     renderCallback() {
         return html``;
     },
-    stateInit: {
+    stateInitStatic: {
         thing: '',
     },
     events: {
@@ -19,13 +19,13 @@ const definedDeclarativeElementWithoutProps = defineElementNoInputs({
     renderCallback() {
         return html``;
     },
-    stateInit: {
+    stateInitStatic: {
         thing: 5,
     },
     tagName: 'defined-declarative-element',
 });
 
-definedDeclarativeElementWithProps.init.stateInit.thing;
+definedDeclarativeElementWithProps.init.stateInitStatic.thing;
 
 function acceptInstanceWithProps(
     input: typeof definedDeclarativeElementWithProps.instanceType,

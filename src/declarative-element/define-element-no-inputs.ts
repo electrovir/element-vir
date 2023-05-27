@@ -11,7 +11,7 @@ import {
 import {CustomElementTagName, DeclarativeElementInit} from './declarative-element-init';
 import {
     DeclarativeElementDefinitionOptions,
-    IgnoreInputsNotBeenSetBeforeRenderWarningSymbol,
+    IgnoreInputsNotBeenSetBeforeWarningSymbol,
     defaultDeclarativeElementDefinitionOptions,
 } from './definition-options';
 import {assign} from './directives/assign.directive';
@@ -178,7 +178,7 @@ export function defineElementNoInputs<
             CssVarKeys,
             RenderOutput
         >['cssVars'] = cssVars;
-        public static override readonly stateInit: StaticDeclarativeElementProperties<
+        public static override readonly stateInitStatic: StaticDeclarativeElementProperties<
             TagName,
             PropertyInitMapBase,
             PropertyInitMapBase,
@@ -186,7 +186,7 @@ export function defineElementNoInputs<
             HostClassKeys,
             CssVarKeys,
             RenderOutput
-        >['stateInit'] = initInput.stateInit as StaticDeclarativeElementProperties<
+        >['stateInitStatic'] = initInput.stateInitStatic as StaticDeclarativeElementProperties<
             TagName,
             PropertyInitMapBase,
             PropertyInitMapBase,
@@ -194,7 +194,7 @@ export function defineElementNoInputs<
             HostClassKeys,
             CssVarKeys,
             RenderOutput
-        >['stateInit'];
+        >['stateInitStatic'];
         public get instanceType() {
             throw new Error(
                 `"instanceType" was called on ${initInput.tagName} as a value but it is only for types.`,
@@ -226,7 +226,7 @@ export function defineElementNoInputs<
                     // other elements (cause they have no custom element ancestors).
                     hasDeclarativeElementParent(this) &&
                     !this.haveInputsBeenSet &&
-                    !elementOptions[IgnoreInputsNotBeenSetBeforeRenderWarningSymbol]
+                    !elementOptions[IgnoreInputsNotBeenSetBeforeWarningSymbol]
                 ) {
                     console.warn(
                         this,
@@ -306,14 +306,14 @@ export function defineElementNoInputs<
         constructor() {
             super();
 
-            const stateInit: FlattenObservablePropertyGetters<StateInit> =
-                (initInput.stateInit as FlattenObservablePropertyGetters<StateInit>) ||
+            const stateInitStatic: FlattenObservablePropertyGetters<StateInit> =
+                (initInput.stateInitStatic as FlattenObservablePropertyGetters<StateInit>) ||
                 ({} as FlattenObservablePropertyGetters<StateInit>);
 
-            getObjectTypedKeys(stateInit).forEach((stateKey) => {
+            getObjectTypedKeys(stateInitStatic).forEach((stateKey) => {
                 property()(this, stateKey);
 
-                this.instanceState[stateKey] = stateInit[stateKey];
+                this.instanceState[stateKey] = stateInitStatic[stateKey];
             });
             this.definition = anonymousClass as unknown as ThisElementDefinition;
         }

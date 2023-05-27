@@ -20,7 +20,7 @@ describe('RenderParams', () => {
     it('should produce proper types', () => {
         defineElementNoInputs({
             tagName: 'test-element',
-            stateInit: {
+            stateInitStatic: {
                 myAsyncState: asyncState<number>(),
                 myAsyncState2: asyncState(Promise.resolve(3)),
                 myAsyncState3: asyncState(3),

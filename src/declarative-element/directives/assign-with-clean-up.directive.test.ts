@@ -11,7 +11,7 @@ import {VirWithInputs} from '../../test/elements/vir-with-inputs.element';
 
 const AssignWithCleanupTestElement = defineElementNoInputs({
     tagName: 'vir-assign-with-cleanup-test',
-    stateInit: {
+    stateInitStatic: {
         first: 1,
         second: 'two',
         generatedStrings: new Set<string>(),

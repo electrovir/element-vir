@@ -18,7 +18,7 @@ async function loadSomething(endpoint: string): Promise<EndpointData> {
 
 export const MyWithAsyncState = defineElement<{endpoint: string}>()({
     tagName: 'my-with-async-state',
-    stateInit: {
+    stateInitStatic: {
         data: asyncState<EndpointData>(),
     },
     renderCallback({inputs, state, updateState}) {

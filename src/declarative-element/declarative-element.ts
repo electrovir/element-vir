@@ -151,7 +151,7 @@ export abstract class DeclarativeElement<
         BaseCssPropertyName<CustomElementTagName>,
         unknown
     >['events'];
-    public static readonly stateInit: StaticDeclarativeElementProperties<
+    public static readonly stateInitStatic: StaticDeclarativeElementProperties<
         CustomElementTagName,
         PropertyInitMapBase,
         PropertyInitMapBase,
@@ -159,7 +159,7 @@ export abstract class DeclarativeElement<
         BaseCssPropertyName<CustomElementTagName>,
         BaseCssPropertyName<CustomElementTagName>,
         unknown
-    >['stateInit'];
+    >['stateInitStatic'];
     public static readonly init: StaticDeclarativeElementProperties<
         CustomElementTagName,
         PropertyInitMapBase,
@@ -232,7 +232,7 @@ export interface StaticDeclarativeElementProperties<
         RenderOutputGeneric
     >;
     events: EventDescriptorMap<EventsInit>;
-    stateInit: ElementPropertyDescriptorMap<StateInit>;
+    stateInitStatic: ElementPropertyDescriptorMap<StateInit>;
     init: RequiredBy<
         DeclarativeElementInit<
             TagName,
@@ -243,7 +243,7 @@ export interface StaticDeclarativeElementProperties<
             CssVarKeys,
             RenderOutputGeneric
         >,
-        'stateInit' | 'events'
+        'stateInitStatic' | 'events'
     >;
     inputsType: Readonly<FlattenObservablePropertySetters<Inputs>>;
     stateType: Readonly<FlattenObservablePropertyGetters<StateInit>>;

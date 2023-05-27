@@ -41,7 +41,7 @@ export const TestChildElement = defineElement<{
         'element-vir-test-child-test': false,
         'element-vir-test-child-automatic': ({inputs}) => inputs.displayNumber === 15,
     },
-    stateInit: {
+    stateInitStatic: {
         button: undefined as undefined | HTMLButtonElement,
     },
     events: {
