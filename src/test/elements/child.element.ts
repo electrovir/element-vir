@@ -9,7 +9,7 @@ export const TestChildElement = defineElement<{
     myProp?: number;
 }>()({
     tagName: 'element-vir-test-child',
-    styles: ({hostClassSelectors, hostClassNames, cssVarValues}) => {
+    styles: ({hostClassSelectors, hostClassNames, cssVars}) => {
         return css`
             :host {
                 display: flex;
@@ -18,28 +18,28 @@ export const TestChildElement = defineElement<{
             }
 
             span {
-                background-color: ${cssVarValues.derp};
+                background-color: ${cssVars['element-vir-test-child-derp'].value};
             }
 
-            ${hostClassSelectors.testHostClass} {
+            ${hostClassSelectors['element-vir-test-child-test']} {
                 color: blue;
             }
 
-            :host(.${hostClassNames.testHostClass}:hover) {
+            :host(.${hostClassNames['element-vir-test-child-test']}:hover) {
                 color: pink;
             }
 
-            ${hostClassSelectors.automaticallyApplied} {
+            ${hostClassSelectors['element-vir-test-child-automatic']} {
                 font-weight: bold;
             }
         `;
     },
     cssVars: {
-        derp: 'white',
+        'element-vir-test-child-derp': 'white',
     },
     hostClasses: {
-        testHostClass: false,
-        automaticallyApplied: ({inputs}) => inputs.displayNumber === 15,
+        'element-vir-test-child-test': false,
+        'element-vir-test-child-automatic': ({inputs}) => inputs.displayNumber === 15,
     },
     stateInit: {
         button: undefined as undefined | HTMLButtonElement,

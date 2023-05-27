@@ -7,56 +7,53 @@ import {
     EventsInitMap,
     PropertyInitMapBase,
 } from '..';
+import {BaseCssPropertyName} from './properties/css-properties';
 
 export type WrapDefineElementOptions<
-    TagNameRequirementGeneric extends CustomElementTagName = CustomElementTagName,
-    InputsRequirementGeneric extends PropertyInitMapBase = {},
-    StateInitRequirementGeneric extends PropertyInitMapBase = {},
-    EventsInitRequirementGeneric extends EventsInitMap = {},
-    HostClassKeysRequirementGeneric extends string = '',
-    CssVarKeysRequirementGeneric extends string = '',
-    RenderOutputGeneric = any,
+    TagNameRequirement extends CustomElementTagName = CustomElementTagName,
+    InputsRequirement extends PropertyInitMapBase = {},
+    StateInitRequirement extends PropertyInitMapBase = {},
+    EventsInitRequirement extends EventsInitMap = {},
+    RenderOutput = any,
 > = PartialAndNullable<{
     assertInputs: (
         inputInit: DeclarativeElementInit<
-            TagNameRequirementGeneric,
-            InputsRequirementGeneric,
-            StateInitRequirementGeneric,
-            EventsInitRequirementGeneric,
-            HostClassKeysRequirementGeneric,
-            CssVarKeysRequirementGeneric,
-            RenderOutputGeneric
+            TagNameRequirement,
+            InputsRequirement,
+            StateInitRequirement,
+            EventsInitRequirement,
+            BaseCssPropertyName<TagNameRequirement>,
+            BaseCssPropertyName<TagNameRequirement>,
+            RenderOutput
         >,
     ) => void;
     transformInputs: (
         inputInit: DeclarativeElementInit<
-            TagNameRequirementGeneric,
-            InputsRequirementGeneric,
-            StateInitRequirementGeneric,
-            EventsInitRequirementGeneric,
-            HostClassKeysRequirementGeneric,
-            CssVarKeysRequirementGeneric,
-            RenderOutputGeneric
+            TagNameRequirement,
+            InputsRequirement,
+            StateInitRequirement,
+            EventsInitRequirement,
+            BaseCssPropertyName<TagNameRequirement>,
+            BaseCssPropertyName<TagNameRequirement>,
+            RenderOutput
         >,
     ) => DeclarativeElementInit<
-        TagNameRequirementGeneric,
-        InputsRequirementGeneric,
-        StateInitRequirementGeneric,
-        EventsInitRequirementGeneric,
-        HostClassKeysRequirementGeneric,
-        CssVarKeysRequirementGeneric,
-        RenderOutputGeneric
+        TagNameRequirement,
+        InputsRequirement,
+        StateInitRequirement,
+        EventsInitRequirement,
+        BaseCssPropertyName<TagNameRequirement>,
+        BaseCssPropertyName<TagNameRequirement>,
+        RenderOutput
     >;
 }>;
 
 export function wrapDefineElement<
-    TagNameRequirementGeneric extends CustomElementTagName = CustomElementTagName,
-    InputsRequirementGeneric extends PropertyInitMapBase = {},
-    StateInitRequirementGeneric extends PropertyInitMapBase = {},
-    EventsInitRequirementGeneric extends EventsInitMap = {},
-    HostClassKeysRequirementGeneric extends string = string,
-    CssVarKeysRequirementGeneric extends string = string,
-    RenderOutputRequirementGeneric = any,
+    TagNameRequirement extends CustomElementTagName = CustomElementTagName,
+    InputsRequirement extends PropertyInitMapBase = {},
+    StateInitRequirement extends PropertyInitMapBase = {},
+    EventsInitRequirement extends EventsInitMap = {},
+    RenderOutputRequirement = any,
 >(options?: WrapDefineElementOptions | undefined) {
     const {assertInputs, transformInputs}: WrapDefineElementOptions = {
         assertInputs: options?.assertInputs ?? (() => {}),
@@ -64,23 +61,23 @@ export function wrapDefineElement<
     };
 
     return {
-        defineElement: <InputsGeneric extends InputsRequirementGeneric>() => {
+        defineElement: <InputsGeneric extends InputsRequirement>() => {
             return <
-                TagNameGeneric extends TagNameRequirementGeneric,
-                StateInitGeneric extends StateInitRequirementGeneric,
-                EventsInitGeneric extends EventsInitRequirementGeneric,
-                HostClassKeysGeneric extends HostClassKeysRequirementGeneric,
-                CssVarKeysGeneric extends CssVarKeysRequirementGeneric,
-                RenderOutputGeneric extends RenderOutputRequirementGeneric,
+                TagName extends TagNameRequirement,
+                StateInit extends StateInitRequirement,
+                EventsInit extends EventsInitRequirement,
+                HostClassKeys extends BaseCssPropertyName<TagName>,
+                CssVarKeys extends BaseCssPropertyName<TagName>,
+                RenderOutput extends RenderOutputRequirement,
             >(
                 inputs: DeclarativeElementInit<
-                    TagNameGeneric,
+                    TagName,
                     InputsGeneric,
-                    StateInitGeneric,
-                    EventsInitGeneric,
-                    HostClassKeysGeneric,
-                    CssVarKeysGeneric,
-                    RenderOutputGeneric
+                    StateInit,
+                    EventsInit,
+                    HostClassKeys,
+                    CssVarKeys,
+                    RenderOutput
                 >,
             ) => {
                 assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
@@ -88,34 +85,34 @@ export function wrapDefineElement<
                     transformInputs(
                         inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
                     ) as unknown as DeclarativeElementInit<
-                        TagNameGeneric,
+                        TagName,
                         InputsGeneric,
-                        StateInitGeneric,
-                        EventsInitGeneric,
-                        HostClassKeysGeneric,
-                        CssVarKeysGeneric,
-                        RenderOutputGeneric
+                        StateInit,
+                        EventsInit,
+                        HostClassKeys,
+                        CssVarKeys,
+                        RenderOutput
                     >,
                 );
             };
         },
         defineElementNoInputs: <
-            TagNameGeneric extends TagNameRequirementGeneric,
-            InputsGeneric extends InputsRequirementGeneric,
-            StateInitGeneric extends StateInitRequirementGeneric,
-            EventsInitGeneric extends EventsInitRequirementGeneric,
-            HostClassKeysGeneric extends HostClassKeysRequirementGeneric,
-            CssVarKeysGeneric extends CssVarKeysRequirementGeneric,
-            RenderOutputGeneric extends RenderOutputRequirementGeneric,
+            TagName extends TagNameRequirement,
+            Inputs extends InputsRequirement,
+            StateInit extends StateInitRequirement,
+            EventsInit extends EventsInitRequirement,
+            HostClassKeys extends BaseCssPropertyName<TagName>,
+            CssVarKeys extends BaseCssPropertyName<TagName>,
+            RenderOutput extends RenderOutputRequirement,
         >(
             inputs: DeclarativeElementInit<
-                TagNameGeneric,
-                InputsGeneric,
-                StateInitGeneric,
-                EventsInitGeneric,
-                HostClassKeysGeneric,
-                CssVarKeysGeneric,
-                RenderOutputGeneric
+                TagName,
+                Inputs,
+                StateInit,
+                EventsInit,
+                HostClassKeys,
+                CssVarKeys,
+                RenderOutput
             >,
         ) => {
             assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
@@ -123,13 +120,13 @@ export function wrapDefineElement<
                 transformInputs(
                     inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
                 ) as unknown as DeclarativeElementInit<
-                    TagNameGeneric,
-                    InputsGeneric,
-                    StateInitGeneric,
-                    EventsInitGeneric,
-                    HostClassKeysGeneric,
-                    CssVarKeysGeneric,
-                    RenderOutputGeneric
+                    TagName,
+                    Inputs,
+                    StateInit,
+                    EventsInit,
+                    HostClassKeys,
+                    CssVarKeys,
+                    RenderOutput
                 >,
             );
         },

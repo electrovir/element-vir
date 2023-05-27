@@ -5,7 +5,7 @@ export const MyWithHostClassUsageElement = defineElementNoInputs({
     tagName: 'my-with-host-class-usage',
     renderCallback: () => html`
         <${MyWithHostClassDefinitionElement}
-            class=${MyWithHostClassDefinitionElement.hostClasses.styleVariationA}
+            class=${MyWithHostClassDefinitionElement.hostClasses['my-with-host-class-definition-a']}
         ></${MyWithHostClassDefinitionElement}>
     `,
 });

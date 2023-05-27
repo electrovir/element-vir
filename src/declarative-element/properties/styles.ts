@@ -1,32 +1,38 @@
 import {getObjectTypedKeys, mapObjectValues} from '@augment-vir/common';
 import {CSSResult, unsafeCSS} from 'lit';
-import {CssVarNameOrValueMap} from './css-vars';
+import {CustomElementTagName} from '../declarative-element-init';
+import {BaseCssPropertyName} from './css-properties';
+import {CssVars} from './css-vars';
 import {PropertyInitMapBase} from './element-properties';
 import {HostClassNamesMap, HostClassesInitMap} from './host-classes';
 
-export type StylesCallbackInput<HostClassKeys extends string, CssVarKeys extends string> = {
+export type StylesCallbackInput<
+    TagName extends CustomElementTagName,
+    HostClassKeys extends BaseCssPropertyName<TagName>,
+    CssVarKeys extends BaseCssPropertyName<TagName>,
+> = {
     hostClassSelectors: Record<HostClassKeys, CSSResult>;
     hostClassNames: Record<HostClassKeys, CSSResult>;
-    cssVarNames: Record<CssVarKeys, CSSResult>;
-    cssVarValues: Record<CssVarKeys, CSSResult>;
+    cssVars: Readonly<CssVars<TagName, CssVarKeys>>;
 };
 
-export type StylesCallback<HostClassKeys extends string, CssVarKeys extends string> = (
-    input: StylesCallbackInput<HostClassKeys, CssVarKeys>,
-) => CSSResult;
+export type StylesCallback<
+    TagName extends CustomElementTagName,
+    HostClassKeys extends BaseCssPropertyName<TagName>,
+    CssVarKeys extends BaseCssPropertyName<TagName>,
+> = (input: StylesCallbackInput<TagName, HostClassKeys, CssVarKeys>) => CSSResult;
 
 export function hostClassNamesToStylesInput<
-    HostClassKeys extends string,
-    CssVarKeys extends string,
+    TagName extends CustomElementTagName,
+    HostClassKeys extends BaseCssPropertyName<TagName>,
+    CssVarKeys extends BaseCssPropertyName<TagName>,
 >({
     hostClassNames,
-    cssVarNames,
-    cssVarValues,
+    cssVars,
 }: {
-    hostClassNames: HostClassNamesMap<string, HostClassKeys>;
-    cssVarNames: CssVarNameOrValueMap<CssVarKeys>;
-    cssVarValues: CssVarNameOrValueMap<CssVarKeys>;
-}): StylesCallbackInput<HostClassKeys, CssVarKeys> {
+    hostClassNames: HostClassNamesMap<TagName, HostClassKeys>;
+    cssVars: Readonly<CssVars<TagName, CssVarKeys>>;
+}): StylesCallbackInput<TagName, HostClassKeys, CssVarKeys> {
     return {
         hostClassSelectors: mapObjectValues(hostClassNames, (key, name) => {
             return unsafeCSS(`:host(.${name})`);
@@ -34,15 +40,15 @@ export function hostClassNamesToStylesInput<
         hostClassNames: mapObjectValues(hostClassNames, (key, name) => {
             return unsafeCSS(name);
         }),
-        cssVarNames: cssVarNames,
-        cssVarValues: cssVarValues,
+        cssVars,
     };
 }
 
 export function applyHostClasses<
-    InputsGeneric extends PropertyInitMapBase,
-    StateGeneric extends PropertyInitMapBase,
-    HostClassKeys extends string,
+    TagName extends CustomElementTagName,
+    Inputs extends PropertyInitMapBase,
+    StateInit extends PropertyInitMapBase,
+    HostClassKeys extends BaseCssPropertyName<TagName>,
 >({
     host,
     hostClassesInit,
@@ -52,11 +58,11 @@ export function applyHostClasses<
 }: {
     host: HTMLElement;
     hostClassesInit:
-        | Readonly<HostClassesInitMap<HostClassKeys, InputsGeneric, StateGeneric>>
+        | Readonly<HostClassesInitMap<TagName, HostClassKeys, Inputs, StateInit>>
         | undefined;
     hostClassNames: HostClassNamesMap<string, HostClassKeys>;
-    state: Readonly<StateGeneric>;
-    inputs: Readonly<InputsGeneric>;
+    state: Readonly<StateInit>;
+    inputs: Readonly<Inputs>;
 }): void {
     if (!hostClassesInit) {
         return;

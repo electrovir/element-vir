@@ -41,7 +41,8 @@
     "dependencies": {
         "@augment-vir/browser": "^14.2.0",
         "@augment-vir/common": "^14.2.0",
-        "lit": "2.7.4"
+        "lit": "2.7.4",
+        "lit-css-vars": "^2.0.2"
     },
     "devDependencies": {
         "@augment-vir/browser-testing": "^14.2.0",

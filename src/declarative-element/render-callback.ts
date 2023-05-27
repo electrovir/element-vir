@@ -2,6 +2,7 @@ import {getObjectTypedKeys, RequiredAndNotNullBy} from '@augment-vir/common';
 import {TypedEvent} from '../typed-event/typed-event';
 import {DeclarativeElement, DeclarativeElementHost} from './declarative-element';
 import {CustomElementTagName} from './declarative-element-init';
+import {BaseCssPropertyName} from './properties/css-properties';
 import {
     EventDescriptorMap,
     EventInitMapEventDetailExtractor,
@@ -14,118 +15,90 @@ import {
 } from './properties/observable-property/observable-property-handler';
 
 export type RenderCallback<
-    TagNameGeneric extends CustomElementTagName = any,
-    InputsGeneric extends PropertyInitMapBase = any,
-    StateGeneric extends PropertyInitMapBase = any,
-    EventsInitGeneric extends EventsInitMap = any,
-    HostClassKeys extends string = any,
-    CssVarKeys extends string = any,
-    RenderOutputGeneric = any,
+    TagName extends CustomElementTagName = any,
+    Inputs extends PropertyInitMapBase = any,
+    StateInit extends PropertyInitMapBase = any,
+    EventsInit extends EventsInitMap = any,
+    HostClassKeys extends BaseCssPropertyName<TagName> = any,
+    CssVarKeys extends BaseCssPropertyName<TagName> = any,
+    RenderOutput = any,
 > = (
-    params: RenderParams<
-        TagNameGeneric,
-        InputsGeneric,
-        StateGeneric,
-        EventsInitGeneric,
-        HostClassKeys,
-        CssVarKeys
-    >,
-) => RenderOutputGeneric;
+    params: RenderParams<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>,
+) => RenderOutput;
 
 export type InitCallback<
-    TagNameGeneric extends CustomElementTagName,
-    InputsGeneric extends PropertyInitMapBase,
-    StateGeneric extends PropertyInitMapBase,
-    EventsInitGeneric extends EventsInitMap,
-    HostClassKeys extends string,
-    CssVarKeys extends string,
+    TagName extends CustomElementTagName,
+    Inputs extends PropertyInitMapBase,
+    StateInit extends PropertyInitMapBase,
+    EventsInit extends EventsInitMap,
+    HostClassKeys extends BaseCssPropertyName<TagName>,
+    CssVarKeys extends BaseCssPropertyName<TagName>,
 > = (
-    params: RenderParams<
-        TagNameGeneric,
-        InputsGeneric,
-        StateGeneric,
-        EventsInitGeneric,
-        HostClassKeys,
-        CssVarKeys
-    >,
+    params: RenderParams<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>,
 ) => void;
 
-export type UpdateStateCallback<StateGeneric extends PropertyInitMapBase> = (
-    newState: Partial<FlattenObservablePropertySetters<StateGeneric>>,
+export type UpdateStateCallback<StateInit extends PropertyInitMapBase> = (
+    newState: Partial<FlattenObservablePropertySetters<StateInit>>,
 ) => void;
 
 export type RenderParams<
-    TagNameGeneric extends CustomElementTagName,
-    InputsGeneric extends PropertyInitMapBase,
-    StateInitGeneric extends PropertyInitMapBase,
-    EventsInitGeneric extends EventsInitMap,
-    HostClassKeys extends string,
-    CssVarKeys extends string,
+    TagName extends CustomElementTagName,
+    Inputs extends PropertyInitMapBase,
+    StateInit extends PropertyInitMapBase,
+    EventsInit extends EventsInitMap,
+    HostClassKeys extends BaseCssPropertyName<TagName>,
+    CssVarKeys extends BaseCssPropertyName<TagName>,
 > = {
-    state: Readonly<FlattenObservablePropertyGetters<StateInitGeneric>>;
-    updateState: UpdateStateCallback<StateInitGeneric>;
-    events: EventDescriptorMap<EventsInitGeneric>;
-    host: DeclarativeElementHost<
-        TagNameGeneric,
-        InputsGeneric,
-        StateInitGeneric,
-        EventsInitGeneric,
-        HostClassKeys,
-        CssVarKeys
-    >;
-    dispatch: <EventTypeNameGeneric extends keyof EventsInitGeneric>(
+    state: Readonly<FlattenObservablePropertyGetters<StateInit>>;
+    updateState: UpdateStateCallback<StateInit>;
+    events: EventDescriptorMap<EventsInit>;
+    host: DeclarativeElementHost<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>;
+    dispatch: <EventTypeName extends keyof EventsInit>(
         event:
             | TypedEvent<
-                  EventTypeNameGeneric extends string ? EventTypeNameGeneric : never,
-                  EventInitMapEventDetailExtractor<EventTypeNameGeneric, EventsInitGeneric>
+                  EventTypeName extends string ? EventTypeName : never,
+                  EventInitMapEventDetailExtractor<EventTypeName, EventsInit>
               >
             | Event,
     ) => boolean;
-    inputs: Readonly<FlattenObservablePropertyGetters<InputsGeneric>>;
+    inputs: Readonly<FlattenObservablePropertyGetters<Inputs>>;
 };
 
 export function createRenderParams<
-    TagNameGeneric extends CustomElementTagName,
-    InputsGeneric extends PropertyInitMapBase,
-    StateGeneric extends PropertyInitMapBase,
-    EventsInitGeneric extends EventsInitMap,
-    HostClassKeys extends string,
-    CssVarKeys extends string,
-    RenderOutputGeneric,
+    TagName extends CustomElementTagName,
+    Inputs extends PropertyInitMapBase,
+    StateInit extends PropertyInitMapBase,
+    EventsInit extends EventsInitMap,
+    HostClassKeys extends BaseCssPropertyName<TagName>,
+    CssVarKeys extends BaseCssPropertyName<TagName>,
+    RenderOutput,
 >(
     element: DeclarativeElement<
-        TagNameGeneric,
-        InputsGeneric,
-        StateGeneric,
-        EventsInitGeneric,
+        TagName,
+        Inputs,
+        StateInit,
+        EventsInit,
         HostClassKeys,
         CssVarKeys,
-        RenderOutputGeneric
+        RenderOutput
     >,
-    eventsMap: EventDescriptorMap<EventsInitGeneric>,
-): RenderParams<
-    TagNameGeneric,
-    InputsGeneric,
-    StateGeneric,
-    EventsInitGeneric,
-    HostClassKeys,
-    CssVarKeys
-> {
-    function updateState(newStatePartial: Parameters<UpdateStateCallback<StateGeneric>>[0]) {
+    eventsMap: EventDescriptorMap<EventsInit>,
+): RenderParams<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys> {
+    function updateState(newStatePartial: Parameters<UpdateStateCallback<StateInit>>[0]) {
         getObjectTypedKeys(newStatePartial).forEach((stateKey) => {
             const newValue = newStatePartial[
                 stateKey
-            ] as FlattenObservablePropertyGetters<StateGeneric>[typeof stateKey];
+            ] as FlattenObservablePropertyGetters<StateInit>[typeof stateKey];
 
             element.instanceState[stateKey] = newValue;
         });
     }
 
     const renderParams: RenderParams<
-        TagNameGeneric,
-        InputsGeneric,
-        StateGeneric,
-        EventsInitGeneric,
+        TagName,
+        Inputs,
+        StateInit,
+        EventsInit,
         HostClassKeys,
         CssVarKeys
     > = {

@@ -19,16 +19,20 @@ import {AppElement} from './elements/app.element';
 import {TestChildElement} from './elements/child.element';
 
 // host classes test
-const WithHostClassesAndCssVars = defineElementNoInputs({
-    tagName: 'derp-whatever',
+const InvalidWithHostClassesAndCssVars = defineElementNoInputs({
+    tagName: 'invalid-derp-whatever',
     hostClasses: {
+        'invalid-derp-whatever-stuff': false,
+        // @ts-expect-error
         stuff: false,
     },
     stateInit: {
         color: 'purple',
     },
     cssVars: {
-        myCssVar: 'blue',
+        'invalid-derp-whatever-css-var': 'blue',
+        // @ts-expect-error
+        derp: 'blue',
     },
     renderCallback: ({state, updateState}) => {
         // purple
@@ -41,23 +45,47 @@ const WithHostClassesAndCssVars = defineElementNoInputs({
     },
 });
 
-WithHostClassesAndCssVars.hostClasses.stuff;
+// host classes test
+const WithHostClassesAndCssVars = defineElementNoInputs({
+    tagName: 'derp-whatever',
+    hostClasses: {
+        'derp-whatever-stuff': false,
+    },
+    stateInit: {
+        color: 'purple',
+    },
+    cssVars: {
+        'derp-whatever-css-var': 'blue',
+    },
+    renderCallback: ({state, updateState}) => {
+        // purple
+        console.info(state.color);
+        updateState({color: 'green'});
+        // green
+        console.info(state.color);
+
+        return html``;
+    },
+});
+
+WithHostClassesAndCssVars.hostClasses['derp-whatever-stuff'];
 // @ts-expect-error
 WithHostClassesAndCssVars.hostClasses.derp;
 
-WithHostClassesAndCssVars.cssVarNames.myCssVar;
-WithHostClassesAndCssVars.cssVarValues.myCssVar;
+WithHostClassesAndCssVars.cssVars['derp-whatever-css-var'].name;
+WithHostClassesAndCssVars.cssVars['derp-whatever-css-var'].default;
+WithHostClassesAndCssVars.cssVars['derp-whatever-css-var'].value;
 // @ts-expect-error
-WithHostClassesAndCssVars.cssVarNames.derp;
+WithHostClassesAndCssVars.cssVars.derp;
 // @ts-expect-error
-WithHostClassesAndCssVars.cssVarValues.derp;
+WithHostClassesAndCssVars.cssVars.derp;
 
 // @ts-expect-error
 const TestElementNoTagName = defineElementNoInputs({
     renderCallback: (): TemplateResult => {
         return html`
             <${WithHostClassesAndCssVars}
-                class=${WithHostClassesAndCssVars.hostClasses.stuff}
+                class=${WithHostClassesAndCssVars.hostClasses['derp-whatever-stuff']}
             ></${WithHostClassesAndCssVars}>
         `;
     },

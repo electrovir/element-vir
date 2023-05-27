@@ -1,6 +1,7 @@
 import {CSSResult} from 'lit';
 import {RequireNonVoidReturn} from '../augments/type';
 import {DeclarativeElementDefinitionOptions} from './definition-options';
+import {BaseCssPropertyName} from './properties/css-properties';
 import {CssVarsInitMap} from './properties/css-vars';
 import {EventsInitMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
@@ -12,34 +13,35 @@ import {InitCallback, RenderCallback} from './render-callback';
 export type CustomElementTagName = `${string}-${string}`;
 
 export type DeclarativeElementInit<
-    TagNameGeneric extends CustomElementTagName,
-    InputsGeneric extends PropertyInitMapBase,
-    StateInitGeneric extends PropertyInitMapBase,
-    EventsInitGeneric extends EventsInitMap,
-    HostClassKeysGeneric extends string,
-    CssVarKeysGeneric extends string,
-    RenderOutputGeneric,
+    TagName extends CustomElementTagName,
+    Inputs extends PropertyInitMapBase,
+    StateInit extends PropertyInitMapBase,
+    EventsInit extends EventsInitMap,
+    HostClassKeys extends BaseCssPropertyName<TagName>,
+    CssVarKeys extends BaseCssPropertyName<TagName>,
+    RenderOutput,
 > = {
     /**
      * HTML tag name. This should not be used directly, as interpolating it with the html tagged
      * template from this package is preferred.
      */
-    tagName: TagNameGeneric;
+    tagName: TagName;
     /** Static styles. These should not and cannot change. */
-    styles?: CSSResult | StylesCallback<HostClassKeysGeneric, CssVarKeysGeneric>;
+    styles?: CSSResult | StylesCallback<TagName, HostClassKeys, CssVarKeys>;
     /** Element properties. (These can be thought of as "inputs".) */
-    stateInit?: StateInitGeneric;
+    stateInit?: StateInit;
     /** Events that the element can dispatch. (These can be thought of as "outputs".) */
-    events?: EventsInitGeneric;
+    events?: EventsInit;
     /**
      * CSS host classes. Values can be callbacks to determine when a host class should be defined,
-     * based on current instance state or inputs, or just undefined to indicate that the host class
-     * will only be manually set.
+     * based on current instance state or inputs, or just false to indicate that the host class will
+     * only be manually set.
      */
     hostClasses?: HostClassesInitMap<
-        HostClassKeysGeneric,
-        FlattenObservablePropertyGetters<InputsGeneric>,
-        FlattenObservablePropertyGetters<StateInitGeneric>
+        TagName,
+        HostClassKeys,
+        FlattenObservablePropertyGetters<Inputs>,
+        FlattenObservablePropertyGetters<StateInit>
     >;
     /**
      * CSS Vars for the component. Keys of this object should be camelCased (or whatever your casing
@@ -51,35 +53,28 @@ export type DeclarativeElementInit<
      * cssVarValues or cssVarNames can then be destructured from the styles property's callback
      * input.
      */
-    cssVars?: CssVarsInitMap<CssVarKeysGeneric>;
+    cssVars?: CssVarsInitMap<TagName, CssVarKeys>;
     /** Called as part of the first renderCallback call, before the first renderCallback call. */
-    initCallback?: InitCallback<
-        TagNameGeneric,
-        InputsGeneric,
-        StateInitGeneric,
-        EventsInitGeneric,
-        HostClassKeysGeneric,
-        CssVarKeysGeneric
-    >;
+    initCallback?: InitCallback<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>;
     renderCallback: RequireNonVoidReturn<
-        RenderOutputGeneric,
+        RenderOutput,
         RenderCallback<
-            TagNameGeneric,
-            InputsGeneric,
-            StateInitGeneric,
-            EventsInitGeneric,
-            HostClassKeysGeneric,
-            CssVarKeysGeneric,
-            RenderOutputGeneric
+            TagName,
+            Inputs,
+            StateInit,
+            EventsInit,
+            HostClassKeys,
+            CssVarKeys,
+            RenderOutput
         >
     >;
     cleanupCallback?: InitCallback<
-        TagNameGeneric,
-        InputsGeneric,
-        StateInitGeneric,
-        EventsInitGeneric,
-        HostClassKeysGeneric,
-        CssVarKeysGeneric
+        TagName,
+        Inputs,
+        StateInit,
+        EventsInit,
+        HostClassKeys,
+        CssVarKeys
     >;
     options?: Partial<DeclarativeElementDefinitionOptions> | undefined;
 };

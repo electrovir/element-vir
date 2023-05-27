@@ -7,16 +7,15 @@ export const MyWithHostClassDefinitionElement = defineElementNoInputs({
     },
     hostClasses: {
         /**
-         * Setting the value to false means this host class will not ever automatically be applied.
-         * It will simply be a static member on the element for manual application in consumers when
-         * desired.
+         * Setting the value to false means this host class will never be automatically applied. It
+         * will simply be a static member on the element for manual application in consumers.
          */
-        styleVariationA: false,
+        'my-with-host-class-definition-a': false,
         /**
-         * This host class will be automatically applied if the given callback evaluated to true
+         * This host class will be automatically applied if the given callback is evaluated to true
          * after a call to renderCallback.
          */
-        automaticallyAppliedVariation: ({state}) => {
+        'my-with-host-class-definition-automatic': ({state}) => {
             return state.myProp === 'foo';
         },
     },
@@ -24,12 +23,12 @@ export const MyWithHostClassDefinitionElement = defineElementNoInputs({
      * Apply styles to the host classes by using a callback for "styles". The callback's argument
      * contains the host classes defined above in the "hostClasses" property.
      */
-    styles: ({hostClassSelectors: hostClass}) => css`
-        ${hostClass.automaticallyAppliedVariation} {
+    styles: ({hostClassSelectors}) => css`
+        ${hostClassSelectors['my-with-host-class-definition-automatic']} {
             color: blue;
         }
 
-        ${hostClass.styleVariationA} {
+        ${hostClassSelectors['my-with-host-class-definition-a']} {
             color: red;
         }
     `,

@@ -1,36 +1,14 @@
-import {mapObjectValues} from '@augment-vir/common';
-import {CSSResult, unsafeCSS} from 'lit';
-import {toHtmlSafeWithTagName} from './tag-name';
+import {PropertyValueType} from '@augment-vir/common';
+import {CssVarDefinitions, CssVarsSetup} from 'lit-css-vars';
+import {CustomElementTagName} from '../declarative-element-init';
+import {BaseCssPropertyName} from './css-properties';
 
-export type CssVarsInitMap<CssVarKeys extends string> = Record<CssVarKeys, string | CSSResult>;
+export type CssVarsInitMap<
+    ElementTagName extends CustomElementTagName,
+    CssVarKeys extends BaseCssPropertyName<ElementTagName>,
+> = Readonly<Record<CssVarKeys, PropertyValueType<CssVarsSetup>>>;
 
-export type CssVarName<TagName extends string> = `--${TagName}-string`;
-
-export type CssVarNameOrValueMap<CssVarKeys extends string> = Record<CssVarKeys, CSSResult>;
-
-export function createCssVarNamesMap<TagName extends string, CssVarKeys extends string>(
-    tagName: TagName,
-    cssVarsInit: CssVarsInitMap<CssVarKeys> | undefined,
-): CssVarNameOrValueMap<CssVarKeys> {
-    if (cssVarsInit) {
-        return mapObjectValues(cssVarsInit, (key) => {
-            return unsafeCSS(`--${toHtmlSafeWithTagName(tagName, String(key))}`);
-        }) as CssVarNameOrValueMap<CssVarKeys>;
-    } else {
-        return {} as CssVarNameOrValueMap<CssVarKeys>;
-    }
-}
-
-export function createCssVarValuesMap<CssVarKeys extends string>(
-    cssVarInitMap: CssVarsInitMap<CssVarKeys> | undefined,
-    cssVarNamesMap: CssVarNameOrValueMap<CssVarKeys>,
-): CssVarNameOrValueMap<CssVarKeys> {
-    if (!cssVarInitMap) {
-        return {} as CssVarNameOrValueMap<CssVarKeys>;
-    }
-
-    return mapObjectValues(cssVarInitMap, (key, fallbackValue) => {
-        const name = cssVarNamesMap[key];
-        return unsafeCSS(`var(${name}, ${fallbackValue})`);
-    });
-}
+export type CssVars<
+    ElementTagName extends CustomElementTagName,
+    CssVarKeys extends BaseCssPropertyName<ElementTagName>,
+> = CssVarDefinitions<CssVarsInitMap<ElementTagName, CssVarKeys>>;

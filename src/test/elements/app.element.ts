@@ -54,11 +54,11 @@ export const AppElement = defineElementNoInputs({
         }
 
         .normal-colors {
-            ${TestChildElement.cssVarNames.derp}: transparent;
+            ${TestChildElement.cssVars['element-vir-test-child-derp'].name}: transparent;
         }
 
         .weird-colors {
-            ${TestChildElement.cssVarNames.derp}: yellow;
+            ${TestChildElement.cssVars['element-vir-test-child-derp'].name}: yellow;
         }
     `,
     stateInit: {
@@ -158,7 +158,7 @@ export const AppElement = defineElementNoInputs({
                 <span>app width: ${state.width}</span>
 
                 <${TestChildElement}
-                    class=${TestChildElement.hostClasses.testHostClass}
+                    class=${TestChildElement.hostClasses['element-vir-test-child-test']}
                     ${assign(TestChildElement, {
                         displayNumber: 15,
                         width: -1,

@@ -1,4 +1,3 @@
-import {randomString} from '@augment-vir/browser';
 import {assertTypeOf} from '@augment-vir/browser-testing';
 import {assert, fixture as renderFixture} from '@open-wc/testing';
 import {
@@ -22,12 +21,12 @@ describe(wrapDefineElement.name, () => {
     it('should match original define element types', () => {
         assertTypeOf(
             myDefineElement<MySpecificInputs>()({
-                tagName: `my-tag-${randomString()}`,
+                tagName: `my-tag-abc0`,
                 renderCallback: () => '',
             }),
         ).toEqualTypeOf(
             defineElement<MySpecificInputs>()({
-                tagName: `my-tag-${randomString()}`,
+                tagName: `my-tag-abc1`,
                 renderCallback: () => '',
             }),
         );
@@ -40,32 +39,32 @@ describe(wrapDefineElement.name, () => {
 
         assertTypeOf(
             myDefineElementNoInputs({
-                tagName: `my-tag-${randomString()}`,
+                tagName: `my-tag-abc2`,
                 renderCallback: () => '',
             }),
         ).toEqualTypeOf(
             defineElementNoInputs({
-                tagName: `my-tag-${randomString()}`,
+                tagName: `my-tag-abc3`,
                 renderCallback: () => '',
             }),
         );
 
         assertTypeOf(
             myDefineElementNoInputs({
-                tagName: `my-tag-${randomString()}`,
+                tagName: `my-tag-abc4`,
                 hostClasses: {
-                    doThing: false,
+                    'my-tag-abc4-do-thing': false,
                 },
                 cssVars: {
-                    myCssVar: 'blue',
+                    'my-tag-abc4-var': 'blue',
                 },
-                styles: ({cssVarNames, cssVarValues, hostClassNames, hostClassSelectors}) => css`
-                    ${hostClassSelectors.doThing} {
-                        color: ${cssVarValues.myCssVar};
+                styles: ({cssVars, hostClassNames, hostClassSelectors}) => css`
+                    ${hostClassSelectors['my-tag-abc4-do-thing']} {
+                        color: ${cssVars['my-tag-abc4-var'].value};
                     }
 
-                    :host(${hostClassNames.doThing}) {
-                        ${cssVarNames.myCssVar}: green;
+                    :host(${hostClassNames['my-tag-abc4-do-thing']}) {
+                        ${cssVars['my-tag-abc4-var'].name}: green;
                     }
                 `,
                 events: {
@@ -75,9 +74,9 @@ describe(wrapDefineElement.name, () => {
             }),
         ).toEqualTypeOf(
             defineElementNoInputs({
-                tagName: `my-tag-${randomString()}`,
+                tagName: `my-tag-abc5`,
                 hostClasses: {
-                    doThing: false,
+                    'my-tag-abc5-do-thing': false,
                 },
                 renderCallback: () => '',
             }),
@@ -92,13 +91,13 @@ describe(wrapDefineElement.name, () => {
 
     it('requires non-void returning renderCallback', () => {
         myDefineElementNoInputs({
-            tagName: `my-thing-${randomString()}`,
+            tagName: `my-thing-abc6`,
             // renderCallback missing a return is not allowed
             // @ts-expect-error
             renderCallback() {},
         });
         myDefineElementNoInputs({
-            tagName: `my-thing-${randomString()}`,
+            tagName: `my-thing-abc7`,
             // returning undefined is chill
             renderCallback() {
                 return undefined;
@@ -108,7 +107,7 @@ describe(wrapDefineElement.name, () => {
 
     it('should still create a valid element', async () => {
         const MySpecificElement = myDefineElement<MySpecificInputs>()({
-            tagName: `my-tag-${randomString()}`,
+            tagName: `my-tag-abc8`,
             events: {
                 myOutput: defineElementEvent<number>(),
             },

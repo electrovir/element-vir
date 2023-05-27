@@ -1,5 +1,6 @@
 import {ensureError, getObjectTypedKeys, kebabCaseToCamelCase} from '@augment-vir/common';
 import {css} from 'lit';
+import {defineCssVars} from 'lit-css-vars';
 import {property} from 'lit/decorators.js';
 import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';
 import {
@@ -16,11 +17,12 @@ import {
 import {assign} from './directives/assign.directive';
 import {hasDeclarativeElementParent} from './has-declarative-element-parent';
 import {assignInputs, markInputsAsHavingBeenSet} from './properties/assign-inputs';
-import {createCssVarNamesMap, createCssVarValuesMap} from './properties/css-vars';
+import {BaseCssPropertyName, assertValidCssProperties} from './properties/css-properties';
+import {CssVars} from './properties/css-vars';
 import {EventsInitMap, createEventDescriptorMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
 import {createElementUpdaterProxy} from './properties/element-updater-proxy';
-import {createHostClassNamesMap} from './properties/host-classes';
+import {HostClassNamesMap, createHostClassNamesMap} from './properties/host-classes';
 import {
     AllowObservablePropertySetter,
     FlattenObservablePropertyGetters,
@@ -29,49 +31,49 @@ import {applyHostClasses, hostClassNamesToStylesInput} from './properties/styles
 import {RenderParams, createRenderParams} from './render-callback';
 
 export function defineElementNoInputs<
-    TagNameGeneric extends CustomElementTagName = '-',
-    InputsGeneric extends PropertyInitMapBase = {},
-    StateInitGeneric extends PropertyInitMapBase = {},
-    EventsInitGeneric extends EventsInitMap = {},
-    HostClassKeys extends string = '',
-    CssVarKeys extends string = '',
-    RenderOutputGeneric = any,
+    const TagName extends CustomElementTagName = '-',
+    Inputs extends PropertyInitMapBase = {},
+    StateInit extends PropertyInitMapBase = {},
+    EventsInit extends EventsInitMap = {},
+    const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
+    const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
+    RenderOutput = any,
 >(
     initInput: DeclarativeElementInit<
-        TagNameGeneric,
-        InputsGeneric,
-        StateInitGeneric,
-        EventsInitGeneric,
+        TagName,
+        Inputs,
+        StateInit,
+        EventsInit,
         HostClassKeys,
         CssVarKeys,
-        RenderOutputGeneric
+        RenderOutput
     >,
 ): DeclarativeElementDefinition<
-    TagNameGeneric,
-    InputsGeneric,
-    StateInitGeneric,
-    EventsInitGeneric,
+    TagName,
+    Inputs,
+    StateInit,
+    EventsInit,
     HostClassKeys,
     CssVarKeys,
-    RenderOutputGeneric
+    RenderOutput
 > {
     type ThisElementDefinition = DeclarativeElementDefinition<
-        TagNameGeneric,
-        InputsGeneric,
-        StateInitGeneric,
-        EventsInitGeneric,
+        TagName,
+        Inputs,
+        StateInit,
+        EventsInit,
         HostClassKeys,
         CssVarKeys,
-        RenderOutputGeneric
+        RenderOutput
     >;
     type ThisElementStaticClass = typeof DeclarativeElement<
-        TagNameGeneric,
-        InputsGeneric,
-        StateInitGeneric,
-        EventsInitGeneric,
+        TagName,
+        Inputs,
+        StateInit,
+        EventsInit,
         HostClassKeys,
         CssVarKeys,
-        RenderOutputGeneric
+        RenderOutput
     >;
     type ThisElementInstance = InstanceType<ThisElementStaticClass>;
 
@@ -81,48 +83,64 @@ export function defineElementNoInputs<
         );
     }
 
-    const eventsMap = createEventDescriptorMap(initInput.events);
-    const hostClassNames = createHostClassNamesMap(initInput.tagName, initInput.hostClasses);
-    const cssVarNames = createCssVarNamesMap(initInput.tagName, initInput.cssVars);
-    const cssVarValues = createCssVarValuesMap(initInput.cssVars, cssVarNames);
     const elementOptions: DeclarativeElementDefinitionOptions = {
         ...defaultDeclarativeElementDefinitionOptions,
         ...initInput.options,
     };
+
+    const eventsMap = createEventDescriptorMap(initInput.events);
+    const hostClassNames: HostClassNamesMap<TagName, HostClassKeys> = createHostClassNamesMap(
+        initInput.hostClasses,
+    );
+    if (initInput.hostClasses) {
+        assertValidCssProperties(initInput.tagName, initInput.hostClasses);
+    }
+    if (initInput.cssVars) {
+        assertValidCssProperties(initInput.tagName, initInput.cssVars);
+    }
+    /**
+     * As casts here are to prevent defineCssVars from complaining that our CSS var names are too
+     * generic or the names not being in kebab-case. (Which, in this line of code, are indeed true
+     * errors. However, this is for internal types only and the user will actually see much more
+     * specific types externally.)
+     */
+    const cssVars = (initInput.cssVars ? defineCssVars(initInput.cssVars as any) : {}) as CssVars<
+        TagName,
+        CssVarKeys
+    >;
+
     const calculatedStyles =
         typeof initInput.styles === 'function'
-            ? initInput.styles(
-                  hostClassNamesToStylesInput({hostClassNames, cssVarNames, cssVarValues}),
-              )
+            ? initInput.styles(hostClassNamesToStylesInput({hostClassNames, cssVars}))
             : initInput.styles || css``;
 
     const typedRenderCallback: StaticDeclarativeElementProperties<
-        TagNameGeneric,
-        InputsGeneric,
-        StateInitGeneric,
-        EventsInitGeneric,
+        TagName,
+        Inputs,
+        StateInit,
+        EventsInit,
         HostClassKeys,
         CssVarKeys,
-        RenderOutputGeneric
+        RenderOutput
     >['renderCallback'] = initInput.renderCallback;
 
     const anonymousClass = class extends DeclarativeElement<
-        TagNameGeneric,
-        InputsGeneric,
-        StateInitGeneric,
-        EventsInitGeneric,
+        TagName,
+        Inputs,
+        StateInit,
+        EventsInit,
         HostClassKeys,
         CssVarKeys,
-        RenderOutputGeneric
+        RenderOutput
     > {
         public static override readonly tagName = initInput.tagName;
         public static override readonly styles = calculatedStyles;
 
         public createRenderParams(): RenderParams<
-            TagNameGeneric,
-            InputsGeneric,
-            StateInitGeneric,
-            EventsInitGeneric,
+            TagName,
+            Inputs,
+            StateInit,
+            EventsInit,
             HostClassKeys,
             CssVarKeys
         > {
@@ -132,71 +150,62 @@ export function defineElementNoInputs<
         // this gets set below in Object.defineProperties
         public static override readonly isStrictInstance: any = () => false;
         public static override readonly events: StaticDeclarativeElementProperties<
-            TagNameGeneric,
-            InputsGeneric,
-            FlattenObservablePropertyGetters<StateInitGeneric>,
-            EventsInitGeneric,
+            TagName,
+            Inputs,
+            FlattenObservablePropertyGetters<StateInit>,
+            EventsInit,
             HostClassKeys,
             CssVarKeys,
-            RenderOutputGeneric
+            RenderOutput
         >['events'] = eventsMap;
         public static override readonly renderCallback: ThisElementStaticClass['renderCallback'] =
             typedRenderCallback as ThisElementStaticClass['renderCallback'];
         public static override readonly hostClasses: StaticDeclarativeElementProperties<
-            TagNameGeneric,
-            InputsGeneric,
-            FlattenObservablePropertyGetters<StateInitGeneric>,
-            EventsInitGeneric,
+            TagName,
+            Inputs,
+            FlattenObservablePropertyGetters<StateInit>,
+            EventsInit,
             HostClassKeys,
             CssVarKeys,
-            RenderOutputGeneric
+            RenderOutput
         >['hostClasses'] = hostClassNames;
-        public static override readonly cssVarNames: StaticDeclarativeElementProperties<
-            TagNameGeneric,
-            InputsGeneric,
-            FlattenObservablePropertyGetters<StateInitGeneric>,
-            EventsInitGeneric,
+        public static override readonly cssVars: StaticDeclarativeElementProperties<
+            TagName,
+            Inputs,
+            FlattenObservablePropertyGetters<StateInit>,
+            EventsInit,
             HostClassKeys,
             CssVarKeys,
-            RenderOutputGeneric
-        >['cssVarNames'] = cssVarNames;
+            RenderOutput
+        >['cssVars'] = cssVars;
         public static override readonly stateInit: StaticDeclarativeElementProperties<
-            TagNameGeneric,
+            TagName,
             PropertyInitMapBase,
             PropertyInitMapBase,
             EventsInitMap,
-            string,
-            string,
-            RenderOutputGeneric
-        >['stateInit'] = initInput.stateInit as StaticDeclarativeElementProperties<
-            TagNameGeneric,
-            PropertyInitMapBase,
-            PropertyInitMapBase,
-            EventsInitMap,
-            string,
-            string,
-            RenderOutputGeneric
-        >['stateInit'];
-        public static override readonly cssVarValues: StaticDeclarativeElementProperties<
-            TagNameGeneric,
-            InputsGeneric,
-            FlattenObservablePropertyGetters<StateInitGeneric>,
-            EventsInitGeneric,
             HostClassKeys,
             CssVarKeys,
-            RenderOutputGeneric
-        >['cssVarValues'] = cssVarNames;
+            RenderOutput
+        >['stateInit'] = initInput.stateInit as StaticDeclarativeElementProperties<
+            TagName,
+            PropertyInitMapBase,
+            PropertyInitMapBase,
+            EventsInitMap,
+            HostClassKeys,
+            CssVarKeys,
+            RenderOutput
+        >['stateInit'];
         public get instanceType() {
             throw new Error(
                 `"instanceType" was called on ${initInput.tagName} as a value but it is only for types.`,
             );
         }
-        public static override get inputsType(): AllowObservablePropertySetter<InputsGeneric> {
+        public static override get inputsType(): AllowObservablePropertySetter<Inputs> {
             throw new Error(
                 `"inputsType" was called on ${initInput.tagName} as a value but it is only for types.`,
             );
         }
-        public static override get stateType(): FlattenObservablePropertyGetters<StateInitGeneric> {
+        public static override get stateType(): FlattenObservablePropertyGetters<StateInit> {
             throw new Error(
                 `"stateType" was called on ${initInput.tagName} as a value but it is only for types.`,
             );
@@ -275,7 +284,7 @@ export function defineElementNoInputs<
         public readonly definition: ThisElementInstance['definition'] =
             {} as unknown as ThisElementDefinition;
 
-        public assignInputs(inputs: Partial<InputsGeneric>): void {
+        public assignInputs(inputs: Partial<Inputs>): void {
             assignInputs(this, inputs);
         }
 
@@ -283,13 +292,13 @@ export function defineElementNoInputs<
             {};
 
         public readonly instanceInputs: ThisElementInstance['instanceInputs'] =
-            createElementUpdaterProxy<Readonly<FlattenObservablePropertyGetters<InputsGeneric>>>(
+            createElementUpdaterProxy<Readonly<FlattenObservablePropertyGetters<Inputs>>>(
                 this,
                 false,
             );
 
         public readonly instanceState: ThisElementInstance['instanceState'] =
-            createElementUpdaterProxy<FlattenObservablePropertyGetters<StateInitGeneric>>(
+            createElementUpdaterProxy<FlattenObservablePropertyGetters<StateInit>>(
                 this,
                 !initInput.options?.allowPolymorphicState,
             );
@@ -297,9 +306,9 @@ export function defineElementNoInputs<
         constructor() {
             super();
 
-            const stateInit: FlattenObservablePropertyGetters<StateInitGeneric> =
-                (initInput.stateInit as FlattenObservablePropertyGetters<StateInitGeneric>) ||
-                ({} as FlattenObservablePropertyGetters<StateInitGeneric>);
+            const stateInit: FlattenObservablePropertyGetters<StateInit> =
+                (initInput.stateInit as FlattenObservablePropertyGetters<StateInit>) ||
+                ({} as FlattenObservablePropertyGetters<StateInit>);
 
             getObjectTypedKeys(stateInit).forEach((stateKey) => {
                 property()(this, stateKey);
