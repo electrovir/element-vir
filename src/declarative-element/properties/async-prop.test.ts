@@ -8,29 +8,29 @@ import {
 import {DeferredPromiseWrapper, createDeferredPromiseWrapper, typedMap} from '@augment-vir/common';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {
-    AsyncState,
+    AsyncProp,
     StaticElementPropertyDescriptor,
     assign,
-    asyncState,
+    asyncProp,
     defineElement,
     defineElementEvent,
     defineElementNoInputs,
     html,
     isRenderReady,
     listen,
-    renderAsyncState,
+    renderAsync,
 } from '../..';
 import {assertRejects, getAssertedDeclarativeElement} from '../../augments/testing.test-helper';
-import {AsyncObservablePropertyHandlerCreator} from './async-state';
+import {AsyncObservablePropertyHandlerCreator} from './async-prop';
 
-describe(asyncState.name, () => {
+describe(asyncProp.name, () => {
     it('should have proper types', () => {
         type SomethingObject = {something: number};
 
         const elementWithAsyncState = defineElementNoInputs({
-            tagName: `element-with-async-state-${randomString()}`,
+            tagName: `element-with-async-prop-${randomString()}`,
             stateInitStatic: {
-                myAsyncState: asyncState<SomethingObject>(),
+                myAsyncState: asyncProp<SomethingObject>(),
             },
             renderCallback({state, updateState}) {
                 type Dimensions = {width: number; length: number};
@@ -48,7 +48,7 @@ describe(asyncState.name, () => {
                     },
                 });
 
-                assertTypeOf(state.myAsyncState).toEqualTypeOf<AsyncState<SomethingObject>>();
+                assertTypeOf(state.myAsyncState).toEqualTypeOf<AsyncProp<SomethingObject>>();
                 return html``;
             },
         });
@@ -61,23 +61,23 @@ describe(asyncState.name, () => {
         >();
 
         assertTypeOf<(typeof elementWithAsyncState)['stateType']['myAsyncState']>().toEqualTypeOf<
-            AsyncState<SomethingObject>
+            AsyncProp<SomethingObject>
         >();
 
         assertTypeOf<
             (typeof elementWithAsyncState)['instanceType']['instanceState']['myAsyncState']
-        >().toEqualTypeOf<AsyncState<SomethingObject>>();
+        >().toEqualTypeOf<AsyncProp<SomethingObject>>();
     });
 
-    it('updates and resolves async state createPromise and updateTrigger', async () => {
+    it('updates and resolves async prop createPromise and updateTrigger', async () => {
         const startingNumber = 123;
 
         const ElementWithAsyncState = defineElement<{
             promiseUpdateTrigger: number | undefined;
         }>()({
-            tagName: `element-with-async-state-${randomString()}`,
+            tagName: `element-with-async-prop-${randomString()}`,
             stateInitStatic: {
-                myAsyncState: asyncState<number>(),
+                myAsyncState: asyncProp<number>(),
             },
             events: {
                 deferredPromiseCreated: defineElementEvent<DeferredPromiseWrapper<number>>(),
@@ -268,9 +268,9 @@ describe(asyncState.name, () => {
         const ElementWithAsyncState = defineElement<{
             promiseUpdateTrigger: number | undefined;
         }>()({
-            tagName: `element-with-async-state-${randomString()}`,
+            tagName: `element-with-async-prop-${randomString()}`,
             stateInitStatic: {
-                myRandomNumber: asyncState<string>(),
+                myRandomNumber: asyncProp<string>(),
             },
             renderCallback({inputs, state, updateState}) {
                 updateState({
@@ -284,7 +284,7 @@ describe(asyncState.name, () => {
 
                 return html`
                     <span class="value-span">
-                        ${renderAsyncState(state.myRandomNumber, 'loading', (resolved) => resolved)}
+                        ${renderAsync(state.myRandomNumber, 'loading', (resolved) => resolved)}
                     </span>
                 `;
             },
@@ -348,9 +348,9 @@ describe(asyncState.name, () => {
 
     it('works even if the value is undefined', async () => {
         const ElementWithUndefinedAsyncState = defineElementNoInputs({
-            tagName: `element-with-undefined-async-state-${randomString()}`,
+            tagName: `element-with-undefined-async-prop-${randomString()}`,
             stateInitStatic: {
-                myAsyncState: asyncState<number | undefined>(undefined),
+                myAsyncState: asyncProp<number | undefined>(undefined),
             },
             events: {
                 wasRendered: defineElementEvent<void>(),

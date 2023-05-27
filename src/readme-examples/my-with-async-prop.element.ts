@@ -1,4 +1,4 @@
-import {asyncState, defineElement, html, listen, renderAsyncState} from '..';
+import {asyncProp, defineElement, html, listen, renderAsync} from '..';
 
 type EndpointData = number[];
 
@@ -16,10 +16,10 @@ async function loadSomething(endpoint: string): Promise<EndpointData> {
     return data;
 }
 
-export const MyWithAsyncState = defineElement<{endpoint: string}>()({
-    tagName: 'my-with-async-state',
+export const MyWithAsyncProp = defineElement<{endpoint: string}>()({
+    tagName: 'my-with-async-prop',
     stateInitStatic: {
-        data: asyncState<EndpointData>(),
+        data: asyncProp<EndpointData>(),
     },
     renderCallback({inputs, state, updateState}) {
         /**
@@ -36,7 +36,7 @@ export const MyWithAsyncState = defineElement<{endpoint: string}>()({
         return html`
             Here's the data:
             <br />
-            ${renderAsyncState(state.data, 'Loading...', (loadedData) => {
+            ${renderAsync(state.data, 'Loading...', (loadedData) => {
                 return html`
                     Got the data: ${loadedData}
                 `;
@@ -46,7 +46,7 @@ export const MyWithAsyncState = defineElement<{endpoint: string}>()({
                 ${listen('click', () => {
                     updateState({
                         data: {
-                            /** You can force asyncState to update by passing in forceUpdate: true. */
+                            /** You can force asyncProp to update by passing in forceUpdate: true. */
                             forceUpdate: true,
                         },
                     });

@@ -1,63 +1,63 @@
 import {extractErrorMessage, isPromiseLike, UnPromise} from '@augment-vir/common';
-import {AsyncState} from '../properties/async-state';
+import {AsyncProp} from '../properties/async-prop';
 
 // overload for when resolutionRender and errorRender are both provided
-export function renderAsyncState<
+export function renderAsync<
     T,
     FallbackResult,
     ResolutionRenderResult = never,
     ErrorRenderResult = never,
 >(
-    asyncState: AsyncState<T>,
+    asyncState: AsyncProp<T>,
     fallback: FallbackResult,
     resolutionRender: (resolved: UnPromise<T>) => ResolutionRenderResult,
     errorRender: (error: Error) => ErrorRenderResult,
 ): FallbackResult | ResolutionRenderResult | ErrorRenderResult;
 // overload for when resolutionRender is provided but errorRender is not
-export function renderAsyncState<
+export function renderAsync<
     T,
     FallbackResult,
     ResolutionRenderResult = never,
     ErrorRenderResult = never,
 >(
-    asyncState: AsyncState<T>,
+    asyncState: AsyncProp<T>,
     fallback: FallbackResult,
     resolutionRender: (resolved: UnPromise<T>) => ResolutionRenderResult,
     errorRender?: undefined,
 ): FallbackResult | ResolutionRenderResult | string;
 // overload for when resolutionRender is not provided but errorRender is
-export function renderAsyncState<
+export function renderAsync<
     T,
     FallbackResult,
     ResolutionRenderResult = never,
     ErrorRenderResult = never,
 >(
-    asyncState: AsyncState<T>,
+    asyncState: AsyncProp<T>,
     fallback: FallbackResult,
     resolutionRender: undefined,
     errorRender: (error: Error) => ErrorRenderResult,
 ): FallbackResult | UnPromise<T> | ErrorRenderResult;
 // overload for when neither resolutionRender or errorRender are provided
-export function renderAsyncState<
+export function renderAsync<
     T,
     FallbackResult,
     ResolutionRenderResult = never,
     ErrorRenderResult = never,
 >(
-    asyncState: AsyncState<T>,
+    asyncState: AsyncProp<T>,
     fallback: FallbackResult,
     resolutionRender?: undefined,
     errorRender?: undefined,
 ): FallbackResult | UnPromise<T> | string;
 // full function type
-export function renderAsyncState<
+export function renderAsync<
     T,
     FallbackResult,
     ResolutionRenderResult = never,
     ErrorRenderResult = never,
 >(
-    asyncState: AsyncState<T>,
-    /** This value will be rendered if the async state has not settled yet. */
+    asyncState: AsyncProp<T>,
+    /** This value will be rendered if the async prop has not settled yet. */
     fallback: FallbackResult,
     resolutionRender?: ((resolved: UnPromise<T>) => ResolutionRenderResult) | undefined,
     errorRender?: ((error: Error) => ErrorRenderResult) | undefined,

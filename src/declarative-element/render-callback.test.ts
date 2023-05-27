@@ -2,18 +2,18 @@ import {assertTypeOf} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
 import {
     AnyObservablePropertyType,
-    AsyncState,
-    asyncState,
-    AsyncStateSetValue,
+    AsyncProp,
+    AsyncPropSetValue,
+    ObservablePropertyHandlerInstance,
+    RenderCallback,
+    TypedEvent,
+    asyncProp,
     createEventDescriptorMap,
     createObservableProperty,
     createRenderParams,
     defineElementEvent,
     defineElementNoInputs,
     html,
-    ObservablePropertyHandlerInstance,
-    RenderCallback,
-    TypedEvent,
 } from '..';
 
 describe('RenderParams', () => {
@@ -21,9 +21,9 @@ describe('RenderParams', () => {
         defineElementNoInputs({
             tagName: 'test-element',
             stateInitStatic: {
-                myAsyncState: asyncState<number>(),
-                myAsyncState2: asyncState(Promise.resolve(3)),
-                myAsyncState3: asyncState(3),
+                myAsyncProp: asyncProp<number>(),
+                myAsyncProp2: asyncProp(Promise.resolve(3)),
+                myAsyncProp3: asyncProp(3),
                 myNumber: undefined as
                     | undefined
                     | ObservablePropertyHandlerInstance<number, number>,
@@ -39,30 +39,30 @@ describe('RenderParams', () => {
 
                 const testEventThing = events.testEventName;
 
-                assertTypeOf(state.myAsyncState).toEqualTypeOf<Promise<number> | number | Error>();
-                assertTypeOf(state.myAsyncState2).toEqualTypeOf<Promise<number> | number | Error>();
-                assertTypeOf(state.myAsyncState3).toEqualTypeOf<Promise<number> | number | Error>();
+                assertTypeOf(state.myAsyncProp).toEqualTypeOf<Promise<number> | number | Error>();
+                assertTypeOf(state.myAsyncProp2).toEqualTypeOf<Promise<number> | number | Error>();
+                assertTypeOf(state.myAsyncProp3).toEqualTypeOf<Promise<number> | number | Error>();
 
                 assertTypeOf<
-                    Exclude<Parameters<typeof updateState>[0]['myAsyncState'], undefined>
+                    Exclude<Parameters<typeof updateState>[0]['myAsyncProp'], undefined>
                 >().toEqualTypeOf<
-                    | AsyncStateSetValue<number>
-                    | AnyObservablePropertyType<AsyncStateSetValue<number>, AsyncState<number>>
+                    | AsyncPropSetValue<number>
+                    | AnyObservablePropertyType<AsyncPropSetValue<number>, AsyncProp<number>>
                 >();
 
                 updateState({
-                    myAsyncState: {
+                    myAsyncProp: {
                         createPromise: () => Promise.resolve(5),
                         trigger: 'hi',
                     },
                 });
 
                 updateState({
-                    myAsyncState: asyncState(5),
+                    myAsyncProp: asyncProp(5),
                 });
 
                 updateState({
-                    myAsyncState: {
+                    myAsyncProp: {
                         createPromise: () => Promise.resolve(5),
                         // allow undefined as a property value
                         trigger: {derp: undefined},

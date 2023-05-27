@@ -16,7 +16,7 @@ import {
     ObservablePropertyListener,
 } from './observable-property/observable-property-handler';
 
-export type AsyncState<ValueGeneric> =
+export type AsyncProp<ValueGeneric> =
     | Error
     | UnPromise<ValueGeneric>
     | Promise<UnPromise<ValueGeneric>>;
@@ -41,7 +41,7 @@ type AllSetValueProperties<ValueGeneric> = {
     forceUpdate: true;
 };
 
-export type AsyncStateSetValue<ValueGeneric> =
+export type AsyncPropSetValue<ValueGeneric> =
     | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'createPromise' | 'trigger'>
     | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'newPromise'>
     | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'forceUpdate'>
@@ -49,18 +49,15 @@ export type AsyncStateSetValue<ValueGeneric> =
 
 export class AsyncObservablePropertyHandler<ValueGeneric>
     implements
-        ObservablePropertyHandlerInstance<
-            AsyncStateSetValue<ValueGeneric>,
-            AsyncState<ValueGeneric>
-        >
+        ObservablePropertyHandlerInstance<AsyncPropSetValue<ValueGeneric>, AsyncProp<ValueGeneric>>
 {
     private lastTrigger:
-        | Extract<AsyncStateSetValue<unknown>, {trigger: unknown}>['trigger']
+        | Extract<AsyncPropSetValue<unknown>, {trigger: unknown}>['trigger']
         | typeof notSetSymbol
         | undefined = notSetSymbol;
     private resolutionValue: UnPromise<ValueGeneric> | typeof notSetSymbol = notSetSymbol;
     private rejectionError: Error | typeof notSetSymbol = notSetSymbol;
-    private listeners = new Set<ObservablePropertyListener<AsyncState<ValueGeneric>>>();
+    private listeners = new Set<ObservablePropertyListener<AsyncProp<ValueGeneric>>>();
     private lastSetPromise: Promise<UnPromise<ValueGeneric>> | undefined;
 
     private waitingForValuePromise: DeferredPromiseWrapper<UnPromise<ValueGeneric>> =
@@ -155,7 +152,7 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
         this.waitingForValuePromise = createDeferredPromiseWrapper();
     }
 
-    public setValue(setInputs: AsyncStateSetValue<ValueGeneric>) {
+    public setValue(setInputs: AsyncPropSetValue<ValueGeneric>) {
         if ('createPromise' in setInputs) {
             if (
                 this.lastTrigger === notSetSymbol ||
@@ -188,7 +185,7 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
         }
     }
 
-    public getValue(): AsyncState<ValueGeneric> {
+    public getValue(): AsyncProp<ValueGeneric> {
         if (this.waitingForValuePromise.isSettled()) {
             if (this.rejectionError !== notSetSymbol) {
                 return this.rejectionError;
@@ -204,7 +201,7 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
 
     public addListener(
         fireImmediately: boolean,
-        listener: ObservablePropertyListener<AsyncState<ValueGeneric>>,
+        listener: ObservablePropertyListener<AsyncProp<ValueGeneric>>,
     ) {
         this.listeners.add(listener);
         if (fireImmediately) {
@@ -213,7 +210,7 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
     }
 
     public addMultipleListeners(
-        listeners: ReadonlySet<ObservablePropertyListener<AsyncState<ValueGeneric>>>,
+        listeners: ReadonlySet<ObservablePropertyListener<AsyncProp<ValueGeneric>>>,
     ): void {
         listeners.forEach((listener) => this.listeners.add(listener));
     }
@@ -222,7 +219,7 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
         return this.listeners;
     }
 
-    public removeListener(listener: ObservablePropertyListener<AsyncState<ValueGeneric>>) {
+    public removeListener(listener: ObservablePropertyListener<AsyncProp<ValueGeneric>>) {
         if (this.listeners.has(listener)) {
             this.listeners.delete(listener);
             return true;
@@ -241,11 +238,11 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
 }
 
 export type AsyncObservablePropertyHandlerCreator<ValueGeneric> = ObservablePropertyHandlerCreator<
-    AsyncStateSetValue<ValueGeneric>,
-    AsyncState<ValueGeneric>
+    AsyncPropSetValue<ValueGeneric>,
+    AsyncProp<ValueGeneric>
 >;
 
-export function asyncState<ValueGeneric>(
+export function asyncProp<ValueGeneric>(
     ...args: [Promise<UnPromise<ValueGeneric>> | UnPromise<ValueGeneric> | ValueGeneric] | []
 ): AsyncObservablePropertyHandlerCreator<ValueGeneric> {
     /**

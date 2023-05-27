@@ -1,5 +1,5 @@
 import {wait, waitValue} from '@augment-vir/common';
-import {asyncState, defineElement, html, listen, renderAsyncState} from '../..';
+import {asyncProp, defineElement, html, listen, renderAsync} from '../..';
 
 const sameNumberPromise = waitValue(1_500, 86);
 
@@ -8,7 +8,7 @@ export const AsyncChild = defineElement<{
 }>()({
     tagName: 'async-child',
     stateInitStatic: {
-        loadThing: asyncState<number>(),
+        loadThing: asyncProp<number>(),
     },
     renderCallback({state, inputs, updateState}) {
         console.info('rendering async child');
@@ -23,7 +23,7 @@ export const AsyncChild = defineElement<{
         });
 
         return html`
-            <p>${renderAsyncState(state.loadThing, 'Loading...')}</p>
+            <p>${renderAsync(state.loadThing, 'Loading...')}</p>
             <button
                 ${listen('click', () => {
                     updateState({loadThing: {forceUpdate: true}});

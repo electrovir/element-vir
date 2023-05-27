@@ -2,27 +2,27 @@ import {assertTypeOf, extractText} from '@augment-vir/browser-testing';
 import {createDeferredPromiseWrapper} from '@augment-vir/common';
 import {assert, fixture as render, waitUntil} from '@open-wc/testing';
 import {
-    AsyncState,
-    asyncState,
+    AsyncProp,
+    asyncProp,
     defineElement,
     defineElementEvent,
     defineElementNoInputs,
     html,
     listen,
-    renderAsyncState,
+    renderAsync,
 } from '../..';
 import {getAssertedDeclarativeElement} from '../../augments/testing.test-helper';
 
-describe(asyncState.name, () => {
+describe(asyncProp.name, () => {
     const elementWithAsyncState = defineElement<{
         setAsyncState: Promise<number>;
     }>()({
-        tagName: 'element-with-async-state',
+        tagName: 'element-with-async-prop',
         stateInitStatic: {
-            myAsyncState: asyncState<number>(),
+            myAsyncState: asyncProp<number>(),
         },
         events: {
-            previousAsyncState: defineElementEvent<AsyncState<number>>(),
+            previousAsyncState: defineElementEvent<AsyncProp<number>>(),
         },
         renderCallback({state, updateState, inputs, dispatch, events}) {
             updateState({
@@ -33,7 +33,7 @@ describe(asyncState.name, () => {
 
             dispatch(new events.previousAsyncState(state.myAsyncState));
 
-            return renderAsyncState(
+            return renderAsync(
                 state.myAsyncState,
                 'Loading...',
                 (value) => {
@@ -48,7 +48,7 @@ describe(asyncState.name, () => {
     });
 
     async function setupAsyncStateTest() {
-        const allAsyncStateValues: AsyncState<number>[] = [];
+        const allAsyncStateValues: AsyncProp<number>[] = [];
 
         const rendered = await render(html`
             <${elementWithAsyncState}
@@ -82,12 +82,12 @@ describe(asyncState.name, () => {
         defineElementNoInputs({
             tagName: 'element-with-async-prop',
             stateInitStatic: {
-                asyncState: asyncState<SomethingObject>(),
+                asyncState: asyncProp<SomethingObject>(),
             },
             renderCallback({state}) {
-                assertTypeOf(state.asyncState).toEqualTypeOf<AsyncState<SomethingObject>>();
+                assertTypeOf(state.asyncState).toEqualTypeOf<AsyncProp<SomethingObject>>();
                 return html`
-                    ${renderAsyncState(
+                    ${renderAsync(
                         state.asyncState,
                         'Loading...',
                         (value: SomethingObject) => {

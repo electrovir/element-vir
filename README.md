@@ -167,7 +167,7 @@ import {defineElementNoInputs, html, listen} from 'element-vir';
 
 export const MyWithUpdateState = defineElementNoInputs({
     tagName: 'my-with-update-state',
-    stateInit: {
+    stateInitStatic: {
         username: 'dev',
         /**
          * Use "as" to create state properties that can be types other than the initial value's
@@ -229,7 +229,7 @@ import {defineElementNoInputs, html} from 'element-vir';
 
 export const MyWithAssignmentCleanupCallback = defineElementNoInputs({
     tagName: 'my-with-cleanup-callback',
-    stateInit: {
+    stateInitStatic: {
         intervalId: undefined as undefined | number,
     },
     initCallback: ({updateState}) => {
@@ -293,7 +293,7 @@ import {MyWithEvents} from './my-with-events.element';
 
 export const MyWithEventListening = defineElementNoInputs({
     tagName: 'my-with-event-listening',
-    stateInit: {
+    stateInitStatic: {
         myNumber: -1,
     },
     renderCallback({state, updateState}) {
@@ -324,7 +324,7 @@ Create a custom event type with `defineTypedEvent`. Make sure to include the typ
 ```TypeScript
 import {defineTypedEvent} from 'element-vir';
 
-export const MyCustomActionEvent = defineTypedEvent<number>()('my-event-type-name');
+export const MyCustomActionEvent = defineTypedEvent<number>()('my-custom-action');
 ```
 
 ### Using a typed event
@@ -377,7 +377,7 @@ import {css, defineElementNoInputs, html} from 'element-vir';
 
 export const MyWithHostClassDefinition = defineElementNoInputs({
     tagName: 'my-with-host-class-definition',
-    stateInit: {
+    stateInitStatic: {
         myProp: 'hello there',
     },
     hostClasses: {
@@ -644,7 +644,7 @@ Use the `renderAsyncState` directive in conjunction with the `asyncState` proper
 <!-- example-link: src/readme-examples/my-with-async-prop.element.ts -->
 
 ```TypeScript
-import {asyncState, defineElement, html, listen, renderAsyncState} from 'element-vir';
+import {asyncProp, defineElement, html, listen, renderAsync} from 'element-vir';
 
 type EndpointData = number[];
 
@@ -662,10 +662,10 @@ async function loadSomething(endpoint: string): Promise<EndpointData> {
     return data;
 }
 
-export const MyWithAsyncState = defineElement<{endpoint: string}>()({
-    tagName: 'my-with-async-state',
-    stateInit: {
-        data: asyncState<EndpointData>(),
+export const MyWithAsyncProp = defineElement<{endpoint: string}>()({
+    tagName: 'my-with-async-prop',
+    stateInitStatic: {
+        data: asyncProp<EndpointData>(),
     },
     renderCallback({inputs, state, updateState}) {
         /**
@@ -682,7 +682,7 @@ export const MyWithAsyncState = defineElement<{endpoint: string}>()({
         return html`
             Here's the data:
             <br />
-            ${renderAsyncState(state.data, 'Loading...', (loadedData) => {
+            ${renderAsync(state.data, 'Loading...', (loadedData) => {
                 return html`
                     Got the data: ${loadedData}
                 `;
@@ -692,7 +692,7 @@ export const MyWithAsyncState = defineElement<{endpoint: string}>()({
                 ${listen('click', () => {
                     updateState({
                         data: {
-                            /** You can force asyncState to update by passing in forceUpdate: true. */
+                            /** You can force asyncProp to update by passing in forceUpdate: true. */
                             forceUpdate: true,
                         },
                     });

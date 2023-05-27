@@ -1,10 +1,10 @@
 import {UnPromise, isPromiseLike} from '@augment-vir/common';
-import {AsyncState} from '../properties/async-state';
+import {AsyncProp} from '../properties/async-prop';
 
-export function isRenderReady<T>(asyncStateInput: AsyncState<T>): asyncStateInput is UnPromise<T> {
-    if (asyncStateInput instanceof Error) {
+export function isRenderReady<T>(asyncPropInput: AsyncProp<T>): asyncPropInput is UnPromise<T> {
+    if (asyncPropInput instanceof Error) {
         return false;
-    } else if (isPromiseLike(asyncStateInput)) {
+    } else if (isPromiseLike(asyncPropInput)) {
         return false;
     } else {
         return true;
