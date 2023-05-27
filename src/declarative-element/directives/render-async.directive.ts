@@ -1,5 +1,5 @@
 import {extractErrorMessage, isPromiseLike, UnPromise} from '@augment-vir/common';
-import {AsyncProp} from '../properties/async-prop';
+import {AsyncProp} from './async-prop';
 
 // overload for when resolutionRender and errorRender are both provided
 export function renderAsync<

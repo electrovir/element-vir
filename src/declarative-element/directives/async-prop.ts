@@ -14,7 +14,7 @@ import {
     ObservablePropertyHandlerInstance,
     observablePropertyHandlerInstanceMarkerKey,
     ObservablePropertyListener,
-} from './observable-property/observable-property-handler';
+} from '../properties/observable-property/observable-property-handler';
 
 export type AsyncProp<ValueGeneric> =
     | Error
