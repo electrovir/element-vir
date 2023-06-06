@@ -14,27 +14,27 @@ import {
 import {getAssertedDeclarativeElement} from '../../augments/testing.test-helper';
 
 describe(asyncProp.name, () => {
-    const elementWithAsyncState = defineElement<{
-        setAsyncState: Promise<number>;
+    const elementWithAsyncProp = defineElement<{
+        setAsyncProp: Promise<number>;
     }>()({
         tagName: 'element-with-async-prop',
         stateInitStatic: {
-            myAsyncState: asyncProp<number>(),
+            myAsyncProp: asyncProp<number>(),
         },
         events: {
-            previousAsyncState: defineElementEvent<AsyncProp<number>>(),
+            previousAsyncProp: defineElementEvent<AsyncProp<number>>(),
         },
         renderCallback({state, updateState, inputs, dispatch, events}) {
             updateState({
-                myAsyncState: {
-                    newPromise: inputs.setAsyncState,
+                myAsyncProp: {
+                    newPromise: inputs.setAsyncProp,
                 },
             });
 
-            dispatch(new events.previousAsyncState(state.myAsyncState));
+            dispatch(new events.previousAsyncProp(state.myAsyncProp));
 
             return renderAsync(
-                state.myAsyncState,
+                state.myAsyncProp,
                 'Loading...',
                 (value) => {
                     // return {what: 'hello'};
@@ -47,33 +47,33 @@ describe(asyncProp.name, () => {
         },
     });
 
-    async function setupAsyncStateTest() {
-        const allAsyncStateValues: AsyncProp<number>[] = [];
+    async function setupAsyncPropTest() {
+        const allAsyncPropValues: AsyncProp<number>[] = [];
 
         const rendered = await render(html`
-            <${elementWithAsyncState}
-                ${listen(elementWithAsyncState.events.previousAsyncState, (event) => {
-                    allAsyncStateValues.push(event.detail);
+            <${elementWithAsyncProp}
+                ${listen(elementWithAsyncProp.events.previousAsyncProp, (event) => {
+                    allAsyncPropValues.push(event.detail);
                 })}
-            ></${elementWithAsyncState}>
+            ></${elementWithAsyncProp}>
         `);
-        const instance = getAssertedDeclarativeElement(elementWithAsyncState, rendered);
-        assert.lengthOf(allAsyncStateValues, 1);
-        assert.instanceOf(allAsyncStateValues[0], Promise);
+        const instance = getAssertedDeclarativeElement(elementWithAsyncProp, rendered);
+        assert.lengthOf(allAsyncPropValues, 1);
+        assert.instanceOf(allAsyncPropValues[0], Promise);
 
         const deferredPromise = createDeferredPromiseWrapper<number>();
 
         instance.assignInputs({
-            setAsyncState: deferredPromise.promise,
+            setAsyncProp: deferredPromise.promise,
         });
 
         // wait for the event to propagate
-        await waitUntil(() => allAsyncStateValues.length === 2);
+        await waitUntil(() => allAsyncPropValues.length === 2);
 
-        assert.lengthOf(allAsyncStateValues, 2);
-        assert.instanceOf(allAsyncStateValues[1], Promise);
+        assert.lengthOf(allAsyncPropValues, 2);
+        assert.instanceOf(allAsyncPropValues[1], Promise);
 
-        return {allAsyncStateValues, instance, deferredPromise};
+        return {allAsyncPropValues, instance, deferredPromise};
     }
 
     it('should have proper types', () => {
@@ -82,13 +82,13 @@ describe(asyncProp.name, () => {
         defineElementNoInputs({
             tagName: 'element-with-async-prop',
             stateInitStatic: {
-                asyncState: asyncProp<SomethingObject>(),
+                asyncProp: asyncProp<SomethingObject>(),
             },
             renderCallback({state}) {
-                assertTypeOf(state.asyncState).toEqualTypeOf<AsyncProp<SomethingObject>>();
+                assertTypeOf(state.asyncProp).toEqualTypeOf<AsyncProp<SomethingObject>>();
                 return html`
                     ${renderAsync(
-                        state.asyncState,
+                        state.asyncProp,
                         'Loading...',
                         (value: SomethingObject) => {
                             return html`
@@ -103,7 +103,7 @@ describe(asyncProp.name, () => {
     });
 
     it('should render the resolution callback', async () => {
-        const {instance, deferredPromise, allAsyncStateValues} = await setupAsyncStateTest();
+        const {instance, deferredPromise, allAsyncPropValues} = await setupAsyncPropTest();
 
         const randomValue = Math.random() * 100;
 
@@ -112,7 +112,7 @@ describe(asyncProp.name, () => {
         deferredPromise.resolve(randomValue);
 
         // wait for the event to propagate
-        await waitUntil(() => allAsyncStateValues.length > 2);
+        await waitUntil(() => allAsyncPropValues.length > 2);
 
         assert.strictEqual(extractText(instance), `Got ${randomValue.toFixed()}`);
     });

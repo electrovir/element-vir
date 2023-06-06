@@ -517,7 +517,7 @@ The following custom [`lit` directives](https://lit.dev/docs/templates/custom-di
 
 All [built-in `lit` directives](https://lit.dev/docs/templates/directives/) are also exported by `element-vir`.
 
-### onDomCreated
+### `onDomCreated`
 
 This triggers only once when the element it's attached to has actually been created in the DOM. If the attached element changes, the callback will be triggered again.
 
@@ -543,7 +543,7 @@ export const MyWithOnDomCreated = defineElementNoInputs({
 });
 ```
 
-### onResize
+### `onResize`
 
 This directive fires its callback whenever the element it's attached to resizes. The callback is passed an object with a portion of the [`ResizeObserverEntry`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry) properties.
 
@@ -570,15 +570,15 @@ export const MyWithOnResize = defineElementNoInputs({
 });
 ```
 
-### assign
+### `assign`
 
 Assign a value to one of a custom element's properties. This is explained in the **Assigning to inputs** section earlier.
 
-### listen
+### `listen`
 
 Listen to a specific event. This is explained in the **Listening to element events (outputs)** section earlier.
 
-### assignWithCleanup
+### `assignWithCleanup`
 
 This directive is the same as the `assign` directive but it accepts an additional `cleanupCallback` input. Use this directive to assign values which need some kind of cleanup when they're overwritten. For example, a 3D rendering engine which uses the canvas that should free up memory when it's swapped out.
 
@@ -613,7 +613,7 @@ export const MyWithCleanup = defineElementNoInputs({
 });
 ```
 
-### renderIf
+### `renderIf`
 
 Use the `renderIf` directive to easily render a template if a given condition is true.
 
@@ -637,9 +637,9 @@ export const MyWithRenderIf = defineElement<{shouldRender: boolean}>()({
 });
 ```
 
-### asyncState
+### `asyncProp`
 
-Use the `renderAsyncState` directive in conjunction with the `asyncState` property definer to seamlessly render and update element state based on async values:
+Use `renderAsyncProp` or `isRenderReady` in conjunction with `asyncProp` to seamlessly render and update element state based on async values:
 
 <!-- example-link: src/readme-examples/my-with-async-prop.element.ts -->
 

@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "13.0.2",
+    "version": "13.0.3",
     "keywords": [
         "custom",
         "web",
@@ -31,7 +31,7 @@
         "publish": "virmator publish \"npm run compile && npm run test:all\"",
         "start": "npm install && virmator frontend",
         "test": "virmator test-web",
-        "test:all": "concurrently -c auto --kill-others-on-fail --colors \"npm run test:types\" \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\"",
+        "test:all": "concurrently -c auto --kill-others-on-fail --colors --names types,tests,spelling,format,docs \"npm run test:types\" \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\"",
         "test:coverage": "virmator test-web coverage",
         "test:docs": "virmator code-in-markdown check",
         "test:format": "virmator format check",

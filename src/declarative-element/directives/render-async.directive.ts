@@ -8,7 +8,7 @@ export function renderAsync<
     ResolutionRenderResult = never,
     ErrorRenderResult = never,
 >(
-    asyncState: AsyncProp<T>,
+    asyncProp: AsyncProp<T>,
     fallback: FallbackResult,
     resolutionRender: (resolved: UnPromise<T>) => ResolutionRenderResult,
     errorRender: (error: Error) => ErrorRenderResult,
@@ -20,7 +20,7 @@ export function renderAsync<
     ResolutionRenderResult = never,
     ErrorRenderResult = never,
 >(
-    asyncState: AsyncProp<T>,
+    asyncProp: AsyncProp<T>,
     fallback: FallbackResult,
     resolutionRender: (resolved: UnPromise<T>) => ResolutionRenderResult,
     errorRender?: undefined,
@@ -32,7 +32,7 @@ export function renderAsync<
     ResolutionRenderResult = never,
     ErrorRenderResult = never,
 >(
-    asyncState: AsyncProp<T>,
+    asyncProp: AsyncProp<T>,
     fallback: FallbackResult,
     resolutionRender: undefined,
     errorRender: (error: Error) => ErrorRenderResult,
@@ -44,7 +44,7 @@ export function renderAsync<
     ResolutionRenderResult = never,
     ErrorRenderResult = never,
 >(
-    asyncState: AsyncProp<T>,
+    asyncProp: AsyncProp<T>,
     fallback: FallbackResult,
     resolutionRender?: undefined,
     errorRender?: undefined,
@@ -56,24 +56,24 @@ export function renderAsync<
     ResolutionRenderResult = never,
     ErrorRenderResult = never,
 >(
-    asyncState: AsyncProp<T>,
+    asyncProp: AsyncProp<T>,
     /** This value will be rendered if the async prop has not settled yet. */
     fallback: FallbackResult,
     resolutionRender?: ((resolved: UnPromise<T>) => ResolutionRenderResult) | undefined,
     errorRender?: ((error: Error) => ErrorRenderResult) | undefined,
 ): FallbackResult | UnPromise<T> | ResolutionRenderResult | string | ErrorRenderResult {
-    if (asyncState instanceof Error) {
+    if (asyncProp instanceof Error) {
         const errorResult: string | ErrorRenderResult = errorRender
-            ? errorRender(asyncState)
-            : extractErrorMessage(asyncState);
+            ? errorRender(asyncProp)
+            : extractErrorMessage(asyncProp);
         return errorResult as any;
-    } else if (isPromiseLike(asyncState)) {
+    } else if (isPromiseLike(asyncProp)) {
         const fallbackResult: FallbackResult = fallback;
         return fallbackResult as any;
     } else {
         const resolutionResult: ResolutionRenderResult | UnPromise<T> = resolutionRender
-            ? resolutionRender(asyncState)
-            : asyncState;
+            ? resolutionRender(asyncProp)
+            : asyncProp;
         return resolutionResult as any;
     }
 }
