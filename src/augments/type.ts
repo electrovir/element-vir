@@ -24,8 +24,12 @@ export type PickAndBlockOthers<OriginalObject, PickKeys extends keyof OriginalOb
 > &
     Partial<Record<Exclude<keyof OriginalObject, PickKeys>, never>>;
 
+export type RequireSyncReturn<ShouldBeSync, ActualType> = ShouldBeSync extends Promise<any>
+    ? 'cannot be async'
+    : ActualType;
+
 export type RequireNonVoidReturn<NonVoid, ActualType> = void extends NonVoid
     ? NonVoid extends void
         ? 'missing return statement'
-        : ActualType
-    : ActualType;
+        : RequireSyncReturn<NonVoid, ActualType>
+    : RequireSyncReturn<NonVoid, ActualType>;

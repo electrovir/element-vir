@@ -239,10 +239,15 @@ export function defineElementNoInputs<
 
                 if (!this.initCalled && initInput.initCallback) {
                     this.initCalled = true;
-                    initInput.initCallback(renderParams);
+                    if ((initInput.initCallback(renderParams) as any) instanceof Promise) {
+                        throw new Error('initCallback cannot be asynchronous');
+                    }
                 }
 
                 const renderResult = typedRenderCallback(renderParams);
+                if (renderResult instanceof Promise) {
+                    throw new Error('renderCallback cannot be asynchronous');
+                }
                 applyHostClasses({
                     host: renderParams.host,
                     hostClassesInit: initInput.hostClasses,
@@ -267,7 +272,11 @@ export function defineElementNoInputs<
             if (this.hasRendered && !this.initCalled && initInput.initCallback) {
                 this.initCalled = true;
                 const renderParams = this.createRenderParams();
-                initInput.initCallback(renderParams);
+                if ((initInput.initCallback(renderParams) as any) instanceof Promise) {
+                    throw new Error(
+                        `initCallback in '${initInput.tagName}' cannot be asynchronous`,
+                    );
+                }
             }
         }
 
@@ -275,7 +284,11 @@ export function defineElementNoInputs<
             super.disconnectedCallback();
             if (initInput.cleanupCallback) {
                 const renderParams = this.createRenderParams();
-                initInput.cleanupCallback(renderParams);
+                if ((initInput.cleanupCallback(renderParams) as any) instanceof Promise) {
+                    throw new Error(
+                        `cleanupCallback in '${initInput.tagName}' cannot be asynchronous`,
+                    );
+                }
             }
             this.initCalled = false;
         }
