@@ -34,4 +34,9 @@ describe(assign.name, () => {
         // @ts-expect-error
         assign(57);
     });
+
+    it('has typescript error if a bare HTMLElement input', () => {
+        // @ts-expect-error
+        assign(SampleElementDefinition);
+    });
 });

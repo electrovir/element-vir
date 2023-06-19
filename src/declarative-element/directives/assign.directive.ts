@@ -10,20 +10,27 @@ export type ElementDefinitionWithInputsType<
 > = {inputsType: AllowObservablePropertySetter<InputsType>};
 
 /** Assign an object matching an element's inputs to its inputs. */
-export function assign<DeclarativeElementGeneric extends ElementDefinitionWithInputsType>(
-    declarativeElement: DeclarativeElementGeneric,
-    inputsObject: {} extends Required<DeclarativeElementGeneric['inputsType']>
+export function assign<
+    SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
+    SpecificInput extends Record<string, any>,
+>(
+    declarativeElement: SpecificDeclarativeElement,
+    inputsObject: {} extends Required<SpecificDeclarativeElement['inputsType']>
         ? never
-        : AllowObservablePropertySetter<DeclarativeElementGeneric['inputsType']>,
+        : AllowObservablePropertySetter<SpecificDeclarativeElement['inputsType']>,
 ): DirectiveResult;
-export function assign<DeclarativeElementGeneric extends ElementDefinitionWithInputsType>(
-    inputsObject: Record<string, any>,
-): DirectiveResult;
-export function assign<DeclarativeElementGeneric extends ElementDefinitionWithInputsType>(
-    declarativeElementOrInputs: DeclarativeElementGeneric | Record<string, any>,
-    inputsObject?: {} extends Required<DeclarativeElementGeneric['inputsType']>
+export function assign<
+    SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
+    SpecificInput extends Record<string, any>,
+>(inputsObject: SpecificInput extends typeof HTMLElement ? never : SpecificInput): DirectiveResult;
+export function assign<
+    SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
+    SpecificInput extends Record<string, any>,
+>(
+    declarativeElementOrInputs: SpecificDeclarativeElement | SpecificInput,
+    inputsObject?: {} extends Required<SpecificDeclarativeElement['inputsType']>
         ? never
-        : DeclarativeElementGeneric['inputsType'],
+        : SpecificDeclarativeElement['inputsType'],
 ): DirectiveResult {
     /**
      * The directive generics (in listenDirective) are not strong enough to maintain their values.
