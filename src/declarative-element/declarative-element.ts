@@ -11,7 +11,7 @@ import {
     FlattenObservablePropertySetters,
     ObservablePropertyHandlerMap,
 } from './properties/observable-property/observable-property-handler';
-import {RenderCallback, RenderParams} from './render-callback';
+import {RenderCallback, RenderParams, UpdateStateCallback} from './render-callback';
 
 export type DeclarativeElementHost<
     TagName extends CustomElementTagName = any,
@@ -142,6 +142,15 @@ export abstract class DeclarativeElement<
         BaseCssPropertyName<CustomElementTagName>,
         unknown
     >['stateType'];
+    public static readonly updateStateType: StaticDeclarativeElementProperties<
+        CustomElementTagName,
+        PropertyInitMapBase,
+        PropertyInitMapBase,
+        EventsInitMap,
+        BaseCssPropertyName<CustomElementTagName>,
+        BaseCssPropertyName<CustomElementTagName>,
+        unknown
+    >['updateStateType'];
     public static readonly events: StaticDeclarativeElementProperties<
         CustomElementTagName,
         PropertyInitMapBase,
@@ -247,6 +256,7 @@ export interface StaticDeclarativeElementProperties<
     >;
     inputsType: Readonly<FlattenObservablePropertySetters<Inputs>>;
     stateType: Readonly<FlattenObservablePropertyGetters<StateInit>>;
+    updateStateType: UpdateStateCallback<StateInit>;
     isStrictInstance: (
         element: unknown,
     ) => element is DeclarativeElement<

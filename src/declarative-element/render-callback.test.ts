@@ -7,6 +7,7 @@ import {
     ObservablePropertyHandlerInstance,
     RenderCallback,
     TypedEvent,
+    UpdateStateCallback,
     asyncProp,
     createEventDescriptorMap,
     createObservableProperty,
@@ -99,6 +100,45 @@ describe('RenderParams', () => {
             renderParams.dispatch(new Event('generic event type'));
             // there are no async props in this element
             assert.isEmpty(Object.keys(renderParams.state));
+        }
+    });
+});
+
+describe('UpdateStateCallback', () => {
+    it("can be used for an element's updateState method", () => {
+        const stateInit = {
+            doThing: asyncProp('string input'),
+        };
+
+        const customElement = defineElementNoInputs({
+            tagName: 'custom-element-for-testing-update-state-callback-type',
+            stateInitStatic: stateInit,
+            renderCallback({updateState}) {
+                acceptUpdateStateFromElementDefinition(updateState);
+                acceptUpdateStateFromStateInitType(updateState);
+
+                return 'hi';
+            },
+        });
+
+        function acceptUpdateStateFromElementDefinition(
+            updateState: (typeof customElement)['updateStateType'],
+        ) {
+            updateState({
+                doThing: {
+                    resolvedValue: 'yo',
+                },
+            });
+        }
+
+        function acceptUpdateStateFromStateInitType(
+            updateState: UpdateStateCallback<typeof stateInit>,
+        ) {
+            updateState({
+                doThing: {
+                    resolvedValue: 'yo',
+                },
+            });
         }
     });
 });
