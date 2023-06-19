@@ -25,25 +25,29 @@ import {AsyncObservablePropertyHandlerCreator} from './async-prop';
 
 describe(asyncProp.name, () => {
     it('should have proper types', () => {
+        type Dimensions = {width: number; length: number};
+        type TriggerType = {
+            imageUrl: string;
+            max?: Dimensions | undefined;
+            min?: Dimensions | undefined;
+            originalImageSize?: Dimensions | undefined;
+        };
         type SomethingObject = {something: number};
 
         const elementWithAsyncProp = defineElementNoInputs({
             tagName: `element-with-async-prop-${randomString()}`,
             stateInitStatic: {
-                myAsyncProp: asyncProp<SomethingObject>(),
+                myAsyncProp: asyncProp({
+                    updateCallback(trigger: TriggerType) {
+                        return Promise.resolve({something: 4});
+                    },
+                }),
             },
             renderCallback({state, updateState}) {
-                type Dimensions = {width: number; length: number};
-                const bigType = {} as {
-                    imageUrl: string;
-                    max?: Dimensions | undefined;
-                    min?: Dimensions | undefined;
-                    originalImageSize?: Dimensions | undefined;
-                };
+                const bigType = {} as TriggerType;
 
                 updateState({
                     myAsyncProp: {
-                        createPromise: () => Promise.resolve({something: 4}),
                         trigger: bigType,
                     },
                 });
@@ -56,7 +60,7 @@ describe(asyncProp.name, () => {
         assertTypeOf(elementWithAsyncProp.stateInitStatic.myAsyncProp).toEqualTypeOf<
             StaticElementPropertyDescriptor<
                 string,
-                AsyncObservablePropertyHandlerCreator<SomethingObject>
+                AsyncObservablePropertyHandlerCreator<SomethingObject, TriggerType>
             >
         >();
 
@@ -72,26 +76,27 @@ describe(asyncProp.name, () => {
     it('updates and resolves async prop createPromise and updateTrigger', async () => {
         const startingNumber = 123;
 
+        // render the element
+        const deferredPromiseWrappers: DeferredPromiseWrapper<number>[] = [];
+        let renderCount: number = 0;
+
         const ElementWithAsyncProp = defineElement<{
             promiseUpdateTrigger: number | undefined;
         }>()({
             tagName: `element-with-async-prop-${randomString()}`,
             stateInitStatic: {
-                myAsyncProp: asyncProp<number>(),
+                myAsyncProp: asyncProp({
+                    updateCallback({newNumber}: {newNumber: number}) {
+                        const newDeferredPromise = createDeferredPromiseWrapper<typeof newNumber>();
+                        deferredPromiseWrappers.push(newDeferredPromise);
+                        return newDeferredPromise.promise;
+                    },
+                }),
             },
-            events: {
-                deferredPromiseCreated: defineElementEvent<DeferredPromiseWrapper<number>>(),
-                wasRendered: defineElementEvent<void>(),
-            },
-            renderCallback({inputs, dispatch, events, state, updateState}) {
+            renderCallback({inputs, state, updateState}) {
                 updateState({
                     myAsyncProp: {
-                        createPromise: () => {
-                            const newDeferredPromise = createDeferredPromiseWrapper<number>();
-                            dispatch(new events.deferredPromiseCreated(newDeferredPromise));
-                            return newDeferredPromise.promise;
-                        },
-                        trigger: inputs.promiseUpdateTrigger ?? startingNumber,
+                        trigger: {newNumber: inputs.promiseUpdateTrigger ?? startingNumber},
                     },
                 });
 
@@ -99,21 +104,21 @@ describe(asyncProp.name, () => {
                     assertTypeOf(state.myAsyncProp).toEqualTypeOf<number>();
                 }
 
-                dispatch(new events.wasRendered());
+                renderCount++;
 
                 return html`
                     <button
                         id="new-promise"
                         ${listen('click', () => {
-                            const newPromiseWrapper = createDeferredPromiseWrapper<number>();
+                            const newDeferredPromise = createDeferredPromiseWrapper<number>();
 
                             updateState({
                                 myAsyncProp: {
-                                    newPromise: newPromiseWrapper.promise,
+                                    newPromise: newDeferredPromise.promise,
                                 },
                             });
 
-                            dispatch(new events.deferredPromiseCreated(newPromiseWrapper));
+                            deferredPromiseWrappers.push(newDeferredPromise);
                         })}
                     >
                         New Promise
@@ -146,19 +151,8 @@ describe(asyncProp.name, () => {
             },
         });
 
-        // render the element
-        const deferredPromiseWrappers: DeferredPromiseWrapper<number>[] = [];
-        let renderCount: number = 0;
-
         const rendered = await renderFixture(html`
-            <${ElementWithAsyncProp}
-                ${listen(ElementWithAsyncProp.events.deferredPromiseCreated, (event) => {
-                    deferredPromiseWrappers.push(event.detail);
-                })}
-                ${listen(ElementWithAsyncProp.events.wasRendered, () => {
-                    renderCount++;
-                })}
-            ></${ElementWithAsyncProp}>
+            <${ElementWithAsyncProp}></${ElementWithAsyncProp}>
         `);
 
         // get elements
@@ -270,15 +264,18 @@ describe(asyncProp.name, () => {
         }>()({
             tagName: `element-with-async-prop-${randomString()}`,
             stateInitStatic: {
-                myRandomNumber: asyncProp<string>(),
+                myRandomNumber: asyncProp({
+                    async updateCallback({newNumber}: {newNumber: number | undefined}) {
+                        return randomString();
+                    },
+                }),
             },
             renderCallback({inputs, state, updateState}) {
                 updateState({
                     myRandomNumber: {
-                        async createPromise() {
-                            return randomString();
+                        trigger: {
+                            newNumber: inputs.promiseUpdateTrigger,
                         },
-                        trigger: {input: inputs.promiseUpdateTrigger},
                     },
                 });
 
@@ -350,7 +347,7 @@ describe(asyncProp.name, () => {
         const ElementWithUndefinedAsyncProp = defineElementNoInputs({
             tagName: `element-with-undefined-async-prop-${randomString()}`,
             stateInitStatic: {
-                myAsyncProp: asyncProp<number | undefined>(undefined),
+                myAsyncProp: asyncProp({defaultValue: undefined as number | undefined}),
             },
             events: {
                 wasRendered: defineElementEvent<void>(),

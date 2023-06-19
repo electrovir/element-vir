@@ -82,7 +82,7 @@ describe(asyncProp.name, () => {
         defineElementNoInputs({
             tagName: 'element-with-async-prop',
             stateInitStatic: {
-                asyncProp: asyncProp<SomethingObject>(),
+                asyncProp: asyncProp<SomethingObject, any>(),
             },
             renderCallback({state}) {
                 assertTypeOf(state.asyncProp).toEqualTypeOf<AsyncProp<SomethingObject>>();

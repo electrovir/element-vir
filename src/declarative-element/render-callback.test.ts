@@ -19,12 +19,18 @@ import {
 
 describe('RenderParams', () => {
     it('should produce proper types', () => {
+        type MyAsyncPropTriggerType = {input: string | undefined};
+
         defineElementNoInputs({
             tagName: 'test-element',
             stateInitStatic: {
-                myAsyncProp: asyncProp<number>(),
-                myAsyncProp2: asyncProp(Promise.resolve(3)),
-                myAsyncProp3: asyncProp(3),
+                myAsyncProp: asyncProp({
+                    async updateCallback({input}: MyAsyncPropTriggerType) {
+                        return 5;
+                    },
+                }),
+                myAsyncProp2: asyncProp({defaultValue: Promise.resolve(3)}),
+                myAsyncProp3: asyncProp({defaultValue: 3}),
                 myNumber: undefined as
                     | undefined
                     | ObservablePropertyHandlerInstance<number, number>,
@@ -47,26 +53,27 @@ describe('RenderParams', () => {
                 assertTypeOf<
                     Exclude<Parameters<typeof updateState>[0]['myAsyncProp'], undefined>
                 >().toEqualTypeOf<
-                    | AsyncPropSetValue<number>
-                    | AnyObservablePropertyType<AsyncPropSetValue<number>, AsyncProp<number>>
+                    | AsyncPropSetValue<number, MyAsyncPropTriggerType>
+                    | AnyObservablePropertyType<
+                          AsyncPropSetValue<number, MyAsyncPropTriggerType>,
+                          AsyncProp<number>
+                      >
                 >();
 
                 updateState({
                     myAsyncProp: {
-                        createPromise: () => Promise.resolve(5),
-                        trigger: 'hi',
+                        trigger: {input: 'hi'},
                     },
                 });
 
                 updateState({
-                    myAsyncProp: asyncProp(5),
+                    myAsyncProp: asyncProp({defaultValue: 5}),
                 });
 
                 updateState({
                     myAsyncProp: {
-                        createPromise: () => Promise.resolve(5),
                         // allow undefined as a property value
-                        trigger: {derp: undefined},
+                        trigger: {input: undefined},
                     },
                 });
 
@@ -107,7 +114,7 @@ describe('RenderParams', () => {
 describe('UpdateStateCallback', () => {
     it("can be used for an element's updateState method", () => {
         const stateInit = {
-            doThing: asyncProp('string input'),
+            doThing: asyncProp({defaultValue: 'string input'}),
         };
 
         const customElement = defineElementNoInputs({

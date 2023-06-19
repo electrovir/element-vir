@@ -8,17 +8,18 @@ export const AsyncChild = defineElement<{
 }>()({
     tagName: 'async-child',
     stateInitStatic: {
-        loadThing: asyncProp<number>(),
+        loadThing: asyncProp({
+            async updateCallback({trigger}: {trigger: number}) {
+                await wait(1_500);
+                return Math.pow(trigger, 2);
+            },
+        }),
     },
     renderCallback({state, inputs, updateState}) {
         console.info('rendering async child');
         updateState({
             loadThing: {
-                createPromise: async () => {
-                    await wait(1_500);
-                    return Math.pow(inputs.trigger, 2);
-                },
-                trigger: inputs.trigger,
+                trigger: inputs,
             },
         });
 

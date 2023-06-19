@@ -4,7 +4,8 @@ import {
     DeferredPromiseWrapper,
     ensureError,
     isLengthAtLeast,
-    JsonCompatibleValue,
+    JsonCompatibleObject,
+    typedHasProperty,
     UnPromise,
 } from '@augment-vir/common';
 import {PickAndBlockOthers} from '../../augments/type';
@@ -23,36 +24,36 @@ export type AsyncProp<ValueGeneric> =
 
 const notSetSymbol = Symbol('not set');
 
-type AllSetValueProperties<ValueGeneric> = {
+export type AsyncPropTriggerInputBase = JsonCompatibleObject | undefined;
+
+type AllSetValueProperties<ValueGeneric, TriggerInput extends AsyncPropTriggerInputBase> = {
     /** Set a new value directly without using any promises. */
     resolvedValue: UnPromise<ValueGeneric>;
-    createPromise: () => Promise<UnPromise<ValueGeneric>>;
-    /**
-     * When trigger changes (according to deep equality checking through JSON stringify), the
-     * createPromise callback will be called and the element's state will be updated again.
-     * Otherwise, the createPromise callback will only be called the first time.
-     *
-     * Set this to undefined to disabled automatic updating. Meaning, createPromise will only be
-     * called the first time.
-     */
-    trigger: JsonCompatibleValue;
+    trigger: TriggerInput;
     newPromise: Promise<UnPromise<ValueGeneric>>;
-    /** Clear the current value and trigger createPromise to get called again on the next render. */
+    /** Clear the current value and trigger updateCallback to get called again on the next render. */
     forceUpdate: true;
 };
 
-export type AsyncPropSetValue<ValueGeneric> =
-    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'createPromise' | 'trigger'>
-    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'newPromise'>
-    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'forceUpdate'>
-    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric>, 'resolvedValue'>;
+export type AsyncPropSetValue<ValueGeneric, TriggerInput extends AsyncPropTriggerInputBase> =
+    | (undefined extends TriggerInput
+          ? never
+          : PickAndBlockOthers<AllSetValueProperties<ValueGeneric, TriggerInput>, 'trigger'>)
+    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric, TriggerInput>, 'newPromise'>
+    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric, TriggerInput>, 'forceUpdate'>
+    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric, TriggerInput>, 'resolvedValue'>;
 
-export class AsyncObservablePropertyHandler<ValueGeneric>
-    implements
-        ObservablePropertyHandlerInstance<AsyncPropSetValue<ValueGeneric>, AsyncProp<ValueGeneric>>
+export class AsyncObservablePropertyHandler<
+    ValueGeneric,
+    TriggerInput extends AsyncPropTriggerInputBase,
+> implements
+        ObservablePropertyHandlerInstance<
+            AsyncPropSetValue<ValueGeneric, TriggerInput>,
+            AsyncProp<ValueGeneric>
+        >
 {
     private lastTrigger:
-        | Extract<AsyncPropSetValue<unknown>, {trigger: unknown}>['trigger']
+        | Extract<AsyncPropSetValue<ValueGeneric, TriggerInput>, {trigger: TriggerInput}>['trigger']
         | typeof notSetSymbol
         | undefined = notSetSymbol;
     private resolutionValue: UnPromise<ValueGeneric> | typeof notSetSymbol = notSetSymbol;
@@ -65,30 +66,28 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
 
     [observablePropertyHandlerInstanceMarkerKey] = true as const;
 
-    constructor(
-        initialValue:
-            | Promise<UnPromise<ValueGeneric>>
-            | UnPromise<ValueGeneric>
-            | ValueGeneric
-            | typeof notSetSymbol,
-    ) {
+    constructor(initialValue: AsyncPropInit<ValueGeneric, TriggerInput> | typeof notSetSymbol) {
         this.resetValue(initialValue);
     }
 
-    public resetValue(
-        rawValue:
-            | Promise<UnPromise<ValueGeneric>>
-            | UnPromise<ValueGeneric>
-            | ValueGeneric
-            | typeof notSetSymbol,
-    ) {
+    private promiseUpdater: AsyncPropUpdateCallback<ValueGeneric, TriggerInput> | undefined;
+
+    public resetValue(rawValue: AsyncPropInit<ValueGeneric, TriggerInput> | typeof notSetSymbol) {
         this.resetWaitingForValuePromise();
-        if (rawValue !== notSetSymbol) {
-            if (rawValue instanceof Promise) {
-                this.setValue({newPromise: rawValue});
+
+        if (rawValue === notSetSymbol) {
+            return;
+        } else if (typedHasProperty(rawValue, 'defaultValue')) {
+            if (rawValue.defaultValue instanceof Promise) {
+                this.setValue({newPromise: rawValue.defaultValue});
             } else {
-                this.setValue({resolvedValue: rawValue as UnPromise<ValueGeneric>});
+                this.setValue({
+                    resolvedValue: rawValue.defaultValue as UnPromise<ValueGeneric>,
+                });
             }
+        } else if (typedHasProperty(rawValue, 'updateCallback')) {
+            this.promiseUpdater = rawValue.updateCallback;
+            return;
         }
     }
 
@@ -152,14 +151,26 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
         this.waitingForValuePromise = createDeferredPromiseWrapper();
     }
 
-    public setValue(setInputs: AsyncPropSetValue<ValueGeneric>) {
-        if ('createPromise' in setInputs) {
+    public setValue(setInputs: AsyncPropSetValue<ValueGeneric, TriggerInput>) {
+        if (typedHasProperty(setInputs, 'trigger')) {
+            /**
+             * This will expand proxies so that `inputs` or `state` can be used directly as a
+             * trigger without issues.
+             */
+            const expandedTrigger = {...setInputs.trigger};
+
             if (
                 this.lastTrigger === notSetSymbol ||
-                !areJsonEqual(setInputs.trigger, this.lastTrigger)
+                !areJsonEqual(expandedTrigger, this.lastTrigger)
             ) {
-                this.lastTrigger = setInputs.trigger;
-                const newValue = setInputs.createPromise();
+                this.lastTrigger = expandedTrigger;
+                if (!this.promiseUpdater) {
+                    throw new Error(
+                        `got trigger input to updateState for asyncProp but no updateCallback has been defined.`,
+                    );
+                }
+
+                const newValue = this.promiseUpdater(expandedTrigger);
 
                 this.setPromise(newValue);
                 this.fireListeners();
@@ -181,7 +192,7 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
             // force a re-render
             this.fireListeners();
         } else {
-            this.resetValue(setInputs);
+            throw new Error('Got no properties for updating asyncProp.');
         }
     }
 
@@ -237,14 +248,41 @@ export class AsyncObservablePropertyHandler<ValueGeneric>
     }
 }
 
-export type AsyncObservablePropertyHandlerCreator<ValueGeneric> = ObservablePropertyHandlerCreator<
-    AsyncPropSetValue<ValueGeneric>,
+export type AsyncObservablePropertyHandlerCreator<
+    ValueGeneric,
+    TriggerInput extends AsyncPropTriggerInputBase,
+> = ObservablePropertyHandlerCreator<
+    AsyncPropSetValue<ValueGeneric, TriggerInput>,
     AsyncProp<ValueGeneric>
 >;
 
-export function asyncProp<ValueGeneric>(
-    ...args: [Promise<UnPromise<ValueGeneric>> | UnPromise<ValueGeneric> | ValueGeneric] | []
-): AsyncObservablePropertyHandlerCreator<ValueGeneric> {
+export type AsyncPropUpdateCallback<
+    ValueGeneric,
+    TriggerInput extends AsyncPropTriggerInputBase,
+> = undefined extends TriggerInput
+    ? () => Promise<UnPromise<ValueGeneric>>
+    : (triggerInput: TriggerInput) => Promise<UnPromise<ValueGeneric>>;
+
+export type AsyncPropInit<ValueGeneric, TriggerInput extends AsyncPropTriggerInputBase> =
+    | {
+          /** Starting value */
+          defaultValue: Promise<UnPromise<ValueGeneric>> | UnPromise<ValueGeneric> | ValueGeneric;
+      }
+    | {
+          /**
+           * When a trigger changes (according to deep equality checking through JSON stringify),
+           * the updateCallback callback will be called and the element's state will be updated
+           * again. Otherwise, the updateCallback callback will only be called the first time.
+           *
+           * Set this to undefined to disabled automatic updating. Meaning, updateCallback will only
+           * be called the first time.
+           */
+          updateCallback: AsyncPropUpdateCallback<ValueGeneric, TriggerInput>;
+      };
+
+export function asyncProp<ValueGeneric, TriggerInput extends AsyncPropTriggerInputBase = undefined>(
+    ...args: [AsyncPropInit<ValueGeneric, TriggerInput>] | []
+): AsyncObservablePropertyHandlerCreator<ValueGeneric, TriggerInput> {
     /**
      * Distinguish between an explicitly passed value of undefined or simply a lack of any arguments
      * at all.
@@ -254,7 +292,7 @@ export function asyncProp<ValueGeneric>(
     return {
         [observablePropertyHandlerCreatorMarkerKey]: true,
         init() {
-            return new AsyncObservablePropertyHandler<ValueGeneric>(initValue);
+            return new AsyncObservablePropertyHandler<ValueGeneric, TriggerInput>(initValue);
         },
     };
 }
