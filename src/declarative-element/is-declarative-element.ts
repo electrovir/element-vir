@@ -17,7 +17,7 @@ export function isDeclarativeElement(input: unknown): input is DeclarativeElemen
  * Checks if the input is an instance of a DeclarativeElement, the super class of all custom
  * elements defined with element-vir.
  */
-export function assertsIsDeclarativeElement(input: unknown): asserts input is DeclarativeElement {
+export function assertIsDeclarativeElement(input: unknown): asserts input is DeclarativeElement {
     if (!isDeclarativeElement(input)) {
         console.error({notDeclarativeElement: input});
         throw new Error(
