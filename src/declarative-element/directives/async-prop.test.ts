@@ -31,7 +31,6 @@ describe(asyncProp.name, () => {
             max?: Dimensions | undefined;
             min?: Dimensions | undefined;
             originalImageSize?: Dimensions | undefined;
-            doSomething: () => void;
         };
         type SomethingObject = {something: number};
 
@@ -40,17 +39,12 @@ describe(asyncProp.name, () => {
             stateInitStatic: {
                 myAsyncProp: asyncProp({
                     updateCallback(trigger: TriggerType) {
-                        trigger.doSomething();
                         return Promise.resolve({something: 4});
                     },
                 }),
             },
             renderCallback({state, updateState}) {
-                const bigType = {
-                    doSomething() {
-                        // do a thing
-                    },
-                } as TriggerType;
+                const bigType = {} as TriggerType;
 
                 updateState({
                     myAsyncProp: {
@@ -91,18 +85,10 @@ describe(asyncProp.name, () => {
         }>()({
             tagName: `element-with-async-prop-${randomString()}`,
             stateInitStatic: {
-                error: undefined as undefined | string,
                 myAsyncProp: asyncProp({
-                    updateCallback({
-                        newNumber,
-                        updateState,
-                    }: {
-                        newNumber: number;
-                        updateState: (newState: {error: string | undefined}) => void;
-                    }) {
+                    updateCallback({newNumber}: {newNumber: number}) {
                         const newDeferredPromise = createDeferredPromiseWrapper<typeof newNumber>();
                         deferredPromiseWrappers.push(newDeferredPromise);
-                        updateState({error: undefined});
                         return newDeferredPromise.promise;
                     },
                 }),
@@ -110,10 +96,7 @@ describe(asyncProp.name, () => {
             renderCallback({inputs, state, updateState}) {
                 updateState({
                     myAsyncProp: {
-                        trigger: {
-                            newNumber: inputs.promiseUpdateTrigger ?? startingNumber,
-                            updateState,
-                        },
+                        trigger: {newNumber: inputs.promiseUpdateTrigger ?? startingNumber},
                     },
                 });
 
