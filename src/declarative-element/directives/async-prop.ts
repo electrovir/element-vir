@@ -5,6 +5,7 @@ import {
     ensureError,
     isLengthAtLeast,
     JsonCompatibleObject,
+    JsonCompatibleValue,
     typedHasProperty,
     UnPromise,
 } from '@augment-vir/common';
@@ -24,11 +25,32 @@ export type AsyncProp<ValueGeneric> =
 
 const notSetSymbol = Symbol('not set');
 
-export type AsyncPropTriggerInputBase = JsonCompatibleObject | undefined;
+type JsonCompatibleObjectWithFunctionsAllowedAtTopLevel =
+    | Partial<{
+          readonly [key: string | number]:
+              | JsonCompatibleValue
+              | Readonly<JsonCompatibleValue>
+              | ((...args: any[]) => void);
+      }>
+    | Partial<{
+          [key: string | number]:
+              | JsonCompatibleValue
+              | Readonly<JsonCompatibleValue>
+              | ((...args: any[]) => void);
+      }>;
+
+export type AsyncPropTriggerInputBase =
+    | JsonCompatibleObjectWithFunctionsAllowedAtTopLevel
+    | undefined;
 
 type AllSetValueProperties<ValueGeneric, TriggerInput extends AsyncPropTriggerInputBase> = {
     /** Set a new value directly without using any promises. */
     resolvedValue: UnPromise<ValueGeneric>;
+    /**
+     * A value that, if it changes from one assignment to another, triggers the asyncProp to
+     * re-evaluate itself. Must be a JSON-compatible object for quick equality checks. Functions are
+     * also be allowed at the top level, but they are ignored for the equality checking.
+     */
     trigger: TriggerInput;
     newPromise: Promise<UnPromise<ValueGeneric>>;
     /** Clear the current value and trigger updateCallback to get called again on the next render. */
@@ -157,20 +179,27 @@ export class AsyncObservablePropertyHandler<
              * This will expand proxies so that `inputs` or `state` can be used directly as a
              * trigger without issues.
              */
-            const expandedTrigger = {...setInputs.trigger};
+            const expandedNewTrigger = {...setInputs.trigger};
 
             if (
                 this.lastTrigger === notSetSymbol ||
-                !areJsonEqual(expandedTrigger, this.lastTrigger)
+                /**
+                 * No need to explicitly remove function properties here before the equality check:
+                 * JSON.stringify (which areJsonEqual is based on) will automatically do that.
+                 */
+                !areJsonEqual(
+                    expandedNewTrigger as JsonCompatibleObject,
+                    this.lastTrigger as JsonCompatibleObject,
+                )
             ) {
-                this.lastTrigger = expandedTrigger;
+                this.lastTrigger = expandedNewTrigger;
                 if (!this.promiseUpdater) {
                     throw new Error(
                         `got trigger input to updateState for asyncProp but no updateCallback has been defined.`,
                     );
                 }
 
-                const newValue = this.promiseUpdater(expandedTrigger);
+                const newValue = this.promiseUpdater(expandedNewTrigger);
 
                 this.setPromise(newValue);
                 this.fireListeners();
