@@ -35,7 +35,6 @@ type AllSetValueProperties<ValueGeneric, TriggerInput extends AsyncPropTriggerIn
      * used for equality checking.
      */
     serializableTrigger: TriggerInput;
-    onUpdate?: (() => void) | undefined;
     newPromise: Promise<UnPromise<ValueGeneric>>;
     /** Clear the asyncProp's currently stored value and trigger updateCallback to get called again. */
     forceUpdate: true;
@@ -46,7 +45,7 @@ export type AsyncPropSetValue<ValueGeneric, TriggerInput extends AsyncPropTrigge
           ? never
           : PickAndBlockOthers<
                 AllSetValueProperties<ValueGeneric, TriggerInput>,
-                'serializableTrigger' | 'onUpdate'
+                'serializableTrigger'
             >)
     | PickAndBlockOthers<AllSetValueProperties<ValueGeneric, TriggerInput>, 'newPromise'>
     | PickAndBlockOthers<AllSetValueProperties<ValueGeneric, TriggerInput>, 'forceUpdate'>
