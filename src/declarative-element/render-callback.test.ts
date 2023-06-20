@@ -62,7 +62,7 @@ describe('RenderParams', () => {
 
                 updateState({
                     myAsyncProp: {
-                        trigger: {input: 'hi'},
+                        serializableTrigger: {input: 'hi'},
                     },
                 });
 
@@ -73,7 +73,7 @@ describe('RenderParams', () => {
                 updateState({
                     myAsyncProp: {
                         // allow undefined as a property value
-                        trigger: {input: undefined},
+                        serializableTrigger: {input: undefined},
                     },
                 });
 

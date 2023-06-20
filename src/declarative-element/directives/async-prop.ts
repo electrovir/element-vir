@@ -4,7 +4,6 @@ import {
     DeferredPromiseWrapper,
     ensureError,
     isLengthAtLeast,
-    JsonCompatibleObject,
     typedHasProperty,
     UnPromise,
 } from '@augment-vir/common';
@@ -24,21 +23,31 @@ export type AsyncProp<ValueGeneric> =
 
 const notSetSymbol = Symbol('not set');
 
-export type AsyncPropTriggerInputBase = JsonCompatibleObject | undefined;
+export type AsyncPropTriggerInputBase = object | undefined;
 
 type AllSetValueProperties<ValueGeneric, TriggerInput extends AsyncPropTriggerInputBase> = {
     /** Set a new value directly without using any promises. */
     resolvedValue: UnPromise<ValueGeneric>;
-    trigger: TriggerInput;
+    /**
+     * An object that, if it changes from one assignment to another, triggers the asyncProp to
+     * re-evaluate itself: calling its defined updateCallback and going through the asyncProp
+     * process again. Note that only serializable (JSON compatible) properties in this object are
+     * used for equality checking.
+     */
+    serializableTrigger: TriggerInput;
+    onUpdate?: (() => void) | undefined;
     newPromise: Promise<UnPromise<ValueGeneric>>;
-    /** Clear the current value and trigger updateCallback to get called again on the next render. */
+    /** Clear the asyncProp's currently stored value and trigger updateCallback to get called again. */
     forceUpdate: true;
 };
 
 export type AsyncPropSetValue<ValueGeneric, TriggerInput extends AsyncPropTriggerInputBase> =
     | (undefined extends TriggerInput
           ? never
-          : PickAndBlockOthers<AllSetValueProperties<ValueGeneric, TriggerInput>, 'trigger'>)
+          : PickAndBlockOthers<
+                AllSetValueProperties<ValueGeneric, TriggerInput>,
+                'serializableTrigger' | 'onUpdate'
+            >)
     | PickAndBlockOthers<AllSetValueProperties<ValueGeneric, TriggerInput>, 'newPromise'>
     | PickAndBlockOthers<AllSetValueProperties<ValueGeneric, TriggerInput>, 'forceUpdate'>
     | PickAndBlockOthers<AllSetValueProperties<ValueGeneric, TriggerInput>, 'resolvedValue'>;
@@ -53,7 +62,10 @@ export class AsyncObservablePropertyHandler<
         >
 {
     private lastTrigger:
-        | Extract<AsyncPropSetValue<ValueGeneric, TriggerInput>, {trigger: TriggerInput}>['trigger']
+        | Extract<
+              AsyncPropSetValue<ValueGeneric, TriggerInput>,
+              {trigger: TriggerInput}
+          >['serializableTrigger']
         | typeof notSetSymbol
         | undefined = notSetSymbol;
     private resolutionValue: UnPromise<ValueGeneric> | typeof notSetSymbol = notSetSymbol;
@@ -152,21 +164,23 @@ export class AsyncObservablePropertyHandler<
     }
 
     public setValue(setInputs: AsyncPropSetValue<ValueGeneric, TriggerInput>) {
-        if (typedHasProperty(setInputs, 'trigger')) {
+        if (typedHasProperty(setInputs, 'serializableTrigger')) {
             /**
              * This will expand proxies so that `inputs` or `state` can be used directly as a
-             * trigger without issues.
+             * serializableTrigger without issues.
              */
-            const expandedTrigger = {...setInputs.trigger};
+            const expandedTrigger = {...setInputs.serializableTrigger};
 
             if (
                 this.lastTrigger === notSetSymbol ||
-                !areJsonEqual(expandedTrigger, this.lastTrigger)
+                !areJsonEqual(expandedTrigger as any, this.lastTrigger as any, {
+                    ignoreNonSerializableProperties: true,
+                })
             ) {
                 this.lastTrigger = expandedTrigger;
                 if (!this.promiseUpdater) {
                     throw new Error(
-                        `got trigger input to updateState for asyncProp but no updateCallback has been defined.`,
+                        `got serializableTrigger input to updateState for asyncProp but no updateCallback has been defined.`,
                     );
                 }
 

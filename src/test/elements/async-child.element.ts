@@ -3,14 +3,24 @@ import {asyncProp, defineElement, html, listen, renderAsync} from '../..';
 
 const sameNumberPromise = waitValue(1_500, 86);
 
+const circularReference = {derp: '' as any};
+circularReference.derp = circularReference;
+
 export const AsyncChild = defineElement<{
     trigger: number;
 }>()({
     tagName: 'async-child',
     stateInitStatic: {
         loadThing: asyncProp({
-            async updateCallback({trigger}: {trigger: number}) {
+            async updateCallback({
+                trigger,
+                circularReference,
+            }: {
+                trigger: number;
+                circularReference: any;
+            }) {
                 await wait(1_500);
+                console.log({circularReference});
                 return Math.pow(trigger, 2);
             },
         }),
@@ -19,7 +29,10 @@ export const AsyncChild = defineElement<{
         console.info('rendering async child');
         updateState({
             loadThing: {
-                trigger: inputs,
+                serializableTrigger: {
+                    ...inputs,
+                    circularReference,
+                },
             },
         });
 

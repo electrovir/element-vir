@@ -678,7 +678,7 @@ export const MyWithAsyncProp = defineElement<{endpoint: string}>()({
          */
         updateState({
             data: {
-                trigger: inputs,
+                serializableTrigger: inputs,
             },
         });
 

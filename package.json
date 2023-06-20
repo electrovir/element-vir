@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "14.0.0",
+    "version": "14.0.2",
     "keywords": [
         "custom",
         "web",
@@ -39,14 +39,14 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/browser": "^15.1.0",
-        "@augment-vir/common": "^15.1.0",
+        "@augment-vir/browser": "^15.2.0",
+        "@augment-vir/common": "^15.2.0",
         "lit": "2.7.5",
         "lit-css-vars": "^2.0.3"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^15.1.0",
-        "@augment-vir/node-js": "^15.1.0",
+        "@augment-vir/browser-testing": "^15.2.0",
+        "@augment-vir/node-js": "^15.2.0",
         "@istanbuljs/nyc-config-typescript": "^1.0.2",
         "@open-wc/testing": "^3.2.0",
         "@types/chai": "^4.3.5",

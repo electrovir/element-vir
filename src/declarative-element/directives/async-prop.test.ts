@@ -48,7 +48,7 @@ describe(asyncProp.name, () => {
 
                 updateState({
                     myAsyncProp: {
-                        trigger: bigType,
+                        serializableTrigger: bigType,
                     },
                 });
 
@@ -79,6 +79,8 @@ describe(asyncProp.name, () => {
         // render the element
         const deferredPromiseWrappers: DeferredPromiseWrapper<number>[] = [];
         let renderCount: number = 0;
+        const circularReference = {derp: '' as any};
+        circularReference.derp = circularReference;
 
         const ElementWithAsyncProp = defineElement<{
             promiseUpdateTrigger: number | undefined;
@@ -86,7 +88,7 @@ describe(asyncProp.name, () => {
             tagName: `element-with-async-prop-${randomString()}`,
             stateInitStatic: {
                 myAsyncProp: asyncProp({
-                    updateCallback({newNumber}: {newNumber: number}) {
+                    updateCallback({newNumber}: {newNumber: number; circularReference: any}) {
                         const newDeferredPromise = createDeferredPromiseWrapper<typeof newNumber>();
                         deferredPromiseWrappers.push(newDeferredPromise);
                         return newDeferredPromise.promise;
@@ -96,7 +98,10 @@ describe(asyncProp.name, () => {
             renderCallback({inputs, state, updateState}) {
                 updateState({
                     myAsyncProp: {
-                        trigger: {newNumber: inputs.promiseUpdateTrigger ?? startingNumber},
+                        serializableTrigger: {
+                            newNumber: inputs.promiseUpdateTrigger ?? startingNumber,
+                            circularReference,
+                        },
                     },
                 });
 
@@ -273,7 +278,7 @@ describe(asyncProp.name, () => {
             renderCallback({inputs, state, updateState}) {
                 updateState({
                     myRandomNumber: {
-                        trigger: {
+                        serializableTrigger: {
                             newNumber: inputs.promiseUpdateTrigger,
                         },
                     },
