@@ -16,10 +16,18 @@ export type AnyObservablePropertyType<SetValue, GetValue> =
     | ObservablePropertyHandlerCreator<SetValue, GetValue>
     | ObservablePropertyHandlerInstance<SetValue, GetValue>;
 
-export type AllowObservablePropertySetter<OriginalPropertyMap extends PropertyInitMapBase> = {
-    [Prop in keyof OriginalPropertyMap]:
-        | OriginalPropertyMap[Prop]
-        | AnyObservablePropertyType<any, Required<OriginalPropertyMap>[Prop]>;
+export type AllowObservablePropertySetter<
+    OriginalPropertyMap extends PropertyInitMapBase,
+    CurrentType extends Record<keyof OriginalPropertyMap, unknown>,
+> = {
+    [Prop in keyof CurrentType]: Prop extends keyof OriginalPropertyMap
+        ? CurrentType[Prop] extends AnyObservablePropertyType<
+              any,
+              Required<OriginalPropertyMap>[Prop]
+          >
+            ? CurrentType[Prop]
+            : Required<OriginalPropertyMap>[Prop]
+        : never;
 };
 
 export type FlattenObservablePropertyGetters<OriginalPropertyMap extends PropertyInitMapBase> = {

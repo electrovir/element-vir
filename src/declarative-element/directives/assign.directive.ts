@@ -7,30 +7,36 @@ import {extractElement} from './directive-helpers';
 
 export type ElementDefinitionWithInputsType<
     InputsType extends PropertyInitMapBase = PropertyInitMapBase,
-> = {inputsType: AllowObservablePropertySetter<InputsType>};
+> = {inputsType: InputsType};
 
 /** Assign an object matching an element's inputs to its inputs. */
 export function assign<
-    SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
-    SpecificInput extends Record<string, any>,
+    const SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
+    const SpecificInput extends {
+        [Prop in keyof SpecificDeclarativeElement['inputsType']]: unknown;
+    },
 >(
     declarativeElement: SpecificDeclarativeElement,
     inputsObject: {} extends Required<SpecificDeclarativeElement['inputsType']>
         ? never
-        : AllowObservablePropertySetter<SpecificDeclarativeElement['inputsType']>,
+        : AllowObservablePropertySetter<SpecificDeclarativeElement['inputsType'], SpecificInput>,
 ): DirectiveResult;
 export function assign<
-    SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
-    SpecificInput extends Record<string, any>,
+    const SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
+    const SpecificInput extends {
+        [Prop in keyof SpecificDeclarativeElement['inputsType']]: unknown;
+    },
 >(inputsObject: SpecificInput extends typeof HTMLElement ? never : SpecificInput): DirectiveResult;
 export function assign<
-    SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
-    SpecificInput extends Record<string, any>,
+    const SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
+    const SpecificInput extends {
+        [Prop in keyof SpecificDeclarativeElement['inputsType']]: unknown;
+    },
 >(
-    declarativeElementOrInputs: SpecificDeclarativeElement | SpecificInput,
+    declarativeElementOrInputs: SpecificDeclarativeElement,
     inputsObject?: {} extends Required<SpecificDeclarativeElement['inputsType']>
         ? never
-        : SpecificDeclarativeElement['inputsType'],
+        : AllowObservablePropertySetter<SpecificDeclarativeElement['inputsType'], SpecificInput>,
 ): DirectiveResult {
     /**
      * The directive generics (in listenDirective) are not strong enough to maintain their values.

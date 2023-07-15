@@ -23,10 +23,7 @@ import {EventsInitMap, createEventDescriptorMap} from './properties/element-even
 import {PropertyInitMapBase} from './properties/element-properties';
 import {createElementUpdaterProxy} from './properties/element-updater-proxy';
 import {HostClassNamesMap, createHostClassNamesMap} from './properties/host-classes';
-import {
-    AllowObservablePropertySetter,
-    FlattenObservablePropertyGetters,
-} from './properties/observable-property/observable-property-handler';
+import {FlattenObservablePropertyGetters} from './properties/observable-property/observable-property-handler';
 import {applyHostClasses, hostClassNamesToStylesInput} from './properties/styles';
 import {RenderParams, createRenderParams} from './render-callback';
 
@@ -200,7 +197,7 @@ export function defineElementNoInputs<
                 `"instanceType" was called on ${initInput.tagName} as a value but it is only for types.`,
             );
         }
-        public static override get inputsType(): AllowObservablePropertySetter<Inputs> {
+        public static override get inputsType(): Inputs {
             throw new Error(
                 `"inputsType" was called on ${initInput.tagName} as a value but it is only for types.`,
             );
