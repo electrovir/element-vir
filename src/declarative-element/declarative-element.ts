@@ -254,7 +254,7 @@ export interface StaticDeclarativeElementProperties<
         >,
         'stateInitStatic' | 'events'
     >;
-    inputsType: Readonly<FlattenObservablePropertySetters<Inputs>>;
+    inputsType: Readonly<FlattenObservablePropertySetters<Inputs, Inputs>>;
     stateType: Readonly<FlattenObservablePropertyGetters<StateInit>>;
     updateStateType: UpdateStateCallback<StateInit>;
     isStrictInstance: (

@@ -42,6 +42,7 @@ describe(asyncProp.name, () => {
                         return Promise.resolve({something: 4});
                     },
                 }),
+                syncProp: {value: 'hi'},
             },
             renderCallback({state, updateState}) {
                 const bigType = {} as TriggerType;
@@ -49,6 +50,22 @@ describe(asyncProp.name, () => {
                 updateState({
                     myAsyncProp: {
                         serializableTrigger: bigType,
+                    },
+                    syncProp: {
+                        value: 'yo',
+                        // @ts-expect-error
+                        hello: 'yo',
+                    },
+                });
+
+                updateState({
+                    myAsyncProp: {
+                        serializableTrigger: bigType,
+                        // @ts-expect-error
+                        hello: 'yo',
+                    },
+                    syncProp: {
+                        value: 'yo',
                     },
                 });
 

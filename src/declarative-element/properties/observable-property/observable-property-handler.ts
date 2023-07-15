@@ -44,8 +44,11 @@ export type FlattenObservablePropertyGetters<OriginalPropertyMap extends Propert
         : Exclude<OriginalPropertyMap[Prop], AnyObservablePropertyType<any, any>>;
 };
 
-export type FlattenObservablePropertySetters<OriginalPropertyMap extends PropertyInitMapBase> = {
-    [Prop in keyof OriginalPropertyMap]: Extract<
+export type FlattenObservablePropertySetters<
+    OriginalPropertyMap extends PropertyInitMapBase,
+    CurrentType extends Record<keyof OriginalPropertyMap, unknown>,
+> = {
+    [Prop in keyof CurrentType]: Extract<
         OriginalPropertyMap[Prop],
         AnyObservablePropertyType<any, any>
     > extends never
@@ -54,7 +57,9 @@ export type FlattenObservablePropertySetters<OriginalPropertyMap extends Propert
               OriginalPropertyMap[Prop],
               AnyObservablePropertyType<any, any>
           > extends AnyObservablePropertyType<infer SetValue, infer GetValue>
-        ? SetValue | AnyObservablePropertyType<SetValue, GetValue>
+        ? CurrentType[Prop] extends AnyObservablePropertyType<SetValue, GetValue>
+            ? CurrentType[Prop]
+            : SetValue
         : OriginalPropertyMap[Prop];
 };
 

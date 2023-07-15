@@ -37,8 +37,10 @@ export type InitCallback<
     params: RenderParams<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>,
 ) => void;
 
-export type UpdateStateCallback<StateInit extends PropertyInitMapBase> = (
-    newState: Partial<FlattenObservablePropertySetters<StateInit>>,
+export type UpdateStateCallback<StateInit extends PropertyInitMapBase> = <
+    const SpecificInput extends Partial<Record<keyof StateInit, unknown>>,
+>(
+    newState: Partial<FlattenObservablePropertySetters<StateInit, SpecificInput>>,
 ) => void;
 
 export type RenderParams<

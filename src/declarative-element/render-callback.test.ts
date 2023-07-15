@@ -1,8 +1,6 @@
 import {assertTypeOf} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
 import {
-    AnyObservablePropertyType,
-    AsyncProp,
     AsyncPropSetValue,
     ObservablePropertyHandlerInstance,
     RenderCallback,
@@ -52,13 +50,7 @@ describe('RenderParams', () => {
 
                 assertTypeOf<
                     Exclude<Parameters<typeof updateState>[0]['myAsyncProp'], undefined>
-                >().toEqualTypeOf<
-                    | AsyncPropSetValue<number, MyAsyncPropTriggerType>
-                    | AnyObservablePropertyType<
-                          AsyncPropSetValue<number, MyAsyncPropTriggerType>,
-                          AsyncProp<number>
-                      >
-                >();
+                >().toEqualTypeOf<AsyncPropSetValue<number, MyAsyncPropTriggerType>>();
 
                 updateState({
                     myAsyncProp: {
