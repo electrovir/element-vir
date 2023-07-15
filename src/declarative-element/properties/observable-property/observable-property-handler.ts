@@ -23,11 +23,16 @@ export type AllowObservablePropertySetter<OriginalPropertyMap extends PropertyIn
 };
 
 export type FlattenObservablePropertyGetters<OriginalPropertyMap extends PropertyInitMapBase> = {
-    [Prop in keyof OriginalPropertyMap]: OriginalPropertyMap[Prop] extends AnyObservablePropertyType<
-        infer SetValue,
-        infer GetValue
-    >
-        ? GetValue
+    [Prop in keyof OriginalPropertyMap]: Extract<
+        OriginalPropertyMap[Prop],
+        AnyObservablePropertyType<any, any>
+    > extends never
+        ? Exclude<OriginalPropertyMap[Prop], AnyObservablePropertyType<any, any>>
+        : Extract<
+              OriginalPropertyMap[Prop],
+              AnyObservablePropertyType<any, any>
+          > extends AnyObservablePropertyType<infer SetValue, infer GetValue>
+        ? GetValue | Exclude<OriginalPropertyMap[Prop], AnyObservablePropertyType<any, any>>
         : Exclude<OriginalPropertyMap[Prop], AnyObservablePropertyType<any, any>>;
 };
 

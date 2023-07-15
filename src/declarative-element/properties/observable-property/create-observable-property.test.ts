@@ -1,4 +1,4 @@
-import {typedAssertInstanceOf} from '@augment-vir/browser-testing';
+import {assertTypeOf, typedAssertInstanceOf} from '@augment-vir/browser-testing';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {assign, defineElement, html} from '../../..';
 import {createObservableProperty} from './create-observable-property';
@@ -12,8 +12,16 @@ describe(createObservableProperty.name, () => {
             tagName: 'my-element-for-observable-property-test',
             stateInitStatic: {
                 myThing: stateObservable,
+                myThing2: undefined as undefined | typeof stateObservable,
             },
-            renderCallback({inputs, state}) {
+            renderCallback({inputs, updateState, state}) {
+                if (!state.myThing2) {
+                    updateState({myThing2: stateObservable});
+                }
+
+                assertTypeOf(state.myThing).toEqualTypeOf<number>();
+                assertTypeOf(state.myThing2).toEqualTypeOf<number | undefined>();
+
                 return html`
                     <span class="state">${state.myThing}</span>
                     <span class="inputs">${inputs.thing}</span>
