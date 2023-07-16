@@ -2,7 +2,7 @@ import {assertTypeOf, typedAssertInstanceOf} from '@augment-vir/browser-testing'
 import {RequiredAndNotNullBy} from '@augment-vir/common';
 import {assert, expect, fixture, waitUntil} from '@open-wc/testing';
 import {html} from '../..';
-import {clickElement} from '../../augments/testing.test-helper';
+import {clickElement} from '../../util/testing.test-helper';
 import {AppElement} from './app.element';
 import {TestChildElement} from './child.element';
 

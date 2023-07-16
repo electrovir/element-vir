@@ -1,13 +1,13 @@
 import {randomString} from '@augment-vir/browser';
 import {assert, fixture} from '@open-wc/testing';
 import {assignWithCleanup, defineElementNoInputs, html, listen} from '../..';
+import {VirWithInputs} from '../../test/elements/vir-with-inputs.element';
 import {
     clickElement,
     getAssertedDeclarativeElement,
     queryWithAssert,
     testIdSelector,
-} from '../../augments/testing.test-helper';
-import {VirWithInputs} from '../../test/elements/vir-with-inputs.element';
+} from '../../util/testing.test-helper';
 
 const AssignWithCleanupTestElement = defineElementNoInputs({
     tagName: 'vir-assign-with-cleanup-test',

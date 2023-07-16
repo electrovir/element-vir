@@ -7,7 +7,7 @@ import {
     typedHasProperty,
     UnPromise,
 } from '@augment-vir/common';
-import {PickAndBlockOthers} from '../../augments/type';
+import {PickAndBlockOthers} from '../../util/type';
 import {
     ObservablePropertyHandlerCreator,
     observablePropertyHandlerCreatorMarkerKey,

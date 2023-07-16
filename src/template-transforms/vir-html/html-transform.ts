@@ -1,43 +1,64 @@
-import {collapseWhiteSpace, safeMatch} from '@augment-vir/common';
+import {collapseWhiteSpace, isTruthy, safeMatch} from '@augment-vir/common';
 import {HTMLTemplateResult} from 'lit';
+import {assign} from '../../declarative-element/directives/assign.directive';
 import {declarativeElementRequired} from '../../require-declarative-element';
-import {ConstructorWithTagName, hasStaticTagName} from '../has-static-tag-name';
 import {
-    CheckAndTransform,
-    TemplateTransform,
-    makeCheckTransform,
-    transformTemplate,
-} from '../transform-template';
+    isMinimalElementDefinition,
+    isWrappedMinimalDefinition,
+} from '../minimal-element-definition';
+import {TemplateTransform, ValueTransformCallback, transformTemplate} from '../transform-template';
 
-const htmlChecksAndTransforms: CheckAndTransform<any>[] = [
-    makeCheckTransform(
-        'tag name interpolation',
-        (lastNewString, currentLitString, currentValue): currentValue is ConstructorWithTagName => {
-            const shouldHaveTagNameHere: boolean =
-                (lastNewString.trim().endsWith('<') && !!currentLitString.match(/^[\s\n>]/)) ||
-                (lastNewString?.trim().endsWith('</') && currentLitString.trim().startsWith('>'));
-            const staticTagName = hasStaticTagName(currentValue);
+function transformHtml(
+    ...[
+        lastNewString,
+        currentLitString,
+        rawCurrentValue,
+    ]: Parameters<ValueTransformCallback>
+): ReturnType<ValueTransformCallback> {
+    const currentValue = isWrappedMinimalDefinition(rawCurrentValue)
+        ? rawCurrentValue.definition
+        : rawCurrentValue;
 
-            if (shouldHaveTagNameHere && !staticTagName) {
-                console.error({
-                    lastNewString,
-                    currentLitString,
-                    currentValue,
-                });
-                throw new Error(
-                    `Got interpolated tag name but it wasn't of type VirElement: '${
-                        (currentValue as any).prototype.constructor.name
-                    }'`,
-                );
-            }
+    const isOpeningTag = lastNewString.trim().endsWith('<') && !!currentLitString.match(/^[\s\n>]/);
+    const isClosingTag =
+        lastNewString?.trim().endsWith('</') && currentLitString.trim().startsWith('>');
+    const shouldHaveTagNameHere: boolean = isOpeningTag || isClosingTag;
+    const staticTagName = isMinimalElementDefinition(currentValue);
 
-            return shouldHaveTagNameHere && staticTagName;
+    if (shouldHaveTagNameHere && !staticTagName) {
+        console.error({
+            lastNewString,
+            currentLitString,
+            currentValue,
+        });
+        throw new Error(
+            `Got interpolated tag name but found no tag name on the given value: '${
+                (currentValue as any).prototype.constructor.name
+            }'`,
+        );
+    }
+
+    if (!shouldHaveTagNameHere || !staticTagName) {
+        return undefined;
+    }
+
+    const replacement = currentValue.tagName;
+
+    return {
+        replacement,
+        getExtraValues(extraValueCurrentValue) {
+            const assignedInputs = isWrappedMinimalDefinition(extraValueCurrentValue)
+                ? extraValueCurrentValue.inputs
+                : undefined;
+
+            return [
+                isOpeningTag && assignedInputs && Object.values(assignedInputs).length
+                    ? assign(assignedInputs)
+                    : undefined,
+            ].filter(isTruthy);
         },
-        (input) =>
-            // cast is safe because the check method above verifies that this value is a VirElement
-            input.tagName,
-    ),
-];
+    };
+}
 
 function extractCustomElementTags(input: string): string[] {
     const tagNameMatches = safeMatch(input, /<\/[\s\n]*[^\s\n><]+[\s\n]*>/g);
@@ -68,7 +89,7 @@ export function transformHtmlTemplate(litTemplate: HTMLTemplateResult): Template
     return transformTemplate(
         litTemplate.strings,
         litTemplate.values,
-        htmlChecksAndTransforms,
+        transformHtml,
         stringValidator,
     );
 }

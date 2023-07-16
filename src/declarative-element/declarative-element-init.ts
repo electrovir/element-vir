@@ -1,5 +1,5 @@
 import {CSSResult} from 'lit';
-import {RequireNonVoidReturn} from '../augments/type';
+import {RequireNonVoidReturn} from '../util/type';
 import {DeclarativeElementDefinitionOptions} from './definition-options';
 import {BaseCssPropertyName} from './properties/css-properties';
 import {CssVarsInitMap} from './properties/css-vars';

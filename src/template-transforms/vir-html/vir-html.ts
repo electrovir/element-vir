@@ -17,6 +17,5 @@ export function html(
         strings: transformedTemplate.strings,
         values: transformedTemplate.values,
     };
-
     return htmlTemplate;
 }

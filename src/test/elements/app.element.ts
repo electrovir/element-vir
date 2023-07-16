@@ -1,5 +1,4 @@
 import {
-    assign,
     assignWithCleanup,
     css,
     defineElementNoInputs,
@@ -92,12 +91,11 @@ export const AppElement = defineElementNoInputs({
                 </button>
 
                 <hr />
-                <${TestChildElement}
-                    ${assign(TestChildElement, {
-                        displayNumber: state.funnyNumber,
-                        width: state.width,
-                        myProp: myObservable,
-                    })}
+                <${TestChildElement.assign({
+                    displayNumber: state.funnyNumber,
+                    width: state.width,
+                    myProp: myObservable,
+                })}
                     ${listen(TestChildElement.events.speak, (event) => {
                         updateState({
                             eventsReceived: state.eventsReceived + 1,
@@ -142,27 +140,22 @@ export const AppElement = defineElementNoInputs({
                           <hr />
                       `
                     : ''}
-                <${AsyncChild}
-                    ${assign(AsyncChild, {
-                        trigger: state.funnyNumber,
-                    })}
-                ></${AsyncChild}>
-                <${AsyncChild}
-                    ${assign(AsyncChild, {
-                        trigger: state.funnyNumber,
-                    })}
-                ></${AsyncChild}>
+                <${AsyncChild.assign({
+                    trigger: state.funnyNumber,
+                })}></${AsyncChild}>
+                <${AsyncChild.assign({
+                    trigger: state.funnyNumber,
+                })}></${AsyncChild}>
                 <hr />
                 <span>Speak events received: ${state.eventsReceived}</span>
                 <span>Last speak message received: ${state.lastReceivedMessage}</span>
                 <span>app width: ${state.width}</span>
 
-                <${TestChildElement}
+                <${TestChildElement.assign({
+                    displayNumber: 15,
+                    width: -1,
+                })}
                     class=${TestChildElement.hostClasses['element-vir-test-child-test']}
-                    ${assign(TestChildElement, {
-                        displayNumber: 15,
-                        width: -1,
-                    })}
                 ></${TestChildElement}>
                 ${allTestArrayElements.map((element) => {
                     return html`

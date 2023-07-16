@@ -2,7 +2,7 @@ import {ensureError, getObjectTypedKeys, kebabCaseToCamelCase} from '@augment-vi
 import {css} from 'lit';
 import {defineCssVars} from 'lit-css-vars';
 import {property} from 'lit/decorators.js';
-import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';
+import {WrappedMinimalDefinition} from '../template-transforms/minimal-element-definition';
 import {
     DeclarativeElement,
     DeclarativeElementDefinition,
@@ -121,6 +121,16 @@ export function defineElementNoInputs<
         RenderOutput
     >['renderCallback'] = initInput.renderCallback;
 
+    const typedAssignCallback: ThisElementDefinition['assign'] = (inputs) => {
+        const returnValue: WrappedMinimalDefinition = {
+            _elementVirIsWrappedDefinition: true,
+            definition: anonymousClass,
+            inputs,
+        };
+
+        return returnValue as any;
+    };
+
     const anonymousClass = class extends DeclarativeElement<
         TagName,
         Inputs,
@@ -143,6 +153,9 @@ export function defineElementNoInputs<
         > {
             return createRenderParams(this, eventsMap);
         }
+
+        public static override assign: ThisElementStaticClass['assign'] =
+            typedAssignCallback as unknown as ThisElementStaticClass['assign'];
 
         // this gets set below in Object.defineProperties
         public static override readonly isStrictInstance: any = () => false;
@@ -330,10 +343,6 @@ export function defineElementNoInputs<
     };
 
     Object.defineProperties(anonymousClass, {
-        [DeclarativeElementMarkerSymbol]: {
-            value: true,
-            writable: false,
-        },
         name: {
             value: kebabCaseToCamelCase(initInput.tagName, {
                 capitalizeFirstLetter: true,

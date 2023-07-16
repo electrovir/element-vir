@@ -31,7 +31,7 @@ export function assertIsElementPartInfo(
     directiveName: string,
 ): asserts partInfo is ElementPartInfo & ExtraPartInfoProperties {
     const hostTagName = getPartHostTagName(partInfo);
-    const hostTagMessage = hostTagName ? `: found in ${hostTagName}` : '';
+    const hostTagMessage = hostTagName ? `: in ${hostTagName}` : '';
 
     if (partInfo.type !== PartType.ELEMENT) {
         throw new Error(

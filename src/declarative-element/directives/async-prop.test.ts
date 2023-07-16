@@ -20,7 +20,7 @@ import {
     listen,
     renderAsync,
 } from '../..';
-import {assertRejects, getAssertedDeclarativeElement} from '../../augments/testing.test-helper';
+import {assertRejects, getAssertedDeclarativeElement} from '../../util/testing.test-helper';
 import {AsyncObservablePropertyHandlerCreator} from './async-prop';
 
 describe(asyncProp.name, () => {

@@ -1,7 +1,6 @@
 import {assertTypeOf} from '@augment-vir/browser-testing';
 import {assert, fixture as renderFixture} from '@open-wc/testing';
 import {
-    assign,
     css,
     defineElement,
     defineElementEvent,
@@ -10,7 +9,7 @@ import {
     listen,
     wrapDefineElement,
 } from '..';
-import {getAssertedDeclarativeElement} from '../augments/testing.test-helper';
+import {getAssertedDeclarativeElement} from '../util/testing.test-helper';
 
 describe(wrapDefineElement.name, () => {
     type MySpecificTagName = `my-${string}`;
@@ -135,10 +134,7 @@ describe(wrapDefineElement.name, () => {
         const assignedInput = 'hello';
 
         const fixture = await renderFixture(html`
-            <${MySpecificElement}
-                ${assign(MySpecificElement, {
-                    noInputsActually: assignedInput,
-                })}
+            <${MySpecificElement.assign({noInputsActually: assignedInput})}
                 ${listen(MySpecificElement.events.myOutput, (event) => {
                     assertTypeOf(event.detail).toEqualTypeOf<number>();
                 })}

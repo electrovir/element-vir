@@ -1,11 +1,11 @@
 import {CSSResult, CSSResultGroup, css as litCss} from 'lit';
-import {ConstructorWithTagName} from '../has-static-tag-name';
+import {MinimalElementDefinition} from '../minimal-element-definition';
 import {getTransformedTemplate} from '../transform-template';
 import {transformCssTemplate} from './css-transform';
 
 export function css(
     inputTemplateStrings: TemplateStringsArray,
-    ...inputValues: (number | CSSResultGroup | ConstructorWithTagName)[]
+    ...inputValues: (number | CSSResultGroup | MinimalElementDefinition)[]
 ): CSSResult {
     const transformedTemplate = getTransformedTemplate(inputTemplateStrings, inputValues, () => {
         return transformCssTemplate(inputTemplateStrings, inputValues);

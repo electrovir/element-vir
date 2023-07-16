@@ -41,6 +41,7 @@
     "dependencies": {
         "@augment-vir/browser": "^15.3.0",
         "@augment-vir/common": "^15.3.0",
+        "element-vir": "^14.0.3",
         "lit": "2.7.6",
         "lit-css-vars": "^2.0.3"
     },

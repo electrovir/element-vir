@@ -19,7 +19,7 @@ export function isDeclarativeElement(input: unknown): input is DeclarativeElemen
  */
 export function assertIsDeclarativeElement(input: unknown): asserts input is DeclarativeElement {
     if (!isDeclarativeElement(input)) {
-        console.error({notDeclarativeElement: input});
+        console.error('this is not a declarative element:', input);
         throw new Error(
             `${
                 typedHasProperty(input, 'tagName') ? input.tagName : input

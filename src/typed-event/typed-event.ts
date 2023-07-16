@@ -1,4 +1,4 @@
-import {NonEmptyString} from '../augments/type';
+import {NonEmptyString} from '../util/type';
 
 export class TypedEvent<
     EventTypeNameGeneric extends string = '',

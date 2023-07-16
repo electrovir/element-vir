@@ -1,44 +1,34 @@
-import {typedHasProperties} from '@augment-vir/common';
-import {filterOutArrayIndexes} from '../augments/array';
-import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';
+import {ArrayInsertion, insertAndRemoveValues} from '../util/array';
 import {getAlreadyMappedTemplate, setMappedTemplate} from './nested-mapped-templates';
+
+export type ValueInsertion = {
+    index: number;
+    value: unknown;
+};
+
+export type AllValueTransforms = {
+    valueIndexDeletions: number[];
+    valueInsertions: ArrayInsertion<unknown>[];
+};
 
 export type TemplateTransform = {
     templateStrings: TemplateStringsArray;
-    valueIndexDeletions: number[];
+    valuesTransform(values: unknown[]): AllValueTransforms;
 };
 
-export type ValueTransform = (value: unknown) => unknown;
-
-export type CheckAndTransform<T> = {
-    check: (
-        lastNewString: string,
-        currentLitString: string,
-        currentValue: unknown,
-    ) => currentValue is T;
-    transform: (value: T) => unknown;
-    name: string;
-};
-
-export function makeCheckTransform<T>(
-    name: string,
-    check: (
-        lastNewString: string,
-        currentLitString: string,
-        currentValue: unknown,
-    ) => currentValue is T,
-    transform: (value: T) => unknown,
-): CheckAndTransform<T> {
-    return {
-        name,
-        check,
-        transform,
-    };
-}
+export type ValueTransformCallback = (
+    lastNewString: string,
+    currentLitString: string,
+    currentValue: unknown,
+) =>
+    | {
+          replacement: unknown;
+          getExtraValues: ((currentValue: unknown) => unknown[]) | undefined;
+      }
+    | undefined;
 
 type WeakMapElementKey = {
     tagName: string;
-    [DeclarativeElementMarkerSymbol]: true;
 };
 
 type NestedTemplatesWeakMap = WeakMap<
@@ -56,19 +46,6 @@ type TemplatesWeakMap = WeakMap<TemplateStringsArray, TemplateTransform | Nested
  * template array key exists.
  */
 const transformedTemplateStrings: TemplatesWeakMap = new WeakMap();
-
-function extractElementValues(values: unknown[]): WeakMapElementKey[] {
-    return values.filter((value): value is WeakMapElementKey => {
-        return (
-            typedHasProperties(value, [
-                'tagName',
-                DeclarativeElementMarkerSymbol,
-            ]) &&
-            !!value.tagName &&
-            !!value[DeclarativeElementMarkerSymbol]
-        );
-    });
-}
 
 export function getTransformedTemplate<PossibleValues>(
     templateStringsKey: TemplateStringsArray,
@@ -89,55 +66,86 @@ export function getTransformedTemplate<PossibleValues>(
         }
     }
 
-    const transformedValuesArray: PossibleValues[] = filterOutArrayIndexes(
+    const valueTransforms = templateTransform.valuesTransform(values);
+
+    const transformedValuesArray: PossibleValues[] = insertAndRemoveValues(
         values,
-        templateTransform.valueIndexDeletions,
+        valueTransforms.valueInsertions,
+        valueTransforms.valueIndexDeletions,
     ) as PossibleValues[];
 
-    return {strings: templateTransform.templateStrings, values: transformedValuesArray};
+    return {
+        strings: templateTransform.templateStrings,
+        values: transformedValuesArray,
+    };
 }
 
-export function transformTemplate<
-    TransformsGeneric extends CheckAndTransform<any>[],
-    PossibleValues,
->(
+export function transformTemplate<PossibleValues>(
     inputTemplateStrings: TemplateStringsArray,
     inputValues: PossibleValues[],
-    checksAndTransforms: TransformsGeneric,
+    transformValue: ValueTransformCallback,
     assertValidString?: (templateStringPart: string) => void,
 ): TemplateTransform {
     const newStrings: string[] = [];
     const newRaws: string[] = [];
-    const valueDeletions: number[] = [];
+    const valueIndexDeletions: AllValueTransforms['valueIndexDeletions'] = [];
+    const valueTransforms: ((values: unknown[]) => ArrayInsertion<unknown>)[] = [];
 
-    inputTemplateStrings.forEach((currentTemplateString, index) => {
+    inputTemplateStrings.forEach((currentTemplateString, currentTemplateStringIndex) => {
         const lastNewStringsIndex = newStrings.length - 1;
         const lastNewString = newStrings[lastNewStringsIndex];
-        const currentValueIndex = index - 1;
+        const currentValueIndex = currentTemplateStringIndex - 1;
         const currentValue = inputValues[currentValueIndex];
-        let validTransform: ValueTransform | undefined;
 
         assertValidString && assertValidString(currentTemplateString);
 
-        if (typeof lastNewString === 'string') {
-            validTransform = checksAndTransforms.find((checkAndTransform) => {
-                return checkAndTransform.check(lastNewString, currentTemplateString, currentValue);
-            })?.transform;
+        let transformOutput: ReturnType<ValueTransformCallback> | undefined = undefined;
+        let extraValues: unknown[] = [];
 
-            if (validTransform) {
-                newStrings[lastNewStringsIndex] =
-                    lastNewString + validTransform(currentValue) + currentTemplateString;
-                valueDeletions.push(currentValueIndex);
+        if (typeof lastNewString === 'string') {
+            transformOutput = transformValue(lastNewString, currentTemplateString, currentValue);
+            if (transformOutput) {
+                newStrings[lastNewStringsIndex] = lastNewString + transformOutput.replacement;
+                valueIndexDeletions.push(currentValueIndex);
+                const getExtraValuesCallback = transformOutput.getExtraValues;
+                extraValues = getExtraValuesCallback ? getExtraValuesCallback(currentValue) : [];
+
+                if (extraValues.length && getExtraValuesCallback) {
+                    newStrings[lastNewStringsIndex] += ' ';
+                    extraValues.forEach((value, index) => {
+                        // don't insert the first time, we need n-1 inserts
+                        if (index) {
+                            newStrings.push(' ');
+                        }
+                    });
+                    valueTransforms.push((values): ArrayInsertion<unknown> => {
+                        const latestCurrentValue = values[currentValueIndex];
+                        const insertions = getExtraValuesCallback(latestCurrentValue);
+                        return {
+                            index: currentValueIndex,
+                            values: insertions,
+                        };
+                    });
+                    newStrings.push(currentTemplateString);
+                } else {
+                    newStrings[lastNewStringsIndex] += currentTemplateString;
+                }
             }
         }
-        if (!validTransform) {
+
+        if (!transformOutput) {
             newStrings.push(currentTemplateString);
         }
 
-        const currentRawLitString = inputTemplateStrings.raw[index]!;
-        if (validTransform) {
+        const currentRawLitString = inputTemplateStrings.raw[currentTemplateStringIndex]!;
+        if (transformOutput) {
             newRaws[lastNewStringsIndex] =
-                newRaws[lastNewStringsIndex]! + validTransform(currentValue) + currentRawLitString;
+                newRaws[lastNewStringsIndex]! + transformOutput.replacement + currentRawLitString;
+            if (extraValues.length) {
+                extraValues.forEach(() => {
+                    newRaws.push('');
+                });
+            }
         } else {
             newRaws.push(currentRawLitString);
         }
@@ -149,6 +157,15 @@ export function transformTemplate<
 
     return {
         templateStrings: newTemplateStrings,
-        valueIndexDeletions: valueDeletions,
+        valuesTransform(values): AllValueTransforms {
+            const insertions: ArrayInsertion<unknown>[] = valueTransforms
+                .map((transformCallback) => transformCallback(values))
+                .flat();
+
+            return {
+                valueIndexDeletions,
+                valueInsertions: insertions,
+            };
+        },
     };
 }

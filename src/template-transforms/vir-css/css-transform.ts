@@ -1,26 +1,27 @@
 import {CSSResultGroup} from 'lit';
-import {ConstructorWithTagName, hasStaticTagName} from '../has-static-tag-name';
-import {CheckAndTransform, makeCheckTransform, transformTemplate} from '../transform-template';
-export type CssTemplateTransform = {
-    templateStrings: TemplateStringsArray;
-    valueIndexDeletions: number[];
-};
+import {MinimalElementDefinition, isMinimalElementDefinition} from '../minimal-element-definition';
+import {TemplateTransform, ValueTransformCallback, transformTemplate} from '../transform-template';
 
-const cssChecksAndTransforms: CheckAndTransform<any>[] = [
-    makeCheckTransform(
-        'tag name css selector interpolation',
-        (lastNewString, currentLitString, currentValue): currentValue is ConstructorWithTagName => {
-            return hasStaticTagName(currentValue);
-        },
-        (input) =>
-            // cast is safe because the check method above verifies that this value is a VirElement
-            input.tagName,
-    ),
-];
+function transformCss(
+    ...[
+        lastNewString,
+        currentLitString,
+        currentValue,
+    ]: Parameters<ValueTransformCallback>
+): ReturnType<ValueTransformCallback> {
+    if (!isMinimalElementDefinition(currentValue)) {
+        return undefined;
+    }
+
+    return {
+        replacement: currentValue.tagName,
+        getExtraValues: undefined,
+    };
+}
 
 export function transformCssTemplate(
     inputTemplateStrings: TemplateStringsArray,
-    inputValues: (number | CSSResultGroup | ConstructorWithTagName)[],
-): CssTemplateTransform {
-    return transformTemplate(inputTemplateStrings, inputValues, cssChecksAndTransforms);
+    inputValues: (number | CSSResultGroup | MinimalElementDefinition)[],
+): TemplateTransform {
+    return transformTemplate(inputTemplateStrings, inputValues, transformCss);
 }

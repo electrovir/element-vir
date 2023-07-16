@@ -1,10 +1,10 @@
-import {NonEmptyString} from '../../augments/type';
 import {
     DefinedTypedEvent,
     DefinedTypedEventNameDefinition,
     defineTypedEvent,
     TypedEvent,
 } from '../../typed-event/typed-event';
+import {NonEmptyString} from '../../util/type';
 
 export type EventsInitMap = Record<string, DefinedTypedEventNameDefinition<any>>;
 

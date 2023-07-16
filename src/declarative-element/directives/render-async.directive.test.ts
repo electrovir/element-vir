@@ -11,7 +11,7 @@ import {
     listen,
     renderAsync,
 } from '../..';
-import {getAssertedDeclarativeElement} from '../../augments/testing.test-helper';
+import {getAssertedDeclarativeElement} from '../../util/testing.test-helper';
 
 describe(asyncProp.name, () => {
     const elementWithAsyncProp = defineElement<{

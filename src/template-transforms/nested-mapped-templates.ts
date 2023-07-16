@@ -1,10 +1,8 @@
-import {typedHasProperties} from '@augment-vir/common';
-import {DeclarativeElementMarkerSymbol} from '../declarative-element-marker-symbol';
+import {isMinimalElementDefinition, isWrappedMinimalDefinition} from './minimal-element-definition';
 import {TemplateTransform} from './transform-template';
 
 type WeakMapElementKey = {
     tagName: string;
-    [DeclarativeElementMarkerSymbol]: true;
 };
 
 type TemplateAndNested = {
@@ -15,16 +13,17 @@ type NestedTemplatesWeakMap = WeakMap<WeakMapElementKey, TemplateAndNested>;
 type TemplatesWeakMap = WeakMap<TemplateStringsArray, TemplateAndNested>;
 
 function extractElementKeys(values: unknown[]): WeakMapElementKey[] {
-    return values.filter((value): value is WeakMapElementKey => {
-        return (
-            typedHasProperties(value, [
-                'tagName',
-                DeclarativeElementMarkerSymbol,
-            ]) &&
-            !!value.tagName &&
-            !!value[DeclarativeElementMarkerSymbol]
-        );
-    });
+    return values
+        .map((value) => {
+            if (isWrappedMinimalDefinition(value)) {
+                return value.definition;
+            }
+
+            return value;
+        })
+        .filter((value): value is WeakMapElementKey => {
+            return isMinimalElementDefinition(value);
+        });
 }
 
 /**

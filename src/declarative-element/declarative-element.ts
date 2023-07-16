@@ -88,6 +88,16 @@ export abstract class DeclarativeElement<
     CssVarKeys extends BaseCssPropertyName<TagName> = any,
     RenderOutputGeneric = any,
 > extends LitElement {
+    public static assign: StaticDeclarativeElementProperties<
+        CustomElementTagName,
+        PropertyInitMapBase,
+        PropertyInitMapBase,
+        EventsInitMap,
+        BaseCssPropertyName<CustomElementTagName>,
+        BaseCssPropertyName<CustomElementTagName>,
+        unknown
+    >['assign'];
+    public static assignedInputs: PropertyInitMapBase | undefined;
     public static readonly tagName: StaticDeclarativeElementProperties<
         CustomElementTagName,
         PropertyInitMapBase,
@@ -230,6 +240,20 @@ export interface StaticDeclarativeElementProperties<
     CssVarKeys extends BaseCssPropertyName<TagName>,
     RenderOutputGeneric,
 > {
+    readonly assign: (
+        inputsObject: Inputs,
+    ) => /** It returns itself */
+    DeclarativeElementDefinition<
+        TagName,
+        Inputs,
+        StateInit,
+        EventsInit,
+        HostClassKeys,
+        CssVarKeys,
+        RenderOutputGeneric
+    >;
+    assignedInputs: Inputs | undefined;
+
     /** Pass through the render callback for direct unit testability */
     readonly renderCallback: RenderCallback<
         TagName,
@@ -240,9 +264,9 @@ export interface StaticDeclarativeElementProperties<
         CssVarKeys,
         RenderOutputGeneric
     >;
-    events: EventDescriptorMap<EventsInit>;
-    stateInitStatic: ElementPropertyDescriptorMap<StateInit>;
-    init: RequiredBy<
+    readonly events: EventDescriptorMap<EventsInit>;
+    readonly stateInitStatic: ElementPropertyDescriptorMap<StateInit>;
+    readonly init: RequiredBy<
         DeclarativeElementInit<
             TagName,
             Inputs,
@@ -254,10 +278,10 @@ export interface StaticDeclarativeElementProperties<
         >,
         'stateInitStatic' | 'events'
     >;
-    inputsType: Readonly<FlattenObservablePropertySetters<Inputs, Inputs>>;
-    stateType: Readonly<FlattenObservablePropertyGetters<StateInit>>;
-    updateStateType: UpdateStateCallback<StateInit>;
-    isStrictInstance: (
+    readonly inputsType: Readonly<FlattenObservablePropertySetters<Inputs, Inputs>>;
+    readonly stateType: Readonly<FlattenObservablePropertyGetters<StateInit>>;
+    readonly updateStateType: UpdateStateCallback<StateInit>;
+    readonly isStrictInstance: (
         element: unknown,
     ) => element is DeclarativeElement<
         TagName,
@@ -268,9 +292,9 @@ export interface StaticDeclarativeElementProperties<
         CssVarKeys,
         RenderOutputGeneric
     >;
-    hostClasses: HostClassNamesMap<string, HostClassKeys>;
-    cssVars: CssVars<TagName, CssVarKeys>;
+    readonly hostClasses: HostClassNamesMap<string, HostClassKeys>;
+    readonly cssVars: CssVars<TagName, CssVarKeys>;
 
-    tagName: string;
-    styles: CSSResult;
+    readonly tagName: string;
+    readonly styles: CSSResult;
 }
