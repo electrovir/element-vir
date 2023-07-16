@@ -1,4 +1,4 @@
-import {assign, defineElementNoInputs, html} from '..';
+import {defineElementNoInputs, html} from '..';
 import {MyWithInputs} from './my-with-inputs.element';
 
 export const MyWithAssignment = defineElementNoInputs({
@@ -6,12 +6,10 @@ export const MyWithAssignment = defineElementNoInputs({
     renderCallback() {
         return html`
             <h1>My App</h1>
-            <${MyWithInputs}
-                ${assign(MyWithInputs, {
-                    email: 'user@example.com',
-                    username: 'user',
-                })}
-            ></${MyWithInputs}>
+            <${MyWithInputs.assign({
+                email: 'user@example.com',
+                username: 'user',
+            })}></${MyWithInputs}>
         `;
     },
 });

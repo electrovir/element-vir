@@ -10,7 +10,6 @@ import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {
     AsyncProp,
     StaticElementPropertyDescriptor,
-    assign,
     asyncProp,
     defineElement,
     defineElementEvent,
@@ -311,12 +310,12 @@ describe(asyncProp.name, () => {
 
         const rendered = await renderFixture(html`
             <div>
-                <${ElementWithAsyncProp}
-                    ${assign(ElementWithAsyncProp, {promiseUpdateTrigger: undefined})}
-                ></${ElementWithAsyncProp}>
-                <${ElementWithAsyncProp}
-                    ${assign(ElementWithAsyncProp, {promiseUpdateTrigger: undefined})}
-                ></${ElementWithAsyncProp}>
+                <${ElementWithAsyncProp.assign({
+                    promiseUpdateTrigger: undefined,
+                })}></${ElementWithAsyncProp}>
+                <${ElementWithAsyncProp.assign({
+                    promiseUpdateTrigger: undefined,
+                })}></${ElementWithAsyncProp}>
             </div>
         `);
 

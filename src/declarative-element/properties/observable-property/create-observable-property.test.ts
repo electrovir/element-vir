@@ -1,6 +1,6 @@
 import {assertTypeOf, typedAssertInstanceOf} from '@augment-vir/browser-testing';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
-import {assign, defineElement, html} from '../../..';
+import {defineElement, html} from '../../..';
 import {createObservableProperty} from './create-observable-property';
 
 describe(createObservableProperty.name, () => {
@@ -39,45 +39,41 @@ describe(createObservableProperty.name, () => {
 
         // for type testing purposes
         html`
-            <${MyElement}
-                ${assign(MyElement, {
-                    simpleInput: inputsObservable,
-                    complexInput: complexInputsObservable,
-                })}
-                ${assign(MyElement, {
-                    simpleInput: inputsObservable,
-                    complexInput: {three: 3},
-                })}
-                ${assign(MyElement, {
+            <${MyElement.assign({
+                simpleInput: inputsObservable,
+                complexInput: complexInputsObservable,
+            })}></${MyElement}>
+            <${MyElement.assign({
+                simpleInput: inputsObservable,
+                complexInput: {three: 3},
+            })}></${MyElement}>
+            <${MyElement.assign({
+                simpleInput: 'four',
+                complexInput: {three: 3},
+                optionalInput: 'hi',
+            })}></${MyElement}>
+            <${MyElement.assign(
+                MyElement,
+                // needs all required properties
+                // @ts-expect-error
+                {
                     simpleInput: 'four',
-                    complexInput: {three: 3},
-                    optionalInput: 'hi',
-                })}
-                ${assign(
-                    MyElement,
-                    // needs all required properties
-                    // @ts-expect-error
-                    {
-                        simpleInput: 'four',
-                    },
-                )}
-                ${assign(MyElement, {
-                    simpleInput: 'four',
-                    // @ts-expect-error
-                    complexInput: {regex: 3},
-                    // @ts-expect-error
-                    anotherThing: 'five',
-                })}
-            ></${MyElement}>
+                },
+            )}></${MyElement}>
+            <${MyElement.assign({
+                simpleInput: 'four',
+                // @ts-expect-error
+                complexInput: {regex: 3},
+                // @ts-expect-error
+                anotherThing: 'five',
+            })}></${MyElement}>
         `;
 
         const fixture = await renderFixture(html`
-            <${MyElement}
-                ${assign(MyElement, {
-                    simpleInput: inputsObservable,
-                    complexInput: complexInputsObservable,
-                })}
-            ></${MyElement}>
+            <${MyElement.assign({
+                simpleInput: inputsObservable,
+                complexInput: complexInputsObservable,
+            })}></${MyElement}>
         `);
 
         const stateSpan = fixture.shadowRoot?.querySelector('.state');
