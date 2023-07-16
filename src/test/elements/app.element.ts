@@ -1,3 +1,4 @@
+import {randomString} from '@augment-vir/browser';
 import {
     assignWithCleanup,
     css,
@@ -58,6 +59,12 @@ export const AppElement = defineElementNoInputs({
 
         .weird-colors {
             ${TestChildElement.cssVars['element-vir-test-child-derp'].name}: yellow;
+        }
+
+        .duplicate-names-test {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
     `,
     stateInitStatic: {
@@ -157,11 +164,18 @@ export const AppElement = defineElementNoInputs({
                 })}
                     class=${TestChildElement.hostClasses['element-vir-test-child-test']}
                 ></${TestChildElement}>
-                ${allTestArrayElements.map((element) => {
-                    return html`
-                        <${element} data-tag-name=${element.tagName}></${element}>
-                    `;
-                })}
+                <section class="duplicate-names-test">
+                    ${allTestArrayElements.map((element) => {
+                        return html`
+                            <${element.assign({value: element.tagName})}
+                                data-tag-name=${element.tagName}
+                            ></${element}>
+                            <${element.assign({value: randomString(4)})}
+                                data-tag-name=${element.tagName}
+                            ></${element}>
+                        `;
+                    })}
+                </section>
             </main>
         `;
     },

@@ -9,7 +9,16 @@ export type ElementDefinitionWithInputsType<
     InputsType extends PropertyInitMapBase = PropertyInitMapBase,
 > = {inputsType: InputsType};
 
-/** Assign an object matching an element's inputs to its inputs. */
+/**
+ * Assign an object matching an element's inputs to its inputs.
+ *
+ * @deprecated Instead of using this directive, assign inputs directly on the element's
+ *   interpolation opening tag interpolation.
+ * @example
+ *     html`<${MyElement} ${assign(MyElement, {value: 1})}>...`
+ *     should be
+ *     html`<${MyElement.assign({value: 1})}>...`
+ */
 export function assign<
     const SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
     const SpecificInput extends {

@@ -1,5 +1,6 @@
 import {RequiredAndNotNullBy, RequiredBy} from '@augment-vir/common';
 import {CSSResult, LitElement} from 'lit';
+import {WrappedMinimalDefinition} from '../template-transforms/minimal-element-definition';
 import {CustomElementTagName, DeclarativeElementInit} from './declarative-element-init';
 import {BaseCssPropertyName} from './properties/css-properties';
 import {CssVars} from './properties/css-vars';
@@ -7,6 +8,7 @@ import {EventDescriptorMap, EventsInitMap} from './properties/element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './properties/element-properties';
 import {HostClassNamesMap} from './properties/host-classes';
 import {
+    AllowObservablePropertySetter,
     FlattenObservablePropertyGetters,
     FlattenObservablePropertySetters,
     ObservablePropertyHandlerMap,
@@ -21,7 +23,13 @@ export type DeclarativeElementHost<
     HostClassKeys extends BaseCssPropertyName<TagName> = any,
     CssVarKeys extends BaseCssPropertyName<TagName> = any,
 > = RequiredAndNotNullBy<
-    DeclarativeElement<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys, any>,
+    Omit<
+        DeclarativeElement<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys, any>,
+        Exclude<
+            keyof StaticDeclarativeElementProperties<any, any, any, any, any, any, any>,
+            keyof HTMLElement
+        >
+    >,
     'shadowRoot'
 >;
 
@@ -240,18 +248,16 @@ export interface StaticDeclarativeElementProperties<
     CssVarKeys extends BaseCssPropertyName<TagName>,
     RenderOutputGeneric,
 > {
-    readonly assign: (
-        inputsObject: Inputs,
-    ) => /** It returns itself */
-    DeclarativeElementDefinition<
-        TagName,
-        Inputs,
-        StateInit,
-        EventsInit,
-        HostClassKeys,
-        CssVarKeys,
-        RenderOutputGeneric
-    >;
+    /** Assign inputs to an element directly on its interpolated tag. */
+    readonly assign: <
+        const SpecificInputs extends {
+            [Prop in keyof Inputs]: unknown;
+        },
+    >(
+        inputsObject: {} extends Required<Inputs>
+            ? never
+            : AllowObservablePropertySetter<Inputs, SpecificInputs>,
+    ) => WrappedMinimalDefinition;
     assignedInputs: Inputs | undefined;
 
     /** Pass through the render callback for direct unit testability */

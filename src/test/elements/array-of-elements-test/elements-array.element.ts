@@ -1,37 +1,37 @@
-import {defineElementNoInputs, html} from '../../..';
+import {defineElement, html} from '../../..';
 
-const ArrayAElement = defineElementNoInputs({
+const ArrayAElement = defineElement<{value: string}>()({
     tagName: 'element-vir-test-a',
-    renderCallback() {
+    renderCallback({inputs}) {
         return html`
-            A
+            A - ${inputs.value}
         `;
     },
 });
 
-const ArrayBElement = defineElementNoInputs({
+const ArrayBElement = defineElement<{value: string}>()({
     tagName: 'element-vir-test-b',
-    renderCallback() {
+    renderCallback({inputs}) {
         return html`
-            B
+            B - ${inputs.value}
         `;
     },
 });
 
-const ArrayCElement = defineElementNoInputs({
+const ArrayCElement = defineElement<{value: string}>()({
     tagName: 'element-vir-test-c',
-    renderCallback() {
+    renderCallback({inputs}) {
         return html`
-            C
+            C - ${inputs.value}
         `;
     },
 });
 
-const ArrayDElement = defineElementNoInputs({
+const ArrayDElement = defineElement<{value: string}>()({
     tagName: 'element-vir-test-d',
-    renderCallback() {
+    renderCallback({inputs}) {
         return html`
-            D
+            D - ${inputs.value}
         `;
     },
 });

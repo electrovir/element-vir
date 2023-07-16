@@ -121,15 +121,15 @@ export function defineElementNoInputs<
         RenderOutput
     >['renderCallback'] = initInput.renderCallback;
 
-    const typedAssignCallback: ThisElementDefinition['assign'] = (inputs) => {
-        const returnValue: WrappedMinimalDefinition = {
+    function typedAssignCallback(...[inputs]: Parameters<ThisElementStaticClass['assign']>) {
+        const wrappedDefinition: WrappedMinimalDefinition = {
             _elementVirIsWrappedDefinition: true,
             definition: anonymousClass,
             inputs,
         };
 
-        return returnValue as any;
-    };
+        return wrappedDefinition;
+    }
 
     const anonymousClass = class extends DeclarativeElement<
         TagName,
@@ -154,8 +154,7 @@ export function defineElementNoInputs<
             return createRenderParams(this, eventsMap);
         }
 
-        public static override assign: ThisElementStaticClass['assign'] =
-            typedAssignCallback as unknown as ThisElementStaticClass['assign'];
+        public static override assign = typedAssignCallback as any;
 
         // this gets set below in Object.defineProperties
         public static override readonly isStrictInstance: any = () => false;
@@ -169,7 +168,7 @@ export function defineElementNoInputs<
             RenderOutput
         >['events'] = eventsMap;
         public static override readonly renderCallback: ThisElementStaticClass['renderCallback'] =
-            typedRenderCallback as ThisElementStaticClass['renderCallback'];
+            typedRenderCallback as DeclarativeElementDefinition['renderCallback'] as ThisElementStaticClass['renderCallback'];
         public static override readonly hostClasses: StaticDeclarativeElementProperties<
             TagName,
             Inputs,
