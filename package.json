@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "14.0.4",
+    "version": "14.1.0",
     "keywords": [
         "custom",
         "web",
@@ -53,7 +53,7 @@
         "@types/chai": "^4.3.5",
         "@types/mocha": "^10.0.1",
         "@web/dev-server-esbuild": "^0.4.1",
-        "@web/test-runner": "^0.16.1",
+        "@web/test-runner": "^0.17.0",
         "@web/test-runner-commands": "^0.8.0",
         "@web/test-runner-playwright": "^0.10.1",
         "@web/test-runner-visual-regression": "^0.8.1",
@@ -64,7 +64,7 @@
         "istanbul-smart-text-reporter": "^1.1.2",
         "markdown-code-example-inserter": "^0.3.1",
         "mocha-spec-reporter-with-file-names": "^0.0.3",
-        "npm-check-updates": "^16.10.15",
+        "npm-check-updates": "^16.10.16",
         "nyc": "^15.1.0",
         "prettier": "^2.8.8",
         "prettier-plugin-interpolated-html-tags": "^0.0.4",
@@ -77,7 +77,7 @@
         "ts-node": "^10.9.1",
         "type-fest": "^4.0.0",
         "typescript": "~5.1.6",
-        "virmator": "^7.1.0",
+        "virmator": "^7.2.1",
         "vite": "^4.4.4",
         "vite-tsconfig-paths": "^4.2.0"
     },
