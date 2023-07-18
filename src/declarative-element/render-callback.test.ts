@@ -50,7 +50,7 @@ describe('RenderParams', () => {
 
                 assertTypeOf<
                     Exclude<Parameters<typeof updateState>[0]['myAsyncProp'], undefined>
-                >().toEqualTypeOf<AsyncPropSetValue<number, MyAsyncPropTriggerType>>();
+                >().toEqualTypeOf<AsyncPropSetValue<number, MyAsyncPropTriggerType, undefined>>();
 
                 updateState({
                     myAsyncProp: {

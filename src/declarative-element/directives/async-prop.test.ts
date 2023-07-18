@@ -41,6 +41,11 @@ describe(asyncProp.name, () => {
                         return Promise.resolve({something: 4});
                     },
                 }),
+                myAsyncPropAgain: asyncProp({
+                    updateCallback(trigger: TriggerType, inputs: {hello: string; goodbye: number}) {
+                        return Promise.resolve({something: 4});
+                    },
+                }),
                 syncProp: {value: 'hi'},
             },
             renderCallback({state, updateState}) {
@@ -55,6 +60,13 @@ describe(asyncProp.name, () => {
                         // @ts-expect-error
                         hello: 'yo',
                     },
+                    myAsyncPropAgain: {
+                        serializableTrigger: bigType,
+                        updaterInputs: {
+                            goodbye: 4,
+                            hello: '',
+                        },
+                    },
                 });
 
                 updateState({
@@ -66,6 +78,21 @@ describe(asyncProp.name, () => {
                     syncProp: {
                         value: 'yo',
                     },
+                    myAsyncPropAgain: {
+                        serializableTrigger: bigType,
+                        updaterInputs: {
+                            goodbye: 4,
+                            hello: '',
+                        },
+                        // @ts-expect-error
+                        newPromise: Promise.resolve({} as any),
+                    },
+                });
+
+                updateState({
+                    myAsyncPropAgain: {
+                        newPromise: Promise.resolve({} as any),
+                    },
                 });
 
                 assertTypeOf(state.myAsyncProp).toEqualTypeOf<AsyncProp<SomethingObject>>();
@@ -76,7 +103,7 @@ describe(asyncProp.name, () => {
         assertTypeOf(elementWithAsyncProp.stateInitStatic.myAsyncProp).toEqualTypeOf<
             StaticElementPropertyDescriptor<
                 string,
-                AsyncObservablePropertyHandlerCreator<SomethingObject, TriggerType>
+                AsyncObservablePropertyHandlerCreator<SomethingObject, TriggerType, undefined>
             >
         >();
 

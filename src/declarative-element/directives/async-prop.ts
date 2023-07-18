@@ -25,7 +25,11 @@ const notSetSymbol = Symbol('not set');
 
 export type AsyncPropTriggerInputBase = object | undefined;
 
-type AllSetValueProperties<ValueGeneric, TriggerInput extends AsyncPropTriggerInputBase> = {
+type AllSetValueProperties<
+    ValueGeneric,
+    TriggerInput extends AsyncPropTriggerInputBase,
+    UpdaterInput,
+> = {
     /** Set a new value directly without using any promises. */
     resolvedValue: UnPromise<ValueGeneric>;
     /**
@@ -35,38 +39,62 @@ type AllSetValueProperties<ValueGeneric, TriggerInput extends AsyncPropTriggerIn
      * used for equality checking.
      */
     serializableTrigger: TriggerInput;
+    /**
+     * These values are passed to the asyncProp's updateCallback but they will not used to trigger
+     * updates. Meaning, if one of these values changes, the asyncProp will not update. Use
+     * serializableTrigger for that purpose.
+     */
+    updaterInputs: UpdaterInput;
     newPromise: Promise<UnPromise<ValueGeneric>>;
     /** Clear the asyncProp's currently stored value and trigger updateCallback to get called again. */
     forceUpdate: true;
 };
 
-export type AsyncPropSetValue<ValueGeneric, TriggerInput extends AsyncPropTriggerInputBase> =
+export type AsyncPropSetValue<
+    ValueGeneric,
+    TriggerInput extends AsyncPropTriggerInputBase,
+    UpdaterInput,
+> =
     | (undefined extends TriggerInput
-          ? never
-          : PickAndBlockOthers<
-                AllSetValueProperties<ValueGeneric, TriggerInput>,
+          ? undefined extends UpdaterInput
+              ? never
+              : PickAndBlockOthers<
+                    AllSetValueProperties<ValueGeneric, TriggerInput, UpdaterInput>,
+                    'updaterInputs'
+                >
+          : undefined extends UpdaterInput
+          ? PickAndBlockOthers<
+                AllSetValueProperties<ValueGeneric, TriggerInput, UpdaterInput>,
                 'serializableTrigger'
+            >
+          : PickAndBlockOthers<
+                AllSetValueProperties<ValueGeneric, TriggerInput, UpdaterInput>,
+                'serializableTrigger' | 'updaterInputs'
             >)
-    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric, TriggerInput>, 'newPromise'>
-    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric, TriggerInput>, 'forceUpdate'>
-    | PickAndBlockOthers<AllSetValueProperties<ValueGeneric, TriggerInput>, 'resolvedValue'>;
+    | PickAndBlockOthers<
+          AllSetValueProperties<ValueGeneric, TriggerInput, UpdaterInput>,
+          'newPromise'
+      >
+    | PickAndBlockOthers<
+          AllSetValueProperties<ValueGeneric, TriggerInput, UpdaterInput>,
+          'forceUpdate'
+      >
+    | PickAndBlockOthers<
+          AllSetValueProperties<ValueGeneric, TriggerInput, UpdaterInput>,
+          'resolvedValue'
+      >;
 
 export class AsyncObservablePropertyHandler<
     ValueGeneric,
     TriggerInput extends AsyncPropTriggerInputBase,
+    UpdaterInput,
 > implements
         ObservablePropertyHandlerInstance<
-            AsyncPropSetValue<ValueGeneric, TriggerInput>,
+            AsyncPropSetValue<ValueGeneric, TriggerInput, UpdaterInput>,
             AsyncProp<ValueGeneric>
         >
 {
-    private lastTrigger:
-        | Extract<
-              AsyncPropSetValue<ValueGeneric, TriggerInput>,
-              {trigger: TriggerInput}
-          >['serializableTrigger']
-        | typeof notSetSymbol
-        | undefined = notSetSymbol;
+    private lastTrigger: TriggerInput | typeof notSetSymbol = notSetSymbol;
     private resolutionValue: UnPromise<ValueGeneric> | typeof notSetSymbol = notSetSymbol;
     private rejectionError: Error | typeof notSetSymbol = notSetSymbol;
     private listeners = new Set<ObservablePropertyListener<AsyncProp<ValueGeneric>>>();
@@ -77,13 +105,19 @@ export class AsyncObservablePropertyHandler<
 
     [observablePropertyHandlerInstanceMarkerKey] = true as const;
 
-    constructor(initialValue: AsyncPropInit<ValueGeneric, TriggerInput> | typeof notSetSymbol) {
+    constructor(
+        initialValue: AsyncPropInit<ValueGeneric, TriggerInput, UpdaterInput> | typeof notSetSymbol,
+    ) {
         this.resetValue(initialValue);
     }
 
-    private promiseUpdater: AsyncPropUpdateCallback<ValueGeneric, TriggerInput> | undefined;
+    private promiseUpdater:
+        | AsyncPropUpdateCallback<ValueGeneric, TriggerInput, UpdaterInput>
+        | undefined;
 
-    public resetValue(rawValue: AsyncPropInit<ValueGeneric, TriggerInput> | typeof notSetSymbol) {
+    public resetValue(
+        rawValue: AsyncPropInit<ValueGeneric, TriggerInput, UpdaterInput> | typeof notSetSymbol,
+    ) {
         this.resetWaitingForValuePromise();
 
         if (rawValue === notSetSymbol) {
@@ -162,13 +196,16 @@ export class AsyncObservablePropertyHandler<
         this.waitingForValuePromise = createDeferredPromiseWrapper();
     }
 
-    public setValue(setInputs: AsyncPropSetValue<ValueGeneric, TriggerInput>) {
+    public setValue(setInputs: AsyncPropSetValue<ValueGeneric, TriggerInput, UpdaterInput>) {
         if (typedHasProperty(setInputs, 'serializableTrigger')) {
             /**
              * This will expand proxies so that `inputs` or `state` can be used directly as a
              * serializableTrigger without issues.
              */
-            const expandedTrigger = {...setInputs.serializableTrigger};
+            const expandedTrigger: TriggerInput = {
+                ...setInputs.serializableTrigger,
+            } as TriggerInput;
+            const expandedInputs: UpdaterInput = {...setInputs.updaterInputs} as UpdaterInput;
 
             if (
                 this.lastTrigger === notSetSymbol ||
@@ -183,7 +220,7 @@ export class AsyncObservablePropertyHandler<
                     );
                 }
 
-                const newValue = this.promiseUpdater(expandedTrigger);
+                const newValue = this.promiseUpdater(expandedTrigger, expandedInputs);
 
                 this.setPromise(newValue);
                 this.fireListeners();
@@ -264,19 +301,25 @@ export class AsyncObservablePropertyHandler<
 export type AsyncObservablePropertyHandlerCreator<
     ValueGeneric,
     TriggerInput extends AsyncPropTriggerInputBase,
+    UpdaterInput,
 > = ObservablePropertyHandlerCreator<
-    AsyncPropSetValue<ValueGeneric, TriggerInput>,
+    AsyncPropSetValue<ValueGeneric, TriggerInput, UpdaterInput>,
     AsyncProp<ValueGeneric>
 >;
 
 export type AsyncPropUpdateCallback<
     ValueGeneric,
     TriggerInput extends AsyncPropTriggerInputBase,
+    UpdaterInput,
 > = undefined extends TriggerInput
     ? () => Promise<UnPromise<ValueGeneric>>
-    : (triggerInput: TriggerInput) => Promise<UnPromise<ValueGeneric>>;
+    : (triggers: TriggerInput, inputs: UpdaterInput) => Promise<UnPromise<ValueGeneric>>;
 
-export type AsyncPropInit<ValueGeneric, TriggerInput extends AsyncPropTriggerInputBase> =
+export type AsyncPropInit<
+    ValueGeneric,
+    TriggerInput extends AsyncPropTriggerInputBase,
+    UpdaterInput,
+> =
     | {
           /** Starting value */
           defaultValue: Promise<UnPromise<ValueGeneric>> | UnPromise<ValueGeneric> | ValueGeneric;
@@ -290,12 +333,16 @@ export type AsyncPropInit<ValueGeneric, TriggerInput extends AsyncPropTriggerInp
            * Set this to undefined to disabled automatic updating. Meaning, updateCallback will only
            * be called the first time.
            */
-          updateCallback: AsyncPropUpdateCallback<ValueGeneric, TriggerInput>;
+          updateCallback: AsyncPropUpdateCallback<ValueGeneric, TriggerInput, UpdaterInput>;
       };
 
-export function asyncProp<ValueGeneric, TriggerInput extends AsyncPropTriggerInputBase = undefined>(
-    ...args: [AsyncPropInit<ValueGeneric, TriggerInput>] | []
-): AsyncObservablePropertyHandlerCreator<ValueGeneric, TriggerInput> {
+export function asyncProp<
+    ValueGeneric,
+    TriggerInput extends AsyncPropTriggerInputBase = undefined,
+    UpdaterInput = undefined,
+>(
+    ...args: [AsyncPropInit<ValueGeneric, TriggerInput, UpdaterInput>] | []
+): AsyncObservablePropertyHandlerCreator<ValueGeneric, TriggerInput, UpdaterInput> {
     /**
      * Distinguish between an explicitly passed value of undefined or simply a lack of any arguments
      * at all.
@@ -305,7 +352,9 @@ export function asyncProp<ValueGeneric, TriggerInput extends AsyncPropTriggerInp
     return {
         [observablePropertyHandlerCreatorMarkerKey]: true,
         init() {
-            return new AsyncObservablePropertyHandler<ValueGeneric, TriggerInput>(initValue);
+            return new AsyncObservablePropertyHandler<ValueGeneric, TriggerInput, UpdaterInput>(
+                initValue,
+            );
         },
     };
 }
