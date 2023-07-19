@@ -18,6 +18,33 @@ describe(defineElement.name, () => {
             },
         });
     });
+    it('allows partial inputs', () => {
+        const MyElement = defineElement<{
+            maybeInput?: string;
+            maybeUndefined?: string | undefined;
+        }>()({
+            tagName: `some-tag-${randomString()}`,
+            cleanupCallback({host}) {},
+            // render callback must return something
+            // @ts-expect-error
+            renderCallback() {},
+        });
+
+        MyElement.assign({
+            maybeInput: '',
+            maybeUndefined: undefined,
+        });
+
+        MyElement.assign({
+            maybeUndefined: undefined,
+        });
+
+        MyElement.assign({
+            maybeUndefined: '',
+        });
+
+        MyElement.assign({});
+    });
 
     it('blocks render callbacks that are async', () => {
         defineElement<{}>()({

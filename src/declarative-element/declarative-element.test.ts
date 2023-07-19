@@ -13,6 +13,6 @@ describe('StaticDeclarativeElementProperties', () => {
                 any,
                 any
             >['inputsType']
-        >().toEqualTypeOf<Readonly<{hi: number}>>();
+        >().toEqualTypeOf<{hi: number}>();
     });
 });

@@ -10,7 +10,6 @@ import {HostClassNamesMap} from './properties/host-classes';
 import {
     AllowObservablePropertySetter,
     FlattenObservablePropertyGetters,
-    FlattenObservablePropertySetters,
     ObservablePropertyHandlerMap,
 } from './properties/observable-property/observable-property-handler';
 import {RenderCallback, RenderParams, UpdateStateCallback} from './render-callback';
@@ -284,7 +283,7 @@ export interface StaticDeclarativeElementProperties<
         >,
         'stateInitStatic' | 'events'
     >;
-    readonly inputsType: Readonly<FlattenObservablePropertySetters<Inputs, Inputs>>;
+    readonly inputsType: Inputs;
     readonly stateType: Readonly<FlattenObservablePropertyGetters<StateInit>>;
     readonly updateStateType: UpdateStateCallback<StateInit>;
     readonly isStrictInstance: (
