@@ -1,3 +1,4 @@
+import {randomBoolean} from '@augment-vir/browser';
 import {assertTypeOf, typedAssertInstanceOf} from '@augment-vir/browser-testing';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {defineElement, html} from '../../..';
@@ -10,8 +11,8 @@ describe(createObservableProperty.name, () => {
         const stateObservable = createObservableProperty({stuff: 2});
 
         const MyElement = defineElement<{
-            simpleInput: string;
-            complexInput: {three: number};
+            simpleInput: typeof inputsObservable;
+            complexInput: typeof complexInputsObservable;
             optionalInput?: string;
         }>()({
             tagName: 'my-element-for-observable-property-test',
@@ -27,15 +28,18 @@ describe(createObservableProperty.name, () => {
 
                 updateState({complexState: {stuff: 5}});
 
+                assertTypeOf(inputs.complexInput).toEqualTypeOf(complexInputsObservable);
                 assertTypeOf(state.simpleState).toEqualTypeOf<{stuff: number}>();
                 assertTypeOf(state.stateWithUnion).toEqualTypeOf<{stuff: number} | undefined>();
 
                 return html`
                     <span class="state">${state.simpleState}</span>
-                    <span class="inputs">${inputs.simpleInput}</span>
+                    <span class="inputs">${inputs.simpleInput.getValue()}</span>
                 `;
             },
         });
+
+        const myRandomBoolean = randomBoolean();
 
         // for type testing purposes
         html`
@@ -45,11 +49,7 @@ describe(createObservableProperty.name, () => {
             })}></${MyElement}>
             <${MyElement.assign({
                 simpleInput: inputsObservable,
-                complexInput: {three: 3},
-            })}></${MyElement}>
-            <${MyElement.assign({
-                simpleInput: 'four',
-                complexInput: {three: 3},
+                complexInput: complexInputsObservable,
                 optionalInput: 'hi',
             })}></${MyElement}>
             <${MyElement.assign(
@@ -61,12 +61,24 @@ describe(createObservableProperty.name, () => {
                 },
             )}></${MyElement}>
             <${MyElement.assign({
-                simpleInput: 'four',
+                simpleInput: inputsObservable,
                 // @ts-expect-error
                 complexInput: {regex: 3},
                 // @ts-expect-error
                 anotherThing: 'five',
             })}></${MyElement}>
+            <${MyElement.assign(
+                myRandomBoolean
+                    ? {
+                          simpleInput: inputsObservable,
+                          complexInput: complexInputsObservable,
+                      }
+                    : {
+                          simpleInput: inputsObservable,
+                          complexInput: complexInputsObservable,
+                          optionalInput: 'hi',
+                      },
+            )}></${MyElement}>
         `;
 
         const fixture = await renderFixture(html`
@@ -75,6 +87,10 @@ describe(createObservableProperty.name, () => {
                 complexInput: complexInputsObservable,
             })}></${MyElement}>
         `);
+
+        typedAssertInstanceOf(fixture, MyElement);
+
+        assertTypeOf(fixture.instanceInputs.complexInput).toEqualTypeOf(complexInputsObservable);
 
         const stateSpan = fixture.shadowRoot?.querySelector('.state');
         const inputsSpan = fixture.shadowRoot?.querySelector('.inputs');

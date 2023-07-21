@@ -43,7 +43,7 @@ export type DeclarativeElementInit<
     hostClasses?: HostClassesInitMap<
         TagName,
         HostClassKeys,
-        FlattenObservablePropertyGetters<Inputs>,
+        Inputs,
         FlattenObservablePropertyGetters<StateInit>
     >;
     /**

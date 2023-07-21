@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "14.2.2",
+    "version": "15.0.0",
     "keywords": [
         "custom",
         "web",
@@ -41,7 +41,6 @@
     "dependencies": {
         "@augment-vir/browser": "^15.4.1",
         "@augment-vir/common": "^15.4.1",
-        "element-vir": "^14.2.1",
         "lit": "2.7.6",
         "lit-css-vars": "^2.0.3"
     },
@@ -78,7 +77,7 @@
         "type-fest": "^4.0.0",
         "typescript": "~5.1.6",
         "virmator": "^7.2.5",
-        "vite": "^4.4.5",
+        "vite": "^4.4.6",
         "vite-tsconfig-paths": "^4.2.0"
     },
     "overrides": {

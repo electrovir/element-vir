@@ -28,6 +28,7 @@ function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase
 export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyInitMapBase>(
     element: DeclarativeElement,
     verifyExists: boolean,
+    unwrapObservables: boolean,
 ): PropertyInitGeneric {
     /**
      * Lit element updates state and inputs by setting them directly on the element, so we must do
@@ -72,12 +73,12 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
                 elementAsProps[propertyKey] = value;
             }
 
-            if (isObservablePropertyHandlerCreator(newValue)) {
+            if (unwrapObservables && isObservablePropertyHandlerCreator(newValue)) {
                 newValue = newValue.init();
             }
 
             /** If we're using an existing observable property */
-            if (isObservablePropertyHandlerInstance(newValue)) {
+            if (unwrapObservables && isObservablePropertyHandlerInstance(newValue)) {
                 if (
                     existingObservablePropertyHandler &&
                     newValue !== existingObservablePropertyHandler
@@ -95,7 +96,7 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
 
                 element.observablePropertyHandlerMap[propertyKey] = newValue;
             } else {
-                if (existingObservablePropertyHandler) {
+                if (unwrapObservables && existingObservablePropertyHandler) {
                     existingObservablePropertyHandler.setValue(newValue);
                 } else {
                     setValueOnElement(newValue);

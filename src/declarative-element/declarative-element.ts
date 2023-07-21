@@ -1,6 +1,6 @@
 import {RequiredAndNotNullBy, RequiredBy} from '@augment-vir/common';
-import {AllowObservablePropertySetter} from 'element-vir';
 import {CSSResult, LitElement} from 'lit';
+import {Exact} from 'type-fest';
 import {WrappedMinimalDefinition} from '../template-transforms/minimal-element-definition';
 import {CustomElementTagName, DeclarativeElementInit} from './declarative-element-init';
 import {BaseCssPropertyName} from './properties/css-properties';
@@ -221,7 +221,7 @@ export abstract class DeclarativeElement<
     public abstract override render(): unknown;
     public abstract readonly instanceState: FlattenObservablePropertyGetters<StateInit>;
     public abstract readonly observablePropertyHandlerMap: ObservablePropertyHandlerMap<StateInit>;
-    public abstract readonly instanceInputs: FlattenObservablePropertyGetters<Inputs>;
+    public abstract readonly instanceInputs: Inputs;
     public abstract assignInputs(
         inputs: {} extends Required<Inputs> ? never : Partial<Inputs>,
     ): void;
@@ -248,9 +248,7 @@ export interface StaticDeclarativeElementProperties<
     RenderOutputGeneric,
 > {
     /** Assign inputs to an element directly on its interpolated tag. */
-    readonly assign: <
-        const SpecificInputs extends AllowObservablePropertySetter<Inputs, SpecificInputs>,
-    >(
+    readonly assign: <SpecificInputs extends Exact<Inputs, SpecificInputs>>(
         inputsObject: {} extends Required<Inputs> ? never : SpecificInputs,
     ) => WrappedMinimalDefinition;
     assignedInputs: Inputs | undefined;

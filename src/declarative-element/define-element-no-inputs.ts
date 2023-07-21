@@ -314,15 +314,13 @@ export function defineElementNoInputs<
             {};
 
         public readonly instanceInputs: ThisElementInstance['instanceInputs'] =
-            createElementUpdaterProxy<Readonly<FlattenObservablePropertyGetters<Inputs>>>(
-                this,
-                false,
-            );
+            createElementUpdaterProxy<Readonly<Inputs>>(this, false, false);
 
         public readonly instanceState: ThisElementInstance['instanceState'] =
             createElementUpdaterProxy<FlattenObservablePropertyGetters<StateInit>>(
                 this,
                 !initInput.options?.allowPolymorphicState,
+                true,
             );
 
         constructor() {

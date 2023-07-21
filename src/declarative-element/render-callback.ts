@@ -63,7 +63,7 @@ export type RenderParams<
               >
             | Event,
     ) => boolean;
-    inputs: Readonly<FlattenObservablePropertyGetters<Inputs>>;
+    inputs: Readonly<Inputs>;
 };
 
 export function createRenderParams<

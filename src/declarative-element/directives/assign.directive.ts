@@ -2,7 +2,6 @@ import {noChange} from 'lit';
 import {directive, Directive, DirectiveResult, PartInfo} from 'lit/directive.js';
 import {assignInputs} from '../properties/assign-inputs';
 import {PropertyInitMapBase} from '../properties/element-properties';
-import {AllowObservablePropertySetter} from '../properties/observable-property/observable-property-handler';
 import {extractElement} from './directive-helpers';
 
 export type ElementDefinitionWithInputsType<
@@ -19,16 +18,11 @@ export type ElementDefinitionWithInputsType<
  *     should be
  *     html`<${MyElement.assign({value: 1})}>...`
  */
-export function assign<
-    const SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
-    const SpecificInput extends {
-        [Prop in keyof SpecificDeclarativeElement['inputsType']]: unknown;
-    },
->(
+export function assign<const SpecificDeclarativeElement extends ElementDefinitionWithInputsType>(
     declarativeElement: SpecificDeclarativeElement,
     inputsObject: {} extends Required<SpecificDeclarativeElement['inputsType']>
         ? never
-        : AllowObservablePropertySetter<SpecificDeclarativeElement['inputsType'], SpecificInput>,
+        : SpecificDeclarativeElement['inputsType'],
 ): DirectiveResult;
 /**
  * Assign an object matching an element's inputs to its inputs.
@@ -42,9 +36,7 @@ export function assign<
  */
 export function assign<
     const SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
-    const SpecificInput extends {
-        [Prop in keyof SpecificDeclarativeElement['inputsType']]: unknown;
-    },
+    const SpecificInput extends SpecificDeclarativeElement['inputsType'],
 >(inputsObject: SpecificInput extends typeof HTMLElement ? never : SpecificInput): DirectiveResult;
 /**
  * Assign an object matching an element's inputs to its inputs.
@@ -56,16 +48,11 @@ export function assign<
  *     should be
  *     html`<${MyElement.assign({value: 1})}>...`
  */
-export function assign<
-    const SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
-    const SpecificInput extends {
-        [Prop in keyof SpecificDeclarativeElement['inputsType']]: unknown;
-    },
->(
+export function assign<const SpecificDeclarativeElement extends ElementDefinitionWithInputsType>(
     declarativeElementOrInputs: SpecificDeclarativeElement,
     inputsObject?: {} extends Required<SpecificDeclarativeElement['inputsType']>
         ? never
-        : AllowObservablePropertySetter<SpecificDeclarativeElement['inputsType'], SpecificInput>,
+        : SpecificDeclarativeElement['inputsType'],
 ): DirectiveResult {
     /**
      * The directive generics (in listenDirective) are not strong enough to maintain their values.
