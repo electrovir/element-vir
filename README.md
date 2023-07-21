@@ -637,7 +637,7 @@ export const MyWithRenderIf = defineElement<{shouldRender: boolean}>()({
 
 ### `asyncProp`
 
-Use `renderAsyncProp` or `isRenderReady` in conjunction with `asyncProp` to seamlessly render and update element state based on async values:
+Use `renderAsync` or `isRenderReady` in conjunction with `asyncProp` to seamlessly render and update element state based on async values:
 
 <!-- example-link: src/readme-examples/my-with-async-prop.element.ts -->
 

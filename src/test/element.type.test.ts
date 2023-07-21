@@ -12,6 +12,7 @@ import {
     EventObjectEventDetailExtractor,
     html,
     listen,
+    ObservablePropertyHandlerInstance,
     TypedEvent,
 } from '..';
 import {DeclarativeElementDefinition} from '../declarative-element/declarative-element';
@@ -104,6 +105,7 @@ type AppElementProps = {
     width: number;
     showChild: boolean;
     derp: Record<string, string>;
+    myObservable: ObservablePropertyHandlerInstance<number, number>;
 };
 
 const stateInitStatic: ReadonlyArray<keyof AppElementProps> = getObjectTypedKeys(

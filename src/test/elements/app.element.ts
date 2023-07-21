@@ -16,10 +16,6 @@ import {TestChildElement} from './child.element';
 
 requireAllCustomElementsToBeDeclarativeElements();
 
-const myObservable = createObservableProperty(5);
-
-console.log({myObservable});
-
 export const AppElement = defineElementNoInputs({
     tagName: 'element-vir-test-app',
     styles: css`
@@ -74,6 +70,7 @@ export const AppElement = defineElementNoInputs({
         width: -1,
         showChild: true,
         derp: {hi: 'yo'} as Record<string, string>,
+        myObservable: createObservableProperty(5),
     },
     renderCallback({state, updateState}) {
         // log here to make sure it's not rendering too often
@@ -101,7 +98,7 @@ export const AppElement = defineElementNoInputs({
                 <${TestChildElement.assign({
                     displayNumber: state.funnyNumber,
                     width: state.width,
-                    myProp: myObservable,
+                    myProp: state.myObservable,
                 })}
                     ${listen(TestChildElement.events.speak, (event) => {
                         updateState({

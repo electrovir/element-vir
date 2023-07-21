@@ -1,6 +1,5 @@
-import {baseViteConfig} from 'virmator/dist/compiled-base-configs/base-vite';
-import {defineConfig} from 'vite';
+import {defineConfig} from 'virmator/dist/compiled-base-configs/base-vite';
 
-export default defineConfig({
-    ...baseViteConfig,
+export default defineConfig({forGitHubPages: true}, (baseConfig) => {
+    return baseConfig;
 });

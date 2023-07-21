@@ -1,7 +1,8 @@
 import {noChange} from 'lit';
 import {AsyncDirective} from 'lit/async-directive.js';
 import {directive, PartInfo} from 'lit/directive.js';
-import {assignInputsObject, ElementDefinitionWithInputsType} from './assign.directive';
+import {assignInputs} from '../properties/assign-inputs';
+import {ElementDefinitionWithInputsType} from './assign.directive';
 import {extractElement} from './directive-helpers';
 
 export type CleanupCallback<T> = (oldValue: T) => void;
@@ -61,7 +62,7 @@ class AssignWithCleanupDirectiveClass extends AsyncDirective {
         if (this.hasBeenAssigned) {
             cleanupCallback(this.lastValue);
         }
-        assignInputsObject(elementDefinition, this.element, inputsObject);
+        assignInputs(this.element, inputsObject);
         this.hasBeenAssigned = true;
         this.lastValue = inputsObject;
         this.lastCallback = cleanupCallback;

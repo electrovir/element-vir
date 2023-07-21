@@ -30,12 +30,32 @@ export function assign<
         ? never
         : AllowObservablePropertySetter<SpecificDeclarativeElement['inputsType'], SpecificInput>,
 ): DirectiveResult;
+/**
+ * Assign an object matching an element's inputs to its inputs.
+ *
+ * @deprecated Instead of using this directive, assign inputs directly on the element's
+ *   interpolation opening tag interpolation.
+ * @example
+ *     html`<${MyElement} ${assign(MyElement, {value: 1})}>...`
+ *     should be
+ *     html`<${MyElement.assign({value: 1})}>...`
+ */
 export function assign<
     const SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
     const SpecificInput extends {
         [Prop in keyof SpecificDeclarativeElement['inputsType']]: unknown;
     },
 >(inputsObject: SpecificInput extends typeof HTMLElement ? never : SpecificInput): DirectiveResult;
+/**
+ * Assign an object matching an element's inputs to its inputs.
+ *
+ * @deprecated Instead of using this directive, assign inputs directly on the element's
+ *   interpolation opening tag interpolation.
+ * @example
+ *     html`<${MyElement} ${assign(MyElement, {value: 1})}>...`
+ *     should be
+ *     html`<${MyElement.assign({value: 1})}>...`
+ */
 export function assign<
     const SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
     const SpecificInput extends {
@@ -75,18 +95,8 @@ const assignDirective = directive(
             elementDefinition: ElementDefinitionWithInputsType | undefined,
             inputsObject: Record<PropertyKey, unknown>,
         ) {
-            assignInputsObject(elementDefinition, this.element, inputsObject);
+            assignInputs(this.element, inputsObject);
             return noChange;
         }
     },
 );
-
-export function assignInputsObject<
-    DeclarativeElementDefinitionGeneric extends ElementDefinitionWithInputsType,
->(
-    expectedElementConstructor: DeclarativeElementDefinitionGeneric | undefined,
-    element: Element,
-    assignmentObject: DeclarativeElementDefinitionGeneric['inputsType'],
-) {
-    assignInputs(element, assignmentObject);
-}

@@ -1,4 +1,4 @@
-import {randomString} from '@augment-vir/browser';
+import {randomBoolean, randomString} from '@augment-vir/browser';
 import {defineElement} from './define-element';
 
 describe(defineElement.name, () => {
@@ -39,9 +39,25 @@ describe(defineElement.name, () => {
             maybeUndefined: undefined,
         });
 
+        type MyType = {thing: string} | {derp: number};
+
+        type Mapped<T> = T extends any ? {[Prop in keyof T]: {value: T[Prop]}} : never;
+
+        const derp: Mapped<MyType> = {derp: {value: 5}};
+
         MyElement.assign({
             maybeUndefined: '',
         });
+        const myThing = randomBoolean();
+        MyElement.assign(
+            myThing
+                ? {
+                      maybeUndefined: '',
+                  }
+                : {
+                      maybeInput: 'hi',
+                  },
+        );
 
         MyElement.assign({});
     });
