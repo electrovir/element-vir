@@ -1,6 +1,5 @@
 import {RequiredAndNotNullBy, RequiredBy} from '@augment-vir/common';
 import {CSSResult, LitElement} from 'lit';
-import {Exact} from 'type-fest';
 import {WrappedMinimalDefinition} from '../template-transforms/minimal-element-definition';
 import {CustomElementTagName, DeclarativeElementInit} from './declarative-element-init';
 import {BaseCssPropertyName} from './properties/css-properties';
@@ -248,8 +247,8 @@ export interface StaticDeclarativeElementProperties<
     RenderOutputGeneric,
 > {
     /** Assign inputs to an element directly on its interpolated tag. */
-    readonly assign: <SpecificInputs extends Exact<Inputs, SpecificInputs>>(
-        inputsObject: {} extends Required<Inputs> ? never : SpecificInputs,
+    readonly assign: (
+        inputsObject: {} extends Required<Inputs> ? never : Inputs,
     ) => WrappedMinimalDefinition;
     assignedInputs: Inputs | undefined;
 

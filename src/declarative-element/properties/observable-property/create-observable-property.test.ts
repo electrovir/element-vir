@@ -50,6 +50,8 @@ describe(createObservableProperty.name, () => {
             <${MyElement.assign({
                 simpleInput: inputsObservable,
                 complexInput: complexInputsObservable,
+                // @ts-expect-error
+                anotherThing: 'five',
                 optionalInput: 'hi',
             })}></${MyElement}>
             <${MyElement.assign(
@@ -64,8 +66,6 @@ describe(createObservableProperty.name, () => {
                 simpleInput: inputsObservable,
                 // @ts-expect-error
                 complexInput: {regex: 3},
-                // @ts-expect-error
-                anotherThing: 'five',
             })}></${MyElement}>
             <${MyElement.assign(
                 myRandomBoolean
