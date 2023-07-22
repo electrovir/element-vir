@@ -32,3 +32,4 @@ export {requireAllCustomElementsToBeDeclarativeElements} from './require-declara
 export * from './template-transforms/vir-css/vir-css';
 export * from './template-transforms/vir-html/vir-html';
 export * from './typed-event/typed-event';
+export * from './util/lit-template';
