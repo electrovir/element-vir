@@ -1,10 +1,11 @@
 import {property} from 'lit/decorators.js';
 import {DeclarativeElement} from '../declarative-element';
 import {PropertyInitMapBase} from './element-properties';
+import {isElementVirStateSetup} from './element-vir-state-setup';
 import {
-    isObservablePropertyHandlerCreator,
-    isObservablePropertyHandlerInstance,
-} from './observable-property/observable-property-handler';
+    ObservablePropertyListener,
+    isObservableProperty,
+} from './observable-property/observable-property';
 
 function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase>(
     propKey: any,
@@ -28,7 +29,6 @@ function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase
 export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyInitMapBase>(
     element: DeclarativeElement,
     verifyExists: boolean,
-    unwrapObservables: boolean,
 ): PropertyInitGeneric {
     /**
      * Lit element updates state and inputs by setting them directly on the element, so we must do
@@ -57,11 +57,13 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
 
     const propsProxy = new Proxy({} as Record<PropertyKey, unknown>, {
         get: valueGetter,
-        set: (target, propertyKey: keyof PropertyInitGeneric | symbol, newValue) => {
-            verifyProperty(propertyKey);
+        set: (target, propertyKey: keyof PropertyInitGeneric | symbol, rawNewValue) => {
+            const newValue = isElementVirStateSetup(rawNewValue)
+                ? rawNewValue._elementVirStateSetup()
+                : rawNewValue;
 
-            const existingObservablePropertyHandler =
-                element.observablePropertyHandlerMap[propertyKey];
+            verifyProperty(propertyKey);
+            const oldValue = elementAsProps[propertyKey];
 
             function setValueOnElement(value: typeof newValue) {
                 /**
@@ -73,35 +75,35 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
                 elementAsProps[propertyKey] = value;
             }
 
-            if (unwrapObservables && isObservablePropertyHandlerCreator(newValue)) {
-                newValue = newValue.init();
+            const existingPropertyListener: ObservablePropertyListener<any> | undefined =
+                element.observablePropertyListenerMap[propertyKey];
+
+            if (
+                oldValue !== newValue &&
+                isObservableProperty(oldValue) &&
+                existingPropertyListener?.length
+            ) {
+                /** Stop listening to the old value now that we have a new value */
+                oldValue.removeListener(existingPropertyListener);
             }
 
-            /** If we're using an existing observable property */
-            if (unwrapObservables && isObservablePropertyHandlerInstance(newValue)) {
-                if (
-                    existingObservablePropertyHandler &&
-                    newValue !== existingObservablePropertyHandler
-                ) {
-                    newValue.addMultipleListeners(
-                        existingObservablePropertyHandler.getAllListeners(),
-                    );
-                    /** Remove listeners from old property handlers so they can be garbage collected. */
-                    existingObservablePropertyHandler.removeAllListeners();
+            if (isObservableProperty(newValue)) {
+                /** If we're using an existing observable property */
+                if (existingPropertyListener) {
+                    newValue.addListener(existingPropertyListener);
                 } else {
-                    newValue.addListener(true, (newObservableValue) => {
-                        setValueOnElement(newObservableValue);
-                    });
+                    function newListener() {
+                        element.requestUpdate();
+                    }
+                    element.observablePropertyListenerMap[propertyKey] = newListener;
+                    newValue.addListener(newListener);
                 }
-
-                element.observablePropertyHandlerMap[propertyKey] = newValue;
-            } else {
-                if (unwrapObservables && existingObservablePropertyHandler) {
-                    existingObservablePropertyHandler.setValue(newValue);
-                } else {
-                    setValueOnElement(newValue);
-                }
+            } else if (isObservableProperty(oldValue)) {
+                /** Clear out old listener that is no longer used. */
+                element.observablePropertyListenerMap[propertyKey] = undefined;
             }
+
+            setValueOnElement(newValue);
 
             return true;
         },

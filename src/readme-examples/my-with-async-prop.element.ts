@@ -27,15 +27,11 @@ export const MyWithAsyncProp = defineElement<{endpoint: string}>()({
     },
     renderCallback({inputs, state, updateState}) {
         /**
-         * This creates a promise which automatically updates the state.loadsLater prop once the
-         * promise resolves. It only creates a new promise if the "trigger" value changes.
+         * This causes the a promise which automatically updates the state.data prop once the
+         * promise resolves. It only creates a new promise if the first input, the trigger, value
+         * changes from previous calls.
          */
-        updateState({
-            data: {
-                serializableTrigger: inputs,
-            },
-        });
-
+        state.data.updateTrigger(inputs);
         return html`
             Here's the data:
             <br />
@@ -47,12 +43,8 @@ export const MyWithAsyncProp = defineElement<{endpoint: string}>()({
             <br />
             <button
                 ${listen('click', () => {
-                    updateState({
-                        data: {
-                            /** You can force asyncProp to update by passing in forceUpdate: true. */
-                            forceUpdate: true,
-                        },
-                    });
+                    /** You can force asyncProp to update by calling forceUpdate. */
+                    state.data.forceUpdate(inputs);
                 })}
             >
                 Refresh

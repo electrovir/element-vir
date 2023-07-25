@@ -10,9 +10,9 @@ import {
 } from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
 import {
-    FlattenObservablePropertyGetters,
-    FlattenObservablePropertySetters,
-} from './properties/observable-property/observable-property-handler';
+    AllowElementVirStateSetup,
+    FlattenElementVirStateSetup,
+} from './properties/element-vir-state-setup';
 
 export type RenderCallback<
     TagName extends CustomElementTagName = any,
@@ -38,9 +38,9 @@ export type InitCallback<
 ) => void;
 
 export type UpdateStateCallback<StateInit extends PropertyInitMapBase> = <
-    const SpecificInput extends Partial<Record<keyof StateInit, unknown>>,
+    const SpecificState extends Partial<Record<keyof StateInit, unknown>>,
 >(
-    newState: Partial<FlattenObservablePropertySetters<StateInit, SpecificInput>>,
+    newState: Partial<AllowElementVirStateSetup<StateInit, SpecificState>>,
 ) => void;
 
 export type RenderParams<
@@ -51,7 +51,7 @@ export type RenderParams<
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
 > = {
-    state: Readonly<FlattenObservablePropertyGetters<StateInit>>;
+    state: Readonly<FlattenElementVirStateSetup<StateInit>>;
     updateState: UpdateStateCallback<StateInit>;
     events: EventDescriptorMap<EventsInit>;
     host: DeclarativeElementHost<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>;
@@ -90,7 +90,7 @@ export function createRenderParams<
         getObjectTypedKeys(newStatePartial).forEach((stateKey) => {
             const newValue = newStatePartial[
                 stateKey
-            ] as FlattenObservablePropertyGetters<StateInit>[typeof stateKey];
+            ] as FlattenElementVirStateSetup<StateInit>[typeof stateKey];
 
             element.instanceState[stateKey] = newValue;
         });

@@ -8,7 +8,7 @@ import {
 import {DeferredPromiseWrapper, createDeferredPromiseWrapper, typedMap} from '@augment-vir/common';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {
-    AsyncProp,
+    AsyncPropValue,
     StaticElementPropertyDescriptor,
     asyncProp,
     defineElement,
@@ -20,7 +20,8 @@ import {
     renderAsync,
 } from '../..';
 import {assertRejects, getAssertedDeclarativeElement} from '../../util/testing.test-helper';
-import {AsyncObservablePropertyHandlerCreator} from './async-prop';
+import {ElementVirStateSetup} from '../properties/element-vir-state-setup';
+import {AsyncObservableProperty} from './async-prop';
 
 describe(asyncProp.name, () => {
     it('should have proper types', () => {
@@ -32,6 +33,20 @@ describe(asyncProp.name, () => {
             originalImageSize?: Dimensions | undefined;
         };
         type SomethingObject = {something: number};
+
+        asyncProp({
+            async updateCallback(trigger: {callback: number}) {
+                return 'five';
+            },
+        });
+
+        /** Triggers must be serializable (a function isn't). */
+        // @ts-expect-error
+        asyncProp({
+            async updateCallback(trigger: {callback: () => number}) {
+                return 'five';
+            },
+        });
 
         const elementWithAsyncProp = defineElementNoInputs({
             tagName: `element-with-async-prop-${randomString()}`,
@@ -49,53 +64,44 @@ describe(asyncProp.name, () => {
                 syncProp: {value: 'hi'},
             },
             renderCallback({state, updateState}) {
-                const bigType = {} as TriggerType;
+                updateState({
+                    myAsyncProp: asyncProp({
+                        updateCallback(trigger: TriggerType) {
+                            return Promise.resolve({something: 4});
+                        },
+                    }),
+                });
+                const exampleTrigger = {} as TriggerType;
+
+                state.myAsyncProp.updateTrigger(exampleTrigger);
+                state.myAsyncPropAgain.updateTrigger(exampleTrigger, {goodbye: 4, hello: 'hi'});
 
                 updateState({
-                    myAsyncProp: {
-                        serializableTrigger: bigType,
-                    },
                     syncProp: {
                         value: 'yo',
                         // @ts-expect-error
                         hello: 'yo',
                     },
-                    myAsyncPropAgain: {
-                        serializableTrigger: bigType,
-                        updaterInputs: {
-                            goodbye: 4,
-                            hello: '',
-                        },
-                    },
                 });
 
+                state.myAsyncProp.updateTrigger({
+                    ...exampleTrigger,
+                    // @ts-expect-error
+                    hello: 'yo',
+                });
+                state.myAsyncPropAgain.updateTrigger(exampleTrigger, {goodbye: 4, hello: 'hi'});
+
                 updateState({
-                    myAsyncProp: {
-                        serializableTrigger: bigType,
-                        // @ts-expect-error
-                        hello: 'yo',
-                    },
                     syncProp: {
                         value: 'yo',
                     },
-                    myAsyncPropAgain: {
-                        serializableTrigger: bigType,
-                        updaterInputs: {
-                            goodbye: 4,
-                            hello: '',
-                        },
-                        // @ts-expect-error
-                        newPromise: Promise.resolve({} as any),
-                    },
                 });
 
-                updateState({
-                    myAsyncPropAgain: {
-                        newPromise: Promise.resolve({} as any),
-                    },
-                });
+                state.myAsyncPropAgain.setNewPromise(Promise.resolve({} as any));
 
-                assertTypeOf(state.myAsyncProp).toEqualTypeOf<AsyncProp<SomethingObject>>();
+                assertTypeOf(state.myAsyncProp.value).toEqualTypeOf<
+                    AsyncPropValue<SomethingObject>
+                >();
                 return html``;
             },
         });
@@ -103,17 +109,19 @@ describe(asyncProp.name, () => {
         assertTypeOf(elementWithAsyncProp.stateInitStatic.myAsyncProp).toEqualTypeOf<
             StaticElementPropertyDescriptor<
                 string,
-                AsyncObservablePropertyHandlerCreator<SomethingObject, TriggerType, undefined>
+                ElementVirStateSetup<
+                    AsyncObservableProperty<SomethingObject, TriggerType, undefined>
+                >
             >
         >();
 
-        assertTypeOf<(typeof elementWithAsyncProp)['stateType']['myAsyncProp']>().toEqualTypeOf<
-            AsyncProp<SomethingObject>
-        >();
+        assertTypeOf<
+            (typeof elementWithAsyncProp)['stateType']['myAsyncProp']['value']
+        >().toEqualTypeOf<AsyncPropValue<SomethingObject>>();
 
         assertTypeOf<
-            (typeof elementWithAsyncProp)['instanceType']['instanceState']['myAsyncProp']
-        >().toEqualTypeOf<AsyncProp<SomethingObject>>();
+            (typeof elementWithAsyncProp)['instanceType']['instanceState']['myAsyncProp']['value']
+        >().toEqualTypeOf<AsyncPropValue<SomethingObject>>();
     });
 
     it('updates and resolves async prop createPromise and updateTrigger', async () => {
@@ -138,18 +146,14 @@ describe(asyncProp.name, () => {
                     },
                 }),
             },
-            renderCallback({inputs, state, updateState}) {
-                updateState({
-                    myAsyncProp: {
-                        serializableTrigger: {
-                            newNumber: inputs.promiseUpdateTrigger ?? startingNumber,
-                            circularReference,
-                        },
-                    },
+            renderCallback({inputs, state}) {
+                state.myAsyncProp.updateTrigger({
+                    newNumber: inputs.promiseUpdateTrigger ?? startingNumber,
+                    circularReference,
                 });
 
-                if (isRenderReady(state.myAsyncProp)) {
-                    assertTypeOf(state.myAsyncProp).toEqualTypeOf<number>();
+                if (isRenderReady(state.myAsyncProp.value)) {
+                    assertTypeOf(state.myAsyncProp.value).toEqualTypeOf<number>();
                 }
 
                 renderCount++;
@@ -160,11 +164,7 @@ describe(asyncProp.name, () => {
                         ${listen('click', () => {
                             const newDeferredPromise = createDeferredPromiseWrapper<number>();
 
-                            updateState({
-                                myAsyncProp: {
-                                    newPromise: newDeferredPromise.promise,
-                                },
-                            });
+                            state.myAsyncProp.setNewPromise(newDeferredPromise.promise);
 
                             deferredPromiseWrappers.push(newDeferredPromise);
                         })}
@@ -174,10 +174,9 @@ describe(asyncProp.name, () => {
                     <button
                         id="force-update"
                         ${listen('click', () => {
-                            updateState({
-                                myAsyncProp: {
-                                    forceUpdate: true,
-                                },
+                            state.myAsyncProp.forceUpdate({
+                                newNumber: inputs.promiseUpdateTrigger ?? startingNumber,
+                                circularReference,
                             });
                         })}
                     >
@@ -186,11 +185,7 @@ describe(asyncProp.name, () => {
                     <button
                         id="assign-resolved-value"
                         ${listen('click', () => {
-                            updateState({
-                                myAsyncProp: {
-                                    resolvedValue: 1 + Math.random(),
-                                },
-                            });
+                            state.myAsyncProp.setResolvedValue(1 + Math.random());
                         })}
                     >
                         Assign Resolved Value
@@ -216,7 +211,7 @@ describe(asyncProp.name, () => {
         // initial render
         typedAssertNotNullish(deferredPromiseWrappers[0]);
         assert.lengthOf(deferredPromiseWrappers, 1);
-        assert.instanceOf(instance.instanceState.myAsyncProp, Promise);
+        assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
         assert.strictEqual(renderCount, 1);
 
         // assign the same number to the input; the element should not re-render
@@ -226,7 +221,7 @@ describe(asyncProp.name, () => {
         await waitUntil(() => renderCount === 2, 'Render count failed to reach 2');
 
         assert.lengthOf(deferredPromiseWrappers, 1);
-        assert.instanceOf(instance.instanceState.myAsyncProp, Promise);
+        assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
 
         // assign a new number; the element should re-render
         instance.assignInputs({
@@ -236,7 +231,7 @@ describe(asyncProp.name, () => {
 
         assert.lengthOf(deferredPromiseWrappers, 2);
         typedAssertNotNullish(deferredPromiseWrappers[1]);
-        assert.instanceOf(instance.instanceState.myAsyncProp, Promise);
+        assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
 
         // resolve the promise; the element should re-render and the state should update
         const resolutionValue = 3;
@@ -245,7 +240,7 @@ describe(asyncProp.name, () => {
         await waitUntil(() => renderCount === 4, 'Render count failed to reach 4');
 
         assert.lengthOf(deferredPromiseWrappers, 2);
-        assert.strictEqual(instance.instanceState.myAsyncProp, resolutionValue);
+        assert.strictEqual(instance.instanceState.myAsyncProp.value, resolutionValue);
 
         // assign a new input; element should re-render and create a new promise
         instance.assignInputs({
@@ -255,7 +250,7 @@ describe(asyncProp.name, () => {
 
         assert.lengthOf(deferredPromiseWrappers, 3);
         typedAssertNotNullish(deferredPromiseWrappers[2]);
-        assert.instanceOf(instance.instanceState.myAsyncProp, Promise);
+        assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
 
         // reject the error; element should re-render and update state
         const rejectionError = new Error('fake error');
@@ -264,7 +259,7 @@ describe(asyncProp.name, () => {
         await waitUntil(() => renderCount === 6, 'Render count failed to reach 6');
 
         assert.lengthOf(deferredPromiseWrappers, 3);
-        assert.strictEqual(instance.instanceState.myAsyncProp, rejectionError);
+        assert.strictEqual(instance.instanceState.myAsyncProp.value, rejectionError);
 
         // force an update; element should re-render and update state
         await clickElement(forceUpdateButton);
@@ -273,27 +268,27 @@ describe(asyncProp.name, () => {
 
         assert.lengthOf(deferredPromiseWrappers, 4);
         typedAssertNotNullish(deferredPromiseWrappers[3]);
-        assert.instanceOf(instance.instanceState.myAsyncProp, Promise);
+        assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
 
         // assign a new promise; element should not re-render (because the last promise never finished settling) and update state
         await clickElement(newPromiseButton);
 
         assert.lengthOf(deferredPromiseWrappers, 5);
         typedAssertNotNullish(deferredPromiseWrappers[4]);
-        assert.instanceOf(instance.instanceState.myAsyncProp, Promise);
+        assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
 
         // it shouldn't render after resolution of a previous promise
         deferredPromiseWrappers[3].resolve(5);
 
         await assertRejects(() => waitUntil(() => renderCount === 8));
-        assert.instanceOf(instance.instanceState.myAsyncProp, Promise);
+        assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
 
         // should render after resolving the current promise
         const finalResolutionValue = 6;
         deferredPromiseWrappers[4].resolve(finalResolutionValue);
 
         await waitUntil(() => renderCount === 8);
-        assert.strictEqual(instance.instanceState.myAsyncProp, finalResolutionValue);
+        assert.strictEqual(instance.instanceState.myAsyncProp.value, finalResolutionValue);
 
         // assign an already resolved value; element should update once and immediately use the resolved value
         await clickElement(assignResolvedButton);
@@ -303,7 +298,7 @@ describe(asyncProp.name, () => {
             5,
             'no new deferred promises should have been created',
         );
-        assert.typeOf(instance.instanceState.myAsyncProp, 'number');
+        assert.typeOf(instance.instanceState.myAsyncProp.value, 'number');
     });
 
     it('does not clash with other instances', async () => {
@@ -318,13 +313,9 @@ describe(asyncProp.name, () => {
                     },
                 }),
             },
-            renderCallback({inputs, state, updateState}) {
-                updateState({
-                    myRandomNumber: {
-                        serializableTrigger: {
-                            newNumber: inputs.promiseUpdateTrigger,
-                        },
-                    },
+            renderCallback({inputs, state}) {
+                state.myRandomNumber.updateTrigger({
+                    newNumber: inputs.promiseUpdateTrigger,
                 });
 
                 return html`
@@ -400,9 +391,9 @@ describe(asyncProp.name, () => {
             events: {
                 wasRendered: defineElementEvent<void>(),
             },
-            renderCallback({dispatch, events, state, updateState}) {
-                if (isRenderReady(state.myAsyncProp)) {
-                    assertTypeOf(state.myAsyncProp).toEqualTypeOf<number | undefined>();
+            renderCallback({dispatch, events, state}) {
+                if (isRenderReady(state.myAsyncProp.value)) {
+                    assertTypeOf(state.myAsyncProp.value).toEqualTypeOf<number | undefined>();
                 }
 
                 dispatch(new events.wasRendered());
@@ -415,11 +406,7 @@ describe(asyncProp.name, () => {
                                 number | undefined
                             >();
 
-                            updateState({
-                                myAsyncProp: {
-                                    newPromise: newPromiseWrapper.promise,
-                                },
-                            });
+                            state.myAsyncProp.setNewPromise(newPromiseWrapper.promise);
                         })}
                     >
                         New Promise
@@ -427,11 +414,11 @@ describe(asyncProp.name, () => {
                     <button
                         id="force-update"
                         ${listen('click', () => {
-                            updateState({
-                                myAsyncProp: {
-                                    forceUpdate: true,
-                                },
-                            });
+                            try {
+                                state.myAsyncProp.forceUpdate({});
+                            } catch (error) {
+                                state.myAsyncProp.setResolvedValue(error as any);
+                            }
                         })}
                     >
                         Force Update
@@ -439,11 +426,7 @@ describe(asyncProp.name, () => {
                     <button
                         id="assign-resolved-value"
                         ${listen('click', () => {
-                            updateState({
-                                myAsyncProp: {
-                                    resolvedValue: Math.random(),
-                                },
-                            });
+                            state.myAsyncProp.setResolvedValue(Math.random());
                         })}
                     >
                         Assign Resolved Value
@@ -474,25 +457,25 @@ describe(asyncProp.name, () => {
         typedAssertNotNullish(assignResolvedButton);
 
         // initial render
-        assert.isUndefined(instance.instanceState.myAsyncProp);
+        assert.isUndefined(instance.instanceState.myAsyncProp.value);
         assert.strictEqual(renderCount, 1);
 
         // assign a new promise
         await clickElement(newPromiseButton);
 
         await waitUntil(() => renderCount === 2);
-        assert.instanceOf(instance.instanceState.myAsyncProp, Promise);
+        assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
 
-        // force an update (but we have no create promise so it should not resolve)
+        // force an update (but we have no create promise so it will error out)
         await clickElement(forceUpdateButton);
 
         await waitUntil(() => renderCount === 3);
-        assert.instanceOf(instance.instanceState.myAsyncProp, Promise);
+        assert.instanceOf(instance.instanceState.myAsyncProp.value, Error);
 
         // assign a new resolved value
         await clickElement(assignResolvedButton);
 
         await waitUntil(() => renderCount === 4);
-        assert.isNumber(instance.instanceState.myAsyncProp);
+        assert.isNumber(instance.instanceState.myAsyncProp.value);
     });
 });

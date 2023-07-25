@@ -1,14 +1,13 @@
 import {assertTypeOf} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
 import {
-    AsyncPropSetValue,
-    ObservablePropertyHandlerInstance,
+    AsyncObservableProperty,
+    ObservableProperty,
     RenderCallback,
     TypedEvent,
-    UpdateStateCallback,
     asyncProp,
     createEventDescriptorMap,
-    createObservableProperty,
+    createObservablePropertyWithSetter,
     createRenderParams,
     defineElementEvent,
     defineElementNoInputs,
@@ -29,9 +28,7 @@ describe('RenderParams', () => {
                 }),
                 myAsyncProp2: asyncProp({defaultValue: Promise.resolve(3)}),
                 myAsyncProp3: asyncProp({defaultValue: 3}),
-                myNumber: undefined as
-                    | undefined
-                    | ObservablePropertyHandlerInstance<number, number>,
+                myNumber: undefined as undefined | ObservableProperty<number>,
             },
             events: {
                 testEventName: defineElementEvent<number>(),
@@ -39,35 +36,34 @@ describe('RenderParams', () => {
             },
             renderCallback({events, state, updateState}) {
                 if (state.myNumber == undefined) {
-                    updateState({myNumber: createObservableProperty(6)});
+                    updateState({myNumber: createObservablePropertyWithSetter(6)});
                 }
 
                 const testEventThing = events.testEventName;
 
-                assertTypeOf(state.myAsyncProp).toEqualTypeOf<Promise<number> | number | Error>();
-                assertTypeOf(state.myAsyncProp2).toEqualTypeOf<Promise<number> | number | Error>();
-                assertTypeOf(state.myAsyncProp3).toEqualTypeOf<Promise<number> | number | Error>();
+                assertTypeOf(state.myAsyncProp.value).toEqualTypeOf<
+                    Promise<number> | number | Error
+                >();
+                assertTypeOf(state.myAsyncProp2.value).toEqualTypeOf<
+                    Promise<number> | number | Error
+                >();
+                assertTypeOf(state.myAsyncProp3.value).toEqualTypeOf<
+                    Promise<number> | number | Error
+                >();
 
                 assertTypeOf<
                     Exclude<Parameters<typeof updateState>[0]['myAsyncProp'], undefined>
-                >().toEqualTypeOf<AsyncPropSetValue<number, MyAsyncPropTriggerType, undefined>>();
+                >().toEqualTypeOf<
+                    AsyncObservableProperty<number, MyAsyncPropTriggerType, undefined>
+                >();
 
-                updateState({
-                    myAsyncProp: {
-                        serializableTrigger: {input: 'hi'},
-                    },
-                });
+                state.myAsyncProp.updateTrigger({input: 'hi'});
 
                 updateState({
                     myAsyncProp: asyncProp({defaultValue: 5}),
                 });
 
-                updateState({
-                    myAsyncProp: {
-                        // allow undefined as a property value
-                        serializableTrigger: {input: undefined},
-                    },
-                });
+                state.myAsyncProp.updateTrigger({input: undefined});
 
                 new testEventThing(4);
                 // @ts-expect-error
@@ -112,32 +108,15 @@ describe('UpdateStateCallback', () => {
         const customElement = defineElementNoInputs({
             tagName: 'custom-element-for-testing-update-state-callback-type',
             stateInitStatic: stateInit,
-            renderCallback({updateState}) {
-                acceptUpdateStateFromElementDefinition(updateState);
-                acceptUpdateStateFromStateInitType(updateState);
+            renderCallback({state}) {
+                acceptStateFromElementDefinition(state);
 
                 return 'hi';
             },
         });
 
-        function acceptUpdateStateFromElementDefinition(
-            updateState: (typeof customElement)['updateStateType'],
-        ) {
-            updateState({
-                doThing: {
-                    resolvedValue: 'yo',
-                },
-            });
-        }
-
-        function acceptUpdateStateFromStateInitType(
-            updateState: UpdateStateCallback<typeof stateInit>,
-        ) {
-            updateState({
-                doThing: {
-                    resolvedValue: 'yo',
-                },
-            });
+        function acceptStateFromElementDefinition(state: (typeof customElement)['stateType']) {
+            state.doThing.setResolvedValue('yo');
         }
     });
 });

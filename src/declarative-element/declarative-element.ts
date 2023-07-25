@@ -6,11 +6,9 @@ import {BaseCssPropertyName} from './properties/css-properties';
 import {CssVars} from './properties/css-vars';
 import {EventDescriptorMap, EventsInitMap} from './properties/element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './properties/element-properties';
+import {FlattenElementVirStateSetup} from './properties/element-vir-state-setup';
 import {HostClassNamesMap} from './properties/host-classes';
-import {
-    FlattenObservablePropertyGetters,
-    ObservablePropertyHandlerMap,
-} from './properties/observable-property/observable-property-handler';
+import {ObservablePropertyListenerMap} from './properties/observable-property/observable-property';
 import {RenderCallback, RenderParams, UpdateStateCallback} from './render-callback';
 
 export type DeclarativeElementHost<
@@ -218,8 +216,10 @@ export abstract class DeclarativeElement<
         'inputs' | 'state'
     >;
     public abstract override render(): unknown;
-    public abstract readonly instanceState: FlattenObservablePropertyGetters<StateInit>;
-    public abstract readonly observablePropertyHandlerMap: ObservablePropertyHandlerMap<StateInit>;
+    public abstract readonly instanceState: FlattenElementVirStateSetup<StateInit>;
+    public abstract readonly observablePropertyListenerMap: ObservablePropertyListenerMap<
+        StateInit & Inputs
+    >;
     public abstract readonly instanceInputs: Inputs;
     public abstract assignInputs(
         inputs: {} extends Required<Inputs> ? never : Partial<Inputs>,
@@ -277,7 +277,7 @@ export interface StaticDeclarativeElementProperties<
         'stateInitStatic' | 'events'
     >;
     readonly inputsType: Inputs;
-    readonly stateType: Readonly<FlattenObservablePropertyGetters<StateInit>>;
+    readonly stateType: Readonly<FlattenElementVirStateSetup<StateInit>>;
     readonly updateStateType: UpdateStateCallback<StateInit>;
     readonly isStrictInstance: (
         element: unknown,

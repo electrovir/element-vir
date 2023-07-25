@@ -1,6 +1,7 @@
 import {randomString} from '@augment-vir/browser';
 import {
     assignWithCleanup,
+    createObservablePropertyWithSetter,
     css,
     defineElementNoInputs,
     html,
@@ -8,7 +9,6 @@ import {
     onResize,
     requireAllCustomElementsToBeDeclarativeElements,
 } from '../..';
-import {createObservableProperty} from '../../declarative-element/properties/observable-property/create-observable-property';
 import {MyCustomEvent} from '../customEvent';
 import {allTestArrayElements} from './array-of-elements-test/elements-array.element';
 import {AsyncChild} from './async-child.element';
@@ -70,7 +70,7 @@ export const AppElement = defineElementNoInputs({
         width: -1,
         showChild: true,
         derp: {hi: 'yo'} as Record<string, string>,
-        myObservable: createObservableProperty(5),
+        myObservable: createObservablePropertyWithSetter(5),
     },
     renderCallback({state, updateState}) {
         // log here to make sure it's not rendering too often
@@ -98,7 +98,7 @@ export const AppElement = defineElementNoInputs({
                 <${TestChildElement.assign({
                     displayNumber: state.funnyNumber,
                     width: state.width,
-                    myProp: state.myObservable,
+                    myProp: state.myObservable.value,
                 })}
                     ${listen(TestChildElement.events.speak, (event) => {
                         updateState({

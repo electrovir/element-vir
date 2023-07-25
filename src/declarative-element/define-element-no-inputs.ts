@@ -1,4 +1,9 @@
-import {ensureError, getObjectTypedKeys, kebabCaseToCamelCase} from '@augment-vir/common';
+import {
+    PropertyValueType,
+    ensureError,
+    getObjectTypedKeys,
+    kebabCaseToCamelCase,
+} from '@augment-vir/common';
 import {css} from 'lit';
 import {defineCssVars} from 'lit-css-vars';
 import {property} from 'lit/decorators.js';
@@ -22,8 +27,8 @@ import {CssVars} from './properties/css-vars';
 import {EventsInitMap, createEventDescriptorMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
 import {createElementUpdaterProxy} from './properties/element-updater-proxy';
+import {FlattenElementVirStateSetup} from './properties/element-vir-state-setup';
 import {HostClassNamesMap, createHostClassNamesMap} from './properties/host-classes';
-import {FlattenObservablePropertyGetters} from './properties/observable-property/observable-property-handler';
 import {applyHostClasses, hostClassNamesToStylesInput} from './properties/styles';
 import {RenderParams, createRenderParams} from './render-callback';
 
@@ -161,7 +166,7 @@ export function defineElementNoInputs<
         public static override readonly events: StaticDeclarativeElementProperties<
             TagName,
             Inputs,
-            FlattenObservablePropertyGetters<StateInit>,
+            StateInit,
             EventsInit,
             HostClassKeys,
             CssVarKeys,
@@ -172,7 +177,7 @@ export function defineElementNoInputs<
         public static override readonly hostClasses: StaticDeclarativeElementProperties<
             TagName,
             Inputs,
-            FlattenObservablePropertyGetters<StateInit>,
+            StateInit,
             EventsInit,
             HostClassKeys,
             CssVarKeys,
@@ -181,7 +186,7 @@ export function defineElementNoInputs<
         public static override readonly cssVars: StaticDeclarativeElementProperties<
             TagName,
             Inputs,
-            FlattenObservablePropertyGetters<StateInit>,
+            StateInit,
             EventsInit,
             HostClassKeys,
             CssVarKeys,
@@ -214,7 +219,7 @@ export function defineElementNoInputs<
                 `"inputsType" was called on ${initInput.tagName} as a value but it is only for types.`,
             );
         }
-        public static override get stateType(): FlattenObservablePropertyGetters<StateInit> {
+        public static override get stateType(): StateInit {
             throw new Error(
                 `"stateType" was called on ${initInput.tagName} as a value but it is only for types.`,
             );
@@ -310,30 +315,30 @@ export function defineElementNoInputs<
             assignInputs(this, inputs);
         }
 
-        public readonly observablePropertyHandlerMap: ThisElementInstance['observablePropertyHandlerMap'] =
+        public readonly observablePropertyListenerMap: ThisElementInstance['observablePropertyListenerMap'] =
             {};
 
         public readonly instanceInputs: ThisElementInstance['instanceInputs'] =
-            createElementUpdaterProxy<Readonly<Inputs>>(this, false, false);
+            createElementUpdaterProxy<Readonly<Inputs>>(this, false);
 
         public readonly instanceState: ThisElementInstance['instanceState'] =
-            createElementUpdaterProxy<FlattenObservablePropertyGetters<StateInit>>(
+            createElementUpdaterProxy<FlattenElementVirStateSetup<StateInit>>(
                 this,
                 !initInput.options?.allowPolymorphicState,
-                true,
             );
 
         constructor() {
             super();
 
-            const stateInitStatic: FlattenObservablePropertyGetters<StateInit> =
-                (initInput.stateInitStatic as FlattenObservablePropertyGetters<StateInit>) ||
-                ({} as FlattenObservablePropertyGetters<StateInit>);
+            const stateInitStatic: StateInit =
+                (initInput.stateInitStatic as StateInit) || ({} as StateInit);
 
             getObjectTypedKeys(stateInitStatic).forEach((stateKey) => {
                 property()(this, stateKey);
 
-                this.instanceState[stateKey] = stateInitStatic[stateKey];
+                this.instanceState[stateKey] = stateInitStatic[stateKey] as PropertyValueType<
+                    FlattenElementVirStateSetup<StateInit>
+                >;
             });
             this.definition = anonymousClass as unknown as ThisElementDefinition;
         }

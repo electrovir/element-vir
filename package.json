@@ -42,7 +42,8 @@
         "@augment-vir/browser": "^15.5.0",
         "@augment-vir/common": "^15.5.0",
         "lit": "2.7.6",
-        "lit-css-vars": "^2.0.3"
+        "lit-css-vars": "^2.0.3",
+        "object-shape-tester": "^0.4.0"
     },
     "devDependencies": {
         "@augment-vir/browser-testing": "^15.5.0",

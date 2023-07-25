@@ -6,7 +6,6 @@ import {CssVarsInitMap} from './properties/css-vars';
 import {EventsInitMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
 import {HostClassesInitMap} from './properties/host-classes';
-import {FlattenObservablePropertyGetters} from './properties/observable-property/observable-property-handler';
 import {StylesCallback} from './properties/styles';
 import {InitCallback, RenderCallback} from './render-callback';
 
@@ -40,12 +39,7 @@ export type DeclarativeElementInit<
      * based on current instance state or inputs, or just false to indicate that the host class will
      * only be manually set.
      */
-    hostClasses?: HostClassesInitMap<
-        TagName,
-        HostClassKeys,
-        Inputs,
-        FlattenObservablePropertyGetters<StateInit>
-    >;
+    hostClasses?: HostClassesInitMap<TagName, HostClassKeys, Inputs, StateInit>;
     /**
      * CSS Vars for the component. Keys of this object should be kebab-case and start with the
      * element's tag name.

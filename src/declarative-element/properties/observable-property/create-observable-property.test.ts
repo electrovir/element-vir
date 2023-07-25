@@ -1,14 +1,13 @@
 import {randomBoolean} from '@augment-vir/browser';
 import {assertTypeOf, typedAssertInstanceOf} from '@augment-vir/browser-testing';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
-import {defineElement, html} from '../../..';
-import {createObservableProperty} from './create-observable-property';
+import {createObservablePropertyWithSetter, defineElement, html} from '../../..';
 
-describe(createObservableProperty.name, () => {
+describe(createObservablePropertyWithSetter.name, () => {
     it('should cause re-renders', async () => {
-        const inputsObservable = createObservableProperty('three');
-        const complexInputsObservable = createObservableProperty({three: 2});
-        const stateObservable = createObservableProperty({stuff: 2});
+        const inputsObservable = createObservablePropertyWithSetter('three');
+        const complexInputsObservable = createObservablePropertyWithSetter({three: 2});
+        const stateObservable = createObservablePropertyWithSetter({stuff: 2});
 
         const MyElement = defineElement<{
             simpleInput: typeof inputsObservable;
@@ -29,12 +28,14 @@ describe(createObservableProperty.name, () => {
                 updateState({complexState: {stuff: 5}});
 
                 assertTypeOf(inputs.complexInput).toEqualTypeOf(complexInputsObservable);
-                assertTypeOf(state.simpleState).toEqualTypeOf<{stuff: number}>();
-                assertTypeOf(state.stateWithUnion).toEqualTypeOf<{stuff: number} | undefined>();
+                assertTypeOf(state.simpleState.value).toEqualTypeOf<{stuff: number}>();
+                assertTypeOf(state.stateWithUnion?.value).toEqualTypeOf<
+                    {stuff: number} | undefined
+                >();
 
                 return html`
                     <span class="state">${state.simpleState}</span>
-                    <span class="inputs">${inputs.simpleInput.getValue()}</span>
+                    <span class="inputs">${inputs.simpleInput.value}</span>
                 `;
             },
         });
@@ -98,8 +99,8 @@ describe(createObservableProperty.name, () => {
         typedAssertInstanceOf(stateSpan, HTMLElement);
         typedAssertInstanceOf(inputsSpan, HTMLElement);
 
-        assert.strictEqual(stateSpan.innerText, String(stateObservable.getValue()));
-        assert.strictEqual(inputsSpan.innerText, inputsObservable.getValue());
+        assert.strictEqual(stateSpan.innerText, String(stateObservable.value));
+        assert.strictEqual(inputsSpan.innerText, inputsObservable.value);
 
         const newInput = 'derp';
         const newState = {stuff: 42};

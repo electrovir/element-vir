@@ -2,33 +2,34 @@ import {mapObjectValues} from '@augment-vir/common';
 import {CustomElementTagName} from '../declarative-element-init';
 import {BaseCssPropertyName} from './css-properties';
 import {PropertyInitMapBase} from './element-properties';
+import {FlattenElementVirStateSetup} from './element-vir-state-setup';
 import {WithTagName} from './tag-name';
 
 export type HostClassToggleCallbackInput<
-    InputsGeneric extends PropertyInitMapBase,
-    StateGeneric extends PropertyInitMapBase,
+    Inputs extends PropertyInitMapBase,
+    StateInit extends PropertyInitMapBase,
 > = {
-    state: Readonly<StateGeneric>;
-    inputs: Readonly<InputsGeneric>;
+    state: Readonly<FlattenElementVirStateSetup<StateInit>>;
+    inputs: Readonly<Inputs>;
 };
 
 export type HostClassToggleCallback<
-    InputsGeneric extends PropertyInitMapBase,
-    StateGeneric extends PropertyInitMapBase,
-> = (inputs: HostClassToggleCallbackInput<InputsGeneric, StateGeneric>) => boolean;
+    Inputs extends PropertyInitMapBase,
+    StateInit extends PropertyInitMapBase,
+> = (inputs: HostClassToggleCallbackInput<Inputs, StateInit>) => boolean;
 
 export type HostClassesInitMap<
     TagName extends CustomElementTagName,
     HostClassKeys extends BaseCssPropertyName<TagName>,
-    InputsGeneric extends PropertyInitMapBase,
-    StateGeneric extends PropertyInitMapBase,
+    Inputs extends PropertyInitMapBase,
+    StateInit extends PropertyInitMapBase,
 > = Record<
     HostClassKeys,
     /**
      * Callback to determine when host class should be enabled (based on current inputs and state),
      * or just undefined to mark that this host class name will only be manually applied.
      */
-    HostClassToggleCallback<InputsGeneric, StateGeneric> | false
+    HostClassToggleCallback<Inputs, StateInit> | false
 >;
 
 export type HostClassName<

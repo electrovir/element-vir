@@ -20,60 +20,46 @@ export const AsyncChild = defineElement<{
                 circularReference: any;
             }) {
                 await wait(1_500);
-                console.log({circularReference});
                 return Math.pow(trigger, 2);
             },
         }),
     },
-    renderCallback({state, inputs, updateState}) {
+    renderCallback({state, inputs}) {
         console.info('rendering async child');
-        updateState({
-            loadThing: {
-                serializableTrigger: {
-                    ...inputs,
-                    circularReference,
-                },
-            },
+        state.loadThing.updateTrigger({
+            ...inputs,
+            circularReference,
         });
 
         return html`
             <p>${renderAsync(state.loadThing, 'Loading...')}</p>
             <button
                 ${listen('click', () => {
-                    updateState({loadThing: {forceUpdate: true}});
+                    state.loadThing.forceUpdate({
+                        ...inputs,
+                        circularReference,
+                    });
                 })}
             >
                 Force update
             </button>
             <button
                 ${listen('click', () => {
-                    updateState({
-                        loadThing: {
-                            newPromise: waitValue(1_500, 42),
-                        },
-                    });
+                    state.loadThing.setNewPromise(waitValue(1_500, 42));
                 })}
             >
                 New Number Promise
             </button>
             <button
                 ${listen('click', () => {
-                    updateState({
-                        loadThing: {
-                            newPromise: sameNumberPromise,
-                        },
-                    });
+                    state.loadThing.setNewPromise(sameNumberPromise);
                 })}
             >
                 Same Number Promise
             </button>
             <button
                 ${listen('click', () => {
-                    updateState({
-                        loadThing: {
-                            resolvedValue: Math.random(),
-                        },
-                    });
+                    state.loadThing.setResolvedValue(Math.random());
                 })}
             >
                 New Resolved Value

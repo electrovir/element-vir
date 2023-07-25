@@ -4,6 +4,7 @@ import {CustomElementTagName} from '../declarative-element-init';
 import {BaseCssPropertyName} from './css-properties';
 import {CssVars} from './css-vars';
 import {PropertyInitMapBase} from './element-properties';
+import {FlattenElementVirStateSetup} from './element-vir-state-setup';
 import {HostClassNamesMap, HostClassesInitMap} from './host-classes';
 
 export type HostClass = {
@@ -65,7 +66,7 @@ export function applyHostClasses<
         | Readonly<HostClassesInitMap<TagName, HostClassKeys, Inputs, StateInit>>
         | undefined;
     hostClassNames: HostClassNamesMap<string, HostClassKeys>;
-    state: Readonly<StateInit>;
+    state: Readonly<FlattenElementVirStateSetup<StateInit>>;
     inputs: Readonly<Inputs>;
 }): void {
     if (!hostClassesInit) {
