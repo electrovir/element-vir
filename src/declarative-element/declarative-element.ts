@@ -225,7 +225,6 @@ export abstract class DeclarativeElement<
         inputs: {} extends Required<Inputs> ? never : Partial<Inputs>,
     ): void;
     public abstract haveInputsBeenSet: boolean;
-    public abstract markInputsAsHavingBeenSet(): void;
     public abstract readonly definition: DeclarativeElementDefinition<
         TagName,
         Inputs,

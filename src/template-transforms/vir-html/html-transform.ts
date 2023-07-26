@@ -52,9 +52,7 @@ function transformHtml(
                 : undefined;
 
             return [
-                isOpeningTag && assignedInputs && Object.values(assignedInputs).length
-                    ? assign(assignedInputs)
-                    : undefined,
+                isOpeningTag && assignedInputs ? assign(assignedInputs) : undefined,
             ].filter(isTruthy);
         },
     };

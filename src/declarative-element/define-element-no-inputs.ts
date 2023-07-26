@@ -19,9 +19,8 @@ import {
     IgnoreInputsNotBeenSetBeforeWarningSymbol,
     defaultDeclarativeElementDefinitionOptions,
 } from './definition-options';
-import {assign} from './directives/assign.directive';
 import {hasDeclarativeElementParent} from './has-declarative-element-parent';
-import {assignInputs, markInputsAsHavingBeenSet} from './properties/assign-inputs';
+import {assignInputs} from './properties/assign-inputs';
 import {BaseCssPropertyName, assertValidCssProperties} from './properties/css-properties';
 import {CssVars} from './properties/css-vars';
 import {EventsInitMap, createEventDescriptorMap} from './properties/element-events';
@@ -230,9 +229,7 @@ export function defineElementNoInputs<
         public lastRenderedProps: ThisElementInstance['lastRenderedProps'] = undefined as any;
 
         public haveInputsBeenSet = false;
-        public markInputsAsHavingBeenSet(): void {
-            markInputsAsHavingBeenSet(this);
-        }
+
         public render() {
             try {
                 if (
@@ -244,7 +241,7 @@ export function defineElementNoInputs<
                 ) {
                     console.warn(
                         this,
-                        `${initInput.tagName} got rendered before its input object was set. This was most likely caused by forgetting to use the "${assign.name}" directive on it. If no inputs are intended, use "${defineElementNoInputs.name}" to define ${initInput.tagName}.`,
+                        `${initInput.tagName} got rendered before its input object was set. This was most likely caused by forgetting to use '.assign()' on its opening tag. If no inputs are intended, use '${defineElementNoInputs.name}' to define ${initInput.tagName}.`,
                     );
                 }
                 this.hasRendered = true;
