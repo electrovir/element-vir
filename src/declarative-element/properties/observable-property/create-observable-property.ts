@@ -51,10 +51,18 @@ export type UpdaterCallback<ValueType, UpdateInputType> = Exclude<
     ? () => ValueType
     : (inputs: UpdateInputType) => ValueType;
 
-export type ObservablePropertyWithUpdaterCallback<ValueType, UpdateInputType> =
-    ObservableProperty<ValueType> & {
-        triggerUpdate: UpdaterCallback<ValueType, UpdateInputType>;
-    };
+export type ObservablePropertyWithUpdaterCallback<ValueType, UpdateInputType> = ObservableProperty<
+    ValueType | Awaited<ValueType>
+> & {
+    triggerUpdate: UpdaterCallback<ValueType, UpdateInputType>;
+    /**
+     * The last value that was resolved. This will be undefined if there has never, so far, been a
+     * resolved value.
+     */
+    latestResolvedValue: ValueType extends Promise<any>
+        ? Awaited<ValueType> | undefined
+        : ValueType;
+};
 
 export type ObservablePropertyWithUpdaterSetup<ValueType, UpdateInputType> = {
     initInput: UpdateInputType;
@@ -68,7 +76,7 @@ export function createObservablePropertyWithUpdater<ValueType, UpdateInputType =
     const areEqual = setup.equalityCallback ?? referenceEqualityCheck;
 
     const innerSimpleObservableProperty = createObservablePropertyWithSetter(
-        setup.updateCallback(setup.initInput),
+        undefined as ValueType,
         areEqual,
     );
 
@@ -76,9 +84,14 @@ export function createObservablePropertyWithUpdater<ValueType, UpdateInputType =
         const newValue = setup.updateCallback(inputs);
 
         if (newValue instanceof Promise) {
-            return new Promise<ValueType>(async (resolve, reject) => {
+            const wrappedPromise = new Promise<ValueType>(async (resolve, reject) => {
                 try {
                     const resolvedValue = await newValue;
+                    observableWithUpdater.latestResolvedValue =
+                        resolvedValue as ObservablePropertyWithUpdaterCallback<
+                            ValueType,
+                            UpdateInputType
+                        >['latestResolvedValue'];
 
                     innerSimpleObservableProperty.setValue(resolvedValue);
 
@@ -87,8 +100,18 @@ export function createObservablePropertyWithUpdater<ValueType, UpdateInputType =
                     reject(error);
                 }
             });
+
+            /** Set the promise so consumers know it's loading. */
+            innerSimpleObservableProperty.setValue(wrappedPromise as ValueType);
+
+            return wrappedPromise;
         } else {
             innerSimpleObservableProperty.setValue(newValue);
+            observableWithUpdater.latestResolvedValue =
+                newValue as ObservablePropertyWithUpdaterCallback<
+                    ValueType,
+                    UpdateInputType
+                >['latestResolvedValue'];
 
             return newValue;
         }
@@ -97,7 +120,13 @@ export function createObservablePropertyWithUpdater<ValueType, UpdateInputType =
     const observableWithUpdater: ObservablePropertyWithUpdaterCallback<ValueType, UpdateInputType> =
         Object.assign(innerSimpleObservableProperty, {
             triggerUpdate: updateValue as UpdaterCallback<ValueType, UpdateInputType>,
+            latestResolvedValue: undefined as ObservablePropertyWithUpdaterCallback<
+                ValueType,
+                UpdateInputType
+            >['latestResolvedValue'],
         });
+
+    updateValue(setup.initInput);
 
     return observableWithUpdater;
 }
@@ -108,20 +137,22 @@ export type ObservablePropertyWithIntervalSetup<ValueType, UpdateInputType> =
         intervalMs: number;
     };
 
-export type ObservablePropertyWithInterval<ValueType, UpdateInputType> =
-    ObservableProperty<ValueType> & {
-        forceUpdate: UpdaterCallback<ValueType, UpdateInputType>;
-        /**
-         * Pauses the update interval, if it isn't already paused. Use .resumeInterval() to start
-         * the interval again. Under the hood, this actually clears the interval entirely.
-         */
-        pauseInterval(): void;
-        /**
-         * Resumes the update interval if it was paused. Under the hood, this creates a new interval
-         * entirely, as .pauseInterval() actually clears it.
-         */
-        resumeInterval(): void;
-    };
+export type ObservablePropertyWithInterval<ValueType, UpdateInputType> = Omit<
+    ObservablePropertyWithUpdaterCallback<ValueType, UpdateInputType>,
+    'triggerUpdate'
+> & {
+    forceUpdate: UpdaterCallback<ValueType, UpdateInputType>;
+    /**
+     * Pauses the update interval, if it isn't already paused. Use .resumeInterval() to start the
+     * interval again. Under the hood, this actually clears the interval entirely.
+     */
+    pauseInterval(): void;
+    /**
+     * Resumes the update interval if it was paused. Under the hood, this creates a new interval
+     * entirely, as .pauseInterval() actually clears it.
+     */
+    resumeInterval(): void;
+};
 
 export function createObservablePropertyWithIntervalUpdate<ValueType, UpdateInputType = undefined>(
     setup: ObservablePropertyWithIntervalSetup<ValueType, UpdateInputType>,
