@@ -1,9 +1,5 @@
 import {ElementBookApp} from 'element-book';
-import {
-    defineElementNoInputs,
-    html,
-    requireAllCustomElementsToBeDeclarativeElements,
-} from '../../..';
+import {defineElementNoInputs, html, requireAllCustomElementsToBeDeclarativeElements} from '../..';
 import {allBookEntries} from './all-book-entries';
 
 requireAllCustomElementsToBeDeclarativeElements();

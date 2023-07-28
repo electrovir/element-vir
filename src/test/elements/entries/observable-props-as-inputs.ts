@@ -6,7 +6,7 @@ import {
     defineElementNoInputs,
     html,
     listen,
-} from '../../../../';
+} from '../../..';
 
 const myObservableProp = createObservablePropertyWithSetter(5);
 
