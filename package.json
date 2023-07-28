@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "16.0.2",
+    "version": "16.0.3",
     "keywords": [
         "custom",
         "web",
@@ -39,15 +39,15 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/browser": "^16.0.0",
-        "@augment-vir/common": "^16.0.0",
+        "@augment-vir/browser": "^16.0.1",
+        "@augment-vir/common": "^16.0.1",
         "lit": "2.7.6",
-        "lit-css-vars": "^2.0.3",
+        "lit-css-vars": "^3.0.0",
         "object-shape-tester": "^0.4.0"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^16.0.0",
-        "@augment-vir/node-js": "^16.0.0",
+        "@augment-vir/browser-testing": "^16.0.1",
+        "@augment-vir/node-js": "^16.0.1",
         "@istanbuljs/nyc-config-typescript": "^1.0.2",
         "@open-wc/testing": "^3.2.0",
         "@types/chai": "^4.3.5",
