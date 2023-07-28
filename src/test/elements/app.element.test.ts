@@ -3,8 +3,8 @@ import {RequiredAndNotNullBy} from '@augment-vir/common';
 import {assert, expect, fixture, waitUntil} from '@open-wc/testing';
 import {html} from '../..';
 import {clickElement} from '../../util/testing.test-helper';
-import {AppElement} from './app.element';
 import {TestChildElement} from './child.element';
+import {VirTestApp} from './vir-test-app.element';
 
 function assertDefined<T>(value: T, message?: string): asserts value is NonNullable<T> {
     assert.isDefined(value, message);
@@ -47,21 +47,21 @@ function assertHasShadowRoot<T extends Element>(
     assertDefined(element.shadowRoot, message);
 }
 
-describe(AppElement.tagName, () => {
+describe(VirTestApp.tagName, () => {
     async function renderApp() {
         return await fixture(
             html`
-                <${AppElement}></${AppElement}>
+                <${VirTestApp}></${VirTestApp}>
             `,
         );
     }
 
     function getAppElement(context: Element) {
-        if (AppElement.isStrictInstance(context)) {
+        if (VirTestApp.isStrictInstance(context)) {
             return context;
         }
-        const appElement = context.querySelector(AppElement.tagName);
-        typedAssertInstanceOf(appElement, AppElement);
+        const appElement = context.querySelector(VirTestApp.tagName);
+        typedAssertInstanceOf(appElement, VirTestApp);
         assertHasShadowRoot(appElement);
         return appElement;
     }
