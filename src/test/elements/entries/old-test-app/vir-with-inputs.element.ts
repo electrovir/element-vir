@@ -1,4 +1,4 @@
-import {defineElement, html} from '../..';
+import {defineElement, html} from '../../../..';
 
 export const VirWithInputs = defineElement<{
     first: number;

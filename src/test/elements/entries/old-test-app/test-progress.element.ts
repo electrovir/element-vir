@@ -1,4 +1,4 @@
-import {defineElement, html, requireAllCustomElementsToBeDeclarativeElements} from '../..';
+import {defineElement, html, requireAllCustomElementsToBeDeclarativeElements} from '../../../..';
 
 requireAllCustomElementsToBeDeclarativeElements();
 

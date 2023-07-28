@@ -1,4 +1,4 @@
-import {defineElement, html} from '../../..';
+import {defineElement, html} from '../../../..';
 
 const ArrayAElement = defineElement<{value: string}>()({
     tagName: 'element-vir-test-a',

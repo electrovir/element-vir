@@ -1,10 +1,10 @@
 import {assertTypeOf, typedAssertInstanceOf} from '@augment-vir/browser-testing';
 import {RequiredAndNotNullBy} from '@augment-vir/common';
 import {assert, expect, fixture, waitUntil} from '@open-wc/testing';
-import {html} from '../..';
-import {clickElement} from '../../util/testing.test-helper';
+import {html} from '../../../..';
+import {clickElement} from '../../../../util/testing.test-helper';
 import {TestChildElement} from './child.element';
-import {VirTestApp} from './vir-test-app.element';
+import {VirOldTestApp} from './vir-old-test-app.element';
 
 function assertDefined<T>(value: T, message?: string): asserts value is NonNullable<T> {
     assert.isDefined(value, message);
@@ -47,21 +47,21 @@ function assertHasShadowRoot<T extends Element>(
     assertDefined(element.shadowRoot, message);
 }
 
-describe(VirTestApp.tagName, () => {
+describe(VirOldTestApp.tagName, () => {
     async function renderApp() {
         return await fixture(
             html`
-                <${VirTestApp}></${VirTestApp}>
+                <${VirOldTestApp}></${VirOldTestApp}>
             `,
         );
     }
 
     function getAppElement(context: Element) {
-        if (VirTestApp.isStrictInstance(context)) {
+        if (VirOldTestApp.isStrictInstance(context)) {
             return context;
         }
-        const appElement = context.querySelector(VirTestApp.tagName);
-        typedAssertInstanceOf(appElement, VirTestApp);
+        const appElement = context.querySelector(VirOldTestApp.tagName);
+        typedAssertInstanceOf(appElement, VirOldTestApp);
         assertHasShadowRoot(appElement);
         return appElement;
     }

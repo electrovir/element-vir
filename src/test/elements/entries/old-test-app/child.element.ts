@@ -1,7 +1,6 @@
 import {randomString} from '@augment-vir/browser';
-import {css} from 'lit';
-import {defineElement, defineElementEvent, html, listen, onDomCreated} from '../..';
-import {MyCustomEvent} from '../customEvent';
+import {css, defineElement, defineElementEvent, html, listen, onDomCreated} from '../../../..';
+import {MyCustomEvent} from './customEvent';
 
 export const TestChildElement = defineElement<{
     width: number;
