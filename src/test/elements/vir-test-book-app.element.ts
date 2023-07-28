@@ -14,6 +14,10 @@ export const VirTestBookApp = defineElementNoInputs({
         return html`
             <${ElementBookApp.assign({
                 entries: allBookEntries,
+                internalRouterConfig: {
+                    useInternalRouter: true,
+                    basePath: 'element-vir',
+                },
             })}></${ElementBookApp}>
         `;
     },

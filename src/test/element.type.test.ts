@@ -16,8 +16,8 @@ import {
     TypedEvent,
 } from '..';
 import {DeclarativeElementDefinition} from '../declarative-element/declarative-element';
-import {TestChildElement} from './elements/child.element';
-import {VirTestApp} from './elements/vir-test-app.element';
+import {TestChildElement} from './elements/entries/old-test-app/child.element';
+import {VirOldTestApp} from './elements/entries/old-test-app/vir-old-test-app.element';
 
 // host classes test
 const InvalidWithHostClassesAndCssVars = defineElementNoInputs({
@@ -94,7 +94,7 @@ const TestElementNoTagName = defineElementNoInputs({
 
 /** Verify that there's a base type that all declarative elements can be assigned to. */
 const elements: DeclarativeElementDefinition[] = [
-    VirTestApp,
+    VirOldTestApp,
     TestChildElement,
 ];
 
@@ -109,7 +109,7 @@ type AppElementProps = {
 };
 
 const stateInitStatic: ReadonlyArray<keyof AppElementProps> = getObjectTypedKeys(
-    VirTestApp.stateInitStatic,
+    VirOldTestApp.stateInitStatic,
 );
 
 // element constructor should not be able to be assigned to an instance

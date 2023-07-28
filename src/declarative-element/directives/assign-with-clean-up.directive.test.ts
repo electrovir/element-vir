@@ -1,7 +1,7 @@
 import {randomString} from '@augment-vir/browser';
 import {assert, fixture} from '@open-wc/testing';
 import {assignWithCleanup, defineElementNoInputs, html, listen} from '../..';
-import {VirWithInputs} from '../../test/elements/vir-with-inputs.element';
+import {VirWithInputs} from '../../test/elements/entries/old-test-app/vir-with-inputs.element';
 import {
     clickElement,
     getAssertedDeclarativeElement,

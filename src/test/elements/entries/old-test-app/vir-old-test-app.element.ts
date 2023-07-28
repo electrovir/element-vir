@@ -176,7 +176,7 @@ export const VirOldTestApp = defineElementNoInputs({
     },
 });
 
-export const OldTestAppPage = defineBookPage({
+export const oldTestAppPage = defineBookPage({
     title: 'Old Tests',
     parent: undefined,
     elementExamplesCallback({defineExample}) {
