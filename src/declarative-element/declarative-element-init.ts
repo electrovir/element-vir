@@ -29,7 +29,8 @@ export type DeclarativeElementInit<
     styles?: CSSResult | StylesCallback<TagName, HostClassKeys, CssVarKeys>;
     /**
      * The definition of and initial values for the element's internal state. Note that this is
-     * defined statically: the init value will be the same for all instances of this element.
+     * defined statically: the init value will be the same for all instances of this element because
+     * it is only defined once.
      */
     stateInitStatic?: StateInit;
     /** Events that the element can dispatch. (These can be thought of as "outputs".) */

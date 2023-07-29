@@ -10,7 +10,7 @@ import {
 
 const myObservableProp = createObservablePropertyWithSetter(5);
 
-const VirObservablePropInputTestParent = defineElementNoInputs({
+const VirObservablePropsTestParent = defineElementNoInputs({
     tagName: 'vir-observable-prop-input-test-parent',
     stateInitStatic: {
         renderCount: 0,
@@ -20,9 +20,9 @@ const VirObservablePropInputTestParent = defineElementNoInputs({
         return html`
             <p>Parent render count (should not change): ${state.renderCount}</p>
             <p>
-                <${VirObservablePropInputTestChild.assign({
+                <${VirObservablePropsTestChild.assign({
                     observableProp: myObservableProp,
-                })}></${VirObservablePropInputTestChild}>
+                })}></${VirObservablePropsTestChild}>
             </p>
             <p>
                 <button
@@ -30,13 +30,13 @@ const VirObservablePropInputTestParent = defineElementNoInputs({
                         myObservableProp.setValue(randomInteger({min: 1, max: 100}));
                     })}
                 >
-                    trigger update
+                    trigger update from parent
                 </button>
             </p>
         `;
     },
 });
-const VirObservablePropInputTestChild = defineElement<{observableProp: typeof myObservableProp}>()({
+const VirObservablePropsTestChild = defineElement<{observableProp: typeof myObservableProp}>()({
     tagName: 'vir-observable-prop-input-test-child',
     stateInitStatic: {
         renderCount: 0,
@@ -46,6 +46,15 @@ const VirObservablePropInputTestChild = defineElement<{observableProp: typeof my
         return html`
             <p>child render count (should increase): ${state.renderCount}</p>
             <p>observableProp value: ${inputs.observableProp.value}</p>
+            <p>
+                <button
+                    ${listen('click', () => {
+                        inputs.observableProp.setValue(randomInteger({min: 101, max: 200}));
+                    })}
+                >
+                    trigger update from child
+                </button>
+            </p>
         `;
     },
 });
@@ -58,7 +67,7 @@ export const observablePropInputTestPage = defineBookPage({
             title: 'test',
             renderCallback() {
                 return html`
-                    <${VirObservablePropInputTestParent}></${VirObservablePropInputTestParent}>
+                    <${VirObservablePropsTestParent}></${VirObservablePropsTestParent}>
                 `;
             },
         });
