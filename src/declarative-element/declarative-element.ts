@@ -212,6 +212,7 @@ export abstract class DeclarativeElement<
     >['cssVars'];
 
     public abstract lastRenderError: Error | undefined;
+    public abstract renderCount: number;
     public abstract lastRenderedProps: Pick<
         RenderParams<any, Inputs, StateInit, any, any, any>,
         'inputs' | 'state'

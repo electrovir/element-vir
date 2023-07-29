@@ -146,7 +146,9 @@ export function defineElementNoInputs<
     > {
         public static override readonly tagName = initInput.tagName;
         public static override readonly styles = calculatedStyles;
+
         public lastRenderError: Error | undefined = undefined;
+        public renderCount = 0;
 
         public createRenderParams(): RenderParams<
             TagName,
@@ -232,6 +234,7 @@ export function defineElementNoInputs<
         public haveInputsBeenSet = false;
 
         public render() {
+            this.renderCount++;
             try {
                 if (
                     // This ignores elements at the root of a page, as they can't receive inputs from
