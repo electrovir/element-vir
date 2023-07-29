@@ -146,6 +146,7 @@ export function defineElementNoInputs<
     > {
         public static override readonly tagName = initInput.tagName;
         public static override readonly styles = calculatedStyles;
+        public lastRenderError: Error | undefined = undefined;
 
         public createRenderParams(): RenderParams<
             TagName,
@@ -274,6 +275,7 @@ export function defineElementNoInputs<
             } catch (caught) {
                 const error: Error = ensureError(caught);
                 error.message = `Failed to render '${initInput.tagName}': ${error.message}`;
+                this.lastRenderError = error;
                 throw error;
             }
         }
