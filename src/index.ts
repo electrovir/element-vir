@@ -23,6 +23,7 @@ export * from './declarative-element/properties/element-properties';
 export * from './declarative-element/properties/host-classes';
 export * from './declarative-element/properties/observable-property/create-observable-property';
 export * from './declarative-element/properties/observable-property/observable-property';
+export * from './declarative-element/properties/per-instance';
 export * from './declarative-element/properties/styles';
 export * from './declarative-element/properties/tag-name';
 export * from './declarative-element/render-callback';
