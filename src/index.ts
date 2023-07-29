@@ -8,6 +8,7 @@ export type {DeclarativeElementDefinitionOptions} from './declarative-element/de
 export * from './declarative-element/directives/assign-with-clean-up.directive';
 export * from './declarative-element/directives/assign.directive';
 export * from './declarative-element/directives/async-prop';
+export * from './declarative-element/directives/create-attribute-directive';
 export * from './declarative-element/directives/directive-helpers';
 export * from './declarative-element/directives/is-render-ready.directive';
 export * from './declarative-element/directives/listen.directive';
@@ -15,6 +16,7 @@ export * from './declarative-element/directives/on-dom-created.directive';
 export * from './declarative-element/directives/on-resize.directive';
 export * from './declarative-element/directives/render-async.directive';
 export * from './declarative-element/directives/render-if.directive';
+export * from './declarative-element/directives/test-id.directive';
 export * from './declarative-element/is-declarative-element';
 export * from './declarative-element/properties/css-properties';
 export * from './declarative-element/properties/css-vars';
