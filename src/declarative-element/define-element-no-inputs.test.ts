@@ -1,4 +1,6 @@
 import {randomString} from '@augment-vir/browser';
+import {AnyFunction} from '@augment-vir/common';
+import {BookEntryTypeEnum} from 'element-book';
 import {defineElementNoInputs} from './define-element-no-inputs';
 
 describe(defineElementNoInputs.name, () => {
@@ -27,6 +29,37 @@ describe(defineElementNoInputs.name, () => {
             },
             // @ts-expect-error
             renderCallback() {},
+        });
+    });
+
+    it('does not allow updating state properties that do not exist in the state', () => {
+        defineElementNoInputs({
+            tagName: `some-tag-${randomString()}`,
+            stateInitStatic: {
+                selectedConvertDirection: undefined as BookEntryTypeEnum | undefined,
+                selectedFeeIndex: undefined as number | undefined,
+                errors: undefined as
+                    | undefined
+                    | Partial<{
+                          amount: boolean;
+                          fee: boolean;
+                      }>,
+                userInputConvertAmount: '',
+                generalError: '',
+                prepareConvertResult: undefined as undefined | Awaited<ReturnType<AnyFunction>>,
+                step2ConfirmationAccepted: false,
+                confirmedTxUrl: '',
+                showLoader: false,
+                isMax: false,
+            },
+            renderCallback({state, updateState}) {
+                updateState({
+                    // @ts-expect-error
+                    thingie: 'yo',
+                    generalError: 'hi',
+                });
+                return '';
+            },
         });
     });
 

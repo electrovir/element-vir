@@ -34,16 +34,15 @@ export type AllowElementVirStateSetup<
     OriginalObject extends PropertyInitMapBase,
     CurrentType extends Record<keyof OriginalObject, unknown>,
 > = {
-    [Prop in keyof CurrentType]: Extract<
-        OriginalObject[Prop],
-        ElementVirStateSetup<any>
-    > extends never
-        ? OriginalObject[Prop]
-        : Extract<OriginalObject[Prop], ElementVirStateSetup<any>> extends ElementVirStateSetup<
-              infer SetValue
-          >
-        ? CurrentType[Prop] extends ElementVirStateSetup<SetValue>
-            ? CurrentType[Prop]
-            : SetValue
-        : OriginalObject[Prop];
+    [Prop in keyof CurrentType]: Prop extends keyof OriginalObject
+        ? Extract<OriginalObject[Prop], ElementVirStateSetup<any>> extends never
+            ? OriginalObject[Prop]
+            : Extract<OriginalObject[Prop], ElementVirStateSetup<any>> extends ElementVirStateSetup<
+                  infer SetValue
+              >
+            ? CurrentType[Prop] extends ElementVirStateSetup<SetValue>
+                ? CurrentType[Prop]
+                : SetValue
+            : OriginalObject[Prop]
+        : never;
 };
