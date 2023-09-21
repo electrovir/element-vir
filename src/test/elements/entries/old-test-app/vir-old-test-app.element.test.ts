@@ -1,6 +1,7 @@
-import {assertTypeOf, typedAssertInstanceOf} from '@augment-vir/browser-testing';
+import {assertTypeOf} from '@augment-vir/browser-testing';
 import {RequiredAndNotNullBy} from '@augment-vir/common';
 import {assert, expect, fixture, waitUntil} from '@open-wc/testing';
+import {assertInstanceOf} from 'run-time-assertions';
 import {html} from '../../../..';
 import {clickElement} from '../../../../util/testing.test-helper';
 import {TestChildElement} from './child.element';
@@ -61,7 +62,7 @@ describe(VirOldTestApp.tagName, () => {
             return context;
         }
         const appElement = context.querySelector(VirOldTestApp.tagName);
-        typedAssertInstanceOf(appElement, VirOldTestApp);
+        assertInstanceOf(appElement, VirOldTestApp);
         assertHasShadowRoot(appElement);
         return appElement;
     }
@@ -72,11 +73,11 @@ describe(VirOldTestApp.tagName, () => {
                 TestChildElement.tagName,
                 'span:nth-of-type(3)',
             ]);
-            typedAssertInstanceOf(inputNumberSpan, HTMLSpanElement);
+            assertInstanceOf(inputNumberSpan, HTMLSpanElement);
             expect(inputNumberSpan.innerText).to.contain('input number');
             assert.strictEqual(inputNumberSpan.childNodes.length, 3);
             const lastNode = inputNumberSpan.childNodes[2];
-            typedAssertInstanceOf(lastNode, Text);
+            assertInstanceOf(lastNode, Text);
             const inputNumber = Number(lastNode.nodeValue);
             assert.isNotNaN(inputNumber);
             return inputNumber;
@@ -84,7 +85,7 @@ describe(VirOldTestApp.tagName, () => {
 
         async function clickAssignNewNumberButton(context: HTMLElement) {
             const assignNewNumberButton = queryTree(context, ['button']);
-            typedAssertInstanceOf(assignNewNumberButton, HTMLButtonElement);
+            assertInstanceOf(assignNewNumberButton, HTMLButtonElement);
             expect(assignNewNumberButton.innerText).to.contain('assign NEW number to child');
 
             await clickElement(assignNewNumberButton);
@@ -111,7 +112,7 @@ describe(VirOldTestApp.tagName, () => {
             TestChildElement.tagName,
         ]);
 
-        typedAssertInstanceOf(childElement, TestChildElement);
+        assertInstanceOf(childElement, TestChildElement);
         assert('speak' in childElement.definition.events);
         const currentInputs = {...childElement.instanceInputs};
         assert.deepStrictEqual(currentInputs, {

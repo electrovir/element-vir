@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "16.3.2",
+    "version": "16.4.0",
     "keywords": [
         "custom",
         "web",
@@ -39,15 +39,16 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/browser": "^18.0.0",
-        "@augment-vir/common": "^18.0.0",
+        "@augment-vir/browser": "^19.0.0",
+        "@augment-vir/common": "^19.0.0",
         "lit": "2.8.0",
         "lit-css-vars": "^3.0.1",
-        "object-shape-tester": "^0.4.3"
+        "object-shape-tester": "^0.4.3",
+        "run-time-assertions": "^0.0.2"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^18.0.0",
-        "@augment-vir/node-js": "^18.0.0",
+        "@augment-vir/browser-testing": "^19.0.0",
+        "@augment-vir/node-js": "^19.0.0",
         "@istanbuljs/nyc-config-typescript": "^1.0.2",
         "@open-wc/testing": "^3.2.0",
         "@types/chai": "^4.3.6",
@@ -59,9 +60,9 @@
         "@web/test-runner-visual-regression": "^0.8.2",
         "ansi-colors": "^4.1.3",
         "concurrently": "^8.2.1",
-        "cspell": "^7.3.2",
-        "element-book": "^10.1.0",
-        "esbuild": "^0.19.2",
+        "cspell": "^7.3.6",
+        "element-book": "^10.1.2",
+        "esbuild": "^0.19.3",
         "istanbul-smart-text-reporter": "^1.1.2",
         "markdown-code-example-inserter": "^0.3.1",
         "mocha-spec-reporter-with-file-names": "^0.0.3",
@@ -80,7 +81,7 @@
         "typescript": "~5.2.2",
         "virmator": "^7.4.1",
         "vite": "^4.4.9",
-        "vite-tsconfig-paths": "^4.2.0"
+        "vite-tsconfig-paths": "^4.2.1"
     },
     "overrides": {
         "semver": "^7.5.4",

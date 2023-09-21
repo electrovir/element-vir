@@ -1,12 +1,14 @@
 import {randomString} from '@augment-vir/browser';
+import {assertTypeOf, clickElement} from '@augment-vir/browser-testing';
 import {
-    assertTypeOf,
-    clickElement,
-    typedAssertInstanceOf,
-    typedAssertNotNullish,
-} from '@augment-vir/browser-testing';
-import {DeferredPromiseWrapper, createDeferredPromiseWrapper, typedMap} from '@augment-vir/common';
+    DeferredPromiseWrapper,
+    createDeferredPromiseWrapper,
+    typedMap,
+    wait,
+    waitForCondition,
+} from '@augment-vir/common';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
+import {assertDefined, assertInstanceOf} from 'run-time-assertions';
 import {
     AsyncPropValue,
     StaticElementPropertyDescriptor,
@@ -204,12 +206,12 @@ describe(asyncProp.name, () => {
         const forceUpdateButton = instance.shadowRoot.querySelector('#force-update');
         const assignResolvedButton = instance.shadowRoot.querySelector('#assign-resolved-value');
 
-        typedAssertNotNullish(newPromiseButton);
-        typedAssertNotNullish(forceUpdateButton);
-        typedAssertNotNullish(assignResolvedButton);
+        assertDefined(newPromiseButton);
+        assertDefined(forceUpdateButton);
+        assertDefined(assignResolvedButton);
 
         // initial render
-        typedAssertNotNullish(deferredPromiseWrappers[0]);
+        assertDefined(deferredPromiseWrappers[0]);
         assert.lengthOf(deferredPromiseWrappers, 1);
         assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
         assert.strictEqual(renderCount, 1);
@@ -230,7 +232,7 @@ describe(asyncProp.name, () => {
         await waitUntil(() => renderCount === 3, 'Render count failed to reach 3');
 
         assert.lengthOf(deferredPromiseWrappers, 2);
-        typedAssertNotNullish(deferredPromiseWrappers[1]);
+        assertDefined(deferredPromiseWrappers[1]);
         assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
 
         // resolve the promise; the element should re-render and the state should update
@@ -249,7 +251,7 @@ describe(asyncProp.name, () => {
         await waitUntil(() => renderCount === 5, 'Render count failed to reach 5');
 
         assert.lengthOf(deferredPromiseWrappers, 3);
-        typedAssertNotNullish(deferredPromiseWrappers[2]);
+        assertDefined(deferredPromiseWrappers[2]);
         assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
 
         // reject the error; element should re-render and update state
@@ -267,14 +269,14 @@ describe(asyncProp.name, () => {
         await waitUntil(() => renderCount === 7, 'Render count failed to reach 7');
 
         assert.lengthOf(deferredPromiseWrappers, 4);
-        typedAssertNotNullish(deferredPromiseWrappers[3]);
+        assertDefined(deferredPromiseWrappers[3]);
         assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
 
         // assign a new promise; element should not re-render (because the last promise never finished settling) and update state
         await clickElement(newPromiseButton);
 
         assert.lengthOf(deferredPromiseWrappers, 5);
-        typedAssertNotNullish(deferredPromiseWrappers[4]);
+        assertDefined(deferredPromiseWrappers[4]);
         assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
 
         // it shouldn't render after resolution of a previous promise
@@ -299,6 +301,45 @@ describe(asyncProp.name, () => {
             'no new deferred promises should have been created',
         );
         assert.typeOf(instance.instanceState.myAsyncProp.value, 'number');
+    });
+
+    it('resolves to an error if one is thrown', async () => {
+        const errorMessage = [
+            'intentional error:',
+            randomString(),
+        ].join(' ');
+
+        const ElementWithAsyncPropError = defineElementNoInputs({
+            tagName: `element-with-async-prop-error-${randomString()}`,
+            stateInitStatic: {
+                myAsyncProp: asyncProp({
+                    async updateCallback() {
+                        await wait(1000);
+                        throw new Error(errorMessage);
+                    },
+                }),
+            },
+            renderCallback({state}) {
+                state.myAsyncProp.updateTrigger({});
+                return 'hello';
+            },
+        });
+
+        const rendered = await renderFixture(html`
+            <${ElementWithAsyncPropError}></${ElementWithAsyncPropError}>
+        `);
+
+        // get elements
+        const instance = getAssertedDeclarativeElement(ElementWithAsyncPropError, rendered);
+
+        await waitForCondition({
+            conditionCallback() {
+                return (
+                    instance.instanceState.myAsyncProp.value instanceof Error &&
+                    instance.instanceState.myAsyncProp.value.message === errorMessage
+                );
+            },
+        });
     });
 
     it('does not clash with other instances', async () => {
@@ -343,8 +384,8 @@ describe(asyncProp.name, () => {
             instance2,
         ] = Array.from(rendered.querySelectorAll(ElementWithAsyncProp.tagName));
 
-        typedAssertInstanceOf(instance1, ElementWithAsyncProp);
-        typedAssertInstanceOf(instance2, ElementWithAsyncProp);
+        assertInstanceOf(instance1, ElementWithAsyncProp);
+        assertInstanceOf(instance2, ElementWithAsyncProp);
 
         const [
             span1,
@@ -353,8 +394,8 @@ describe(asyncProp.name, () => {
             instance1.shadowRoot.querySelector('.value-span'),
             instance2.shadowRoot.querySelector('.value-span'),
         ];
-        typedAssertInstanceOf(span1, HTMLSpanElement);
-        typedAssertInstanceOf(span2, HTMLSpanElement);
+        assertInstanceOf(span1, HTMLSpanElement);
+        assertInstanceOf(span2, HTMLSpanElement);
 
         const spans = [
             span1,
@@ -452,9 +493,9 @@ describe(asyncProp.name, () => {
         const forceUpdateButton = instance.shadowRoot.querySelector('#force-update');
         const assignResolvedButton = instance.shadowRoot.querySelector('#assign-resolved-value');
 
-        typedAssertNotNullish(newPromiseButton);
-        typedAssertNotNullish(forceUpdateButton);
-        typedAssertNotNullish(assignResolvedButton);
+        assertDefined(newPromiseButton);
+        assertDefined(forceUpdateButton);
+        assertDefined(assignResolvedButton);
 
         // initial render
         assert.isUndefined(instance.instanceState.myAsyncProp.value);

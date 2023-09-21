@@ -1,6 +1,6 @@
-import {typedAssertInstanceOf} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
 import {sendMouse} from '@web/test-runner-commands';
+import {assertInstanceOf} from 'run-time-assertions';
 import {DeclarativeElementDefinition} from '../declarative-element/declarative-element';
 
 export function getAssertedDeclarativeElement<
@@ -10,12 +10,12 @@ export function getAssertedDeclarativeElement<
     searchIn: Element,
 ): DeclarativeElementGeneric['instanceType'] {
     if (searchIn.tagName.toLowerCase() === searchFor.tagName.toLowerCase()) {
-        typedAssertInstanceOf(searchIn, searchFor);
+        assertInstanceOf(searchIn, searchFor);
         return searchIn as DeclarativeElementGeneric['instanceType'];
     }
 
     const result = queryTree(searchIn, [searchFor.tagName]);
-    typedAssertInstanceOf(result, searchFor);
+    assertInstanceOf(result, searchFor);
     result;
     assert.strictEqual(result!.tagName, searchFor.tagName);
 
@@ -50,7 +50,7 @@ export function queryWithAssert<T extends Element>(
         query = [query];
     }
     const result = queryTree(searchIn, query);
-    typedAssertInstanceOf(result, constructor);
+    assertInstanceOf(result, constructor);
 
     return result;
 }

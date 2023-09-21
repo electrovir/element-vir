@@ -1,7 +1,8 @@
 import {randomBoolean, randomInteger} from '@augment-vir/browser';
-import {assertTypeOf, typedAssertInstanceOf} from '@augment-vir/browser-testing';
+import {assertTypeOf} from '@augment-vir/browser-testing';
 import {createDeferredPromiseWrapper} from '@augment-vir/common';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
+import {assertInstanceOf} from 'run-time-assertions';
 import {createObservablePropertyWithSetter, defineElement, html} from '../../..';
 import {
     createObservablePropertyWithIntervalUpdate,
@@ -94,15 +95,15 @@ describe(createObservablePropertyWithSetter.name, () => {
             })}></${MyElement}>
         `);
 
-        typedAssertInstanceOf(fixture, MyElement);
+        assertInstanceOf(fixture, MyElement);
 
         assertTypeOf(fixture.instanceInputs.complexInput).toEqualTypeOf(complexInputsObservable);
 
         const stateSpan = fixture.shadowRoot?.querySelector('.state');
         const inputsSpan = fixture.shadowRoot?.querySelector('.inputs');
 
-        typedAssertInstanceOf(stateSpan, HTMLElement);
-        typedAssertInstanceOf(inputsSpan, HTMLElement);
+        assertInstanceOf(stateSpan, HTMLElement);
+        assertInstanceOf(inputsSpan, HTMLElement);
 
         assert.strictEqual(stateSpan.innerText, String(stateObservable.value));
         assert.strictEqual(inputsSpan.innerText, inputsObservable.value);
