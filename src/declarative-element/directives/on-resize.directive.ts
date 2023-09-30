@@ -9,6 +9,7 @@ export type OnResizeCallback = (
 const directiveName = 'onResize';
 
 export const onResize = directive(
+    /** @internal */
     class extends Directive {
         element: Element | undefined;
         readonly resizeObserver = new ResizeObserver((entries) => this.fireCallback(entries));

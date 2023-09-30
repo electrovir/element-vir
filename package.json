@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "16.4.0",
+    "version": "16.4.1",
     "keywords": [
         "custom",
         "web",
@@ -26,29 +26,29 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "compile": "rm -rf dist && tsc --project tsconfig.json",
-        "docs:update": "virmator code-in-markdown",
+        "docs": "virmator docs",
         "format": "virmator format",
         "publish": "virmator publish \"npm run compile && npm run test:all\"",
         "start": "npm install && virmator frontend",
         "test": "virmator test-web",
         "test:all": "concurrently -c auto --kill-others-on-fail --colors --names types,tests,spelling,format,docs \"npm run test:types\" \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\"",
         "test:coverage": "virmator test-web coverage",
-        "test:docs": "virmator code-in-markdown check",
+        "test:docs": "virmator docs check",
         "test:format": "virmator format check",
         "test:spelling": "virmator spellcheck",
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/browser": "^19.3.0",
-        "@augment-vir/common": "^19.3.0",
+        "@augment-vir/browser": "^19.3.1",
+        "@augment-vir/common": "^19.3.1",
         "lit": "2.8.0",
         "lit-css-vars": "^3.0.1",
         "object-shape-tester": "^0.4.3",
         "run-time-assertions": "^0.0.2"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^19.3.0",
-        "@augment-vir/node-js": "^19.3.0",
+        "@augment-vir/browser-testing": "^19.3.1",
+        "@augment-vir/node-js": "^19.3.1",
         "@istanbuljs/nyc-config-typescript": "^1.0.2",
         "@open-wc/testing": "^3.2.0",
         "@types/chai": "^4.3.6",
@@ -78,6 +78,7 @@
         "prettier-plugin-toml": "^0.3.1",
         "ts-node": "^10.9.1",
         "type-fest": "^4.3.2",
+        "typedoc": "^0.25.1",
         "typescript": "~5.2.2",
         "virmator": "^8.0.4",
         "vite": "^4.4.9",

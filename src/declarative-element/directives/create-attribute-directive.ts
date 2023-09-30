@@ -4,6 +4,7 @@ import {extractElement} from './directive-helpers';
 
 export function createAttributeDirective(attributeName: string) {
     const newDirective = directive(
+        /** @internal */
         class extends Directive {
             public readonly element: Element;
 

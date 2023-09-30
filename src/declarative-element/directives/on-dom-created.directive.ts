@@ -7,6 +7,7 @@ const directiveName = 'onDomCreated';
 
 /** Only fires once, when the element has been created. */
 export const onDomCreated = directive(
+    /** @internal */
     class extends Directive {
         public element: Element | undefined;
 

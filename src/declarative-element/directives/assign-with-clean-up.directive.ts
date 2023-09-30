@@ -37,6 +37,7 @@ export function assignWithCleanup<
     return assignWithCleanupDirective(elementDefinition, inputsObject, cleanupCallback);
 }
 
+/** @internal */
 class AssignWithCleanupDirectiveClass extends AsyncDirective {
     private readonly element: Element;
     private lastValue: unknown;
