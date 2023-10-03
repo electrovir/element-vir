@@ -5,13 +5,12 @@ import {
     ensureError,
     JsonCompatibleObject,
     MaybePromise,
-    UnPromise,
 } from '@augment-vir/common';
 import {ElementVirStateSetup} from '../properties/element-vir-state-setup';
 import {createObservablePropertyWithSetter} from '../properties/observable-property/create-observable-property';
 import {ObservableProperty} from '../properties/observable-property/observable-property';
 
-export type AsyncPropValue<ValueType> = Error | MaybePromise<ValueType>;
+export type AsyncPropValue<ValueType> = Error | MaybePromise<Awaited<ValueType>>;
 
 const notSetSymbol = Symbol('not set');
 
@@ -34,7 +33,7 @@ export type AsyncPropInit<
 > =
     | {
           /** Starting value */
-          defaultValue: MaybePromise<ValueType>;
+          defaultValue: MaybePromise<Awaited<ValueType>>;
       }
     | {
           /**
@@ -48,7 +47,7 @@ export type AsyncPropInit<
           updateCallback: AsyncPropUpdateCallback<
               TriggerInput,
               UpdaterInput,
-              Promise<UnPromise<ValueType>>
+              Promise<Awaited<ValueType>>
           >;
       };
 
@@ -57,9 +56,9 @@ export type AsyncObservableProperty<
     TriggerInput extends AsyncPropTriggerInputBase,
     UpdaterInput,
 > = ObservableProperty<AsyncPropValue<ValueType>> & {
-    setNewPromise(newPromise: Promise<UnPromise<ValueType>>): void;
+    setNewPromise(newPromise: Promise<Awaited<ValueType>>): void;
     updateTrigger: AsyncPropUpdateCallback<TriggerInput, UpdaterInput, void>;
-    setResolvedValue(resolvedValue: UnPromise<ValueType>): void;
+    setResolvedValue(resolvedValue: Awaited<ValueType>): void;
     /**
      * Forces the updater callback to re-run with the last given trigger and updaterInput. If this
      * asyncProp has no updater callback defined, this will result in an error.
@@ -74,10 +73,10 @@ function setupAsyncProp<
     InitInput extends AsyncPropInit<ValueType, TriggerInput, UpdaterInput> | undefined = undefined,
 >(init?: InitInput): AsyncObservableProperty<ValueType, TriggerInput, UpdaterInput> {
     let lastTrigger: TriggerInput | typeof notSetSymbol = notSetSymbol;
-    let lastSetPromise: Promise<UnPromise<ValueType>> | undefined;
+    let lastSetPromise: Promise<Awaited<ValueType>> | undefined;
     const promiseUpdater = init && 'updateCallback' in init ? init.updateCallback : undefined;
 
-    let waitingForValuePromise: DeferredPromiseWrapper<UnPromise<ValueType>> =
+    let waitingForValuePromise: DeferredPromiseWrapper<Awaited<ValueType>> =
         createDeferredPromiseWrapper();
 
     const baseObservableProperty = createObservablePropertyWithSetter<AsyncPropValue<ValueType>>(
@@ -89,7 +88,7 @@ function setupAsyncProp<
         baseObservableProperty.setValue(waitingForValuePromise.promise);
     }
 
-    function resolveValue(value: UnPromise<ValueType>) {
+    function resolveValue(value: Awaited<ValueType>) {
         waitingForValuePromise.resolve(value);
         baseObservableProperty.setValue(value);
     }
@@ -99,7 +98,7 @@ function setupAsyncProp<
         baseObservableProperty.setValue(error);
     }
 
-    function setPromise(newPromise: Promise<UnPromise<ValueType>>) {
+    function setPromise(newPromise: Promise<Awaited<ValueType>>) {
         if (newPromise === lastSetPromise) {
             /** Abort setting the promise if we already have set this promise. */
             return;
@@ -172,7 +171,7 @@ function setupAsyncProp<
         init && 'defaultValue' in init
             ? init.defaultValue
             : /** A promise that doesn't resolve because we're waiting for the first value still. */
-              new Promise<UnPromise<ValueType>>(() => {});
+              new Promise<Awaited<ValueType>>(() => {});
 
     if (initValue instanceof Promise) {
         setPromise(initValue);
