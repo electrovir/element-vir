@@ -1,4 +1,4 @@
-import {randomBoolean, randomString} from '@augment-vir/browser';
+import {randomBoolean, randomString} from '@augment-vir/common';
 import {defineElement} from './define-element';
 
 describe(defineElement.name, () => {

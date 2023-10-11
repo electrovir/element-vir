@@ -1,3 +1,13 @@
+export {LitElement, noChange, svg, unsafeCSS} from 'lit';
+export type {
+    CSSResult,
+    CSSResultGroup,
+    CompiledTemplate,
+    CompiledTemplateResult,
+    HTMLTemplateResult,
+    SVGTemplateResult,
+    TemplateResult,
+} from 'lit';
 export * from 'lit/directives/async-append.js';
 export * from 'lit/directives/async-replace.js';
 export * from 'lit/directives/cache.js';

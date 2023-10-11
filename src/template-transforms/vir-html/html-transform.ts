@@ -1,6 +1,6 @@
 import {collapseWhiteSpace, isTruthy, safeMatch} from '@augment-vir/common';
-import {HTMLTemplateResult} from 'lit';
 import {assign} from '../../declarative-element/directives/assign.directive';
+import {HTMLTemplateResult} from '../../lit-exports';
 import {declarativeElementRequired} from '../../require-declarative-element';
 import {
     isMinimalElementDefinition,

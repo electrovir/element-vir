@@ -1,5 +1,5 @@
-import {randomString} from '@augment-vir/browser';
 import {assertTypeOf} from '@augment-vir/browser-testing';
+import {randomString} from '@augment-vir/common';
 import {assert, fixture as renderFixture} from '@open-wc/testing';
 import {assertInstanceOf} from 'run-time-assertions';
 import {html} from '../../template-transforms/vir-html/vir-html';

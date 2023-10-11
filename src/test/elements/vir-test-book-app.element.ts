@@ -6,7 +6,7 @@ requireAllCustomElementsToBeDeclarativeElements();
 
 export const VirTestBookApp = defineElementNoInputs({
     tagName: 'vir-test-book-app',
-    renderCallback({}) {
+    renderCallback() {
         return html`
             <${ElementBookApp.assign({
                 entries: allBookEntries,

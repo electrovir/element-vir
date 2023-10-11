@@ -4,10 +4,10 @@ import {
     getObjectTypedKeys,
     kebabCaseToCamelCase,
 } from '@augment-vir/common';
-import {css} from 'lit';
 import {defineCssVars} from 'lit-css-vars';
 import {property} from 'lit/decorators.js';
 import {WrappedMinimalDefinition} from '../template-transforms/minimal-element-definition';
+import {css} from '../template-transforms/vir-css/vir-css';
 import {
     DeclarativeElement,
     DeclarativeElementDefinition,

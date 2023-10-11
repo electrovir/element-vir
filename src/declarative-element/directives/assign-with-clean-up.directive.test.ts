@@ -1,4 +1,4 @@
-import {randomString} from '@augment-vir/browser';
+import {randomString} from '@augment-vir/common';
 import {assert, fixture} from '@open-wc/testing';
 import {assignWithCleanup, defineElementNoInputs, html, listen} from '../..';
 import {VirWithInputs} from '../../test/elements/entries/old-test-app/vir-with-inputs.element';

@@ -1,4 +1,4 @@
-import {CSSResult} from 'lit';
+import {CSSResult} from '../lit-exports';
 import {RequireNonVoidReturn} from '../util/type';
 import {DeclarativeElementDefinitionOptions} from './definition-options';
 import {BaseCssPropertyName} from './properties/css-properties';

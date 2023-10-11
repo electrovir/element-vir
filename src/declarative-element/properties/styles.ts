@@ -1,5 +1,5 @@
 import {getObjectTypedKeys, mapObjectValues} from '@augment-vir/common';
-import {CSSResult, unsafeCSS} from 'lit';
+import {CSSResult, unsafeCSS} from '../../lit-exports';
 import {CustomElementTagName} from '../declarative-element-init';
 import {BaseCssPropertyName} from './css-properties';
 import {CssVars} from './css-vars';

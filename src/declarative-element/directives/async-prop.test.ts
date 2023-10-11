@@ -1,8 +1,8 @@
-import {randomString} from '@augment-vir/browser';
 import {assertTypeOf, clickElement} from '@augment-vir/browser-testing';
 import {
     DeferredPromiseWrapper,
     createDeferredPromiseWrapper,
+    randomString,
     typedMap,
     wait,
     waitForCondition,

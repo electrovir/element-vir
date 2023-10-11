@@ -1,21 +1,21 @@
-import {randomString} from '@augment-vir/browser';
-import {getObjectTypedKeys} from '@augment-vir/common';
-import {css, TemplateResult} from 'lit';
+import {getObjectTypedKeys, randomString} from '@augment-vir/common';
 import {
+    DeclarativeElement,
+    EventObjectEventDetailExtractor,
+    ObservableProperty,
+    TypedEvent,
     assign,
     assignWithCleanup,
-    DeclarativeElement,
+    css,
     defineElement,
     defineElementEvent,
     defineElementNoInputs,
     defineTypedEvent,
-    EventObjectEventDetailExtractor,
     html,
     listen,
-    ObservableProperty,
-    TypedEvent,
 } from '..';
 import {DeclarativeElementDefinition} from '../declarative-element/declarative-element';
+import {TemplateResult} from '../lit-exports';
 import {TestChildElement} from './elements/entries/old-test-app/child.element';
 import {VirOldTestApp} from './elements/entries/old-test-app/vir-old-test-app.element';
 

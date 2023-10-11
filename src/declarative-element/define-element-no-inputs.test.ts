@@ -1,5 +1,4 @@
-import {randomString} from '@augment-vir/browser';
-import {AnyFunction} from '@augment-vir/common';
+import {AnyFunction, randomString} from '@augment-vir/common';
 import {BookEntryTypeEnum} from 'element-book';
 import {defineElementNoInputs} from './define-element-no-inputs';
 
