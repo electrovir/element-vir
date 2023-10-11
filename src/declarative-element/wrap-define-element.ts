@@ -1,13 +1,11 @@
 import {PartialAndNullable} from '@augment-vir/common';
-import {
-    CustomElementTagName,
-    DeclarativeElementInit,
-    defineElement,
-    defineElementNoInputs,
-    EventsInitMap,
-    PropertyInitMapBase,
-} from '..';
+import {CustomElementTagName} from './custom-tag-name';
+import {DeclarativeElementInit} from './declarative-element-init';
+import {defineElement} from './define-element';
+import {defineElementNoInputs} from './define-element-no-inputs';
 import {BaseCssPropertyName} from './properties/css-properties';
+import {EventsInitMap} from './properties/element-events';
+import {PropertyInitMapBase} from './properties/element-properties';
 
 export type WrapDefineElementOptions<
     TagNameRequirement extends CustomElementTagName = CustomElementTagName,

@@ -1,5 +1,5 @@
 import {isMinimalElementDefinition, isWrappedMinimalDefinition} from './minimal-element-definition';
-import {TemplateTransform} from './transform-template';
+import {TemplateTransform} from './template-transform-type';
 
 type WeakMapElementKey = {
     tagName: string;

@@ -6,7 +6,7 @@ import {transformCssTemplate} from './css-transform';
 
 export function css(
     inputTemplateStrings: TemplateStringsArray,
-    ...inputValues: (number | CSSResultGroup | MinimalElementDefinition)[]
+    ...inputValues: (number | CSSResultGroup | MinimalElementDefinition | CSSResult)[]
 ): CSSResult {
     const transformedTemplate = getTransformedTemplate(inputTemplateStrings, inputValues, () => {
         return transformCssTemplate(inputTemplateStrings, inputValues);

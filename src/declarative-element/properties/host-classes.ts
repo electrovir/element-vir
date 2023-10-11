@@ -1,5 +1,5 @@
 import {mapObjectValues} from '@augment-vir/common';
-import {CustomElementTagName} from '../declarative-element-init';
+import {CustomElementTagName} from '../custom-tag-name';
 import {BaseCssPropertyName} from './css-properties';
 import {PropertyInitMapBase} from './element-properties';
 import {FlattenElementVirStateSetup} from './element-vir-state-setup';

@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "16.4.5",
+    "version": "16.4.6",
     "keywords": [
         "custom",
         "web",
@@ -33,6 +33,7 @@
         "test": "virmator test-web",
         "test:all": "concurrently -c auto --kill-others-on-fail --colors --names types,tests,spelling,format,docs \"npm run test:types\" \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\"",
         "test:coverage": "virmator test-web coverage",
+        "test:deps": "virmator deps check",
         "test:docs": "virmator docs check",
         "test:format": "virmator format check",
         "test:spelling": "virmator spellcheck",
@@ -80,7 +81,7 @@
         "type-fest": "^4.4.0",
         "typedoc": "^0.25.2",
         "typescript": "~5.2.2",
-        "virmator": "^9.1.0",
+        "virmator": "^9.1.1",
         "vite": "^4.4.11",
         "vite-tsconfig-paths": "^4.2.1"
     },

@@ -1,19 +1,10 @@
 import {ArrayInsertion, insertAndRemoveValues} from '../util/array';
 import {getAlreadyMappedTemplate, setMappedTemplate} from './nested-mapped-templates';
+import {AllValueTransforms, TemplateTransform} from './template-transform-type';
 
 export type ValueInsertion = {
     index: number;
     value: unknown;
-};
-
-export type AllValueTransforms = {
-    valueIndexDeletions: number[];
-    valueInsertions: ArrayInsertion<unknown>[];
-};
-
-export type TemplateTransform = {
-    templateStrings: TemplateStringsArray;
-    valuesTransform(values: unknown[]): AllValueTransforms;
 };
 
 export type ValueTransformCallback = (

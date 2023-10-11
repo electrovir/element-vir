@@ -8,12 +8,13 @@ import {defineCssVars} from 'lit-css-vars';
 import {property} from 'lit/decorators.js';
 import {WrappedMinimalDefinition} from '../template-transforms/minimal-element-definition';
 import {css} from '../template-transforms/vir-css/vir-css';
+import {CustomElementTagName} from './custom-tag-name';
 import {
     DeclarativeElement,
     DeclarativeElementDefinition,
     StaticDeclarativeElementProperties,
 } from './declarative-element';
-import {CustomElementTagName, DeclarativeElementInit} from './declarative-element-init';
+import {DeclarativeElementInit} from './declarative-element-init';
 import {
     DeclarativeElementDefinitionOptions,
     IgnoreInputsNotBeenSetBeforeWarningSymbol,

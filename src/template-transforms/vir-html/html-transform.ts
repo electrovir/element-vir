@@ -6,7 +6,8 @@ import {
     isMinimalElementDefinition,
     isWrappedMinimalDefinition,
 } from '../minimal-element-definition';
-import {TemplateTransform, ValueTransformCallback, transformTemplate} from '../transform-template';
+import {TemplateTransform} from '../template-transform-type';
+import {ValueTransformCallback, transformTemplate} from '../transform-template';
 
 function transformHtml(
     ...[

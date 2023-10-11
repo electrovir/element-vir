@@ -1,7 +1,7 @@
 import {getObjectTypedKeys, RequiredAndNotNullBy} from '@augment-vir/common';
 import {TypedEvent} from '../typed-event/typed-event';
-import {DeclarativeElement, DeclarativeElementHost} from './declarative-element';
-import {CustomElementTagName} from './declarative-element-init';
+import {CustomElementTagName} from './custom-tag-name';
+import type {DeclarativeElement, DeclarativeElementHost} from './declarative-element';
 import {BaseCssPropertyName} from './properties/css-properties';
 import {
     EventDescriptorMap,

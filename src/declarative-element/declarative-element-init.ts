@@ -1,5 +1,6 @@
 import {CSSResult} from '../lit-exports';
 import {RequireNonVoidReturn} from '../util/type';
+import {CustomElementTagName} from './custom-tag-name';
 import {DeclarativeElementDefinitionOptions} from './definition-options';
 import {BaseCssPropertyName} from './properties/css-properties';
 import {CssVarsInitMap} from './properties/css-vars';
@@ -8,8 +9,6 @@ import {PropertyInitMapBase} from './properties/element-properties';
 import {HostClassesInitMap} from './properties/host-classes';
 import {StylesCallback} from './properties/styles';
 import {InitCallback, RenderCallback} from './render-callback';
-
-export type CustomElementTagName = `${string}-${string}`;
 
 export type DeclarativeElementInit<
     TagName extends CustomElementTagName,

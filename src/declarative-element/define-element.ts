@@ -1,5 +1,6 @@
+import {CustomElementTagName} from './custom-tag-name';
 import {DeclarativeElementDefinition} from './declarative-element';
-import {CustomElementTagName, DeclarativeElementInit} from './declarative-element-init';
+import {DeclarativeElementInit} from './declarative-element-init';
 import {defineElementNoInputs} from './define-element-no-inputs';
 import {IgnoreInputsNotBeenSetBeforeWarningSymbol} from './definition-options';
 import {BaseCssPropertyName} from './properties/css-properties';

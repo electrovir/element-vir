@@ -1,3 +1,4 @@
+export * from './declarative-element/custom-tag-name';
 export * from './declarative-element/declarative-element';
 export * from './declarative-element/declarative-element-init';
 export * from './declarative-element/define-element';

@@ -1,7 +1,8 @@
 import {RequiredAndNotNullBy, RequiredBy} from '@augment-vir/common';
 import {CSSResult, LitElement} from '../lit-exports';
 import {WrappedMinimalDefinition} from '../template-transforms/minimal-element-definition';
-import {CustomElementTagName, DeclarativeElementInit} from './declarative-element-init';
+import {CustomElementTagName} from './custom-tag-name';
+import {DeclarativeElementInit} from './declarative-element-init';
 import {BaseCssPropertyName} from './properties/css-properties';
 import {CssVars} from './properties/css-vars';
 import {EventDescriptorMap, EventsInitMap} from './properties/element-events';
@@ -9,7 +10,7 @@ import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './properties/el
 import {FlattenElementVirStateSetup} from './properties/element-vir-state-setup';
 import {HostClassNamesMap} from './properties/host-classes';
 import {ObservablePropertyListenerMap} from './properties/observable-property/observable-property';
-import {RenderCallback, RenderParams, UpdateStateCallback} from './render-callback';
+import type {RenderCallback, RenderParams, UpdateStateCallback} from './render-callback';
 
 export type DeclarativeElementHost<
     TagName extends CustomElementTagName = any,

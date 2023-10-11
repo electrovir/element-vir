@@ -1,6 +1,6 @@
 import {PropertyValueType} from '@augment-vir/common';
 import {CssVarDefinitions, CssVarsSetup} from 'lit-css-vars';
-import {CustomElementTagName} from '../declarative-element-init';
+import {CustomElementTagName} from '../custom-tag-name';
 import {BaseCssPropertyName} from './css-properties';
 
 export type CssVarsInitMap<

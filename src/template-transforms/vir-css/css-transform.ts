@@ -1,6 +1,7 @@
 import {CSSResultGroup} from '../../lit-exports';
 import {MinimalElementDefinition, isMinimalElementDefinition} from '../minimal-element-definition';
-import {TemplateTransform, ValueTransformCallback, transformTemplate} from '../transform-template';
+import {TemplateTransform} from '../template-transform-type';
+import {ValueTransformCallback, transformTemplate} from '../transform-template';
 
 function transformCss(
     ...[
