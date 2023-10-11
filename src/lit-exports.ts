@@ -8,6 +8,7 @@ export type {
     SVGTemplateResult,
     TemplateResult,
 } from 'lit';
+export * from 'lit/directive.js';
 export * from 'lit/directives/async-append.js';
 export * from 'lit/directives/async-replace.js';
 export * from 'lit/directives/cache.js';
