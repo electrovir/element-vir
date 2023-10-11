@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "16.4.4",
+    "version": "16.4.5",
     "keywords": [
         "custom",
         "web",
@@ -62,6 +62,7 @@
         "cspell": "^7.3.7",
         "dependency-cruiser": "^14.1.1",
         "element-book": "^10.1.2",
+        "element-vir": "file:./",
         "esbuild": "^0.19.4",
         "istanbul-smart-text-reporter": "^1.1.2",
         "markdown-code-example-inserter": "^0.3.2",
@@ -85,7 +86,6 @@
         "vite-tsconfig-paths": "^4.2.1"
     },
     "overrides": {
-        "semver": "^7.5.4",
-        "element-vir": "*"
+        "semver": "^7.5.4"
     }
 }
