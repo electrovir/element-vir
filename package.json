@@ -39,15 +39,15 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/common": "^20.0.0",
+        "@augment-vir/common": "^20.0.1",
         "lit": "^2.8.0",
-        "lit-css-vars": "^3.0.1",
+        "lit-css-vars": "^3.0.2",
         "object-shape-tester": "^0.4.3",
         "run-time-assertions": "^0.0.2"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^20.0.0",
-        "@augment-vir/node-js": "^20.0.0",
+        "@augment-vir/browser-testing": "^20.0.1",
+        "@augment-vir/node-js": "^20.0.1",
         "@istanbuljs/nyc-config-typescript": "^1.0.2",
         "@open-wc/testing": "^3.2.0",
         "@types/chai": "^4.3.7",
@@ -80,7 +80,7 @@
         "type-fest": "^4.4.0",
         "typedoc": "^0.25.2",
         "typescript": "~5.2.2",
-        "virmator": "^9.0.0",
+        "virmator": "^9.1.0",
         "vite": "^4.4.11",
         "vite-tsconfig-paths": "^4.2.1"
     },
