@@ -168,8 +168,10 @@ export function createObservablePropertyWithIntervalUpdate<ValueType, UpdateInpu
         return baseObservableProperty.triggerUpdate(latestInputs);
     }
 
+    const shouldRunInterval: boolean = !!setup.intervalMs && setup.intervalMs !== Infinity;
+
     function resumeInterval() {
-        if (latestIntervalId == undefined) {
+        if (shouldRunInterval && latestIntervalId == undefined) {
             latestIntervalId = window.setInterval(() => {
                 updateValue();
             }, setup.intervalMs);
