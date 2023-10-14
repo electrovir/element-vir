@@ -3,7 +3,8 @@ import {assertIsElementPartInfo} from './directive-helpers';
 
 export type OnResizeCallback = (
     /** Only these two properties are supported in all major modern browsers */
-    entry: Readonly<Pick<ResizeObserverEntry, 'target' | 'contentRect'>>,
+    size: Readonly<Pick<ResizeObserverEntry, 'target' | 'contentRect'>>,
+    element: Element,
 ) => void;
 
 const directiveName = 'onResize';
@@ -29,20 +30,24 @@ export const onResize = directive(
                     `${directiveName} observation triggered but the first entry was empty.`,
                 );
             }
-            this.callback?.({target: resizeEntry.target, contentRect: resizeEntry.contentRect});
+            this.callback?.(
+                {target: resizeEntry.target, contentRect: resizeEntry.contentRect},
+                this.element!,
+            );
         }
 
         override update(partInfo: PartInfo, [callback]: [OnResizeCallback]) {
             assertIsElementPartInfo(partInfo, directiveName);
             this.callback = callback;
             const newElement = partInfo.element;
+            const oldElement = this.element;
             // if the element changes we need to observe the new one
-            if (newElement !== this.element) {
-                if (this.element) {
-                    this.resizeObserver.unobserve(this.element);
+            if (newElement !== oldElement) {
+                this.element = newElement;
+                if (oldElement) {
+                    this.resizeObserver.unobserve(oldElement);
                 }
                 this.resizeObserver.observe(newElement);
-                this.element = newElement;
             }
             return this.render(callback);
         }
