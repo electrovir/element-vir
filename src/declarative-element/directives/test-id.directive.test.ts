@@ -8,11 +8,9 @@ describe(testId.name, () => {
     it('attaches a the given test id', async () => {
         const testIdValue = randomString();
 
-        const fixture = await renderFixture(
-            html`
-                <div ${testId(testIdValue)}>text</div>
-            `,
-        );
+        const fixture = await renderFixture(html`
+            <div ${testId(testIdValue)}>text</div>
+        `);
 
         assertInstanceOf(fixture, HTMLDivElement);
 

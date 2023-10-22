@@ -19,14 +19,12 @@ describe(perInstance.name, () => {
             },
         });
 
-        const fixture = await renderFixture(
-            html`
-                <div>
-                    <${MyElement}></${MyElement}>
-                    <${MyElement}></${MyElement}>
-                </div>
-            `,
-        );
+        const fixture = await renderFixture(html`
+            <div>
+                <${MyElement}></${MyElement}>
+                <${MyElement}></${MyElement}>
+            </div>
+        `);
 
         assertInstanceOf(fixture, HTMLDivElement);
 
