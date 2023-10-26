@@ -1,6 +1,7 @@
-import {assertTypeOf, extractText} from '@augment-vir/browser-testing';
+import {extractText} from '@augment-vir/browser-testing';
 import {createDeferredPromiseWrapper} from '@augment-vir/common';
 import {assert, fixture as render, waitUntil} from '@open-wc/testing';
+import {assertTypeOf} from 'run-time-assertions';
 import {
     AsyncPropValue,
     asyncProp,

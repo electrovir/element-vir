@@ -1,5 +1,5 @@
-import {assertTypeOf} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
+import {assertTypeOf} from 'run-time-assertions';
 import {
     AsyncObservableProperty,
     ObservableProperty,

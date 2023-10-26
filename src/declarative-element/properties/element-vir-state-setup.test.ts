@@ -1,4 +1,4 @@
-import {assertTypeOf} from '@augment-vir/browser-testing';
+import {assertTypeOf} from 'run-time-assertions';
 import {ElementVirStateSetup, FlattenElementVirStateSetup} from './element-vir-state-setup';
 
 describe('FlattenElementVirPropSetup', () => {

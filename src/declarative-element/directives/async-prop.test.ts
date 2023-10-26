@@ -1,4 +1,4 @@
-import {assertTypeOf, clickElement} from '@augment-vir/browser-testing';
+import {clickElement} from '@augment-vir/browser-testing';
 import {
     DeferredPromiseWrapper,
     createDeferredPromiseWrapper,
@@ -8,7 +8,7 @@ import {
     waitForCondition,
 } from '@augment-vir/common';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
-import {assertDefined, assertInstanceOf} from 'run-time-assertions';
+import {assertDefined, assertInstanceOf, assertTypeOf} from 'run-time-assertions';
 import {
     AsyncPropValue,
     StaticElementPropertyDescriptor,

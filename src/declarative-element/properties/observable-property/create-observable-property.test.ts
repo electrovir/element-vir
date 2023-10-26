@@ -1,7 +1,6 @@
-import {assertTypeOf} from '@augment-vir/browser-testing';
 import {createDeferredPromiseWrapper, randomBoolean, randomInteger} from '@augment-vir/common';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
-import {assertInstanceOf} from 'run-time-assertions';
+import {assertInstanceOf, assertTypeOf} from 'run-time-assertions';
 import {createObservablePropertyWithSetter, defineElement, html} from '../../..';
 import {
     createObservablePropertyWithIntervalUpdate,

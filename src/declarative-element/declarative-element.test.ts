@@ -1,4 +1,4 @@
-import {assertTypeOf} from '@augment-vir/browser-testing';
+import {assertTypeOf} from 'run-time-assertions';
 import {StaticDeclarativeElementProperties} from './declarative-element';
 
 describe('StaticDeclarativeElementProperties', () => {
