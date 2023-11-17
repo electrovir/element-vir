@@ -32,7 +32,7 @@ export function assignInputs(element: Element, inputs: object): void {
 }
 
 export function markInputsAsHavingBeenSet(element: Element): void {
-    if (!(element as DeclarativeElement).haveInputsBeenSet) {
-        (element as DeclarativeElement).haveInputsBeenSet = true;
+    if (!(element as DeclarativeElement)._haveInputsBeenSet) {
+        (element as DeclarativeElement)._haveInputsBeenSet = true;
     }
 }

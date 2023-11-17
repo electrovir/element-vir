@@ -148,8 +148,8 @@ export function defineElementNoInputs<
         public static override readonly tagName = initInput.tagName;
         public static override readonly styles = calculatedStyles;
 
-        public lastRenderError: Error | undefined = undefined;
-        public renderCount = 0;
+        public _lastRenderError: Error | undefined = undefined;
+        public _internalRenderCount = 0;
 
         public createRenderParams(): RenderParams<
             TagName,
@@ -228,20 +228,20 @@ export function defineElementNoInputs<
             );
         }
 
-        public initCalled = false;
-        public hasRendered = false;
-        public lastRenderedProps: ThisElementInstance['lastRenderedProps'] = undefined as any;
+        public _initCalled = false;
+        public _hasRendered = false;
+        public _lastRenderedProps: ThisElementInstance['_lastRenderedProps'] = undefined as any;
 
-        public haveInputsBeenSet = false;
+        public _haveInputsBeenSet = false;
 
         public render() {
-            this.renderCount++;
+            this._internalRenderCount++;
             try {
                 if (
                     // This ignores elements at the root of a page, as they can't receive inputs from
                     // other elements (cause they have no custom element ancestors).
                     hasDeclarativeElementParent(this) &&
-                    !this.haveInputsBeenSet &&
+                    !this._haveInputsBeenSet &&
                     !elementOptions[IgnoreInputsNotBeenSetBeforeWarningSymbol]
                 ) {
                     console.warn(
@@ -249,12 +249,12 @@ export function defineElementNoInputs<
                         `${initInput.tagName} got rendered before its input object was set. This was most likely caused by forgetting to use '.assign()' on its opening tag. If no inputs are intended, use '${defineElementNoInputs.name}' to define ${initInput.tagName}.`,
                     );
                 }
-                this.hasRendered = true;
+                this._hasRendered = true;
 
                 const renderParams = this.createRenderParams();
 
-                if (!this.initCalled && initInput.initCallback) {
-                    this.initCalled = true;
+                if (!this._initCalled && initInput.initCallback) {
+                    this._initCalled = true;
                     if ((initInput.initCallback(renderParams) as any) instanceof Promise) {
                         throw new Error('initCallback cannot be asynchronous');
                     }
@@ -271,7 +271,7 @@ export function defineElementNoInputs<
                     state: renderParams.state,
                     inputs: renderParams.inputs,
                 });
-                this.lastRenderedProps = {
+                this._lastRenderedProps = {
                     inputs: {...renderParams.inputs},
                     state: {...renderParams.state},
                 };
@@ -279,15 +279,15 @@ export function defineElementNoInputs<
             } catch (caught) {
                 const error: Error = ensureError(caught);
                 error.message = `Failed to render '${initInput.tagName}': ${error.message}`;
-                this.lastRenderError = error;
+                this._lastRenderError = error;
                 throw error;
             }
         }
 
         public override connectedCallback(): void {
             super.connectedCallback();
-            if (this.hasRendered && !this.initCalled && initInput.initCallback) {
-                this.initCalled = true;
+            if (this._hasRendered && !this._initCalled && initInput.initCallback) {
+                this._initCalled = true;
                 const renderParams = this.createRenderParams();
                 if ((initInput.initCallback(renderParams) as any) instanceof Promise) {
                     throw new Error(
@@ -307,7 +307,7 @@ export function defineElementNoInputs<
                     );
                 }
             }
-            this.initCalled = false;
+            this._initCalled = false;
         }
 
         // this is set below in Object.defineProperties

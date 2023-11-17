@@ -212,9 +212,9 @@ export abstract class DeclarativeElement<
         unknown
     >['cssVars'];
 
-    public abstract lastRenderError: Error | undefined;
-    public abstract renderCount: number;
-    public abstract lastRenderedProps: Pick<
+    public abstract _lastRenderError: Error | undefined;
+    public abstract _internalRenderCount: number;
+    public abstract _lastRenderedProps: Pick<
         RenderParams<any, Inputs, StateInit, any, any, any>,
         'inputs' | 'state'
     >;
@@ -227,7 +227,7 @@ export abstract class DeclarativeElement<
     public abstract assignInputs(
         inputs: {} extends Required<Inputs> ? never : Partial<Inputs>,
     ): void;
-    public abstract haveInputsBeenSet: boolean;
+    public abstract _haveInputsBeenSet: boolean;
     public abstract readonly definition: DeclarativeElementDefinition<
         TagName,
         Inputs,
