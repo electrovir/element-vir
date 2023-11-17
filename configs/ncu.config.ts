@@ -13,6 +13,8 @@ export const ncuConfig: RunOptions = {
          * https://github.com/modernweb-dev/web/blob/78226ea9b507c4cc236043d7fb930d28c3c1177c/packages/dev-server-esbuild/CHANGELOG.md#major-changes
          */
         '@web/dev-server-esbuild',
+        /** Not ready for version 5 yet. */
+        'vite',
     ],
     // include only these
     filter: [],
