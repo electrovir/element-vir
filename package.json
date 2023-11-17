@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "16.5.2",
+    "version": "17.0.0",
     "keywords": [
         "custom",
         "web",
@@ -87,6 +87,7 @@
     },
     "overrides": {
         "@open-wc/scoped-elements": "2.2.3",
+        "@open-wc/testing-helpers": "2.3.1",
         "semver": "^7.5.4"
     }
 }
