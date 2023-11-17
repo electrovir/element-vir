@@ -90,7 +90,7 @@ export function defineElementNoInputs<
         ...initInput.options,
     };
 
-    const eventsMap = createEventDescriptorMap(initInput.events);
+    const eventsMap = createEventDescriptorMap(initInput.tagName, initInput.events);
     const hostClassNames: HostClassNamesMap<TagName, HostClassKeys> = createHostClassNamesMap(
         initInput.hostClasses,
     );

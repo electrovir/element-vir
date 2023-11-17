@@ -5,6 +5,7 @@ import {
     TypedEvent,
 } from '../../typed-event/typed-event';
 import {NonEmptyString} from '../../util/type';
+import {CustomElementTagName} from '../custom-tag-name';
 
 export type EventsInitMap = Record<string, DefinedTypedEventNameDefinition<any>>;
 
@@ -36,6 +37,7 @@ export type ElementEventDetailExtractor<ElementEventGeneric extends TypedEvent<a
     ElementEventGeneric extends TypedEvent<string, infer R> ? R : never;
 
 export function createEventDescriptorMap<EventsInitGeneric extends EventsInitMap>(
+    tagName: CustomElementTagName,
     eventsInit: EventsInitGeneric | undefined,
 ): EventDescriptorMap<EventsInitGeneric> {
     if (!eventsInit) {
@@ -81,7 +83,12 @@ export function createEventDescriptorMap<EventsInitGeneric extends EventsInitMap
                     typeof currentElementEventKey extends string
                         ? typeof currentElementEventKey
                         : never
-                >(currentElementEventKey as any);
+                >(
+                    [
+                        tagName,
+                        currentElementEventKey,
+                    ].join('-') as any,
+                );
 
                 accum[currentElementEventKey] = eventObject;
                 return accum;

@@ -80,7 +80,7 @@ describe('RenderParams', () => {
         function doNotExecuteThis() {
             const renderParams = createRenderParams(
                 {} as any,
-                createEventDescriptorMap({
+                createEventDescriptorMap('my-element', {
                     testEventName: defineElementEvent<number>(),
                 }),
             );
@@ -89,6 +89,8 @@ describe('RenderParams', () => {
             const myEventInstance = new myEvent(4);
             // @ts-expect-error
             new myEvent('no number here');
+
+            assert.strictEqual(myEventInstance.type, 'my-element-testEventName');
 
             renderParams.dispatch(myEventInstance);
             renderParams.dispatch(new TypedEvent(renderParams.events.testEventName, 2));
