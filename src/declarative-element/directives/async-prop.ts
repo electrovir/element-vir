@@ -23,8 +23,8 @@ export type AsyncPropUpdateCallback<
 > = Exclude<TriggerInput, undefined> extends never
     ? () => ReturnType
     : Exclude<UpdaterInput, undefined> extends never
-    ? (trigger: TriggerInput) => ReturnType
-    : (trigger: TriggerInput, inputs: UpdaterInput) => ReturnType;
+      ? (trigger: TriggerInput) => ReturnType
+      : (trigger: TriggerInput, inputs: UpdaterInput) => ReturnType;
 
 export type AsyncPropInit<
     ValueType,

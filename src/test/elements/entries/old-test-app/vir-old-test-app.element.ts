@@ -118,33 +118,31 @@ export const VirOldTestApp = defineElementNoInputs({
                     })}
                 ></${TestChildElement}>
                 <hr />
-                ${
-                    state.showChild
-                        ? html`
-                              <span>Child just with clean up assign (no event listeners)</span>
-                              <br />
-                              <!-- prettier-ignore -->
-                              <!-- intentionally not interpolated to make sure we're logging errors for it -->
-                              <element-vir-test-child
-                                  class="darker weird-colors"
-                                  ${assignWithCleanup(
-                                      TestChildElement,
-                                      {
-                                          displayNumber: state.funnyNumber,
-                                          width: -1,
-                                      },
-                                      (lastValue) => {
-                                          console.info(
-                                              'assign with cleanup last value in app',
-                                              lastValue,
-                                          );
-                                      },
-                                  )}
-                              ></element-vir-test-child>
-                              <hr />
-                          `
-                        : ''
-                }
+                ${state.showChild
+                    ? html`
+                          <span>Child just with clean up assign (no event listeners)</span>
+                          <br />
+                          <!-- prettier-ignore -->
+                          <!-- intentionally not interpolated to make sure we're logging errors for it -->
+                          <element-vir-test-child
+                              class="darker weird-colors"
+                              ${assignWithCleanup(
+                                  TestChildElement,
+                                  {
+                                      displayNumber: state.funnyNumber,
+                                      width: -1,
+                                  },
+                                  (lastValue) => {
+                                      console.info(
+                                          'assign with cleanup last value in app',
+                                          lastValue,
+                                      );
+                                  },
+                              )}
+                          ></element-vir-test-child>
+                          <hr />
+                      `
+                    : ''}
                 <${AsyncChild.assign({
                     trigger: state.funnyNumber,
                 })}></${AsyncChild}>
@@ -153,9 +151,9 @@ export const VirOldTestApp = defineElementNoInputs({
                 })}></${AsyncChild}>
                 <hr />
                 <span>Speak events received: ${state.eventsReceived}</span>
-                <br>
+                <br />
                 <span>Last speak message received: ${state.lastReceivedMessage}</span>
-                <br>
+                <br />
                 <span>app width: ${state.width}</span>
 
                 <${TestChildElement.assign({

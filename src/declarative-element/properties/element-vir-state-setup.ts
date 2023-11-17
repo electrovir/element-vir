@@ -24,10 +24,10 @@ export type FlattenElementVirStateSetup<OriginalObject extends PropertyInitMapBa
     > extends never
         ? OriginalObject[Prop]
         : Extract<OriginalObject[Prop], ElementVirStateSetup<any>> extends ElementVirStateSetup<
-              infer InnerValue
-          >
-        ? InnerValue | Exclude<OriginalObject[Prop], ElementVirStateSetup<any>>
-        : OriginalObject[Prop];
+                infer InnerValue
+            >
+          ? InnerValue | Exclude<OriginalObject[Prop], ElementVirStateSetup<any>>
+          : OriginalObject[Prop];
 };
 
 export type AllowElementVirStateSetup<
@@ -38,11 +38,11 @@ export type AllowElementVirStateSetup<
         ? Extract<OriginalObject[Prop], ElementVirStateSetup<any>> extends never
             ? OriginalObject[Prop]
             : Extract<OriginalObject[Prop], ElementVirStateSetup<any>> extends ElementVirStateSetup<
-                  infer SetValue
-              >
-            ? CurrentType[Prop] extends ElementVirStateSetup<SetValue>
-                ? CurrentType[Prop]
-                : SetValue
-            : OriginalObject[Prop]
+                    infer SetValue
+                >
+              ? CurrentType[Prop] extends ElementVirStateSetup<SetValue>
+                  ? CurrentType[Prop]
+                  : SetValue
+              : OriginalObject[Prop]
         : never;
 };
