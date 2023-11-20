@@ -65,25 +65,6 @@ export type DeclarativeElementDefinition<
         >;
     };
 
-function staticImplements<T>() {
-    function ensureIncludesStaticProperties<U extends T>(classValue: U, context: any) {
-        return classValue;
-    }
-
-    return ensureIncludesStaticProperties;
-}
-
-@staticImplements<
-    StaticDeclarativeElementProperties<
-        CustomElementTagName,
-        PropertyInitMapBase,
-        PropertyInitMapBase,
-        EventsInitMap,
-        BaseCssPropertyName<CustomElementTagName>,
-        BaseCssPropertyName<CustomElementTagName>,
-        unknown
-    >
->()
 export abstract class DeclarativeElement<
     TagName extends CustomElementTagName = any,
     Inputs extends PropertyInitMapBase = any,

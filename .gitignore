@@ -1,9 +1,9 @@
 *.tgz
 .DS_Store
-.not-committed
+.not-committed/
 /Icon?
 coverage/
-dist-docs/
+dist-*/
 dist/
 generated-config-*
 graphics/
