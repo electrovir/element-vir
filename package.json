@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "17.0.0",
+    "version": "17.0.1",
     "keywords": [
         "custom",
         "web",
@@ -41,8 +41,8 @@
     },
     "dependencies": {
         "@augment-vir/common": "^22.0.0",
-        "lit": "^2.8.0",
-        "lit-css-vars": "^3.0.3",
+        "lit": "^3.1.0",
+        "lit-css-vars": "^3.0.4",
         "object-shape-tester": "^1.0.2",
         "run-time-assertions": "^0.2.1"
     },
@@ -86,9 +86,6 @@
         "vite-tsconfig-paths": "^4.2.1"
     },
     "overrides": {
-        "@lit/reactive-element": "^1.6.3",
-        "@open-wc/scoped-elements": "2.2.3",
-        "@open-wc/testing-helpers": "2.3.0",
-        "semver": "^7.5.4"
+        "lit": "^3.1.0"
     }
 }
