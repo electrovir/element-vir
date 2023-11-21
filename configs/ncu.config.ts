@@ -6,8 +6,8 @@ export const ncuConfig: RunOptions = {
     // exclude these
     reject: [
         ...baseNcuConfig.reject,
-        /** Other deps aren't ready for 5.3 yet. */
-        'typescript',
+        /** Not ready for v3 yet. Causes massive bugs in dependent projects. */
+        'lit',
     ],
     // include only these
     filter: [],
