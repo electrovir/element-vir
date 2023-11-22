@@ -18,7 +18,8 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version-file: '.nvmrc'
-                  cache: 'npm'
+            - name: update npm
+              run: npm i -g npm@latest
             - name: Install Node Modules
               run: npm i
             - name: Install Playwright
