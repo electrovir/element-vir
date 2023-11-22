@@ -1,4 +1,4 @@
-import {css, defineElementNoInputs, html} from '..';
+import {css, defineElementNoInputs, html} from '../index';
 
 export const MyWithStyles = defineElementNoInputs({
     tagName: 'my-with-styles',

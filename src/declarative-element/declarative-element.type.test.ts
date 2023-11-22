@@ -1,4 +1,4 @@
-import {html} from '..';
+import {html} from '../index';
 import {defineElementNoInputs} from './define-element-no-inputs';
 import {defineElementEvent} from './properties/element-events';
 

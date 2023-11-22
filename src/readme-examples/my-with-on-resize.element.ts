@@ -1,4 +1,4 @@
-import {defineElementNoInputs, html, onResize} from '..';
+import {defineElementNoInputs, html, onResize} from '../index';
 
 export const MyWithOnResize = defineElementNoInputs({
     tagName: 'my-with-on-resize',

@@ -1,3 +1,3 @@
-import {requireAllCustomElementsToBeDeclarativeElements} from '..';
+import {requireAllCustomElementsToBeDeclarativeElements} from '../index';
 
 requireAllCustomElementsToBeDeclarativeElements();

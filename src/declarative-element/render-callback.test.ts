@@ -12,7 +12,7 @@ import {
     defineElementEvent,
     defineElementNoInputs,
     html,
-} from '..';
+} from '../index';
 
 describe('RenderParams', () => {
     it('should produce proper types', () => {

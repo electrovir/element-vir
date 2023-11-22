@@ -1,4 +1,4 @@
-import {defineElementNoInputs, html} from '..';
+import {defineElementNoInputs, html} from '../index';
 import {MyWithInputs} from './my-with-inputs.element';
 
 export const MyWithAssignment = defineElementNoInputs({

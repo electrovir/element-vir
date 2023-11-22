@@ -1,7 +1,7 @@
 import {RequiredAndNotNullBy} from '@augment-vir/common';
 import {assert, expect, fixture, waitUntil} from '@open-wc/testing';
 import {assertInstanceOf, assertTypeOf} from 'run-time-assertions';
-import {html} from '../../../..';
+import {html} from '../../../../index';
 import {clickElement} from '../../../../util/testing.test-helper';
 import {TestChildElement} from './child.element';
 import {VirOldTestApp} from './vir-old-test-app.element';

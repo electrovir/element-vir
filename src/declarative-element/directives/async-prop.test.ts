@@ -20,7 +20,7 @@ import {
     isRenderReady,
     listen,
     renderAsync,
-} from '../..';
+} from '../../index';
 import {assertRejects, getAssertedDeclarativeElement} from '../../util/testing.test-helper';
 import {ElementVirStateSetup} from '../properties/element-vir-state-setup';
 import {AsyncObservableProperty} from './async-prop';

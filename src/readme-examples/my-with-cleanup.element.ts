@@ -1,4 +1,4 @@
-import {assignWithCleanup, defineElementNoInputs, html} from '..';
+import {assignWithCleanup, defineElementNoInputs, html} from '../index';
 import {MyWithInputs} from './my-with-inputs.element';
 
 export const MyWithCleanup = defineElementNoInputs({

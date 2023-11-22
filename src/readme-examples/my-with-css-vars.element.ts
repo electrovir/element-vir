@@ -1,4 +1,4 @@
-import {css, defineElementNoInputs, html} from '..';
+import {css, defineElementNoInputs, html} from '../index';
 
 export const MyWithCssVars = defineElementNoInputs({
     tagName: 'my-with-css-vars',

@@ -1,4 +1,4 @@
-import {css, defineElementNoInputs, html} from '..';
+import {css, defineElementNoInputs, html} from '../index';
 import {MySimple} from './my-simple.element';
 
 export const MyWithStylesAndInterpolatedSelector = defineElementNoInputs({

@@ -11,7 +11,7 @@ import {
     html,
     listen,
     renderAsync,
-} from '../..';
+} from '../../index';
 import {getAssertedDeclarativeElement} from '../../util/testing.test-helper';
 
 describe(asyncProp.name, () => {

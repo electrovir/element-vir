@@ -1,4 +1,4 @@
-import {defineElementEvent, defineElementNoInputs, html, listen} from '..';
+import {defineElementEvent, defineElementNoInputs, html, listen} from '../index';
 
 export const MyWithEvents = defineElementNoInputs({
     tagName: 'my-with-events',

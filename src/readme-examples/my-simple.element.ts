@@ -1,4 +1,4 @@
-import {defineElementNoInputs, html} from '..';
+import {defineElementNoInputs, html} from '../index';
 
 export const MySimple = defineElementNoInputs({
     tagName: 'my-simple',

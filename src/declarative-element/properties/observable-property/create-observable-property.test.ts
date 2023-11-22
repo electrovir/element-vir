@@ -1,7 +1,7 @@
 import {createDeferredPromiseWrapper, randomBoolean, randomInteger} from '@augment-vir/common';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {assertInstanceOf, assertTypeOf} from 'run-time-assertions';
-import {createObservablePropertyWithSetter, defineElement, html} from '../../..';
+import {createObservablePropertyWithSetter, defineElement, html} from '../../../index';
 import {
     createObservablePropertyWithIntervalUpdate,
     createObservablePropertyWithUpdater,

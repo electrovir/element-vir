@@ -1,4 +1,4 @@
-import {defineTypedEvent} from '../..';
+import {defineTypedEvent} from '../../index';
 import {listen} from './listen.directive';
 
 function genericListen<EventTypeName extends keyof HTMLElementEventMap>(

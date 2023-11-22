@@ -1,4 +1,4 @@
-import {defineElementNoInputs, html, listen} from '..';
+import {defineElementNoInputs, html, listen} from '../index';
 import {MyCustomActionEvent} from './my-custom-action.event';
 
 export const MyWithCustomEvents = defineElementNoInputs({

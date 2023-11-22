@@ -1,6 +1,6 @@
 import {randomString} from '@augment-vir/common';
 import {assert, fixture} from '@open-wc/testing';
-import {assignWithCleanup, defineElementNoInputs, html, listen} from '../..';
+import {assignWithCleanup, defineElementNoInputs, html, listen} from '../../index';
 import {VirWithInputs} from '../../test/elements/entries/old-test-app/vir-with-inputs.element';
 import {
     clickElement,

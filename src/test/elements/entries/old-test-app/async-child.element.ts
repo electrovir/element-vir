@@ -1,5 +1,5 @@
 import {wait, waitValue} from '@augment-vir/common';
-import {asyncProp, defineElement, html, listen, renderAsync} from '../../../..';
+import {asyncProp, defineElement, html, listen, renderAsync} from '../../../../index';
 
 const sameNumberPromise = waitValue(1_500, 86);
 

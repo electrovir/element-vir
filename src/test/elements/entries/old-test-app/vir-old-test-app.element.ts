@@ -8,7 +8,7 @@ import {
     html,
     listen,
     onResize,
-} from '../../../..';
+} from '../../../../index';
 import {AsyncChild} from './async-child.element';
 import {TestChildElement} from './child.element';
 import {MyCustomEvent} from './customEvent';

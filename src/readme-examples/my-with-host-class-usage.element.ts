@@ -1,4 +1,4 @@
-import {defineElementNoInputs, html} from '..';
+import {defineElementNoInputs, html} from '../index';
 import {MyWithHostClassDefinition} from './my-with-host-class-definition.element';
 
 export const MyWithHostClassUsage = defineElementNoInputs({

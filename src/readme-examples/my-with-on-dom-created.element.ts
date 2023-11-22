@@ -1,4 +1,4 @@
-import {defineElementNoInputs, html, onDomCreated} from '..';
+import {defineElementNoInputs, html, onDomCreated} from '../index';
 
 export const MyWithOnDomCreated = defineElementNoInputs({
     tagName: 'my-with-on-dom-created',

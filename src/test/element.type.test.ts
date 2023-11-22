@@ -1,8 +1,10 @@
 import {getObjectTypedKeys, randomString} from '@augment-vir/common';
 import {
     DeclarativeElement,
+    DeclarativeElementDefinition,
     EventObjectEventDetailExtractor,
     ObservableProperty,
+    TemplateResult,
     TypedEvent,
     assign,
     assignWithCleanup,
@@ -13,9 +15,7 @@ import {
     defineTypedEvent,
     html,
     listen,
-} from '..';
-import {DeclarativeElementDefinition} from '../declarative-element/declarative-element';
-import {TemplateResult} from '../lit-exports';
+} from '../index';
 import {TestChildElement} from './elements/entries/old-test-app/child.element';
 import {VirOldTestApp} from './elements/entries/old-test-app/vir-old-test-app.element';
 

@@ -1,5 +1,12 @@
 import {randomString} from '@augment-vir/common';
-import {css, defineElement, defineElementEvent, html, listen, onDomCreated} from '../../../..';
+import {
+    css,
+    defineElement,
+    defineElementEvent,
+    html,
+    listen,
+    onDomCreated,
+} from '../../../../index';
 import {MyCustomEvent} from './customEvent';
 
 export const TestChildElement = defineElement<{

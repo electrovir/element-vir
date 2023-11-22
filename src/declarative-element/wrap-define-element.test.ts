@@ -8,7 +8,7 @@ import {
     html,
     listen,
     wrapDefineElement,
-} from '..';
+} from '../index';
 import {getAssertedDeclarativeElement} from '../util/testing.test-helper';
 
 describe(wrapDefineElement.name, () => {

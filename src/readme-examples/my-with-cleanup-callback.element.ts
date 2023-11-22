@@ -1,4 +1,4 @@
-import {defineElementNoInputs, html} from '..';
+import {defineElementNoInputs, html} from '../index';
 
 export const MyWithAssignmentCleanupCallback = defineElementNoInputs({
     tagName: 'my-with-cleanup-callback',

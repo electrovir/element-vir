@@ -1,4 +1,4 @@
-import {wrapDefineElement} from '..';
+import {wrapDefineElement} from '../index';
 
 export type VirTagName = `vir-${string}`;
 
