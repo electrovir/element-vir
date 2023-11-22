@@ -6,8 +6,6 @@ export const ncuConfig: RunOptions = {
     // exclude these
     reject: [
         ...baseNcuConfig.reject,
-        /** Not ready for v3 yet. Causes massive bugs in dependent projects. */
-        'lit',
     ],
     // include only these
     filter: [],
