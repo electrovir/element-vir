@@ -5,7 +5,6 @@ import {
     kebabCaseToCamelCase,
 } from '@augment-vir/common';
 import {defineCssVars} from 'lit-css-vars';
-import {property} from 'lit/decorators.js';
 import {WrappedMinimalDefinition} from '../template-transforms/minimal-element-definition';
 import {css} from '../template-transforms/vir-css/vir-css';
 import {CustomElementTagName} from './custom-tag-name';
@@ -26,7 +25,7 @@ import {BaseCssPropertyName, assertValidCssProperties} from './properties/css-pr
 import {CssVars} from './properties/css-vars';
 import {EventsInitMap, createEventDescriptorMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
-import {createElementUpdaterProxy} from './properties/element-updater-proxy';
+import {bindReactiveProperty, createElementUpdaterProxy} from './properties/element-updater-proxy';
 import {FlattenElementVirStateSetup} from './properties/element-vir-state-setup';
 import {HostClassNamesMap, createHostClassNamesMap} from './properties/host-classes';
 import {applyHostClasses, hostClassNamesToStylesInput} from './properties/styles';
@@ -337,7 +336,7 @@ export function defineElementNoInputs<
                 (initInput.stateInitStatic as StateInit) || ({} as StateInit);
 
             getObjectTypedKeys(stateInitStatic).forEach((stateKey) => {
-                property()(this, stateKey);
+                bindReactiveProperty(this, stateKey);
 
                 this.instanceState[stateKey] = stateInitStatic[stateKey] as PropertyValueType<
                     FlattenElementVirStateSetup<StateInit>

@@ -7,6 +7,13 @@ import {
     isObservableProperty,
 } from './observable-property/observable-property';
 
+/** Binds the given property key as a reactive property on the given element. */
+export function bindReactiveProperty(element: HTMLElement, propertyKey: PropertyKey) {
+    if (!(propertyKey in element)) {
+        property()(element, propertyKey);
+    }
+}
+
 function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase>(
     propKey: any,
     element: DeclarativeElement,
@@ -41,11 +48,7 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
         if (verifyExists) {
             assertValidPropertyName(propertyKey, element, element.tagName);
         } else {
-            /**
-             * No need to check if it's already a property or not, as the property function already
-             * makes that check.
-             */
-            property()(element, propertyKey);
+            bindReactiveProperty(element, propertyKey);
         }
     }
 
@@ -57,7 +60,7 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
 
     const propsProxy = new Proxy({} as Record<PropertyKey, unknown>, {
         get: valueGetter,
-        set: (target, propertyKey: keyof PropertyInitGeneric | symbol, rawNewValue) => {
+        set(target, propertyKey: keyof PropertyInitGeneric | symbol, rawNewValue) {
             const newValue = isElementVirStateSetup(rawNewValue)
                 ? rawNewValue._elementVirStateSetup()
                 : rawNewValue;
@@ -107,7 +110,7 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
 
             return true;
         },
-        ownKeys: (target) => {
+        ownKeys(target) {
             return Reflect.ownKeys(target);
         },
         getOwnPropertyDescriptor(target, propertyName) {
@@ -123,7 +126,7 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
 
             return undefined;
         },
-        has: (target, propertyName) => {
+        has(target, propertyName) {
             return Reflect.has(target, propertyName);
         },
     });
