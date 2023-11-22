@@ -16,7 +16,7 @@ jobs:
                   node-version-file: '.nvmrc'
             - name: build
               run: |
-                  npm ci
+                  npm i
                   npm run build
             - uses: JamesIves/github-pages-deploy-action@v4
               with:

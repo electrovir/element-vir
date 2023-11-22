@@ -20,7 +20,7 @@ jobs:
                   node-version-file: '.nvmrc'
                   cache: 'npm'
             - name: Install Node Modules
-              run: npm ci
+              run: npm i
             - name: Install Playwright
               run: npx playwright install --with-deps
             - name: Run All Tests
