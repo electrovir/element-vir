@@ -7,8 +7,8 @@ import {
     MaybePromise,
 } from '@augment-vir/common';
 import {ElementVirStateSetup} from '../properties/element-vir-state-setup';
-import {createObservablePropertyWithSetter} from '../properties/observable-property/create-observable-property';
 import {ObservableProperty} from '../properties/observable-property/observable-property';
+import {createObservablePropertyWithSetter} from '../properties/observable-property/observable-property-with-setter';
 
 export type AsyncPropValue<ValueType> = Error | MaybePromise<Awaited<ValueType>>;
 
