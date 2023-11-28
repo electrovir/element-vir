@@ -87,7 +87,7 @@ export function createEventDescriptorMap<EventsInitGeneric extends EventsInitMap
                     [
                         tagName,
                         currentElementEventKey,
-                    ].join('-') as any,
+                    ].join('_') as any,
                 );
 
                 accum[currentElementEventKey] = eventObject;
