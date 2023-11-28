@@ -9,7 +9,7 @@ import {EventDescriptorMap, EventsInitMap} from './properties/element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './properties/element-properties';
 import {FlattenElementVirStateSetup} from './properties/element-vir-state-setup';
 import {HostClassNamesMap} from './properties/host-classes';
-import {ObservablePropertyListenerMap} from './properties/observable-property/observable-property';
+import {ObservablePropListenerMap} from './properties/observable-property/observable-property';
 import type {RenderCallback, RenderParams, UpdateStateCallback} from './render-callback';
 
 export type DeclarativeElementHost<
@@ -201,7 +201,7 @@ export abstract class DeclarativeElement<
     >;
     public abstract override render(): unknown;
     public abstract readonly instanceState: FlattenElementVirStateSetup<StateInit>;
-    public abstract readonly observablePropertyListenerMap: ObservablePropertyListenerMap<
+    public abstract readonly observablePropertyListenerMap: ObservablePropListenerMap<
         StateInit & Inputs
     >;
     public abstract readonly instanceInputs: Inputs;

@@ -1,14 +1,14 @@
 import {randomInteger} from '@augment-vir/common';
 import {defineBookPage} from 'element-book';
 import {
-    createObservablePropertyWithSetter,
+    createSetterObservableProp,
     defineElement,
     defineElementNoInputs,
     html,
     listen,
 } from '../../../index';
 
-const myObservableProp = createObservablePropertyWithSetter(5);
+const myObservableProp = createSetterObservableProp(5);
 
 const VirObservablePropsTestParent = defineElementNoInputs({
     tagName: 'vir-observable-prop-input-test-parent',

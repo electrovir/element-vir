@@ -2,10 +2,7 @@ import {property} from 'lit/decorators.js';
 import {DeclarativeElement} from '../declarative-element';
 import {PropertyInitMapBase} from './element-properties';
 import {isElementVirStateSetup} from './element-vir-state-setup';
-import {
-    ObservablePropertyListener,
-    isObservableProperty,
-} from './observable-property/observable-property';
+import {ObservablePropListener, isObservableProp} from './observable-property/observable-property';
 
 /** Binds the given property key as a reactive property on the given element. */
 export function bindReactiveProperty(element: HTMLElement, propertyKey: PropertyKey) {
@@ -78,19 +75,19 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
                 elementAsProps[propertyKey] = value;
             }
 
-            const existingPropertyListener: ObservablePropertyListener<any> | undefined =
+            const existingPropertyListener: ObservablePropListener<any> | undefined =
                 element.observablePropertyListenerMap[propertyKey];
 
             if (
                 oldValue !== newValue &&
-                isObservableProperty(oldValue) &&
+                isObservableProp(oldValue) &&
                 existingPropertyListener?.length
             ) {
                 /** Stop listening to the old value now that we have a new value */
                 oldValue.removeListener(existingPropertyListener);
             }
 
-            if (isObservableProperty(newValue)) {
+            if (isObservableProp(newValue)) {
                 /** If we're using an existing observable property */
                 if (existingPropertyListener) {
                     newValue.addListener(existingPropertyListener);
@@ -101,7 +98,7 @@ export function createElementUpdaterProxy<PropertyInitGeneric extends PropertyIn
                     element.observablePropertyListenerMap[propertyKey] = newListener;
                     newValue.addListener(newListener);
                 }
-            } else if (isObservableProperty(oldValue)) {
+            } else if (isObservableProp(oldValue)) {
                 /** Clear out old listener that is no longer used. */
                 element.observablePropertyListenerMap[propertyKey] = undefined;
             }

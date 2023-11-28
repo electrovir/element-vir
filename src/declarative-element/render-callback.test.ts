@@ -1,14 +1,14 @@
 import {assert} from '@open-wc/testing';
 import {assertTypeOf} from 'run-time-assertions';
 import {
-    AsyncObservableProperty,
-    ObservableProperty,
+    AsyncObservableProp,
+    ObservableProp,
     RenderCallback,
     TypedEvent,
     asyncProp,
     createEventDescriptorMap,
-    createObservablePropertyWithSetter,
     createRenderParams,
+    createSetterObservableProp,
     defineElementEvent,
     defineElementNoInputs,
     html,
@@ -28,7 +28,7 @@ describe('RenderParams', () => {
                 }),
                 myAsyncProp2: asyncProp({defaultValue: Promise.resolve(3)}),
                 myAsyncProp3: asyncProp({defaultValue: 3}),
-                myNumber: undefined as undefined | ObservableProperty<number>,
+                myNumber: undefined as undefined | ObservableProp<number>,
             },
             events: {
                 testEventName: defineElementEvent<number>(),
@@ -36,7 +36,7 @@ describe('RenderParams', () => {
             },
             renderCallback({events, state, updateState}) {
                 if (state.myNumber == undefined) {
-                    updateState({myNumber: createObservablePropertyWithSetter(6)});
+                    updateState({myNumber: createSetterObservableProp(6)});
                 }
 
                 const testEventThing = events.testEventName;
@@ -53,9 +53,7 @@ describe('RenderParams', () => {
 
                 assertTypeOf<
                     Exclude<Parameters<typeof updateState>[0]['myAsyncProp'], undefined>
-                >().toEqualTypeOf<
-                    AsyncObservableProperty<number, MyAsyncPropTriggerType, undefined>
-                >();
+                >().toEqualTypeOf<AsyncObservableProp<number, MyAsyncPropTriggerType, undefined>>();
 
                 state.myAsyncProp.updateTrigger({input: 'hi'});
 

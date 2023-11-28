@@ -7,8 +7,8 @@ import {
     MaybePromise,
 } from '@augment-vir/common';
 import {ElementVirStateSetup} from '../properties/element-vir-state-setup';
-import {ObservableProperty} from '../properties/observable-property/observable-property';
-import {createObservablePropertyWithSetter} from '../properties/observable-property/observable-property-with-setter';
+import {ObservableProp} from '../properties/observable-property/observable-property';
+import {createSetterObservableProp} from '../properties/observable-property/observable-property-with-setter';
 
 export type AsyncPropValue<ValueType> = Error | MaybePromise<Awaited<ValueType>>;
 
@@ -51,11 +51,11 @@ export type AsyncPropInit<
           >;
       };
 
-export type AsyncObservableProperty<
+export type AsyncObservableProp<
     ValueType,
     TriggerInput extends AsyncPropTriggerInputBase,
     UpdaterInput,
-> = ObservableProperty<AsyncPropValue<ValueType>> & {
+> = ObservableProp<AsyncPropValue<ValueType>> & {
     setNewPromise(newPromise: Promise<Awaited<ValueType>>): void;
     updateTrigger: AsyncPropUpdateCallback<TriggerInput, UpdaterInput, void>;
     setResolvedValue(resolvedValue: Awaited<ValueType>): void;
@@ -71,7 +71,7 @@ function setupAsyncProp<
     TriggerInput extends AsyncPropTriggerInputBase = {},
     UpdaterInput = undefined,
     InitInput extends AsyncPropInit<ValueType, TriggerInput, UpdaterInput> | undefined = undefined,
->(init?: InitInput): AsyncObservableProperty<ValueType, TriggerInput, UpdaterInput> {
+>(init?: InitInput): AsyncObservableProp<ValueType, TriggerInput, UpdaterInput> {
     let lastTrigger: TriggerInput | typeof notSetSymbol = notSetSymbol;
     let lastSetPromise: Promise<Awaited<ValueType>> | undefined;
     const promiseUpdater = init && 'updateCallback' in init ? init.updateCallback : undefined;
@@ -79,23 +79,23 @@ function setupAsyncProp<
     let waitingForValuePromise: DeferredPromiseWrapper<Awaited<ValueType>> =
         createDeferredPromiseWrapper();
 
-    const baseObservableProperty = createObservablePropertyWithSetter<AsyncPropValue<ValueType>>(
+    const baseObservableProp = createSetterObservableProp<AsyncPropValue<ValueType>>(
         waitingForValuePromise.promise,
     );
 
     function resetWaitingForValuePromise(): void {
         waitingForValuePromise = createDeferredPromiseWrapper();
-        baseObservableProperty.setValue(waitingForValuePromise.promise);
+        baseObservableProp.setValue(waitingForValuePromise.promise);
     }
 
     function resolveValue(value: Awaited<ValueType>) {
         waitingForValuePromise.resolve(value);
-        baseObservableProperty.setValue(value);
+        baseObservableProp.setValue(value);
     }
 
     function rejectValue(error: Error) {
         waitingForValuePromise.reject(error);
-        baseObservableProperty.setValue(error);
+        baseObservableProp.setValue(error);
     }
 
     function setPromise(newPromise: Promise<Awaited<ValueType>>) {
@@ -180,14 +180,14 @@ function setupAsyncProp<
     }
 
     const extraProperties: Omit<
-        AsyncObservableProperty<ValueType, TriggerInput, UpdaterInput>,
-        keyof ObservableProperty<AsyncPropValue<ValueType>>
+        AsyncObservableProp<ValueType, TriggerInput, UpdaterInput>,
+        keyof ObservableProp<AsyncPropValue<ValueType>>
     > = {
         setNewPromise(newPromise) {
             setPromise(newPromise);
         },
         setResolvedValue(value) {
-            if (value !== baseObservableProperty.value) {
+            if (value !== baseObservableProp.value) {
                 if (waitingForValuePromise.isSettled()) {
                     resetWaitingForValuePromise();
                 }
@@ -211,7 +211,7 @@ function setupAsyncProp<
               }) as AsyncPropUpdateCallback<TriggerInput, UpdaterInput, void>,
     };
 
-    return Object.assign(baseObservableProperty, extraProperties);
+    return Object.assign(baseObservableProp, extraProperties);
 }
 
 export function asyncProp<
@@ -220,7 +220,7 @@ export function asyncProp<
     UpdaterInput = undefined,
 >(
     ...args: [AsyncPropInit<ValueType, TriggerInput, UpdaterInput>] | []
-): ElementVirStateSetup<AsyncObservableProperty<ValueType, TriggerInput, UpdaterInput>> {
+): ElementVirStateSetup<AsyncObservableProp<ValueType, TriggerInput, UpdaterInput>> {
     return {
         _elementVirStateSetup() {
             return setupAsyncProp(...args);

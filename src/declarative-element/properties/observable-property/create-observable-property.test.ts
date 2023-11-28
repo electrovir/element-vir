@@ -1,17 +1,17 @@
 import {createDeferredPromiseWrapper, randomBoolean, randomInteger} from '@augment-vir/common';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {assertInstanceOf, assertTypeOf} from 'run-time-assertions';
-import {createObservablePropertyWithSetter, defineElement, html} from '../../../index';
+import {createSetterObservableProp, defineElement, html} from '../../../index';
 import {
-    createObservablePropertyWithIntervalUpdate,
-    createObservablePropertyWithUpdateCallback,
+    createIntervalObservableProp,
+    createUpdatableObservableProp,
 } from './create-observable-property';
 
-describe(createObservablePropertyWithSetter.name, () => {
+describe(createSetterObservableProp.name, () => {
     it('should cause re-renders', async () => {
-        const inputsObservable = createObservablePropertyWithSetter('three');
-        const complexInputsObservable = createObservablePropertyWithSetter({three: 2});
-        const stateObservable = createObservablePropertyWithSetter({stuff: 2});
+        const inputsObservable = createSetterObservableProp('three');
+        const complexInputsObservable = createSetterObservableProp({three: 2});
+        const stateObservable = createSetterObservableProp({stuff: 2});
 
         const MyElement = defineElement<{
             simpleInput: typeof inputsObservable;
@@ -126,72 +126,70 @@ describe(createObservablePropertyWithSetter.name, () => {
     });
 });
 
-describe(createObservablePropertyWithUpdateCallback.name, () => {
+describe(createUpdatableObservableProp.name, () => {
     it('has proper types', () => {
-        const asyncObservableProperty = createObservablePropertyWithUpdateCallback({
+        const asyncObservableProp = createUpdatableObservableProp({
             initInput: undefined,
             async updateCallback() {
                 return Promise.resolve(5);
             },
         });
 
-        assertTypeOf(asyncObservableProperty.latestResolvedValue).toEqualTypeOf<
-            number | undefined
-        >();
-        assertTypeOf(asyncObservableProperty.value).toEqualTypeOf<number | Promise<number>>();
+        assertTypeOf(asyncObservableProp.latestResolvedValue).toEqualTypeOf<number | undefined>();
+        assertTypeOf(asyncObservableProp.value).toEqualTypeOf<number | Promise<number>>();
 
-        const syncObservableProperty = createObservablePropertyWithUpdateCallback({
+        const syncObservableProp = createUpdatableObservableProp({
             initInput: undefined,
             updateCallback() {
                 return 5;
             },
         });
 
-        assertTypeOf(syncObservableProperty.latestResolvedValue).toEqualTypeOf<number>();
-        assertTypeOf(syncObservableProperty.value).toEqualTypeOf<number>();
+        assertTypeOf(syncObservableProp.latestResolvedValue).toEqualTypeOf<number>();
+        assertTypeOf(syncObservableProp.value).toEqualTypeOf<number>();
     });
 
     it('updates .value with a promise and then the resolved value', async () => {
         const value = randomInteger({min: 0, max: 100});
 
-        const asyncObservableProperty = createObservablePropertyWithUpdateCallback({
+        const asyncObservableProp = createUpdatableObservableProp({
             initInput: undefined,
             async updateCallback() {
                 return await Promise.resolve(value);
             },
         });
 
-        assert.instanceOf(asyncObservableProperty.value, Promise);
-        assert.isUndefined(asyncObservableProperty.latestResolvedValue);
+        assert.instanceOf(asyncObservableProp.value, Promise);
+        assert.isUndefined(asyncObservableProp.latestResolvedValue);
 
-        await asyncObservableProperty.value;
+        await asyncObservableProp.value;
 
-        assert.strictEqual(asyncObservableProperty.value, value);
-        assert.strictEqual(asyncObservableProperty.latestResolvedValue, value);
+        assert.strictEqual(asyncObservableProp.value, value);
+        assert.strictEqual(asyncObservableProp.latestResolvedValue, value);
     });
 
     it('never uses promises when the updater is synchronous', () => {
         const value = randomInteger({min: 0, max: 100});
 
-        const asyncObservableProperty = createObservablePropertyWithUpdateCallback({
+        const asyncObservableProp = createUpdatableObservableProp({
             initInput: undefined,
             updateCallback() {
                 return value;
             },
         });
 
-        assert.strictEqual(asyncObservableProperty.value, value);
-        assert.strictEqual(asyncObservableProperty.latestResolvedValue, value);
+        assert.strictEqual(asyncObservableProp.value, value);
+        assert.strictEqual(asyncObservableProp.latestResolvedValue, value);
     });
 });
 
-describe(createObservablePropertyWithIntervalUpdate.name, () => {
+describe(createIntervalObservableProp.name, () => {
     it('uses promises when the updater is async', async () => {
         const deferredPromiseWrapper = createDeferredPromiseWrapper<number>();
         const value = randomInteger({min: 0, max: 100});
         let updateCount = 0;
 
-        const asyncObservableProperty = createObservablePropertyWithIntervalUpdate({
+        const asyncObservableProp = createIntervalObservableProp({
             initInput: undefined,
             async updateCallback() {
                 updateCount++;
@@ -200,27 +198,27 @@ describe(createObservablePropertyWithIntervalUpdate.name, () => {
             intervalMs: 100,
         });
 
-        assert.instanceOf(asyncObservableProperty.value, Promise);
-        assert.isUndefined(asyncObservableProperty.latestResolvedValue);
+        assert.instanceOf(asyncObservableProp.value, Promise);
+        assert.isUndefined(asyncObservableProp.latestResolvedValue);
 
         await waitUntil(() => updateCount >= 2);
 
-        assert.instanceOf(asyncObservableProperty.value, Promise);
-        assert.isUndefined(asyncObservableProperty.latestResolvedValue);
+        assert.instanceOf(asyncObservableProp.value, Promise);
+        assert.isUndefined(asyncObservableProp.latestResolvedValue);
 
         deferredPromiseWrapper.resolve(value);
 
-        await asyncObservableProperty.value;
+        await asyncObservableProp.value;
 
-        assert.strictEqual(asyncObservableProperty.value, value);
-        assert.strictEqual(asyncObservableProperty.latestResolvedValue, value);
+        assert.strictEqual(asyncObservableProp.value, value);
+        assert.strictEqual(asyncObservableProp.latestResolvedValue, value);
     });
 
     it('does not use promises when the updater is sync', async () => {
         const value = randomInteger({min: 0, max: 100});
         let updateCount = 0;
 
-        const asyncObservableProperty = createObservablePropertyWithIntervalUpdate({
+        const asyncObservableProp = createIntervalObservableProp({
             initInput: undefined,
             updateCallback() {
                 updateCount++;
@@ -229,12 +227,12 @@ describe(createObservablePropertyWithIntervalUpdate.name, () => {
             intervalMs: 100,
         });
 
-        assert.strictEqual(asyncObservableProperty.value, value + updateCount);
-        assert.strictEqual(asyncObservableProperty.latestResolvedValue, value + updateCount);
+        assert.strictEqual(asyncObservableProp.value, value + updateCount);
+        assert.strictEqual(asyncObservableProp.latestResolvedValue, value + updateCount);
 
         await waitUntil(() => updateCount >= 2);
 
-        assert.strictEqual(asyncObservableProperty.value, value + updateCount);
-        assert.strictEqual(asyncObservableProperty.latestResolvedValue, value + updateCount);
+        assert.strictEqual(asyncObservableProp.value, value + updateCount);
+        assert.strictEqual(asyncObservableProp.latestResolvedValue, value + updateCount);
     });
 });

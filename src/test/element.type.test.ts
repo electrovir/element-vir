@@ -3,7 +3,7 @@ import {
     DeclarativeElement,
     DeclarativeElementDefinition,
     EventObjectEventDetailExtractor,
-    ObservableProperty,
+    ObservableProp,
     TemplateResult,
     TypedEvent,
     assign,
@@ -105,7 +105,7 @@ type AppElementProps = {
     width: number;
     showChild: boolean;
     derp: Record<string, string>;
-    myObservable: ObservableProperty<number>;
+    myObservable: ObservableProp<number>;
 };
 
 const stateInitStatic: ReadonlyArray<keyof AppElementProps> = getObjectTypedKeys(

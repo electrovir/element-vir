@@ -2,7 +2,7 @@ import {randomString} from '@augment-vir/common';
 import {defineBookPage} from 'element-book';
 import {
     assignWithCleanup,
-    createObservablePropertyWithSetter,
+    createSetterObservableProp,
     css,
     defineElementNoInputs,
     html,
@@ -68,7 +68,7 @@ export const VirOldTestApp = defineElementNoInputs({
         width: -1,
         showChild: true,
         derp: {hi: 'yo'} as Record<string, string>,
-        myObservable: createObservablePropertyWithSetter(5),
+        myObservable: createSetterObservableProp(5),
     },
     renderCallback({state, updateState}) {
         // log here to make sure it's not rendering too often
@@ -118,31 +118,33 @@ export const VirOldTestApp = defineElementNoInputs({
                     })}
                 ></${TestChildElement}>
                 <hr />
-                ${state.showChild
-                    ? html`
-                          <span>Child just with clean up assign (no event listeners)</span>
-                          <br />
-                          <!-- prettier-ignore -->
-                          <!-- intentionally not interpolated to make sure we're logging errors for it -->
-                          <element-vir-test-child
-                              class="darker weird-colors"
-                              ${assignWithCleanup(
-                                  TestChildElement,
-                                  {
-                                      displayNumber: state.funnyNumber,
-                                      width: -1,
-                                  },
-                                  (lastValue) => {
-                                      console.info(
-                                          'assign with cleanup last value in app',
-                                          lastValue,
-                                      );
-                                  },
-                              )}
-                          ></element-vir-test-child>
-                          <hr />
-                      `
-                    : ''}
+                ${
+                    state.showChild
+                        ? html`
+                              <span>Child just with clean up assign (no event listeners)</span>
+                              <br />
+                              <!-- prettier-ignore -->
+                              <!-- intentionally not interpolated to make sure we're logging errors for it -->
+                              <element-vir-test-child
+                                  class="darker weird-colors"
+                                  ${assignWithCleanup(
+                                      TestChildElement,
+                                      {
+                                          displayNumber: state.funnyNumber,
+                                          width: -1,
+                                      },
+                                      (lastValue) => {
+                                          console.info(
+                                              'assign with cleanup last value in app',
+                                              lastValue,
+                                          );
+                                      },
+                                  )}
+                              ></element-vir-test-child>
+                              <hr />
+                          `
+                        : ''
+                }
                 <${AsyncChild.assign({
                     trigger: state.funnyNumber,
                 })}></${AsyncChild}>

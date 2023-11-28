@@ -1,21 +1,22 @@
 import {defineShape, isValidShape, unknownShape} from 'object-shape-tester';
 import {PropertyInitMapBase} from '../element-properties';
 
-export type ObservablePropertyListener<T> = (value: T) => void;
+export type ObservablePropListener<T> = (value: T) => void;
 
-export type ObservablePropertyListenerMap<OriginalPropertyMap extends PropertyInitMapBase> =
-    Partial<Record<keyof OriginalPropertyMap, ObservablePropertyListener<any> | undefined>>;
+export type ObservablePropListenerMap<OriginalPropertyMap extends PropertyInitMapBase> = Partial<
+    Record<keyof OriginalPropertyMap, ObservablePropListener<any> | undefined>
+>;
 
-export type ObservableProperty<ValueType> = {
+export type ObservableProp<ValueType> = {
     /** Add the given listener. */
-    addListener(listener: ObservablePropertyListener<ValueType>): boolean;
+    addListener(listener: ObservablePropListener<ValueType>): boolean;
     /** Remove the given listener by reference. */
-    removeListener(listener: ObservablePropertyListener<ValueType>): boolean;
+    removeListener(listener: ObservablePropListener<ValueType>): boolean;
 
     value: ValueType;
 };
 
-export const basicObservablePropertyShape = defineShape<ObservableProperty<any>>({
+export const basicObservablePropShape = defineShape<ObservableProp<any>>({
     addListener() {
         return false;
     },
@@ -25,8 +26,8 @@ export const basicObservablePropertyShape = defineShape<ObservableProperty<any>>
     value: unknownShape(),
 });
 
-export function isObservableProperty<ValueType = unknown>(
+export function isObservableProp<ValueType = unknown>(
     input: unknown,
-): input is ObservableProperty<ValueType> {
-    return isValidShape(input, basicObservablePropertyShape, {allowExtraKeys: true});
+): input is ObservableProp<ValueType> {
+    return isValidShape(input, basicObservablePropShape, {allowExtraKeys: true});
 }

@@ -1,25 +1,25 @@
 import {referenceEqualityCheck} from '../../../util/equality';
-import {ObservableProperty, ObservablePropertyListener} from './observable-property';
+import {ObservableProp, ObservablePropListener} from './observable-property';
 
-export type ObservablePropertyWithSetter<ValueType> = ObservableProperty<ValueType> & {
+export type SetterObservableProp<ValueType> = ObservableProp<ValueType> & {
     setValue(newValue: ValueType): void;
 };
 
 /**
- * Easy and quick way to create an ObservableProperty. Includes a setValue method with equality
- * checking for easily emitting changes.
+ * Easy and quick way to create an ObservableProp. Includes a setValue method with equality checking
+ * for easily emitting changes.
  */
-export function createObservablePropertyWithSetter<ValueType>(
+export function createSetterObservableProp<ValueType>(
     initValue: ValueType,
     equalityCallback = referenceEqualityCheck,
-): ObservablePropertyWithSetter<ValueType> {
-    const listeners = new Set<ObservablePropertyListener<ValueType>>();
+): SetterObservableProp<ValueType> {
+    const listeners = new Set<ObservablePropListener<ValueType>>();
 
     function fireListeners() {
         listeners.forEach((listener) => listener(observableProperty.value));
     }
 
-    const observableProperty: ObservablePropertyWithSetter<ValueType> = {
+    const observableProperty: SetterObservableProp<ValueType> = {
         value: initValue,
         setValue(newValue) {
             if (!equalityCallback(observableProperty.value, newValue)) {

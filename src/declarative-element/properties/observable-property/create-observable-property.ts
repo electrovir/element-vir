@@ -1,6 +1,6 @@
 import {referenceEqualityCheck} from '../../../util/equality';
-import {ObservableProperty} from './observable-property';
-import {createObservablePropertyWithSetter} from './observable-property-with-setter';
+import {ObservableProp} from './observable-property';
+import {createSetterObservableProp} from './observable-property-with-setter';
 
 export type UpdaterCallback<ValueType, UpdateInputType> = Exclude<
     UpdateInputType,
@@ -9,7 +9,7 @@ export type UpdaterCallback<ValueType, UpdateInputType> = Exclude<
     ? () => ValueType
     : (inputs: UpdateInputType) => ValueType;
 
-export type ObservablePropertyWithUpdateCallback<ValueType, UpdateInputType> = ObservableProperty<
+export type UpdatableObservableProp<ValueType, UpdateInputType> = ObservableProp<
     ValueType | Awaited<ValueType>
 > & {
     triggerUpdate: UpdaterCallback<ValueType, UpdateInputType>;
@@ -22,21 +22,18 @@ export type ObservablePropertyWithUpdateCallback<ValueType, UpdateInputType> = O
         : ValueType;
 };
 
-export type ObservablePropertyWithUpdaterSetup<ValueType, UpdateInputType> = {
+export type UpdatableObservablePropSetup<ValueType, UpdateInputType> = {
     initInput: UpdateInputType;
     updateCallback: UpdaterCallback<ValueType, UpdateInputType>;
     equalityCallback?: typeof referenceEqualityCheck | undefined;
 };
 
-export function createObservablePropertyWithUpdateCallback<ValueType, UpdateInputType = undefined>(
-    setup: ObservablePropertyWithUpdaterSetup<ValueType, UpdateInputType>,
-): ObservablePropertyWithUpdateCallback<ValueType, UpdateInputType> {
+export function createUpdatableObservableProp<ValueType, UpdateInputType = undefined>(
+    setup: UpdatableObservablePropSetup<ValueType, UpdateInputType>,
+): UpdatableObservableProp<ValueType, UpdateInputType> {
     const areEqual = setup.equalityCallback ?? referenceEqualityCheck;
 
-    const innerSimpleObservableProperty = createObservablePropertyWithSetter(
-        undefined as ValueType,
-        areEqual,
-    );
+    const innerSimpleObservableProp = createSetterObservableProp(undefined as ValueType, areEqual);
 
     function updateValue(inputs: UpdateInputType): Promise<ValueType> | ValueType {
         const newValue = setup.updateCallback(inputs);
@@ -46,12 +43,12 @@ export function createObservablePropertyWithUpdateCallback<ValueType, UpdateInpu
                 try {
                     const resolvedValue = await newValue;
                     observableWithUpdater.latestResolvedValue =
-                        resolvedValue as ObservablePropertyWithUpdateCallback<
+                        resolvedValue as UpdatableObservableProp<
                             ValueType,
                             UpdateInputType
                         >['latestResolvedValue'];
 
-                    innerSimpleObservableProperty.setValue(resolvedValue);
+                    innerSimpleObservableProp.setValue(resolvedValue);
 
                     resolve(resolvedValue);
                 } catch (error) {
@@ -60,25 +57,24 @@ export function createObservablePropertyWithUpdateCallback<ValueType, UpdateInpu
             });
 
             /** Set the promise so consumers know it's loading. */
-            innerSimpleObservableProperty.setValue(wrappedPromise as ValueType);
+            innerSimpleObservableProp.setValue(wrappedPromise as ValueType);
 
             return wrappedPromise;
         } else {
-            innerSimpleObservableProperty.setValue(newValue);
-            observableWithUpdater.latestResolvedValue =
-                newValue as ObservablePropertyWithUpdateCallback<
-                    ValueType,
-                    UpdateInputType
-                >['latestResolvedValue'];
+            innerSimpleObservableProp.setValue(newValue);
+            observableWithUpdater.latestResolvedValue = newValue as UpdatableObservableProp<
+                ValueType,
+                UpdateInputType
+            >['latestResolvedValue'];
 
             return newValue;
         }
     }
 
-    const observableWithUpdater: ObservablePropertyWithUpdateCallback<ValueType, UpdateInputType> =
-        Object.assign(innerSimpleObservableProperty, {
+    const observableWithUpdater: UpdatableObservableProp<ValueType, UpdateInputType> =
+        Object.assign(innerSimpleObservableProp, {
             triggerUpdate: updateValue as UpdaterCallback<ValueType, UpdateInputType>,
-            latestResolvedValue: undefined as ObservablePropertyWithUpdateCallback<
+            latestResolvedValue: undefined as UpdatableObservableProp<
                 ValueType,
                 UpdateInputType
             >['latestResolvedValue'],
@@ -89,14 +85,16 @@ export function createObservablePropertyWithUpdateCallback<ValueType, UpdateInpu
     return observableWithUpdater;
 }
 
-export type ObservablePropertyWithIntervalSetup<ValueType, UpdateInputType> =
-    ObservablePropertyWithUpdaterSetup<ValueType, UpdateInputType> & {
-        /** Interval duration in Milliseconds. */
-        intervalMs: number;
-    };
+export type IntervalObservablePropSetup<ValueType, UpdateInputType> = UpdatableObservablePropSetup<
+    ValueType,
+    UpdateInputType
+> & {
+    /** Interval duration in Milliseconds. */
+    intervalMs: number;
+};
 
-export type ObservablePropertyWithInterval<ValueType, UpdateInputType> = Omit<
-    ObservablePropertyWithUpdateCallback<ValueType, UpdateInputType>,
+export type IntervalObservableProp<ValueType, UpdateInputType> = Omit<
+    UpdatableObservableProp<ValueType, UpdateInputType>,
     'triggerUpdate'
 > & {
     forceUpdate: UpdaterCallback<ValueType, UpdateInputType>;
@@ -112,18 +110,18 @@ export type ObservablePropertyWithInterval<ValueType, UpdateInputType> = Omit<
     resumeInterval(): void;
 };
 
-export function createObservablePropertyWithIntervalUpdate<ValueType, UpdateInputType = undefined>(
-    setup: ObservablePropertyWithIntervalSetup<ValueType, UpdateInputType>,
-): ObservablePropertyWithInterval<ValueType, UpdateInputType> {
+export function createIntervalObservableProp<ValueType, UpdateInputType = undefined>(
+    setup: IntervalObservablePropSetup<ValueType, UpdateInputType>,
+): IntervalObservableProp<ValueType, UpdateInputType> {
     let latestInputs = setup.initInput;
-    const baseObservableProperty = createObservablePropertyWithUpdateCallback(setup);
+    const baseObservableProp = createUpdatableObservableProp(setup);
     let latestIntervalId: number | undefined = undefined;
 
     function updateValue(inputs?: UpdateInputType): ValueType {
         if (inputs) {
             latestInputs = inputs;
         }
-        return baseObservableProperty.triggerUpdate(latestInputs);
+        return baseObservableProp.triggerUpdate(latestInputs);
     }
 
     const shouldRunInterval: boolean = !!setup.intervalMs && setup.intervalMs !== Infinity;
@@ -138,19 +136,17 @@ export function createObservablePropertyWithIntervalUpdate<ValueType, UpdateInpu
 
     resumeInterval();
 
-    const observablePropertyWithInterval: ObservablePropertyWithInterval<
-        ValueType,
-        UpdateInputType
-    > = Object.assign(baseObservableProperty, {
-        forceUpdate: updateValue as UpdaterCallback<ValueType, UpdateInputType>,
-        pauseInterval() {
-            if (latestIntervalId != undefined) {
-                window.clearInterval(latestIntervalId);
-                latestIntervalId = undefined;
-            }
-        },
-        resumeInterval,
-    });
+    const observablePropertyWithInterval: IntervalObservableProp<ValueType, UpdateInputType> =
+        Object.assign(baseObservableProp, {
+            forceUpdate: updateValue as UpdaterCallback<ValueType, UpdateInputType>,
+            pauseInterval() {
+                if (latestIntervalId != undefined) {
+                    window.clearInterval(latestIntervalId);
+                    latestIntervalId = undefined;
+                }
+            },
+            resumeInterval,
+        });
 
     return observablePropertyWithInterval;
 }

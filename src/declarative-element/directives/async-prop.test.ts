@@ -23,7 +23,7 @@ import {
 } from '../../index';
 import {assertRejects, getAssertedDeclarativeElement} from '../../util/testing.test-helper';
 import {ElementVirStateSetup} from '../properties/element-vir-state-setup';
-import {AsyncObservableProperty} from './async-prop';
+import {AsyncObservableProp} from './async-prop';
 
 describe(asyncProp.name, () => {
     it('should have proper types', () => {
@@ -111,9 +111,7 @@ describe(asyncProp.name, () => {
         assertTypeOf(elementWithAsyncProp.stateInitStatic.myAsyncProp).toEqualTypeOf<
             StaticElementPropertyDescriptor<
                 string,
-                ElementVirStateSetup<
-                    AsyncObservableProperty<SomethingObject, TriggerType, undefined>
-                >
+                ElementVirStateSetup<AsyncObservableProp<SomethingObject, TriggerType, undefined>>
             >
         >();
 
