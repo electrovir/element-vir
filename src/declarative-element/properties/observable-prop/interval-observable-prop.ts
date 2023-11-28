@@ -1,7 +1,7 @@
 import {
     UpdatableObservableProp,
     UpdatableObservablePropSetup,
-    UpdaterCallback,
+    UpdaterFunction,
     createUpdatableObservableProp,
 } from './updatable-observable-prop';
 
@@ -23,7 +23,7 @@ export type IntervalObservableProp<ValueType, UpdateInputType> = Omit<
     'triggerUpdate'
 > & {
     /** Manually force the observable prop to update outside of its normal interval. */
-    forceUpdate: UpdaterCallback<ValueType, UpdateInputType>;
+    forceUpdate: UpdaterFunction<ValueType, UpdateInputType>;
     /**
      * Pauses the update interval, if it isn't already paused. Use .resumeInterval() to start the
      * interval again. Under the hood, this actually clears the interval entirely.
@@ -80,7 +80,7 @@ export function createIntervalObservableProp<ValueType, UpdateInputType = undefi
 
     const observablePropertyWithInterval: IntervalObservableProp<ValueType, UpdateInputType> =
         Object.assign(baseObservableProp, {
-            forceUpdate: updateValue as UpdaterCallback<ValueType, UpdateInputType>,
+            forceUpdate: updateValue as UpdaterFunction<ValueType, UpdateInputType>,
             pauseInterval,
             resumeInterval,
             destroy: pauseInterval,

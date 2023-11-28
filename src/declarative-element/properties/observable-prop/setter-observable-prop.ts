@@ -1,6 +1,7 @@
 import {referenceEqualityCheck} from '../../../util/equality';
 import {ObservableProp, ObservablePropListener} from './observable-prop';
 
+/** A simple ObservableProp with a setter. */
 export type SetterObservableProp<ValueType> = ObservableProp<ValueType> & {
     setValue(newValue: ValueType): void;
 };
@@ -10,7 +11,12 @@ export type SetterObservableProp<ValueType> = ObservableProp<ValueType> & {
  * for easily emitting changes.
  */
 export function createSetterObservableProp<ValueType>(
+    /** The value at which the `SetterObservableProp` will start at. */
     initValue: ValueType,
+    /**
+     * The function used to determine if a set value is actually new. Defaults to simple reference
+     * equality.
+     */
     equalityCallback = referenceEqualityCheck,
 ): SetterObservableProp<ValueType> {
     const listeners = new Set<ObservablePropListener<ValueType>>();
