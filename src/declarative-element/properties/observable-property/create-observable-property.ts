@@ -9,7 +9,7 @@ export type UpdaterCallback<ValueType, UpdateInputType> = Exclude<
     ? () => ValueType
     : (inputs: UpdateInputType) => ValueType;
 
-export type ObservablePropertyWithUpdaterCallback<ValueType, UpdateInputType> = ObservableProperty<
+export type ObservablePropertyWithUpdateCallback<ValueType, UpdateInputType> = ObservableProperty<
     ValueType | Awaited<ValueType>
 > & {
     triggerUpdate: UpdaterCallback<ValueType, UpdateInputType>;
@@ -28,9 +28,9 @@ export type ObservablePropertyWithUpdaterSetup<ValueType, UpdateInputType> = {
     equalityCallback?: typeof referenceEqualityCheck | undefined;
 };
 
-export function createObservablePropertyWithUpdater<ValueType, UpdateInputType = undefined>(
+export function createObservablePropertyWithUpdateCallback<ValueType, UpdateInputType = undefined>(
     setup: ObservablePropertyWithUpdaterSetup<ValueType, UpdateInputType>,
-): ObservablePropertyWithUpdaterCallback<ValueType, UpdateInputType> {
+): ObservablePropertyWithUpdateCallback<ValueType, UpdateInputType> {
     const areEqual = setup.equalityCallback ?? referenceEqualityCheck;
 
     const innerSimpleObservableProperty = createObservablePropertyWithSetter(
@@ -46,7 +46,7 @@ export function createObservablePropertyWithUpdater<ValueType, UpdateInputType =
                 try {
                     const resolvedValue = await newValue;
                     observableWithUpdater.latestResolvedValue =
-                        resolvedValue as ObservablePropertyWithUpdaterCallback<
+                        resolvedValue as ObservablePropertyWithUpdateCallback<
                             ValueType,
                             UpdateInputType
                         >['latestResolvedValue'];
@@ -66,7 +66,7 @@ export function createObservablePropertyWithUpdater<ValueType, UpdateInputType =
         } else {
             innerSimpleObservableProperty.setValue(newValue);
             observableWithUpdater.latestResolvedValue =
-                newValue as ObservablePropertyWithUpdaterCallback<
+                newValue as ObservablePropertyWithUpdateCallback<
                     ValueType,
                     UpdateInputType
                 >['latestResolvedValue'];
@@ -75,10 +75,10 @@ export function createObservablePropertyWithUpdater<ValueType, UpdateInputType =
         }
     }
 
-    const observableWithUpdater: ObservablePropertyWithUpdaterCallback<ValueType, UpdateInputType> =
+    const observableWithUpdater: ObservablePropertyWithUpdateCallback<ValueType, UpdateInputType> =
         Object.assign(innerSimpleObservableProperty, {
             triggerUpdate: updateValue as UpdaterCallback<ValueType, UpdateInputType>,
-            latestResolvedValue: undefined as ObservablePropertyWithUpdaterCallback<
+            latestResolvedValue: undefined as ObservablePropertyWithUpdateCallback<
                 ValueType,
                 UpdateInputType
             >['latestResolvedValue'],
@@ -96,7 +96,7 @@ export type ObservablePropertyWithIntervalSetup<ValueType, UpdateInputType> =
     };
 
 export type ObservablePropertyWithInterval<ValueType, UpdateInputType> = Omit<
-    ObservablePropertyWithUpdaterCallback<ValueType, UpdateInputType>,
+    ObservablePropertyWithUpdateCallback<ValueType, UpdateInputType>,
     'triggerUpdate'
 > & {
     forceUpdate: UpdaterCallback<ValueType, UpdateInputType>;
@@ -116,7 +116,7 @@ export function createObservablePropertyWithIntervalUpdate<ValueType, UpdateInpu
     setup: ObservablePropertyWithIntervalSetup<ValueType, UpdateInputType>,
 ): ObservablePropertyWithInterval<ValueType, UpdateInputType> {
     let latestInputs = setup.initInput;
-    const baseObservableProperty = createObservablePropertyWithUpdater(setup);
+    const baseObservableProperty = createObservablePropertyWithUpdateCallback(setup);
     let latestIntervalId: number | undefined = undefined;
 
     function updateValue(inputs?: UpdateInputType): ValueType {

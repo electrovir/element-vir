@@ -4,7 +4,7 @@ import {assertInstanceOf, assertTypeOf} from 'run-time-assertions';
 import {createObservablePropertyWithSetter, defineElement, html} from '../../../index';
 import {
     createObservablePropertyWithIntervalUpdate,
-    createObservablePropertyWithUpdater,
+    createObservablePropertyWithUpdateCallback,
 } from './create-observable-property';
 
 describe(createObservablePropertyWithSetter.name, () => {
@@ -126,9 +126,9 @@ describe(createObservablePropertyWithSetter.name, () => {
     });
 });
 
-describe(createObservablePropertyWithUpdater.name, () => {
+describe(createObservablePropertyWithUpdateCallback.name, () => {
     it('has proper types', () => {
-        const asyncObservableProperty = createObservablePropertyWithUpdater({
+        const asyncObservableProperty = createObservablePropertyWithUpdateCallback({
             initInput: undefined,
             async updateCallback() {
                 return Promise.resolve(5);
@@ -140,7 +140,7 @@ describe(createObservablePropertyWithUpdater.name, () => {
         >();
         assertTypeOf(asyncObservableProperty.value).toEqualTypeOf<number | Promise<number>>();
 
-        const syncObservableProperty = createObservablePropertyWithUpdater({
+        const syncObservableProperty = createObservablePropertyWithUpdateCallback({
             initInput: undefined,
             updateCallback() {
                 return 5;
@@ -154,7 +154,7 @@ describe(createObservablePropertyWithUpdater.name, () => {
     it('updates .value with a promise and then the resolved value', async () => {
         const value = randomInteger({min: 0, max: 100});
 
-        const asyncObservableProperty = createObservablePropertyWithUpdater({
+        const asyncObservableProperty = createObservablePropertyWithUpdateCallback({
             initInput: undefined,
             async updateCallback() {
                 return await Promise.resolve(value);
@@ -173,7 +173,7 @@ describe(createObservablePropertyWithUpdater.name, () => {
     it('never uses promises when the updater is synchronous', () => {
         const value = randomInteger({min: 0, max: 100});
 
-        const asyncObservableProperty = createObservablePropertyWithUpdater({
+        const asyncObservableProperty = createObservablePropertyWithUpdateCallback({
             initInput: undefined,
             updateCallback() {
                 return value;
