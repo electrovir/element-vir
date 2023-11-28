@@ -1,9 +1,9 @@
-import {defineElementNoInputs, html} from '../index';
+import {defineElementNoInputs, html} from '../../index';
 import {
     EventInitMapEventDetailExtractor,
     EventsInitMap,
     defineElementEvent,
-} from './properties/element-events';
+} from './element-events';
 
 function main() {
     const customElement = defineElementNoInputs({
