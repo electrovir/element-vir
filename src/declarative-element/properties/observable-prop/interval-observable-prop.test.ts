@@ -14,7 +14,7 @@ describe(createIntervalObservableProp.name, () => {
                 updateCount++;
                 return deferredPromiseWrapper.promise;
             },
-            intervalMs: 100,
+            updateInterval: {milliseconds: 100},
         });
 
         assert.instanceOf(asyncObservableProp.value, Promise);
@@ -43,7 +43,7 @@ describe(createIntervalObservableProp.name, () => {
                 updateCount++;
                 return value + updateCount;
             },
-            intervalMs: 100,
+            updateInterval: {milliseconds: 100},
         });
 
         assert.strictEqual(asyncObservableProp.value, value + updateCount);

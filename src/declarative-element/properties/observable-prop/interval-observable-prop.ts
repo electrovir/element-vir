@@ -9,14 +9,20 @@ export type IntervalObservablePropSetup<ValueType, UpdateInputType> = UpdatableO
     ValueType,
     UpdateInputType
 > & {
-    /** Interval duration in Milliseconds. */
-    intervalMs: number;
+    /** Update interval. */
+    updateInterval: {milliseconds: number};
+    /**
+     * If set to true, the interval observable prop will not automatically start its internal
+     * interval.
+     */
+    startPaused?: boolean | undefined;
 };
 
 export type IntervalObservableProp<ValueType, UpdateInputType> = Omit<
     UpdatableObservableProp<ValueType, UpdateInputType>,
     'triggerUpdate'
 > & {
+    /** Manually force the observable prop to update outside of its normal interval. */
     forceUpdate: UpdaterCallback<ValueType, UpdateInputType>;
     /**
      * Pauses the update interval, if it isn't already paused. Use .resumeInterval() to start the
@@ -28,8 +34,14 @@ export type IntervalObservableProp<ValueType, UpdateInputType> = Omit<
      * entirely, as .pauseInterval() actually clears it.
      */
     resumeInterval(): void;
+    /** Cleans up the interval observable prop. */
+    destroy(): void;
 };
 
+/**
+ * This creates an updatable observable prop that will automatically update itself at the given
+ * interval.
+ */
 export function createIntervalObservableProp<ValueType, UpdateInputType = undefined>(
     setup: IntervalObservablePropSetup<ValueType, UpdateInputType>,
 ): IntervalObservableProp<ValueType, UpdateInputType> {
@@ -37,35 +49,41 @@ export function createIntervalObservableProp<ValueType, UpdateInputType = undefi
     const baseObservableProp = createUpdatableObservableProp(setup);
     let latestIntervalId: number | undefined = undefined;
 
-    function updateValue(inputs?: UpdateInputType): ValueType {
-        if (inputs) {
-            latestInputs = inputs;
+    function updateValue(newInputs?: UpdateInputType): ValueType {
+        if (newInputs) {
+            latestInputs = newInputs;
         }
         return baseObservableProp.triggerUpdate(latestInputs);
     }
 
-    const shouldRunInterval: boolean = !!setup.intervalMs && setup.intervalMs !== Infinity;
+    const shouldRunInterval: boolean =
+        !!setup.updateInterval.milliseconds && setup.updateInterval.milliseconds !== Infinity;
 
     function resumeInterval() {
         if (shouldRunInterval && latestIntervalId == undefined) {
             latestIntervalId = window.setInterval(() => {
                 updateValue();
-            }, setup.intervalMs);
+            }, setup.updateInterval.milliseconds);
         }
     }
 
-    resumeInterval();
+    if (!setup.startPaused) {
+        resumeInterval();
+    }
+
+    function pauseInterval() {
+        if (latestIntervalId != undefined) {
+            window.clearInterval(latestIntervalId);
+            latestIntervalId = undefined;
+        }
+    }
 
     const observablePropertyWithInterval: IntervalObservableProp<ValueType, UpdateInputType> =
         Object.assign(baseObservableProp, {
             forceUpdate: updateValue as UpdaterCallback<ValueType, UpdateInputType>,
-            pauseInterval() {
-                if (latestIntervalId != undefined) {
-                    window.clearInterval(latestIntervalId);
-                    latestIntervalId = undefined;
-                }
-            },
+            pauseInterval,
             resumeInterval,
+            destroy: pauseInterval,
         });
 
     return observablePropertyWithInterval;
