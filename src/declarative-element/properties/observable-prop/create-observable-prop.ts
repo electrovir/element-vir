@@ -1,6 +1,6 @@
 import {referenceEqualityCheck} from '../../../util/equality';
-import {ObservableProp} from './observable-property';
-import {createSetterObservableProp} from './observable-property-with-setter';
+import {ObservableProp} from './observable-prop';
+import {createSetterObservableProp} from './setter-observable-prop';
 
 export type UpdaterCallback<ValueType, UpdateInputType> = Exclude<
     UpdateInputType,

@@ -2,7 +2,7 @@ import {property} from 'lit/decorators.js';
 import {DeclarativeElement} from '../declarative-element';
 import {PropertyInitMapBase} from './element-properties';
 import {isElementVirStateSetup} from './element-vir-state-setup';
-import {ObservablePropListener, isObservableProp} from './observable-property/observable-property';
+import {ObservablePropListener, isObservableProp} from './observable-prop/observable-prop';
 
 /** Binds the given property key as a reactive property on the given element. */
 export function bindReactiveProperty(element: HTMLElement, propertyKey: PropertyKey) {

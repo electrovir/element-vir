@@ -1,6 +1,6 @@
 import {itCases} from '@augment-vir/browser-testing';
 import {ensureType} from '@augment-vir/common';
-import {ObservableProp, basicObservablePropShape, isObservableProp} from './observable-property';
+import {ObservableProp, basicObservablePropShape, isObservableProp} from './observable-prop';
 
 describe(isObservableProp.name, () => {
     itCases(isObservableProp, [

@@ -1,5 +1,5 @@
 import {referenceEqualityCheck} from '../../../util/equality';
-import {ObservableProp, ObservablePropListener} from './observable-property';
+import {ObservableProp, ObservablePropListener} from './observable-prop';
 
 export type SetterObservableProp<ValueType> = ObservableProp<ValueType> & {
     setValue(newValue: ValueType): void;

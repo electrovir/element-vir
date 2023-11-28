@@ -5,7 +5,7 @@ import {createSetterObservableProp, defineElement, html} from '../../../index';
 import {
     createIntervalObservableProp,
     createUpdatableObservableProp,
-} from './create-observable-property';
+} from './create-observable-prop';
 
 describe(createSetterObservableProp.name, () => {
     it('should cause re-renders', async () => {
@@ -18,7 +18,7 @@ describe(createSetterObservableProp.name, () => {
             complexInput: typeof complexInputsObservable;
             optionalInput?: string;
         }>()({
-            tagName: 'my-element-for-observable-property-test',
+            tagName: 'my-element-for-observable-prop-test',
             stateInitStatic: {
                 simpleState: stateObservable,
                 complexState: {stuff: 4},

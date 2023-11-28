@@ -9,7 +9,7 @@ import {EventDescriptorMap, EventsInitMap} from './properties/element-events';
 import {ElementPropertyDescriptorMap, PropertyInitMapBase} from './properties/element-properties';
 import {FlattenElementVirStateSetup} from './properties/element-vir-state-setup';
 import {HostClassNamesMap} from './properties/host-classes';
-import {ObservablePropListenerMap} from './properties/observable-property/observable-property';
+import {ObservablePropListenerMap} from './properties/observable-prop/observable-prop';
 import type {RenderCallback, RenderParams, UpdateStateCallback} from './render-callback';
 
 export type DeclarativeElementHost<
