@@ -11,11 +11,11 @@ export function createAttributeDirective(attributeName: string) {
             constructor(partInfo: PartInfo) {
                 super(partInfo);
 
-                this.element = extractElement(partInfo, 'testId');
+                this.element = extractElement(partInfo, attributeName);
             }
 
-            render(testId: string) {
-                this.element.setAttribute(attributeName, testId);
+            render(attributeValue: string) {
+                this.element.setAttribute(attributeName, attributeValue);
                 return noChange;
             }
         },
