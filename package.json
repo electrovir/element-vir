@@ -85,7 +85,7 @@
         "typedoc": "^0.25.4",
         "typescript": "~5.2.2",
         "vira": "^2.5.4",
-        "virmator": "^11.1.4",
+        "virmator": "^11.1.5",
         "vite": "^4.5.0",
         "vite-tsconfig-paths": "^4.2.2"
     },
