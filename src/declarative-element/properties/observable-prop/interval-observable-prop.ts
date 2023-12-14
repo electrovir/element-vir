@@ -1,7 +1,8 @@
+import {Duration, DurationUnit} from 'date-vir';
 import {
+    TriggerUpdateFunction,
     UpdatableObservableProp,
     UpdatableObservablePropSetup,
-    UpdaterFunction,
     createUpdatableObservableProp,
 } from './updatable-observable-prop';
 
@@ -10,12 +11,17 @@ export type IntervalObservablePropSetup<ValueType, UpdateInputType> = UpdatableO
     UpdateInputType
 > & {
     /** Update interval. */
-    updateInterval: {milliseconds: number};
+    updateInterval: Duration<DurationUnit.Milliseconds>;
     /**
      * If set to true, the interval observable prop will not automatically start its internal
      * interval.
      */
     startPaused?: boolean | undefined;
+    /**
+     * The minimum duration between triggers. If an automatic or manual trigger happens twice within
+     * this duration, the second one will not do anything.
+     */
+    rateLimit?: Duration<DurationUnit.Milliseconds> | undefined;
 };
 
 export type IntervalObservableProp<ValueType, UpdateInputType> = Omit<
@@ -23,7 +29,7 @@ export type IntervalObservableProp<ValueType, UpdateInputType> = Omit<
     'triggerUpdate'
 > & {
     /** Manually force the observable prop to update outside of its normal interval. */
-    forceUpdate: UpdaterFunction<ValueType, UpdateInputType>;
+    forceUpdate: TriggerUpdateFunction<ValueType, UpdateInputType>;
     /**
      * Pauses the update interval, if it isn't already paused. Use .resumeInterval() to start the
      * interval again. Under the hood, this actually clears the interval entirely.
@@ -48,27 +54,37 @@ export function createIntervalObservableProp<ValueType, UpdateInputType = undefi
     let latestInputs = setup.initInput;
     const baseObservableProp = createUpdatableObservableProp(setup);
     let latestIntervalId: number | undefined = undefined;
+    let lastUpdateTimestamp = 0;
+    const shouldRunInterval: boolean =
+        setup.updateInterval.milliseconds > 0 &&
+        Math.abs(setup.updateInterval.milliseconds) !== Infinity;
+    let lastOutput: ValueType = baseObservableProp.value;
+    baseObservableProp.addListener((value) => (lastOutput = value));
 
-    function updateValue(newInputs?: UpdateInputType): ValueType {
-        if (newInputs) {
-            latestInputs = newInputs;
+    function updateValue(...newInputs: [UpdateInputType] | []): ValueType {
+        if (newInputs.length) {
+            latestInputs = newInputs[0];
         }
+        const now = Date.now();
+        const shouldIgnoreDueToRateLimiting =
+            setup.rateLimit &&
+            setup.rateLimit.milliseconds > 0 &&
+            now - lastUpdateTimestamp < setup.rateLimit?.milliseconds;
+
+        if (shouldIgnoreDueToRateLimiting) {
+            return lastOutput;
+        }
+
+        lastUpdateTimestamp = now;
         return baseObservableProp.triggerUpdate(latestInputs);
     }
-
-    const shouldRunInterval: boolean =
-        !!setup.updateInterval.milliseconds && setup.updateInterval.milliseconds !== Infinity;
 
     function resumeInterval() {
         if (shouldRunInterval && latestIntervalId == undefined) {
             latestIntervalId = window.setInterval(() => {
                 updateValue();
-            }, setup.updateInterval.milliseconds);
+            }, Math.ceil(setup.updateInterval.milliseconds));
         }
-    }
-
-    if (!setup.startPaused) {
-        resumeInterval();
     }
 
     function pauseInterval() {
@@ -78,12 +94,19 @@ export function createIntervalObservableProp<ValueType, UpdateInputType = undefi
         }
     }
 
+    if (!setup.startPaused) {
+        resumeInterval();
+    }
+
     const observablePropertyWithInterval: IntervalObservableProp<ValueType, UpdateInputType> =
         Object.assign(baseObservableProp, {
-            forceUpdate: updateValue as UpdaterFunction<ValueType, UpdateInputType>,
+            forceUpdate: updateValue as TriggerUpdateFunction<ValueType, UpdateInputType>,
             pauseInterval,
             resumeInterval,
-            destroy: pauseInterval,
+            destroy() {
+                pauseInterval();
+                baseObservableProp.destroy();
+            },
         });
 
     return observablePropertyWithInterval;

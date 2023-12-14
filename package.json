@@ -41,6 +41,7 @@
     },
     "dependencies": {
         "@augment-vir/common": "^22.0.0",
+        "date-vir": "^4.1.1",
         "lit": "^3.1.0",
         "lit-css-vars": "^3.0.6",
         "lit-html": "^3.1.0",
