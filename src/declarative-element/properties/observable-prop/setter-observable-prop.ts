@@ -25,6 +25,10 @@ export function createSetterObservableProp<ValueType>(
         listeners.forEach((listener) => listener(observableProperty.value));
     }
 
+    function removeListener(listener: ObservablePropListener<ValueType>) {
+        return listeners.delete(listener);
+    }
+
     const observableProperty: SetterObservableProp<ValueType> = {
         value: initValue,
         setValue(newValue) {
@@ -40,10 +44,11 @@ export function createSetterObservableProp<ValueType>(
                 listeners.add(listener);
             }
 
-            return shouldAddListener;
+            return () => removeListener(listener);
         },
-        removeListener(listener) {
-            return listeners.delete(listener);
+        removeListener,
+        destroy() {
+            listeners.clear();
         },
     };
 

@@ -8,21 +8,23 @@ export type ObservablePropListenerMap<OriginalPropertyMap extends PropertyInitMa
 >;
 
 export type ObservableProp<ValueType> = {
-    /** Add the given listener. */
-    addListener(listener: ObservablePropListener<ValueType>): boolean;
+    /** Add the given listener. Returns a callback which will remove the listener. */
+    addListener(listener: ObservablePropListener<ValueType>): () => boolean;
     /** Remove the given listener by reference. */
     removeListener(listener: ObservablePropListener<ValueType>): boolean;
 
+    destroy(): void;
     value: ValueType;
 };
 
 export const basicObservablePropShape = defineShape<ObservableProp<any>>({
     addListener() {
-        return false;
+        return () => false;
     },
     removeListener() {
         return false;
     },
+    destroy() {},
     value: unknownShape(),
 });
 
