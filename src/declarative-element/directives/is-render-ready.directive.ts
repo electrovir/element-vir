@@ -3,7 +3,7 @@ import {AsyncPropValue} from './async-prop';
 
 export function isRenderReady<T>(asyncPropInput: AsyncPropValue<T>): asyncPropInput is Awaited<T> {
     if (asyncPropInput instanceof Error) {
-        return false;
+        throw asyncPropInput;
     } else if (isPromiseLike(asyncPropInput)) {
         return false;
     } else {
