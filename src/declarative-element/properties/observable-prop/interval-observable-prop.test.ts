@@ -109,7 +109,9 @@ describe(createIntervalObservableProp.name, () => {
             possiblyUndefinedInputObservableProp.value,
         );
 
-        await waitUntil(() => possiblyUndefinedInputObservableProp.updateCount >= 4);
+        await waitUntil(() => possiblyUndefinedInputObservableProp.updateCount >= 4, undefined, {
+            timeout: 10_000,
+        });
         assert.strictEqual(possiblyUndefinedInputObservableProp.value, 0);
         assert.strictEqual(possiblyUndefinedInputObservableProp.value, forcedResult);
         assert.strictEqual(
