@@ -17,7 +17,8 @@ import {
     defineElementEvent,
     defineElementNoInputs,
     html,
-    isRenderReady,
+    isError,
+    isResolved,
     listen,
     renderAsync,
 } from '../../index';
@@ -152,7 +153,7 @@ describe(asyncProp.name, () => {
                     circularReference,
                 });
 
-                if (isRenderReady(state.myAsyncProp.value)) {
+                if (isResolved(state.myAsyncProp.value) && !isError(state.myAsyncProp.value)) {
                     assertTypeOf(state.myAsyncProp.value).toEqualTypeOf<number>();
                 }
 
@@ -431,7 +432,7 @@ describe(asyncProp.name, () => {
                 wasRendered: defineElementEvent<void>(),
             },
             renderCallback({dispatch, events, state}) {
-                if (isRenderReady(state.myAsyncProp.value)) {
+                if (isResolved(state.myAsyncProp.value) && !isError(state.myAsyncProp.value)) {
                     assertTypeOf(state.myAsyncProp.value).toEqualTypeOf<number | undefined>();
                 }
 

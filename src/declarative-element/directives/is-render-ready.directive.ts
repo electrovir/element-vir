@@ -1,28 +1,20 @@
 import {isPromiseLike} from '@augment-vir/common';
 import {AsyncPropValue} from './async-prop';
 
-export function isRenderReady<T>(asyncPropInput: AsyncPropValue<T>): asyncPropInput is Awaited<T> {
-    if (asyncPropInput instanceof Error) {
-        throw asyncPropInput;
-    } else if (isPromiseLike(asyncPropInput)) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
 export function isResolved<T>(
     asyncPropInput: AsyncPropValue<T>,
 ): asyncPropInput is Exclude<AsyncPropValue<T>, Promise<T>> {
-    if (isPromiseLike(asyncPropInput)) {
-        return false;
-    } else {
-        return true;
-    }
+    return !isPromiseLike(asyncPropInput);
 }
 
-export function readyOrUndefined<T>(asyncPropInput: AsyncPropValue<T>): Awaited<T> | undefined {
-    if (isRenderReady(asyncPropInput)) {
+export function isError<T>(asyncPropInput: AsyncPropValue<T>): asyncPropInput is Error {
+    return asyncPropInput instanceof Error;
+}
+
+export function resolvedOrUndefined<T>(
+    asyncPropInput: AsyncPropValue<T>,
+): Awaited<T> | undefined | Error {
+    if (isResolved(asyncPropInput)) {
         return asyncPropInput;
     } else {
         return undefined;

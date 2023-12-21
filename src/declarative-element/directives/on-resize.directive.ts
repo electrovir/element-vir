@@ -15,7 +15,7 @@ export const onResize = directive(
         element: Element | undefined;
         readonly resizeObserver = new ResizeObserver((entries) => this.fireCallback(entries));
         callback: OnResizeCallback | undefined;
-        
+
         constructor(partInfo: PartInfo) {
             super(partInfo);
 

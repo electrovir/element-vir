@@ -1,27 +1,5 @@
 import {itCases} from '@augment-vir/browser-testing';
-import {isRenderReady, isResolved, readyOrUndefined} from './is-render-ready.directive';
-
-describe(isRenderReady.name, () => {
-    itCases(isRenderReady, [
-        {
-            it: 'rejects promises',
-            input: new Promise(() => {}),
-            expect: false,
-        },
-        {
-            it: 'rejects errors',
-            input: new Error(),
-            expect: false,
-        },
-        {
-            it: 'accepts plain values',
-            input: {
-                stuff: 'hello',
-            },
-            expect: true,
-        },
-    ]);
-});
+import {isResolved, resolvedOrUndefined} from './is-render-ready.directive';
 
 describe(isResolved.name, () => {
     itCases(isResolved, [
@@ -45,17 +23,19 @@ describe(isResolved.name, () => {
     ]);
 });
 
-describe(readyOrUndefined.name, () => {
-    itCases(readyOrUndefined, [
+describe(resolvedOrUndefined.name, () => {
+    const errorInstance = new Error();
+
+    itCases(resolvedOrUndefined, [
         {
             it: 'rejects promises',
             input: new Promise(() => {}),
             expect: undefined,
         },
         {
-            it: 'rejects errors',
-            input: new Error(),
-            expect: undefined,
+            it: 'passes errors',
+            input: errorInstance,
+            expect: errorInstance,
         },
         {
             it: 'accepts plain values',
