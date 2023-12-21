@@ -1,4 +1,4 @@
-import {ChildPart, ElementPartInfo, PartInfo, PartType} from 'lit/directive.js';
+import {ChildPart, ElementPartInfo, PartInfo, PartType} from '../../lit-exports';
 
 /** For some reason these aren't defined in lit's types already. */
 export type ExtraPartInfoProperties = {

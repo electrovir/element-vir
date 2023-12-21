@@ -1,6 +1,4 @@
-import {AsyncDirective} from 'lit/async-directive.js';
-import {directive, PartInfo} from 'lit/directive.js';
-import {noChange} from '../../lit-exports';
+import {AsyncDirective, directive, noChange, PartInfo} from '../../lit-exports';
 import {assignInputs} from '../properties/assign-inputs';
 import {ElementDefinitionWithInputsType} from './assign.directive';
 import {extractElement} from './directive-helpers';

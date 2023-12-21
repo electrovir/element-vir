@@ -1,29 +1,21 @@
+import {assertTypeOf} from 'run-time-assertions';
 import {defineTypedEvent} from '../../index';
 import {listen} from './listen.directive';
 
-function genericListen<EventTypeName extends keyof HTMLElementEventMap>(
-    eventName: EventTypeName,
-    callback: (event: HTMLElementEventMap[EventTypeName]) => void,
-) {}
+describe(listen.name, () => {
+    it('has proper types', () => {
+        const MyCustomEvent = defineTypedEvent<number>()('my-custom-event');
+        listen(MyCustomEvent, (event) => {
+            assertTypeOf(event.detail).toEqualTypeOf<number>();
+            assertTypeOf(event.detail).not.toMatchTypeOf<string>();
+        });
 
-function main() {
-    const MyCustomEvent = defineTypedEvent<number>()('my-custom-event');
-    listen(MyCustomEvent, (event) => {
-        const properNumber: number = event.detail;
-        // @ts-expect-error
-        const notNumber: string = event.detail;
-    });
+        listen('click', (event) => {
+            assertTypeOf(event).toEqualTypeOf<MouseEvent>();
+        });
 
-    genericListen('click', (event) => {
-        const innerEvent: MouseEvent = event;
+        (({}) as HTMLInputElement).addEventListener('click', (event) => {
+            assertTypeOf(event).toEqualTypeOf<MouseEvent>();
+        });
     });
-
-    listen('click', (event) => {
-        const innerEvent: MouseEvent = event;
-    });
-
-    // need to extract the types from here
-    (({}) as HTMLInputElement).addEventListener('click', (event) => {
-        const innerEvent: MouseEvent = event;
-    });
-}
+});

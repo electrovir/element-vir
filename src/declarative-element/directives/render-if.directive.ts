@@ -1,6 +1,4 @@
-import {when} from 'lit/directives/when.js';
-
-const notSetSymbol = Symbol('not set');
+import {when} from '../../lit-exports';
 
 export function renderIf<TrueCondition = unknown, FalseCondition = undefined>(
     condition: boolean,

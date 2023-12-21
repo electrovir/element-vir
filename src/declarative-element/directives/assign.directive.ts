@@ -1,5 +1,4 @@
-import {directive, Directive, DirectiveResult, PartInfo} from 'lit/directive.js';
-import {noChange} from '../../lit-exports';
+import {directive, Directive, DirectiveResult, noChange, PartInfo} from '../../lit-exports';
 import {assignInputs} from '../properties/assign-inputs';
 import {PropertyInitMapBase} from '../properties/element-properties';
 import {extractElement} from './directive-helpers';

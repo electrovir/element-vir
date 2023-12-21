@@ -1,4 +1,4 @@
-import {property} from 'lit/decorators.js';
+import {property} from '../../lit-exports';
 import {DeclarativeElement} from '../declarative-element';
 import {PropertyInitMapBase} from './element-properties';
 import {isElementVirStateSetup} from './element-vir-state-setup';

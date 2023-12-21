@@ -1,4 +1,4 @@
-import {directive, Directive, PartInfo} from 'lit/directive.js';
+import {directive, Directive, PartInfo} from '../../lit-exports';
 import {assertIsElementPartInfo} from './directive-helpers';
 
 export type OnResizeCallback = (

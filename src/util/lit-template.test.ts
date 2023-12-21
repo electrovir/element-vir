@@ -1,5 +1,5 @@
 import {itCases} from '@augment-vir/browser-testing';
-import {unsafeSVG} from 'lit/directives/unsafe-svg.js';
+import {unsafeSVG} from '../lit-exports';
 import {html} from '../template-transforms/vir-html/vir-html';
 import {convertTemplateToString} from './lit-template';
 
