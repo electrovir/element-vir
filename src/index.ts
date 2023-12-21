@@ -9,7 +9,7 @@ export * from './declarative-element/directives/assign.directive';
 export * from './declarative-element/directives/async-prop';
 export * from './declarative-element/directives/create-attribute-directive';
 export * from './declarative-element/directives/directive-helpers';
-export * from './declarative-element/directives/is-render-ready.directive';
+export * from './declarative-element/directives/is-resolved.directive';
 export * from './declarative-element/directives/listen.directive';
 export * from './declarative-element/directives/on-dom-created.directive';
 export * from './declarative-element/directives/on-resize.directive';

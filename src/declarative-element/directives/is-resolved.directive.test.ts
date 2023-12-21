@@ -1,5 +1,6 @@
 import {itCases} from '@augment-vir/browser-testing';
-import {isResolved, resolvedOrUndefined} from './is-render-ready.directive';
+import {AsyncPropValue} from './async-prop';
+import {isError, isResolved, resolvedOrUndefined} from './is-resolved.directive';
 
 describe(isResolved.name, () => {
     itCases(isResolved, [
@@ -21,6 +22,18 @@ describe(isResolved.name, () => {
             expect: true,
         },
     ]);
+});
+
+describe(isError.name, () => {
+    it('does not block isResolved', () => {
+        const myValue = {} as AsyncPropValue<{something: 'crazy'}>;
+
+        if (isError(myValue)) {
+            throw myValue;
+        } else if (isResolved(myValue)) {
+            console.log(myValue);
+        }
+    });
 });
 
 describe(resolvedOrUndefined.name, () => {
