@@ -24,7 +24,11 @@ import {hasDeclarativeElementParent} from './has-declarative-element-parent';
 import {assignInputs} from './properties/assign-inputs';
 import {BaseCssPropertyName, assertValidCssProperties} from './properties/css-properties';
 import {CssVars} from './properties/css-vars';
-import {EventsInitMap, createEventDescriptorMap} from './properties/element-events';
+import {
+    EventDescriptorMap,
+    EventsInitMap,
+    createEventDescriptorMap,
+} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
 import {bindReactiveProperty, createElementUpdaterProxy} from './properties/element-updater-proxy';
 import {FlattenElementVirStateSetup} from './properties/element-vir-state-setup';
@@ -90,7 +94,10 @@ export function defineElementNoInputs<
         ...initInput.options,
     };
 
-    const eventsMap = createEventDescriptorMap(initInput.tagName, initInput.events);
+    const eventsMap: EventDescriptorMap<TagName, EventsInit> = createEventDescriptorMap(
+        initInput.tagName,
+        initInput.events,
+    );
     const hostClassNames: HostClassNamesMap<TagName, HostClassKeys> = createHostClassNamesMap(
         initInput.hostClasses,
     );

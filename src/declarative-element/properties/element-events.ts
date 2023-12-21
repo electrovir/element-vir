@@ -22,9 +22,12 @@ export type EventInitMapEventDetailExtractor<
     ? R
     : never;
 
-export type EventDescriptorMap<EventsInitGeneric extends EventsInitMap> = {
+export type EventDescriptorMap<
+    TagName extends CustomElementTagName,
+    EventsInitGeneric extends EventsInitMap,
+> = {
     [CurrentEventTypeName in keyof EventsInitGeneric]: DefinedTypedEvent<
-        CurrentEventTypeName extends string ? CurrentEventTypeName : never,
+        CurrentEventTypeName extends string ? `${TagName}-${CurrentEventTypeName}` : never,
         EventInitMapEventDetailExtractor<CurrentEventTypeName, EventsInitGeneric>
     >;
 };
@@ -36,12 +39,15 @@ export type EventObjectEventDetailExtractor<
 export type ElementEventDetailExtractor<ElementEventGeneric extends TypedEvent<any, any>> =
     ElementEventGeneric extends TypedEvent<string, infer R> ? R : never;
 
-export function createEventDescriptorMap<EventsInitGeneric extends EventsInitMap>(
+export function createEventDescriptorMap<
+    TagName extends CustomElementTagName,
+    EventsInitGeneric extends EventsInitMap,
+>(
     tagName: CustomElementTagName,
     eventsInit: EventsInitGeneric | undefined,
-): EventDescriptorMap<EventsInitGeneric> {
+): EventDescriptorMap<TagName, EventsInitGeneric> {
     if (!eventsInit) {
-        return {} as EventDescriptorMap<EventsInitGeneric>;
+        return {} as EventDescriptorMap<TagName, EventsInitGeneric>;
     }
     return Object.keys(eventsInit)
         .filter(
@@ -63,9 +69,9 @@ export function createEventDescriptorMap<EventsInitGeneric extends EventsInitMap
         )
         .reduce(
             (
-                accum: EventDescriptorMap<EventsInitGeneric>,
+                accum: EventDescriptorMap<TagName, EventsInitGeneric>,
                 currentElementEventKey: keyof EventsInitGeneric,
-            ): EventDescriptorMap<EventsInitGeneric> => {
+            ): EventDescriptorMap<TagName, EventsInitGeneric> => {
                 const eventObject: DefinedTypedEvent<
                     typeof currentElementEventKey extends string
                         ? typeof currentElementEventKey
@@ -87,12 +93,12 @@ export function createEventDescriptorMap<EventsInitGeneric extends EventsInitMap
                     [
                         tagName,
                         currentElementEventKey,
-                    ].join('_') as any,
+                    ].join('-') as any,
                 );
 
-                accum[currentElementEventKey] = eventObject;
+                accum[currentElementEventKey] = eventObject as any;
                 return accum;
             },
-            {} as EventDescriptorMap<EventsInitGeneric>,
+            {} as EventDescriptorMap<TagName, EventsInitGeneric>,
         );
 }

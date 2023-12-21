@@ -53,7 +53,7 @@ export type RenderParams<
 > = {
     state: Readonly<FlattenElementVirStateSetup<StateInit>>;
     updateState: UpdateStateCallback<StateInit>;
-    events: EventDescriptorMap<EventsInit>;
+    events: EventDescriptorMap<TagName, EventsInit>;
     host: DeclarativeElementHost<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>;
     dispatch: <EventTypeName extends keyof EventsInit>(
         event:
@@ -84,7 +84,7 @@ export function createRenderParams<
         CssVarKeys,
         RenderOutput
     >,
-    eventsMap: EventDescriptorMap<EventsInit>,
+    eventsMap: EventDescriptorMap<TagName, EventsInit>,
 ): RenderParams<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys> {
     function updateState(newStatePartial: Parameters<UpdateStateCallback<StateInit>>[0]) {
         getObjectTypedKeys(newStatePartial).forEach((stateKey) => {

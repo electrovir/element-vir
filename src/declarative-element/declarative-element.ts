@@ -245,7 +245,7 @@ export interface StaticDeclarativeElementProperties<
         CssVarKeys,
         RenderOutputGeneric
     >;
-    readonly events: EventDescriptorMap<EventsInit>;
+    readonly events: EventDescriptorMap<TagName, EventsInit>;
     readonly stateInitStatic: ElementPropertyDescriptorMap<StateInit>;
     readonly init: RequiredBy<
         DeclarativeElementInit<

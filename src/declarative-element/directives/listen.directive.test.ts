@@ -14,8 +14,11 @@ describe(listen.name, () => {
             assertTypeOf(event).toEqualTypeOf<MouseEvent>();
         });
 
-        (({}) as HTMLInputElement).addEventListener('click', (event) => {
-            assertTypeOf(event).toEqualTypeOf<MouseEvent>();
-        });
+        (({addEventListener() {}}) as unknown as HTMLInputElement).addEventListener(
+            'click',
+            (event) => {
+                assertTypeOf(event).toEqualTypeOf<MouseEvent>();
+            },
+        );
     });
 });
