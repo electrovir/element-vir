@@ -1,6 +1,7 @@
 import {
     PropertyValueType,
-    ensureError,
+    ensureErrorAndPrependMessage,
+    extractErrorMessage,
     getObjectTypedKeys,
     kebabCaseToCamelCase,
 } from '@augment-vir/common';
@@ -276,10 +277,12 @@ export function defineElementNoInputs<
                 };
                 return renderResult;
             } catch (caught) {
-                const error: Error = ensureError(caught);
-                error.message = `Failed to render '${initInput.tagName}': ${error.message}`;
+                const error: Error = ensureErrorAndPrependMessage(
+                    caught,
+                    `Failed to render ${initInput.tagName}`,
+                );
                 this._lastRenderError = error;
-                throw error;
+                return extractErrorMessage(error);
             }
         }
 
