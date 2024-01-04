@@ -16,8 +16,8 @@ jobs:
                   node-version-file: '.nvmrc'
             - name: build
               run: |
-                  npm i
-                  npm run build
+                  npm ci
+                  npm run docs
             - uses: JamesIves/github-pages-deploy-action@v4
               with:
                   branch: 'gh-pages'

@@ -21,8 +21,10 @@ jobs:
             - name: update npm
               run: npm i -g npm@latest
             - name: Install Node Modules
-              run: npm i
+              run: npm ci
             - name: Install Playwright
               run: npx playwright install --with-deps
+            - name: Compile element-vir
+              run: npm run compile
             - name: Run All Tests
               run: npm run test:all

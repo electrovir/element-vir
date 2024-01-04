@@ -18,8 +18,9 @@ jobs:
                   node-version-file: '.nvmrc'
             - name: run test
               run: |
-                  npm i
+                  npm ci
                   npx playwright install --with-deps
+                  npm run compile
                   npm run test:all
             - name: pack and set vars
               id: vars
