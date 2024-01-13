@@ -11,8 +11,9 @@
         "packages/*"
     ],
     "scripts": {
+        "build:pages": "mono-vir for-each-async npm run build:pages",
         "compile": "mono-vir for-each npm run compile",
-        "docs": "mono-vir for-each-async virmator docs",
+        "docs": "mono-vir for-each-async npm run docs",
         "format": "virmator format",
         "publish": "virmator publish \"npm run compile && npm run test:all\"",
         "test": "mono-vir for-each-async npm test",
