@@ -8,7 +8,7 @@ import {
     waitForCondition,
 } from '@augment-vir/common';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
-import {assertDefined, assertInstanceOf, assertTypeOf} from 'run-time-assertions';
+import {assertDefined, assertInstanceOf, assertThrows, assertTypeOf} from 'run-time-assertions';
 import {
     AsyncPropValue,
     StaticElementPropertyDescriptor,
@@ -22,7 +22,6 @@ import {
     listen,
     renderAsync,
 } from '../../index';
-import {assertRejects, getAssertedDeclarativeElement} from '../../util/testing.test-helper';
 import {ElementVirStateSetup} from '../properties/element-vir-state-setup';
 import {AsyncObservableProp} from './async-prop';
 
@@ -195,12 +194,14 @@ describe(asyncProp.name, () => {
             },
         });
 
-        const rendered = await renderFixture(html`
-            <${ElementWithAsyncProp}></${ElementWithAsyncProp}>
+        const instance = await renderFixture(html`
+            <${ElementWithAsyncProp.assign({
+                promiseUpdateTrigger: undefined,
+            })}></${ElementWithAsyncProp}>
         `);
 
         // get elements
-        const instance = getAssertedDeclarativeElement(ElementWithAsyncProp, rendered);
+        assertInstanceOf(instance, ElementWithAsyncProp);
         const newPromiseButton = instance.shadowRoot.querySelector('#new-promise');
         const forceUpdateButton = instance.shadowRoot.querySelector('#force-update');
         const assignResolvedButton = instance.shadowRoot.querySelector('#assign-resolved-value');
@@ -287,7 +288,7 @@ describe(asyncProp.name, () => {
         // it shouldn't render after resolution of a previous promise
         deferredPromiseWrappers[3].resolve(5);
 
-        await assertRejects(() => waitUntil(() => renderCount === 8));
+        await assertThrows(() => waitUntil(() => renderCount === 8));
         assert.instanceOf(instance.instanceState.myAsyncProp.value, Promise);
 
         // should render after resolving the current promise
@@ -330,13 +331,12 @@ describe(asyncProp.name, () => {
             },
         });
 
-        const rendered = await renderFixture(html`
+        const instance = await renderFixture(html`
             <${ElementWithAsyncPropError}></${ElementWithAsyncPropError}>
         `);
 
         // get elements
-        const instance = getAssertedDeclarativeElement(ElementWithAsyncPropError, rendered);
-
+        assertInstanceOf(instance, ElementWithAsyncPropError);
         await waitForCondition({
             conditionCallback() {
                 return (
@@ -484,7 +484,7 @@ describe(asyncProp.name, () => {
         // render the element
         let renderCount: number = 0;
 
-        const rendered = await renderFixture(html`
+        const instance = await renderFixture(html`
             <${ElementWithUndefinedAsyncProp}
                 ${listen(ElementWithUndefinedAsyncProp.events.wasRendered, () => {
                     renderCount++;
@@ -493,7 +493,7 @@ describe(asyncProp.name, () => {
         `);
 
         // get elements
-        const instance = getAssertedDeclarativeElement(ElementWithUndefinedAsyncProp, rendered);
+        assertInstanceOf(instance, ElementWithUndefinedAsyncProp);
         const newPromiseButton = instance.shadowRoot.querySelector('#new-promise');
         const forceUpdateButton = instance.shadowRoot.querySelector('#force-update');
         const assignResolvedButton = instance.shadowRoot.querySelector('#assign-resolved-value');

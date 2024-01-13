@@ -1,5 +1,5 @@
 import {assert, fixture as renderFixture} from '@open-wc/testing';
-import {assertTypeOf} from 'run-time-assertions';
+import {assertInstanceOf, assertTypeOf} from 'run-time-assertions';
 import {
     css,
     defineElement,
@@ -9,7 +9,6 @@ import {
     listen,
     wrapDefineElement,
 } from '../index';
-import {getAssertedDeclarativeElement} from '../util/testing.test-helper';
 
 describe(wrapDefineElement.name, () => {
     type MySpecificTagName = `my-${string}`;
@@ -133,7 +132,7 @@ describe(wrapDefineElement.name, () => {
 
         const assignedInput = 'hello';
 
-        const fixture = await renderFixture(html`
+        const elementInstance = await renderFixture(html`
             <${MySpecificElement.assign({noInputsActually: assignedInput})}
                 ${listen(MySpecificElement.events.myOutput, (event) => {
                     assertTypeOf(event.detail).toEqualTypeOf<number>();
@@ -141,7 +140,7 @@ describe(wrapDefineElement.name, () => {
             ></${MySpecificElement}>
         `);
 
-        const elementInstance = getAssertedDeclarativeElement(MySpecificElement, fixture);
+        assertInstanceOf(elementInstance, MySpecificElement);
 
         assert.strictEqual(elementInstance.instanceInputs.noInputsActually, assignedInput);
     });

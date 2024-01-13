@@ -1,7 +1,7 @@
 import {extractText} from '@augment-vir/browser-testing';
 import {createDeferredPromiseWrapper} from '@augment-vir/common';
 import {assert, fixture as render, waitUntil} from '@open-wc/testing';
-import {assertTypeOf} from 'run-time-assertions';
+import {assertInstanceOf, assertTypeOf} from 'run-time-assertions';
 import {
     AsyncPropValue,
     asyncProp,
@@ -12,7 +12,6 @@ import {
     listen,
     renderAsync,
 } from '../../index';
-import {getAssertedDeclarativeElement} from '../../util/testing.test-helper';
 
 describe(asyncProp.name, () => {
     const elementWithAsyncProp = defineElement<{
@@ -49,14 +48,14 @@ describe(asyncProp.name, () => {
 
         const deferredPromise = createDeferredPromiseWrapper<number>();
 
-        const rendered = await render(html`
+        const instance = await render(html`
             <${elementWithAsyncProp.assign({setAsyncProp: deferredPromise.promise})}
                 ${listen(elementWithAsyncProp.events.previousAsyncProp, (event) => {
                     allAsyncPropValues.push(event.detail);
                 })}
             ></${elementWithAsyncProp}>
         `);
-        const instance = getAssertedDeclarativeElement(elementWithAsyncProp, rendered);
+        assertInstanceOf(instance, elementWithAsyncProp);
         assert.lengthOf(allAsyncPropValues, 1);
         assert.instanceOf(allAsyncPropValues[0], Promise);
 

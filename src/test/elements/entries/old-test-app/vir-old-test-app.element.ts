@@ -1,7 +1,7 @@
 import {randomString} from '@augment-vir/common';
 import {defineBookPage} from 'element-book';
 import {
-    assignWithCleanup,
+    assign,
     createSetterObservableProp,
     css,
     defineElementNoInputs,
@@ -126,19 +126,10 @@ export const VirOldTestApp = defineElementNoInputs({
                           <!-- intentionally not interpolated to make sure we're logging errors for it -->
                           <element-vir-test-child
                               class="darker weird-colors"
-                              ${assignWithCleanup(
-                                  TestChildElement,
-                                  {
-                                      displayNumber: state.funnyNumber,
-                                      width: -1,
-                                  },
-                                  (lastValue) => {
-                                      console.info(
-                                          'assign with cleanup last value in app',
-                                          lastValue,
-                                      );
-                                  },
-                              )}
+                              ${assign(TestChildElement, {
+                                  displayNumber: state.funnyNumber,
+                                  width: -1,
+                              })}
                           ></element-vir-test-child>
                           <hr />
                       `
