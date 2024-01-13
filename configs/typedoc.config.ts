@@ -15,7 +15,6 @@ export const typeDocConfig: Partial<TypeDocOptions> = {
     excludeInternal: true,
     excludeExternals: true,
     intentionallyNotExported: [
-        'AssignWithCleanupDirectiveClass',
         '__class',
     ],
     requiredToBeDocumented: [],

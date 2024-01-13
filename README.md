@@ -189,7 +189,7 @@ export const MyWithUpdateState = defineElementNoInputs({
 });
 ```
 
-### Assigning to inputs
+### Assigning inputs
 
 Use the `assign` directive to assign values to child custom elements inputs:
 
@@ -568,48 +568,9 @@ export const MyWithOnResize = defineElementNoInputs({
 });
 ```
 
-### `assign`
-
-Assign a value to one of a custom element's properties. This is explained in the **Assigning to inputs** section earlier.
-
 ### `listen`
 
 Listen to a specific event. This is explained in the **Listening to element events (outputs)** section earlier.
-
-### `assignWithCleanup`
-
-This directive is the same as the `assign` directive but it accepts an additional `cleanupCallback` input. Use this directive to assign values which need some kind of cleanup when they're overwritten. For example, a 3D rendering engine which uses the canvas that should free up memory when it's swapped out.
-
-<!-- example-link: src/readme-examples/my-with-cleanup.element.ts -->
-
-```TypeScript
-import {assignWithCleanup, defineElementNoInputs, html} from 'element-vir';
-import {MyWithInputs} from './my-with-inputs.element';
-
-export const MyWithCleanup = defineElementNoInputs({
-    tagName: 'my-with-cleanup',
-    renderCallback() {
-        return html`
-            <h1>My App</h1>
-            <${MyWithInputs}
-                ${assignWithCleanup(
-                    MyWithInputs,
-                    {
-                        email: 'user@example.com',
-                        username: 'user',
-                    },
-                    (previousValue) => {
-                        // here would be the cleanup code.
-                        // In this specific example the value is just a string, so no cleanup is needed
-                        // and the following line isn't actually doing anything.
-                        previousValue.username.trim();
-                    },
-                )}
-            ></${MyWithInputs}>
-        `;
-    },
-});
-```
 
 ### `renderIf`
 
