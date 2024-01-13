@@ -15,6 +15,7 @@ export type VerifiedElementInit<
     EventsInit extends EventsInitMap,
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
+    SlotNames extends ReadonlyArray<string>,
 > = Extract<keyof StateInit, keyof Inputs> extends never
     ? Extract<keyof Inputs, keyof HTMLElement> extends never
         ? VerifiedElementNoInputsInit<
@@ -23,7 +24,8 @@ export type VerifiedElementInit<
               StateInit,
               EventsInit,
               HostClassKeys,
-              CssVarKeys
+              CssVarKeys,
+              SlotNames
           >
         : 'ERROR: Cannot define an element input property that clashes with native HTMLElement properties.'
     : "ERROR: Cannot define an element state property that clashes with the element's input properties.";
@@ -35,6 +37,7 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>() {
         EventsInit extends EventsInitMap = {},
         HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
         CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
+        SlotNames extends ReadonlyArray<string> = [],
     >(
         initInput: VerifiedElementInit<
             TagName,
@@ -42,7 +45,8 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>() {
             StateInit,
             EventsInit,
             HostClassKeys,
-            CssVarKeys
+            CssVarKeys,
+            SlotNames
         >,
     ): DeclarativeElementDefinition<
         TagName,
@@ -50,7 +54,8 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>() {
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        SlotNames
     > => {
         const init:
             | string
@@ -60,7 +65,8 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>() {
                   StateInit,
                   EventsInit,
                   HostClassKeys,
-                  CssVarKeys
+                  CssVarKeys,
+                  SlotNames
               > = initInput;
 
         if (!isRunTimeType(init, 'object')) {
@@ -79,7 +85,8 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>() {
             StateInit,
             EventsInit,
             HostClassKeys,
-            CssVarKeys
+            CssVarKeys,
+            SlotNames
         >);
     };
 }

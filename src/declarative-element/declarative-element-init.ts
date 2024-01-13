@@ -16,6 +16,7 @@ export type DeclarativeElementInit<
     EventsInit extends EventsInitMap,
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
+    SlotNames extends ReadonlyArray<string>,
 > = {
     /**
      * HTML tag name. This should not be used directly, as interpolating it with the html tagged
@@ -32,6 +33,7 @@ export type DeclarativeElementInit<
     stateInitStatic?: StateInit;
     /** Events that the element can dispatch. (These can be thought of as "outputs".) */
     events?: EventsInit;
+    slotNames?: SlotNames;
     /**
      * HTML host classes. Values can be callbacks to determine when a host class should be defined,
      * based on current instance state or inputs, or just false to indicate that the host class will
@@ -47,14 +49,23 @@ export type DeclarativeElementInit<
      */
     cssVars?: CssVarsInitMap<TagName, CssVarKeys>;
     /** Called as part of the first renderCallback call, before the first renderCallback call. */
-    initCallback?: InitCallback<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>;
+    initCallback?: InitCallback<
+        TagName,
+        Inputs,
+        StateInit,
+        EventsInit,
+        HostClassKeys,
+        CssVarKeys,
+        SlotNames
+    >;
     renderCallback: RenderCallback<
         TagName,
         Inputs,
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        SlotNames
     >;
     cleanupCallback?: InitCallback<
         TagName,
@@ -62,7 +73,8 @@ export type DeclarativeElementInit<
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        SlotNames
     >;
     options?: Partial<DeclarativeElementDefinitionOptions> | undefined;
 };

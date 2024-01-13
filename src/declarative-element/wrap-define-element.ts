@@ -20,7 +20,8 @@ export type WrapDefineElementOptions<
             StateInitRequirement,
             EventsInitRequirement,
             BaseCssPropertyName<TagNameRequirement>,
-            BaseCssPropertyName<TagNameRequirement>
+            BaseCssPropertyName<TagNameRequirement>,
+            ReadonlyArray<string>
         >,
     ) => void;
     transformInputs: (
@@ -30,7 +31,8 @@ export type WrapDefineElementOptions<
             StateInitRequirement,
             EventsInitRequirement,
             BaseCssPropertyName<TagNameRequirement>,
-            BaseCssPropertyName<TagNameRequirement>
+            BaseCssPropertyName<TagNameRequirement>,
+            ReadonlyArray<string>
         >,
     ) => DeclarativeElementInit<
         TagNameRequirement,
@@ -38,7 +40,8 @@ export type WrapDefineElementOptions<
         StateInitRequirement,
         EventsInitRequirement,
         BaseCssPropertyName<TagNameRequirement>,
-        BaseCssPropertyName<TagNameRequirement>
+        BaseCssPropertyName<TagNameRequirement>,
+        ReadonlyArray<string>
     >;
 }>;
 
@@ -61,6 +64,7 @@ export function wrapDefineElement<
                 EventsInit extends EventsInitRequirement,
                 HostClassKeys extends BaseCssPropertyName<TagName>,
                 CssVarKeys extends BaseCssPropertyName<TagName>,
+                SlotNames extends ReadonlyArray<string>,
             >(
                 inputs: VerifiedElementInit<
                     TagName,
@@ -68,20 +72,22 @@ export function wrapDefineElement<
                     StateInit,
                     EventsInit,
                     HostClassKeys,
-                    CssVarKeys
+                    CssVarKeys,
+                    SlotNames
                 >,
             ) => {
-                assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any>);
+                assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
                 return defineElement<Inputs>()(
                     transformInputs(
-                        inputs as DeclarativeElementInit<any, any, any, any, any, any>,
+                        inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
                     ) as unknown as VerifiedElementInit<
                         TagName,
                         Inputs,
                         StateInit,
                         EventsInit,
                         HostClassKeys,
-                        CssVarKeys
+                        CssVarKeys,
+                        SlotNames
                     >,
                 );
             };
@@ -93,6 +99,7 @@ export function wrapDefineElement<
             EventsInit extends EventsInitRequirement,
             HostClassKeys extends BaseCssPropertyName<TagName>,
             CssVarKeys extends BaseCssPropertyName<TagName>,
+            SlotNames extends ReadonlyArray<string>,
         >(
             inputs: VerifiedElementNoInputsInit<
                 TagName,
@@ -100,20 +107,22 @@ export function wrapDefineElement<
                 StateInit,
                 EventsInit,
                 HostClassKeys,
-                CssVarKeys
+                CssVarKeys,
+                SlotNames
             >,
         ) => {
-            assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any>);
+            assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
             return defineElementNoInputs(
                 transformInputs(
-                    inputs as DeclarativeElementInit<any, any, any, any, any, any>,
+                    inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
                 ) as unknown as VerifiedElementNoInputsInit<
                     TagName,
                     Inputs,
                     StateInit,
                     EventsInit,
                     HostClassKeys,
-                    CssVarKeys
+                    CssVarKeys,
+                    SlotNames
                 >,
             );
         },

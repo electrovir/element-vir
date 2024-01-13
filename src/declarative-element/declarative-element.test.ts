@@ -8,7 +8,15 @@ import {PropertyInitMapBase} from './properties/element-properties';
 describe('StaticDeclarativeElementProperties', () => {
     it('excludes observables in inputsType', () => {
         assertTypeOf<
-            StaticDeclarativeElementProperties<any, {hi: number}, any, any, any, any>['inputsType']
+            StaticDeclarativeElementProperties<
+                any,
+                {hi: number},
+                any,
+                any,
+                any,
+                any,
+                any
+            >['inputsType']
         >().toEqualTypeOf<{hi: number}>();
     });
 });
@@ -22,7 +30,8 @@ describe(DeclarativeElement.name, () => {
                 PropertyInitMapBase,
                 EventsInitMap,
                 BaseCssPropertyName<CustomElementTagName>,
-                BaseCssPropertyName<CustomElementTagName>
+                BaseCssPropertyName<CustomElementTagName>,
+                ReadonlyArray<string>
             >
         >();
     });

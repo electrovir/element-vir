@@ -1,5 +1,7 @@
 import {AnyFunction, randomString} from '@augment-vir/common';
+import {assert} from '@open-wc/testing';
 import {BookEntryTypeEnum} from 'element-book';
+import {assertTypeOf} from 'run-time-assertions';
 import {defineElementNoInputs} from './define-element-no-inputs';
 
 describe(defineElementNoInputs.name, () => {
@@ -29,6 +31,22 @@ describe(defineElementNoInputs.name, () => {
             // @ts-expect-error
             renderCallback() {},
         });
+    });
+
+    it('persists slot names', () => {
+        const myTestElement = defineElementNoInputs({
+            tagName: 'test-element-no-inputs-with-slot-names',
+            slotNames: [
+                'my slot',
+            ],
+            renderCallback() {
+                return 'hi';
+            },
+        });
+
+        assertTypeOf(myTestElement.slotNames['my slot']).toEqualTypeOf<'my slot'>();
+        assertTypeOf(myTestElement.slotNames['my slot']).toMatchTypeOf<string>();
+        assert.strictEqual(myTestElement.slotNames['my slot'], 'my slot');
     });
 
     it('does not allow updating state properties that do not exist in the state', () => {

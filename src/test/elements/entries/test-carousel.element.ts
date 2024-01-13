@@ -40,7 +40,7 @@ export const TestCarouselWrapper = defineElementNoInputs({
         }
     `,
     renderCallback() {
-        console.log('render');
+        console.info('render');
         return html`
             <${TestCarousel.assign({
                 enableAutomaticCycling: true,

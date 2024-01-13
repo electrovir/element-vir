@@ -99,7 +99,7 @@ export const VirOldTestApp = defineElementNoInputs({
                     myProp: state.myObservable.value,
                 })}
                     ${listen(TestChildElement.events.speak, (event) => {
-                        console.log('speak event', event);
+                        console.info('speak event', event);
                         updateState({
                             eventsReceived: state.eventsReceived + 1,
                             lastReceivedMessage: event.detail,

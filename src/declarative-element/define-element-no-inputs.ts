@@ -36,6 +36,7 @@ import {FlattenElementVirStateSetup} from './properties/element-vir-state-setup'
 import {HostClassNamesMap, createHostClassNamesMap} from './properties/host-classes';
 import {applyHostClasses, hostClassNamesToStylesInput} from './properties/styles';
 import {RenderParams, createRenderParams} from './render-callback';
+import {createSlotNamesMap} from './slot-names';
 
 export type VerifiedElementNoInputsInit<
     TagName extends CustomElementTagName,
@@ -44,8 +45,17 @@ export type VerifiedElementNoInputsInit<
     EventsInit extends EventsInitMap,
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
+    SlotNames extends ReadonlyArray<string>,
 > = Extract<keyof StateInit, keyof HTMLElement> extends never
-    ? DeclarativeElementInit<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>
+    ? DeclarativeElementInit<
+          TagName,
+          Inputs,
+          StateInit,
+          EventsInit,
+          HostClassKeys,
+          CssVarKeys,
+          SlotNames
+      >
     : 'ERROR: Cannot define an element state property that clashes with native HTMLElement properties.';
 
 export function defineElementNoInputs<
@@ -55,6 +65,7 @@ export function defineElementNoInputs<
     EventsInit extends EventsInitMap = {},
     const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
     const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
+    const SlotNames extends ReadonlyArray<string> = [],
 >(
     initInput: VerifiedElementNoInputsInit<
         TagName,
@@ -62,9 +73,18 @@ export function defineElementNoInputs<
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        SlotNames
     >,
-): DeclarativeElementDefinition<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys> {
+): DeclarativeElementDefinition<
+    TagName,
+    Inputs,
+    StateInit,
+    EventsInit,
+    HostClassKeys,
+    CssVarKeys,
+    SlotNames
+> {
     /** This as cast is safe only because of the following run-time type check. */
     const init = initInput as DeclarativeElementInit<
         TagName,
@@ -72,7 +92,8 @@ export function defineElementNoInputs<
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        SlotNames
     >;
     if (!isRunTimeType(init, 'object')) {
         throw new Error('Cannot define element with non-object init: ${init}');
@@ -84,7 +105,8 @@ export function defineElementNoInputs<
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        SlotNames
     >;
     type ThisElementStaticClass = typeof DeclarativeElement<
         TagName,
@@ -92,7 +114,8 @@ export function defineElementNoInputs<
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        SlotNames
     >;
     type ThisElementInstance = InstanceType<ThisElementStaticClass>;
 
@@ -131,6 +154,8 @@ export function defineElementNoInputs<
         CssVarKeys
     >;
 
+    const slotNamesMap = createSlotNamesMap(init.slotNames);
+
     const calculatedStyles =
         typeof init.styles === 'function'
             ? init.styles(hostClassNamesToStylesInput({hostClassNames, cssVars}))
@@ -142,7 +167,8 @@ export function defineElementNoInputs<
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        SlotNames
     >['renderCallback'] = init.renderCallback;
 
     function typedAssignCallback(...[inputs]: Parameters<ThisElementStaticClass['assign']>) {
@@ -161,7 +187,8 @@ export function defineElementNoInputs<
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys
+        CssVarKeys,
+        SlotNames
     > {
         public static override readonly tagName = init.tagName;
         public static override readonly styles = calculatedStyles;
@@ -175,9 +202,10 @@ export function defineElementNoInputs<
             StateInit,
             EventsInit,
             HostClassKeys,
-            CssVarKeys
+            CssVarKeys,
+            SlotNames
         > {
-            return createRenderParams({element: this, eventsMap, cssVars});
+            return createRenderParams({element: this, eventsMap, cssVars, slotNamesMap});
         }
 
         public static override assign = typedAssignCallback as any;
@@ -190,7 +218,8 @@ export function defineElementNoInputs<
             StateInit,
             EventsInit,
             HostClassKeys,
-            CssVarKeys
+            CssVarKeys,
+            SlotNames
         >['events'] = eventsMap;
         public static override readonly renderCallback: ThisElementStaticClass['renderCallback'] =
             typedRenderCallback as DeclarativeElementDefinition['renderCallback'] as ThisElementStaticClass['renderCallback'];
@@ -200,7 +229,8 @@ export function defineElementNoInputs<
             StateInit,
             EventsInit,
             HostClassKeys,
-            CssVarKeys
+            CssVarKeys,
+            SlotNames
         >['hostClasses'] = hostClassNames;
         public static override readonly cssVars: StaticDeclarativeElementProperties<
             TagName,
@@ -208,22 +238,34 @@ export function defineElementNoInputs<
             StateInit,
             EventsInit,
             HostClassKeys,
-            CssVarKeys
+            CssVarKeys,
+            SlotNames
         >['cssVars'] = cssVars;
+        public static override readonly slotNames: StaticDeclarativeElementProperties<
+            TagName,
+            Inputs,
+            StateInit,
+            EventsInit,
+            HostClassKeys,
+            CssVarKeys,
+            SlotNames
+        >['slotNames'] = slotNamesMap;
         public static override readonly stateInitStatic: StaticDeclarativeElementProperties<
             TagName,
             PropertyInitMapBase,
             PropertyInitMapBase,
             EventsInitMap,
             HostClassKeys,
-            CssVarKeys
+            CssVarKeys,
+            SlotNames
         >['stateInitStatic'] = init.stateInitStatic as StaticDeclarativeElementProperties<
             TagName,
             PropertyInitMapBase,
             PropertyInitMapBase,
             EventsInitMap,
             HostClassKeys,
-            CssVarKeys
+            CssVarKeys,
+            SlotNames
         >['stateInitStatic'];
         public get instanceType() {
             throw new Error(

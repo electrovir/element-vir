@@ -31,6 +31,7 @@ export * from './declarative-element/properties/per-instance';
 export * from './declarative-element/properties/styles';
 export * from './declarative-element/properties/tag-name';
 export * from './declarative-element/render-callback';
+export * from './declarative-element/slot-names';
 export * from './declarative-element/wrap-define-element';
 export * from './lit-exports/all-lit-exports';
 export {requireAllCustomElementsToBeDeclarativeElements} from './require-declarative-element';

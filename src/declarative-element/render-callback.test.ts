@@ -90,6 +90,7 @@ describe('RenderParams', () => {
                     testEventName: defineElementEvent<number>(),
                 }),
                 cssVars: {},
+                slotNamesMap: {},
             });
 
             const myEvent = renderParams.events.testEventName;

@@ -30,8 +30,6 @@ describe(asyncProp.name, () => {
 
             dispatch(new events.previousAsyncProp(state.myAsyncProp.value));
 
-            console.log(inputs.setAsyncProp, state.myAsyncProp);
-
             return renderAsync(
                 state.myAsyncProp,
                 'Loading...',

@@ -1,4 +1,5 @@
 import {itCases} from '@augment-vir/browser-testing';
+import {assert} from '@open-wc/testing';
 import {AsyncPropValue} from './async-prop';
 import {isError, isResolved, resolvedOrUndefined} from './is-resolved.directive';
 
@@ -31,7 +32,7 @@ describe(isError.name, () => {
         if (isError(myValue)) {
             throw myValue;
         } else if (isResolved(myValue)) {
-            console.log(myValue);
+            assert.isObject(myValue);
         }
     });
 });
