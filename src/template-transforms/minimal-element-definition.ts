@@ -5,16 +5,18 @@ export type MinimalElementDefinition = {
     tagName: string;
 };
 
-export type WrappedMinimalDefinition = {
-    _elementVirIsWrappedDefinition: true;
+export type MinimalDefinitionWithInputs = {
+    _elementVirIsMinimalDefinitionWithInputs: true;
     definition: MinimalElementDefinition;
     inputs: PropertyInitMapBase;
 };
 
-export function isWrappedMinimalDefinition(value: unknown): value is WrappedMinimalDefinition {
+export function isMinimalDefinitionWithInputs(
+    value: unknown,
+): value is MinimalDefinitionWithInputs {
     return (
-        typedHasProperty(value, '_elementVirIsWrappedDefinition') &&
-        !!value._elementVirIsWrappedDefinition
+        typedHasProperty(value, '_elementVirIsMinimalDefinitionWithInputs') &&
+        !!value._elementVirIsMinimalDefinitionWithInputs
     );
 }
 
