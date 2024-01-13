@@ -1,10 +1,11 @@
 import {collapseWhiteSpace, isTruthy, safeMatch} from '@augment-vir/common';
+import {IgnoreUnsetInputsWarningSymbol} from '../../declarative-element/definition-options';
 import {assign} from '../../declarative-element/directives/assign.directive';
 import {HTMLTemplateResult} from '../../lit-exports/all-lit-exports';
 import {declarativeElementRequired} from '../../require-declarative-element';
 import {
+    isMinimalDefinitionWithInputs,
     isMinimalElementDefinition,
-    isWrappedMinimalDefinition,
 } from '../minimal-element-definition';
 import {TemplateTransform} from '../template-transform-type';
 import {ValueTransformCallback, transformTemplate} from '../transform-template';
@@ -16,7 +17,7 @@ function transformHtml(
         rawCurrentValue,
     ]: Parameters<ValueTransformCallback>
 ): ReturnType<ValueTransformCallback> {
-    const currentValue = isWrappedMinimalDefinition(rawCurrentValue)
+    const currentValue = isMinimalDefinitionWithInputs(rawCurrentValue)
         ? rawCurrentValue.definition
         : rawCurrentValue;
 
@@ -43,12 +44,20 @@ function transformHtml(
         return undefined;
     }
 
+    if (
+        isOpeningTag &&
+        !currentValue.elementOptions[IgnoreUnsetInputsWarningSymbol] &&
+        !isMinimalDefinitionWithInputs(rawCurrentValue)
+    ) {
+        throw new Error(`Missing inputs for '${currentValue.tagName}'`);
+    }
+
     const replacement = currentValue.tagName;
 
     return {
         replacement,
         getExtraValues(extraValueCurrentValue) {
-            const assignedInputs = isWrappedMinimalDefinition(extraValueCurrentValue)
+            const assignedInputs = isMinimalDefinitionWithInputs(extraValueCurrentValue)
                 ? extraValueCurrentValue.inputs
                 : undefined;
 
