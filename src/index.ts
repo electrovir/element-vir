@@ -36,6 +36,7 @@ export * from './lit-exports/all-lit-exports';
 export {requireAllCustomElementsToBeDeclarativeElements} from './require-declarative-element';
 export * from './template-transforms/minimal-element-definition';
 export * from './template-transforms/vir-css/vir-css';
+export * from './template-transforms/vir-html/html-interpolation';
 export * from './template-transforms/vir-html/vir-html';
 export * from './typed-event/typed-event';
 export * from './util/lit-template';

@@ -1,6 +1,13 @@
 import {ViraIcon, defineIcon, hideScrollbars} from 'vira';
-import {defineElement} from '../../../declarative-element/define-element';
-import {css, defineElementNoInputs, html, onResize, unsafeCSS} from '../../../index';
+import {
+    HtmlInterpolation,
+    css,
+    defineElement,
+    defineElementNoInputs,
+    html,
+    onResize,
+    unsafeCSS,
+} from '../../../index';
 
 const templatesContainerClassName = 'templates-container';
 
@@ -76,7 +83,7 @@ export const TestCarousel = defineElement<{
      *
      * This is used instead of <slot> because this element needs to wrap each individual template.
      */
-    templates: ReadonlyArray<unknown>;
+    templates: ReadonlyArray<HtmlInterpolation>;
     enableAutomaticCycling?: boolean;
     /** Number of milliseconds between each automatic cycling. Defaults to 4000. */
     cycleIntervalMs?: number;

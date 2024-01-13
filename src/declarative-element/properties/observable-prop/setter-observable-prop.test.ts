@@ -34,7 +34,7 @@ describe(createSetterObservableProp.name, () => {
                 >();
 
                 return html`
-                    <span class="state">${state.simpleState}</span>
+                    <span class="state">${state.simpleState.value.stuff}</span>
                     <span class="inputs">${inputs.simpleInput.value}</span>
                 `;
             },
@@ -99,7 +99,7 @@ describe(createSetterObservableProp.name, () => {
         assertInstanceOf(stateSpan, HTMLElement);
         assertInstanceOf(inputsSpan, HTMLElement);
 
-        assert.strictEqual(stateSpan.innerText, String(stateObservable.value));
+        assert.strictEqual(stateSpan.innerText, String(stateObservable.value.stuff));
         assert.strictEqual(inputsSpan.innerText, inputsObservable.value);
 
         const newInput = 'derp';
@@ -112,7 +112,7 @@ describe(createSetterObservableProp.name, () => {
 
         await waitUntil(() => {
             try {
-                assert.strictEqual(stateSpan.innerText, String(newState));
+                assert.strictEqual(stateSpan.innerText, String(newState.stuff));
                 assert.strictEqual(inputsSpan.innerText, newInput);
                 return true;
             } catch (error) {
