@@ -18,35 +18,35 @@ const baseConfig = generateDepCruiserConfig({
 
 const depCruiserConfig: IConfiguration = {
     ...baseConfig,
-    options: {
-        ...baseConfig.options,
-        knownViolations: [
-            {
-                rule: {
-                    name: 'no-circular',
-                    severity: 'error',
-                },
-                from: 'src/declarative-element/render-callback.ts',
-                to: 'src/declarative-element/render-callback.ts',
-            },
-            {
-                rule: {
-                    name: 'no-circular',
-                    severity: 'error',
-                },
-                from: 'src/declarative-element/declarative-element.ts',
-                to: 'src/declarative-element/declarative-element.ts',
-            },
-            {
-                rule: {
-                    name: 'no-circular',
-                    severity: 'error',
-                },
-                from: 'src/declarative-element/declarative-element-init.ts',
-                to: 'src/declarative-element/declarative-element-init.ts',
-            },
-        ],
-    },
+    // options: {
+    //     ...baseConfig.options,
+    //     knownViolations: [
+    //         {
+    //             rule: {
+    //                 name: 'no-circular',
+    //                 severity: 'error',
+    //             },
+    //             from: 'src/declarative-element/render-callback.ts',
+    //             to: 'src/declarative-element/render-callback.ts',
+    //         },
+    //         {
+    //             rule: {
+    //                 name: 'no-circular',
+    //                 severity: 'error',
+    //             },
+    //             from: 'src/declarative-element/declarative-element.ts',
+    //             to: 'src/declarative-element/declarative-element.ts',
+    //         },
+    //         {
+    //             rule: {
+    //                 name: 'no-circular',
+    //                 severity: 'error',
+    //             },
+    //             from: 'src/declarative-element/declarative-element-init.ts',
+    //             to: 'src/declarative-element/declarative-element-init.ts',
+    //         },
+    //     ],
+    // },
 };
 
 module.exports = depCruiserConfig;

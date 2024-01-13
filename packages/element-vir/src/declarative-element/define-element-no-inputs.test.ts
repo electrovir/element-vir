@@ -1,6 +1,5 @@
 import {AnyFunction, randomString} from '@augment-vir/common';
 import {assert} from '@open-wc/testing';
-import {BookEntryTypeEnum} from 'element-book';
 import {assertTypeOf} from 'run-time-assertions';
 import {defineElementNoInputs} from './define-element-no-inputs';
 
@@ -53,7 +52,6 @@ describe(defineElementNoInputs.name, () => {
         defineElementNoInputs({
             tagName: `some-tag-${randomString()}`,
             stateInitStatic: {
-                selectedConvertDirection: undefined as BookEntryTypeEnum | undefined,
                 selectedFeeIndex: undefined as number | undefined,
                 errors: undefined as
                     | undefined

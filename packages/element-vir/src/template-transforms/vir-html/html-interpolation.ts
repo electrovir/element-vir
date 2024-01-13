@@ -22,6 +22,7 @@ export type HtmlInterpolation =
     | boolean
     | bigint
     | CSSResult
+    | Element
     | TemplateResult
     | MinimalDefinitionWithInputs
     | DeclarativeElementDefinition
