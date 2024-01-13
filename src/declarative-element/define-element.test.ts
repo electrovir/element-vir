@@ -2,11 +2,38 @@ import {randomBoolean, randomString} from '@augment-vir/common';
 import {defineElement} from './define-element';
 
 describe(defineElement.name, () => {
+    it('does not allow HTMLElement properties in state or inputs', () => {
+        defineElement<{
+            style: string;
+            inputKey: string;
+        }>()(
+            // @ts-expect-error style is a default HTMLElement key
+            {
+                tagName: 'blah-blah-blah',
+                renderCallback() {
+                    return 'hi';
+                },
+            },
+        );
+        defineElement<{}>()(
+            // @ts-expect-error classList is a default HTMLElement key
+            {
+                tagName: 'blah-blah-blah',
+                stateInitStatic: {
+                    classList: ['hi'],
+                },
+                renderCallback() {
+                    return 'hi';
+                },
+            },
+        );
+    });
+
     it('does not allow keys duplicated between inputs and state', () => {
         defineElement<{
             inputKey: string;
         }>()(
-            // @ts-expect-error this is already an input key, it cannot be used again
+            // @ts-expect-error inputKey clashes between inputs and state
             {
                 tagName: 'blah-blah-blah',
                 stateInitStatic: {

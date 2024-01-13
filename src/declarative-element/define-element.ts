@@ -2,7 +2,7 @@ import {isRunTimeType} from 'run-time-assertions';
 import {CustomElementTagName} from './custom-tag-name';
 import {DeclarativeElementDefinition} from './declarative-element';
 import {DeclarativeElementInit} from './declarative-element-init';
-import {defineElementNoInputs} from './define-element-no-inputs';
+import {defineElementNoInputs, VerifiedElementNoInputsInit} from './define-element-no-inputs';
 import {IgnoreInputsNotBeenSetBeforeWarningSymbol} from './definition-options';
 import {BaseCssPropertyName} from './properties/css-properties';
 import {EventsInitMap} from './properties/element-events';
@@ -16,8 +16,17 @@ export type VerifiedElementInit<
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
 > = Extract<keyof StateInit, keyof Inputs> extends never
-    ? DeclarativeElementInit<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>
-    : "ERROR: Cannot define a state key for an element that is also a key on the element's inputs.";
+    ? Extract<keyof Inputs, keyof HTMLElement> extends never
+        ? VerifiedElementNoInputsInit<
+              TagName,
+              Inputs,
+              StateInit,
+              EventsInit,
+              HostClassKeys,
+              CssVarKeys
+          >
+        : 'ERROR: Cannot define an element input property that clashes with native HTMLElement properties.'
+    : "ERROR: Cannot define an element state property that clashes with the element's input properties.";
 
 export function defineElement<Inputs extends PropertyInitMapBase = {}>() {
     return <
@@ -64,6 +73,13 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>() {
                 [IgnoreInputsNotBeenSetBeforeWarningSymbol]: false,
                 ...init.options,
             },
-        });
+        } as VerifiedElementNoInputsInit<
+            TagName,
+            Inputs,
+            StateInit,
+            EventsInit,
+            HostClassKeys,
+            CssVarKeys
+        >);
     };
 }

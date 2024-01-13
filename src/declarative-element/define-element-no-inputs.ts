@@ -6,6 +6,7 @@ import {
     kebabCaseToCamelCase,
 } from '@augment-vir/common';
 import {defineCssVars} from 'lit-css-vars';
+import {isRunTimeType} from 'run-time-assertions';
 import {WrappedMinimalDefinition} from '../template-transforms/minimal-element-definition';
 import {css} from '../template-transforms/vir-css/vir-css';
 import {CustomElementTagName} from './custom-tag-name';
@@ -36,6 +37,17 @@ import {HostClassNamesMap, createHostClassNamesMap} from './properties/host-clas
 import {applyHostClasses, hostClassNamesToStylesInput} from './properties/styles';
 import {RenderParams, createRenderParams} from './render-callback';
 
+export type VerifiedElementNoInputsInit<
+    TagName extends CustomElementTagName,
+    Inputs extends PropertyInitMapBase,
+    StateInit extends PropertyInitMapBase,
+    EventsInit extends EventsInitMap,
+    HostClassKeys extends BaseCssPropertyName<TagName>,
+    CssVarKeys extends BaseCssPropertyName<TagName>,
+> = Extract<keyof StateInit, keyof HTMLElement> extends never
+    ? DeclarativeElementInit<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>
+    : 'ERROR: Cannot define an element state property that clashes with native HTMLElement properties.';
+
 export function defineElementNoInputs<
     const TagName extends CustomElementTagName = '-',
     Inputs extends PropertyInitMapBase = {},
@@ -44,7 +56,7 @@ export function defineElementNoInputs<
     const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
     const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
 >(
-    initInput: DeclarativeElementInit<
+    initInput: VerifiedElementNoInputsInit<
         TagName,
         Inputs,
         StateInit,
@@ -53,6 +65,19 @@ export function defineElementNoInputs<
         CssVarKeys
     >,
 ): DeclarativeElementDefinition<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys> {
+    /** This as cast is safe only because of the following run-time type check. */
+    const init = initInput as DeclarativeElementInit<
+        TagName,
+        Inputs,
+        StateInit,
+        EventsInit,
+        HostClassKeys,
+        CssVarKeys
+    >;
+    if (!isRunTimeType(init, 'object')) {
+        throw new Error('Cannot define element with non-object init: ${init}');
+    }
+
     type ThisElementDefinition = DeclarativeElementDefinition<
         TagName,
         Inputs,
@@ -71,29 +96,29 @@ export function defineElementNoInputs<
     >;
     type ThisElementInstance = InstanceType<ThisElementStaticClass>;
 
-    if (!initInput.renderCallback || typeof initInput.renderCallback === 'string') {
+    if (!init.renderCallback || typeof init.renderCallback === 'string') {
         throw new Error(
-            `Failed to define element '${initInput.tagName}': renderCallback is not a function`,
+            `Failed to define element '${init.tagName}': renderCallback is not a function`,
         );
     }
 
     const elementOptions: DeclarativeElementDefinitionOptions = {
         ...defaultDeclarativeElementDefinitionOptions,
-        ...initInput.options,
+        ...init.options,
     };
 
     const eventsMap: EventDescriptorMap<TagName, EventsInit> = createEventDescriptorMap(
-        initInput.tagName,
-        initInput.events,
+        init.tagName,
+        init.events,
     );
     const hostClassNames: HostClassNamesMap<TagName, HostClassKeys> = createHostClassNamesMap(
-        initInput.hostClasses,
+        init.hostClasses,
     );
-    if (initInput.hostClasses) {
-        assertValidCssProperties(initInput.tagName, initInput.hostClasses);
+    if (init.hostClasses) {
+        assertValidCssProperties(init.tagName, init.hostClasses);
     }
-    if (initInput.cssVars) {
-        assertValidCssProperties(initInput.tagName, initInput.cssVars);
+    if (init.cssVars) {
+        assertValidCssProperties(init.tagName, init.cssVars);
     }
     /**
      * As casts here are to prevent defineCssVars from complaining that our CSS var names are too
@@ -101,15 +126,15 @@ export function defineElementNoInputs<
      * errors. However, this is for internal types only and the user will actually see much more
      * specific types externally.)
      */
-    const cssVars = (initInput.cssVars ? defineCssVars(initInput.cssVars as any) : {}) as CssVars<
+    const cssVars = (init.cssVars ? defineCssVars(init.cssVars as any) : {}) as CssVars<
         TagName,
         CssVarKeys
     >;
 
     const calculatedStyles =
-        typeof initInput.styles === 'function'
-            ? initInput.styles(hostClassNamesToStylesInput({hostClassNames, cssVars}))
-            : initInput.styles || css``;
+        typeof init.styles === 'function'
+            ? init.styles(hostClassNamesToStylesInput({hostClassNames, cssVars}))
+            : init.styles || css``;
 
     const typedRenderCallback: StaticDeclarativeElementProperties<
         TagName,
@@ -118,7 +143,7 @@ export function defineElementNoInputs<
         EventsInit,
         HostClassKeys,
         CssVarKeys
-    >['renderCallback'] = initInput.renderCallback;
+    >['renderCallback'] = init.renderCallback;
 
     function typedAssignCallback(...[inputs]: Parameters<ThisElementStaticClass['assign']>) {
         const wrappedDefinition: WrappedMinimalDefinition = {
@@ -138,7 +163,7 @@ export function defineElementNoInputs<
         HostClassKeys,
         CssVarKeys
     > {
-        public static override readonly tagName = initInput.tagName;
+        public static override readonly tagName = init.tagName;
         public static override readonly styles = calculatedStyles;
 
         public _lastRenderError: Error | undefined = undefined;
@@ -192,7 +217,7 @@ export function defineElementNoInputs<
             EventsInitMap,
             HostClassKeys,
             CssVarKeys
-        >['stateInitStatic'] = initInput.stateInitStatic as StaticDeclarativeElementProperties<
+        >['stateInitStatic'] = init.stateInitStatic as StaticDeclarativeElementProperties<
             TagName,
             PropertyInitMapBase,
             PropertyInitMapBase,
@@ -202,17 +227,17 @@ export function defineElementNoInputs<
         >['stateInitStatic'];
         public get instanceType() {
             throw new Error(
-                `"instanceType" was called on ${initInput.tagName} as a value but it is only for types.`,
+                `"instanceType" was called on ${init.tagName} as a value but it is only for types.`,
             );
         }
         public static override get inputsType(): Inputs {
             throw new Error(
-                `"inputsType" was called on ${initInput.tagName} as a value but it is only for types.`,
+                `"inputsType" was called on ${init.tagName} as a value but it is only for types.`,
             );
         }
         public static override get stateType(): StateInit {
             throw new Error(
-                `"stateType" was called on ${initInput.tagName} as a value but it is only for types.`,
+                `"stateType" was called on ${init.tagName} as a value but it is only for types.`,
             );
         }
 
@@ -234,16 +259,16 @@ export function defineElementNoInputs<
                 ) {
                     console.warn(
                         this,
-                        `${initInput.tagName} got rendered before its input object was set. This was most likely caused by forgetting to use '.assign()' on its opening tag. If no inputs are intended, use '${defineElementNoInputs.name}' to define ${initInput.tagName}.`,
+                        `${init.tagName} got rendered before its input object was set. This was most likely caused by forgetting to use '.assign()' on its opening tag. If no inputs are intended, use '${defineElementNoInputs.name}' to define ${init.tagName}.`,
                     );
                 }
                 this._hasRendered = true;
 
                 const renderParams = this.createRenderParams();
 
-                if (!this._initCalled && initInput.initCallback) {
+                if (!this._initCalled && init.initCallback) {
                     this._initCalled = true;
-                    if ((initInput.initCallback(renderParams) as any) instanceof Promise) {
+                    if ((init.initCallback(renderParams) as any) instanceof Promise) {
                         throw new Error('initCallback cannot be asynchronous');
                     }
                 }
@@ -254,7 +279,7 @@ export function defineElementNoInputs<
                 }
                 applyHostClasses({
                     host: renderParams.host,
-                    hostClassesInit: initInput.hostClasses,
+                    hostClassesInit: init.hostClasses,
                     hostClassNames,
                     state: renderParams.state,
                     inputs: renderParams.inputs,
@@ -267,7 +292,7 @@ export function defineElementNoInputs<
             } catch (caught) {
                 const error: Error = ensureErrorAndPrependMessage(
                     caught,
-                    `Failed to render ${initInput.tagName}`,
+                    `Failed to render ${init.tagName}`,
                 );
                 this._lastRenderError = error;
                 return extractErrorMessage(error);
@@ -276,25 +301,21 @@ export function defineElementNoInputs<
 
         public override connectedCallback(): void {
             super.connectedCallback();
-            if (this._hasRendered && !this._initCalled && initInput.initCallback) {
+            if (this._hasRendered && !this._initCalled && init.initCallback) {
                 this._initCalled = true;
                 const renderParams = this.createRenderParams();
-                if ((initInput.initCallback(renderParams) as any) instanceof Promise) {
-                    throw new Error(
-                        `initCallback in '${initInput.tagName}' cannot be asynchronous`,
-                    );
+                if ((init.initCallback(renderParams) as any) instanceof Promise) {
+                    throw new Error(`initCallback in '${init.tagName}' cannot be asynchronous`);
                 }
             }
         }
 
         public override disconnectedCallback(): void {
             super.disconnectedCallback();
-            if (initInput.cleanupCallback) {
+            if (init.cleanupCallback) {
                 const renderParams = this.createRenderParams();
-                if ((initInput.cleanupCallback(renderParams) as any) instanceof Promise) {
-                    throw new Error(
-                        `cleanupCallback in '${initInput.tagName}' cannot be asynchronous`,
-                    );
+                if ((init.cleanupCallback(renderParams) as any) instanceof Promise) {
+                    throw new Error(`cleanupCallback in '${init.tagName}' cannot be asynchronous`);
                 }
             }
             this._initCalled = false;
@@ -317,14 +338,14 @@ export function defineElementNoInputs<
         public readonly instanceState: ThisElementInstance['instanceState'] =
             createElementUpdaterProxy<FlattenElementVirStateSetup<StateInit>>(
                 this,
-                !initInput.options?.allowPolymorphicState,
+                !init.options?.allowPolymorphicState,
             );
 
         constructor() {
             super();
 
             const stateInitStatic: StateInit =
-                (initInput.stateInitStatic as StateInit) || ({} as StateInit);
+                (init.stateInitStatic as StateInit) || ({} as StateInit);
 
             getObjectTypedKeys(stateInitStatic).forEach((stateKey) => {
                 bindReactiveProperty(this, stateKey);
@@ -339,7 +360,7 @@ export function defineElementNoInputs<
 
     Object.defineProperties(anonymousClass, {
         name: {
-            value: kebabCaseToCamelCase(initInput.tagName, {
+            value: kebabCaseToCamelCase(init.tagName, {
                 capitalizeFirstLetter: true,
             }),
             writable: true,
@@ -352,12 +373,10 @@ export function defineElementNoInputs<
         },
     });
 
-    if (window.customElements.get(initInput.tagName)) {
-        console.warn(
-            `Tried to define custom element '${initInput.tagName}' but it is already defined.`,
-        );
+    if (window.customElements.get(init.tagName)) {
+        console.warn(`Tried to define custom element '${init.tagName}' but it is already defined.`);
     } else {
-        window.customElements.define(initInput.tagName, anonymousClass);
+        window.customElements.define(init.tagName, anonymousClass);
     }
 
     return anonymousClass as unknown as ThisElementDefinition;

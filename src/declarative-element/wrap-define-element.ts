@@ -2,7 +2,7 @@ import {PartialAndNullable} from '@augment-vir/common';
 import {CustomElementTagName} from './custom-tag-name';
 import {DeclarativeElementInit} from './declarative-element-init';
 import {defineElement, VerifiedElementInit} from './define-element';
-import {defineElementNoInputs} from './define-element-no-inputs';
+import {defineElementNoInputs, VerifiedElementNoInputsInit} from './define-element-no-inputs';
 import {BaseCssPropertyName} from './properties/css-properties';
 import {EventsInitMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
@@ -94,7 +94,7 @@ export function wrapDefineElement<
             HostClassKeys extends BaseCssPropertyName<TagName>,
             CssVarKeys extends BaseCssPropertyName<TagName>,
         >(
-            inputs: DeclarativeElementInit<
+            inputs: VerifiedElementNoInputsInit<
                 TagName,
                 Inputs,
                 StateInit,
@@ -107,7 +107,7 @@ export function wrapDefineElement<
             return defineElementNoInputs(
                 transformInputs(
                     inputs as DeclarativeElementInit<any, any, any, any, any, any>,
-                ) as unknown as DeclarativeElementInit<
+                ) as unknown as VerifiedElementNoInputsInit<
                     TagName,
                     Inputs,
                     StateInit,
