@@ -4,6 +4,7 @@ import {TypedEvent} from '../typed-event/typed-event';
 import {CustomElementTagName} from './custom-tag-name';
 import type {DeclarativeElement, DeclarativeElementHost} from './declarative-element';
 import {BaseCssPropertyName} from './properties/css-properties';
+import {CssVars} from './properties/css-vars';
 import {
     EventDescriptorMap,
     EventInitMapEventDetailExtractor,
@@ -52,6 +53,7 @@ export type RenderParams<
     CssVarKeys extends BaseCssPropertyName<TagName>,
 > = {
     state: Readonly<FlattenElementVirStateSetup<StateInit>>;
+    cssVars: Readonly<CssVars<TagName, CssVarKeys>>;
     updateState: UpdateStateCallback<StateInit>;
     events: EventDescriptorMap<TagName, EventsInit>;
     host: DeclarativeElementHost<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>;
@@ -73,10 +75,15 @@ export function createRenderParams<
     EventsInit extends EventsInitMap,
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
->(
-    element: DeclarativeElement<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>,
-    eventsMap: EventDescriptorMap<TagName, EventsInit>,
-): RenderParams<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys> {
+>({
+    element,
+    eventsMap,
+    cssVars,
+}: {
+    element: DeclarativeElement<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>;
+    eventsMap: EventDescriptorMap<TagName, EventsInit>;
+    cssVars: Readonly<CssVars<TagName, CssVarKeys>>;
+}): RenderParams<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys> {
     function updateState(newStatePartial: Parameters<UpdateStateCallback<StateInit>>[0]) {
         getObjectTypedKeys(newStatePartial).forEach((stateKey) => {
             const newValue = newStatePartial[
@@ -95,12 +102,13 @@ export function createRenderParams<
         HostClassKeys,
         CssVarKeys
     > = {
+        cssVars,
         dispatch: (event) => element.dispatchEvent(event),
-        updateState,
-        inputs: element.instanceInputs,
-        host: element as RequiredAndNotNullBy<typeof element, 'shadowRoot'>,
-        state: element.instanceState,
         events: eventsMap,
+        host: element as RequiredAndNotNullBy<typeof element, 'shadowRoot'>,
+        inputs: element.instanceInputs,
+        state: element.instanceState,
+        updateState,
     };
     return renderParams;
 }

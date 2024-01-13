@@ -152,7 +152,7 @@ export function defineElementNoInputs<
             HostClassKeys,
             CssVarKeys
         > {
-            return createRenderParams(this, eventsMap);
+            return createRenderParams({element: this, eventsMap, cssVars});
         }
 
         public static override assign = typedAssignCallback as any;

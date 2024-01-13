@@ -179,9 +179,8 @@ export abstract class DeclarativeElement<
 
     public abstract _lastRenderError: Error | undefined;
     public abstract _internalRenderCount: number;
-    public abstract _lastRenderedProps: Pick<
-        RenderParams<any, Inputs, StateInit, any, any, any>,
-        'inputs' | 'state'
+    public abstract _lastRenderedProps: Readonly<
+        Pick<RenderParams<any, Inputs, StateInit, any, any, any>, 'inputs' | 'state'>
     >;
     public abstract override render(): unknown;
     public abstract readonly instanceState: FlattenElementVirStateSetup<StateInit>;

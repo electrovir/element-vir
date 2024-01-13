@@ -1,4 +1,5 @@
 import {assert} from '@open-wc/testing';
+import {SingleCssVarDefinition} from 'lit-css-vars';
 import {assertTypeOf} from 'run-time-assertions';
 import {
     AsyncObservableProp,
@@ -30,14 +31,21 @@ describe('RenderParams', () => {
                 myAsyncProp3: asyncProp({defaultValue: 3}),
                 myNumber: undefined as undefined | ObservableProp<number>,
             },
+            cssVars: {
+                'test-element-my-thing': '4px',
+            },
             events: {
                 testEventName: defineElementEvent<number>(),
                 testEventName2: defineElementEvent<number>(),
             },
-            renderCallback({events, state, updateState}) {
+            renderCallback({events, state, updateState, cssVars}) {
                 if (state.myNumber == undefined) {
                     updateState({myNumber: createSetterObservableProp(6)});
                 }
+
+                assertTypeOf(
+                    cssVars['test-element-my-thing'],
+                ).toEqualTypeOf<SingleCssVarDefinition>();
 
                 const testEventThing = events.testEventName;
 
@@ -76,12 +84,13 @@ describe('RenderParams', () => {
 
     it('should have proper types for an empty element', () => {
         function doNotExecuteThis() {
-            const renderParams = createRenderParams(
-                {} as any,
-                createEventDescriptorMap('my-element', {
+            const renderParams = createRenderParams({
+                element: {} as any,
+                eventsMap: createEventDescriptorMap('my-element', {
                     testEventName: defineElementEvent<number>(),
                 }),
-            );
+                cssVars: {},
+            });
 
             const myEvent = renderParams.events.testEventName;
             const myEventInstance = new myEvent(4);
