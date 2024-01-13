@@ -1,8 +1,10 @@
 import {typedHasProperty} from '@augment-vir/common';
+import {DeclarativeElementDefinitionOptions} from '../declarative-element/definition-options';
 import {PropertyInitMapBase} from '../declarative-element/properties/element-properties';
 
 export type MinimalElementDefinition = {
     tagName: string;
+    elementOptions: DeclarativeElementDefinitionOptions;
 };
 
 export type MinimalDefinitionWithInputs = {

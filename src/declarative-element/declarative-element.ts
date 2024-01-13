@@ -1,8 +1,9 @@
-import {RequiredAndNotNullBy, RequiredBy} from '@augment-vir/common';
+import {RequiredAndNotNullBy} from '@augment-vir/common';
 import {CSSResult, LitElement} from '../lit-exports/all-lit-exports';
-import {WrappedMinimalDefinition} from '../template-transforms/minimal-element-definition';
+import {MinimalDefinitionWithInputs} from '../template-transforms/minimal-element-definition';
 import {CustomElementTagName} from './custom-tag-name';
 import {DeclarativeElementInit} from './declarative-element-init';
+import {DeclarativeElementDefinitionOptions} from './definition-options';
 import {BaseCssPropertyName} from './properties/css-properties';
 import {CssVars} from './properties/css-vars';
 import {EventDescriptorMap, EventsInitMap} from './properties/element-events';
@@ -186,6 +187,15 @@ export abstract class DeclarativeElement<
         BaseCssPropertyName<CustomElementTagName>,
         ReadonlyArray<string>
     >['init'];
+    public static readonly elementOptions: StaticDeclarativeElementProperties<
+        CustomElementTagName,
+        PropertyInitMapBase,
+        PropertyInitMapBase,
+        EventsInitMap,
+        BaseCssPropertyName<CustomElementTagName>,
+        BaseCssPropertyName<CustomElementTagName>,
+        ReadonlyArray<string>
+    >['elementOptions'];
     public static readonly hostClasses: StaticDeclarativeElementProperties<
         CustomElementTagName,
         PropertyInitMapBase,
@@ -252,7 +262,7 @@ export interface StaticDeclarativeElementProperties<
     /** Assign inputs to an element directly on its interpolated tag. */
     readonly assign: (
         inputsObject: {} extends Required<Inputs> ? never : Inputs,
-    ) => WrappedMinimalDefinition;
+    ) => MinimalDefinitionWithInputs;
     assignedInputs: Inputs | undefined;
 
     /** Pass through the render callback for direct unit testability */
@@ -268,18 +278,16 @@ export interface StaticDeclarativeElementProperties<
     readonly events: EventDescriptorMap<TagName, EventsInit>;
     readonly stateInitStatic: ElementPropertyDescriptorMap<StateInit>;
     readonly slotNames: SlotNameMap<SlotNames>;
-    readonly init: RequiredBy<
-        DeclarativeElementInit<
-            TagName,
-            Inputs,
-            StateInit,
-            EventsInit,
-            HostClassKeys,
-            CssVarKeys,
-            SlotNames
-        >,
-        'stateInitStatic' | 'events'
+    readonly init: DeclarativeElementInit<
+        TagName,
+        Inputs,
+        StateInit,
+        EventsInit,
+        HostClassKeys,
+        CssVarKeys,
+        SlotNames
     >;
+    readonly elementOptions: DeclarativeElementDefinitionOptions;
     readonly inputsType: Inputs;
     readonly stateType: Readonly<FlattenElementVirStateSetup<StateInit>>;
     readonly updateStateType: UpdateStateCallback<StateInit>;

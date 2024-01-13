@@ -1,4 +1,7 @@
-import {isMinimalElementDefinition, isWrappedMinimalDefinition} from './minimal-element-definition';
+import {
+    isMinimalDefinitionWithInputs,
+    isMinimalElementDefinition,
+} from './minimal-element-definition';
 import {TemplateTransform} from './template-transform-type';
 
 type WeakMapElementKey = {
@@ -15,7 +18,7 @@ type TemplatesWeakMap = WeakMap<TemplateStringsArray, TemplateAndNested>;
 function extractElementKeys(values: unknown[]): WeakMapElementKey[] {
     return values
         .map((value) => {
-            if (isWrappedMinimalDefinition(value)) {
+            if (isMinimalDefinitionWithInputs(value)) {
                 return value.definition;
             }
 

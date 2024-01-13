@@ -2,7 +2,7 @@ import {AnyFunction} from '@augment-vir/common';
 import {CSSResult, TemplateResult} from 'lit';
 import {EmptyObject} from 'type-fest';
 import {DeclarativeElementDefinition} from '../../declarative-element/declarative-element';
-import {WrappedMinimalDefinition} from '../minimal-element-definition';
+import {MinimalDefinitionWithInputs} from '../minimal-element-definition';
 
 /**
  * Unfortunately the type for `DirectiveResult` means it's just an empty object. So in order to
@@ -23,7 +23,7 @@ export type HtmlInterpolation =
     | bigint
     | CSSResult
     | TemplateResult
-    | WrappedMinimalDefinition
+    | MinimalDefinitionWithInputs
     | DeclarativeElementDefinition
     | DirectiveOutput
     | AnyFunction

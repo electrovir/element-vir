@@ -7,7 +7,7 @@ import {
 } from '@augment-vir/common';
 import {defineCssVars} from 'lit-css-vars';
 import {isRunTimeType} from 'run-time-assertions';
-import {WrappedMinimalDefinition} from '../template-transforms/minimal-element-definition';
+import {MinimalDefinitionWithInputs} from '../template-transforms/minimal-element-definition';
 import {css} from '../template-transforms/vir-css/vir-css';
 import {CustomElementTagName} from './custom-tag-name';
 import {
@@ -18,7 +18,7 @@ import {
 import {DeclarativeElementInit} from './declarative-element-init';
 import {
     DeclarativeElementDefinitionOptions,
-    IgnoreInputsNotBeenSetBeforeWarningSymbol,
+    IgnoreUnsetInputsWarningSymbol,
     defaultDeclarativeElementDefinitionOptions,
 } from './definition-options';
 import {hasDeclarativeElementParent} from './has-declarative-element-parent';
@@ -99,6 +99,9 @@ export function defineElementNoInputs<
     if (!isRunTimeType(init, 'object')) {
         throw new Error('Cannot define element with non-object init: ${init}');
     }
+    if (!isRunTimeType(init.tagName, 'string')) {
+        throw new Error('Missing valid tagName (expected a string).');
+    }
 
     type ThisElementDefinition = DeclarativeElementDefinition<
         TagName,
@@ -173,8 +176,8 @@ export function defineElementNoInputs<
     >['renderCallback'] = init.renderCallback;
 
     function typedAssignCallback(...[inputs]: Parameters<ThisElementStaticClass['assign']>) {
-        const wrappedDefinition: WrappedMinimalDefinition = {
-            _elementVirIsWrappedDefinition: true,
+        const wrappedDefinition: MinimalDefinitionWithInputs = {
+            _elementVirIsMinimalDefinitionWithInputs: true,
             definition: anonymousClass,
             inputs,
         };
@@ -191,6 +194,7 @@ export function defineElementNoInputs<
         CssVarKeys,
         SlotNames
     > {
+        public static override readonly elementOptions = elementOptions;
         public static override readonly tagName = init.tagName;
         public static override readonly styles = calculatedStyles;
 
@@ -242,6 +246,7 @@ export function defineElementNoInputs<
             CssVarKeys,
             SlotNames
         >['cssVars'] = cssVars;
+        public static override readonly init = init as (typeof DeclarativeElement)['init'];
         public static override readonly slotNames: StaticDeclarativeElementProperties<
             TagName,
             Inputs,
@@ -298,7 +303,7 @@ export function defineElementNoInputs<
                     // other elements (cause they have no custom element ancestors).
                     hasDeclarativeElementParent(this) &&
                     !this._haveInputsBeenSet &&
-                    !elementOptions[IgnoreInputsNotBeenSetBeforeWarningSymbol]
+                    !elementOptions[IgnoreUnsetInputsWarningSymbol]
                 ) {
                     console.warn(
                         this,
@@ -381,7 +386,7 @@ export function defineElementNoInputs<
         public readonly instanceState: ThisElementInstance['instanceState'] =
             createElementUpdaterProxy<FlattenElementVirStateSetup<StateInit>>(
                 this,
-                !init.options?.allowPolymorphicState,
+                !elementOptions.allowPolymorphicState,
             );
 
         constructor() {
