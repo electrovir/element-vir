@@ -1,7 +1,7 @@
 import {PartialAndNullable} from '@augment-vir/common';
 import {CustomElementTagName} from './custom-tag-name';
 import {DeclarativeElementInit} from './declarative-element-init';
-import {defineElement} from './define-element';
+import {defineElement, VerifiedElementInit} from './define-element';
 import {defineElementNoInputs} from './define-element-no-inputs';
 import {BaseCssPropertyName} from './properties/css-properties';
 import {EventsInitMap} from './properties/element-events';
@@ -54,7 +54,7 @@ export function wrapDefineElement<
     };
 
     return {
-        defineElement: <InputsGeneric extends InputsRequirement>() => {
+        defineElement: <Inputs extends InputsRequirement>() => {
             return <
                 TagName extends TagNameRequirement,
                 StateInit extends StateInitRequirement,
@@ -62,9 +62,9 @@ export function wrapDefineElement<
                 HostClassKeys extends BaseCssPropertyName<TagName>,
                 CssVarKeys extends BaseCssPropertyName<TagName>,
             >(
-                inputs: DeclarativeElementInit<
+                inputs: VerifiedElementInit<
                     TagName,
-                    InputsGeneric,
+                    Inputs,
                     StateInit,
                     EventsInit,
                     HostClassKeys,
@@ -72,12 +72,12 @@ export function wrapDefineElement<
                 >,
             ) => {
                 assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any>);
-                return defineElement<InputsGeneric>()(
+                return defineElement<Inputs>()(
                     transformInputs(
                         inputs as DeclarativeElementInit<any, any, any, any, any, any>,
-                    ) as unknown as DeclarativeElementInit<
+                    ) as unknown as VerifiedElementInit<
                         TagName,
-                        InputsGeneric,
+                        Inputs,
                         StateInit,
                         EventsInit,
                         HostClassKeys,

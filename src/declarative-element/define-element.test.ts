@@ -2,6 +2,24 @@ import {randomBoolean, randomString} from '@augment-vir/common';
 import {defineElement} from './define-element';
 
 describe(defineElement.name, () => {
+    it('does not allow keys duplicated between inputs and state', () => {
+        defineElement<{
+            inputKey: string;
+        }>()(
+            // @ts-expect-error this is already an input key, it cannot be used again
+            {
+                tagName: 'blah-blah-blah',
+                stateInitStatic: {
+                    inputKey: 0,
+                    otherKey: 'hi',
+                },
+                renderCallback() {
+                    return 'hi';
+                },
+            },
+        );
+    });
+
     it('blocks render callbacks without a return type', () => {
         defineElement<{}>()({
             tagName: `some-tag-${randomString()}`,
