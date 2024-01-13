@@ -1,7 +1,7 @@
 import {randomString} from '@augment-vir/common';
 import {defineBookPage} from 'element-book';
+import {assign} from '../../../../declarative-element/directives/assign.directive';
 import {
-    assign,
     createSetterObservableProp,
     css,
     defineElementNoInputs,

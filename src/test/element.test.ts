@@ -1,5 +1,6 @@
 import {getObjectTypedKeys, randomString} from '@augment-vir/common';
 import {assertThrows} from 'run-time-assertions';
+import {assign} from '../declarative-element/directives/assign.directive';
 import {
     DeclarativeElement,
     DeclarativeElementDefinition,
@@ -7,7 +8,6 @@ import {
     ObservableProp,
     TemplateResult,
     TypedEvent,
-    assign,
     css,
     defineElement,
     defineElementEvent,
@@ -122,7 +122,7 @@ describe('test elements', () => {
         // @ts-expect-error
         const instance: typeof VirTestBookApp.instanceType = VirTestBookApp;
         // @ts-expect-error
-        const instance2: DeclarativeElement = VirTestApp;
+        const instance2: DeclarativeElement = VirTestBookApp;
 
         const TestElementVoidEvent = defineElementNoInputs({
             tagName: 'test-element-void-event',
@@ -140,17 +140,19 @@ describe('test elements', () => {
             },
         });
 
-        const TestElementInvalidTagName = defineElementNoInputs({
-            // @ts-expect-error
-            tagName: 'invalidTagNameMissingDash',
-            renderCallback() {
-                return html``;
-            },
-        });
+        assertThrows(() =>
+            defineElementNoInputs({
+                // @ts-expect-error: tag name must have dashes in it
+                tagName: 'invalidTagNameMissingDash',
+                renderCallback() {
+                    return html``;
+                },
+            }),
+        );
 
         const MyElementEvent = defineTypedEvent<string>()('customEvent');
 
-        const TestElementNoEventsOrState = defineElementNoInputs({
+        defineElementNoInputs({
             tagName: 'test-element-no-events-or-state',
             renderCallback({state, dispatch, events}): TemplateResult {
                 // @ts-expect-error
@@ -171,16 +173,12 @@ describe('test elements', () => {
             },
         });
 
-        const thingie = {} as HTMLElement;
-
-        thingie.addEventListener('click', (event) => {
-            event.buttons;
-        });
-
-        // @ts-expect-error
-        const TestElementNoRender = defineElementNoInputs({
-            tagName: 'element-vir-test-element-no-render',
-        });
+        assertThrows(() =>
+            // @ts-expect-error: missing renderCallback
+            defineElementNoInputs({
+                tagName: 'element-vir-test-element-no-render',
+            }),
+        );
 
         const TestElement = defineElement<{
             stringInput: string;

@@ -4,8 +4,6 @@ export * from './declarative-element/declarative-element-init';
 export * from './declarative-element/define-element';
 export * from './declarative-element/define-element-no-inputs';
 export type {DeclarativeElementDefinitionOptions} from './declarative-element/definition-options';
-export * from './declarative-element/directives/assign-with-clean-up.directive';
-export * from './declarative-element/directives/assign.directive';
 export * from './declarative-element/directives/async-prop';
 export * from './declarative-element/directives/create-attribute-directive';
 export * from './declarative-element/directives/directive-helpers';
