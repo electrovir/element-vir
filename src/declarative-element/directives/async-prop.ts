@@ -6,6 +6,7 @@ import {
     JsonCompatibleObject,
     MaybePromise,
 } from '@augment-vir/common';
+import {isPromise} from 'run-time-assertions';
 import {ElementVirStateSetup} from '../properties/element-vir-state-setup';
 import {ObservableProp} from '../properties/observable-prop/observable-prop';
 import {createSetterObservableProp} from '../properties/observable-prop/setter-observable-prop';
@@ -20,11 +21,12 @@ export type AsyncPropUpdateCallback<
     TriggerInput extends AsyncPropTriggerInputBase,
     UpdaterInput,
     ReturnType,
-> = Exclude<TriggerInput, undefined> extends never
-    ? () => ReturnType
-    : Exclude<UpdaterInput, undefined> extends never
-      ? (trigger: TriggerInput) => ReturnType
-      : (trigger: TriggerInput, inputs: UpdaterInput) => ReturnType;
+> =
+    Exclude<TriggerInput, undefined> extends never
+        ? () => ReturnType
+        : Exclude<UpdaterInput, undefined> extends never
+          ? (trigger: TriggerInput) => ReturnType
+          : (trigger: TriggerInput, inputs: UpdaterInput) => ReturnType;
 
 export type AsyncPropInit<
     ValueType,
@@ -64,6 +66,13 @@ export type AsyncObservableProp<
      * asyncProp has no updater callback defined, this will result in an error.
      */
     forceUpdate: AsyncPropUpdateCallback<TriggerInput, UpdaterInput, void>;
+    /**
+     * The last value that was resolved. This will be undefined if there has never, so far, been a
+     * resolved value.
+     */
+    latestResolvedValue: ValueType extends Promise<any>
+        ? Awaited<ValueType> | undefined
+        : ValueType;
 };
 
 function setupAsyncProp<
@@ -91,6 +100,8 @@ function setupAsyncProp<
     function resolveValue(value: Awaited<ValueType>) {
         waitingForValuePromise.resolve(value);
         baseObservableProp.setValue(value);
+
+        asyncProp.latestResolvedValue = value as typeof asyncProp.latestResolvedValue;
     }
 
     function rejectValue(error: Error) {
@@ -167,22 +178,17 @@ function setupAsyncProp<
         updateTrigger(triggerInput, updaterInput);
     }
 
-    const initValue: AsyncPropValue<ValueType> =
-        init && 'defaultValue' in init
-            ? init.defaultValue
-            : /** A promise that doesn't resolve because we're waiting for the first value still. */
-              new Promise<Awaited<ValueType>>(() => {});
-
-    if (initValue instanceof Promise) {
-        setPromise(initValue);
-    } else {
-        resolveValue(initValue);
-    }
-
     const extraProperties: Omit<
         AsyncObservableProp<ValueType, TriggerInput, UpdaterInput>,
         keyof ObservableProp<AsyncPropValue<ValueType>>
     > = {
+        latestResolvedValue: (init && 'defaultValue' in init && !isPromise(init.defaultValue)
+            ? init.defaultValue
+            : undefined) as AsyncObservableProp<
+            ValueType,
+            TriggerInput,
+            UpdaterInput
+        >['latestResolvedValue'],
         setNewPromise(newPromise) {
             setPromise(newPromise);
         },
@@ -211,7 +217,27 @@ function setupAsyncProp<
               }) as AsyncPropUpdateCallback<TriggerInput, UpdaterInput, void>,
     };
 
-    return Object.assign(baseObservableProp, extraProperties);
+    const asyncProp = Object.assign(baseObservableProp, extraProperties);
+
+    const initValue: AsyncPropValue<ValueType> =
+        init && 'defaultValue' in init
+            ? init.defaultValue
+            : /** A promise that doesn't resolve because we're waiting for the first value still. */
+              new Promise<Awaited<ValueType>>(() => {});
+
+    if (initValue instanceof Promise) {
+        setPromise(initValue);
+    } else {
+        resolveValue(initValue);
+    }
+
+    if (isPromise(initValue)) {
+        setPromise(initValue);
+    } else {
+        resolveValue(initValue);
+    }
+
+    return asyncProp;
 }
 
 export function asyncProp<

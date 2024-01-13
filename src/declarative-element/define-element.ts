@@ -16,19 +16,20 @@ export type VerifiedElementInit<
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
     SlotNames extends ReadonlyArray<string>,
-> = Extract<keyof StateInit, keyof Inputs> extends never
-    ? Extract<keyof Inputs, keyof HTMLElement> extends never
-        ? VerifiedElementNoInputsInit<
-              TagName,
-              Inputs,
-              StateInit,
-              EventsInit,
-              HostClassKeys,
-              CssVarKeys,
-              SlotNames
-          >
-        : 'ERROR: Cannot define an element input property that clashes with native HTMLElement properties.'
-    : "ERROR: Cannot define an element state property that clashes with the element's input properties.";
+> =
+    Extract<keyof StateInit, keyof Inputs> extends never
+        ? Extract<keyof Inputs, keyof HTMLElement> extends never
+            ? VerifiedElementNoInputsInit<
+                  TagName,
+                  Inputs,
+                  StateInit,
+                  EventsInit,
+                  HostClassKeys,
+                  CssVarKeys,
+                  SlotNames
+              >
+            : 'ERROR: Cannot define an element input property that clashes with native HTMLElement properties.'
+        : "ERROR: Cannot define an element state property that clashes with the element's input properties.";
 
 export function defineElement<Inputs extends PropertyInitMapBase = {}>() {
     return <

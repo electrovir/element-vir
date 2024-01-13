@@ -46,17 +46,18 @@ export type VerifiedElementNoInputsInit<
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
     SlotNames extends ReadonlyArray<string>,
-> = Extract<keyof StateInit, keyof HTMLElement> extends never
-    ? DeclarativeElementInit<
-          TagName,
-          Inputs,
-          StateInit,
-          EventsInit,
-          HostClassKeys,
-          CssVarKeys,
-          SlotNames
-      >
-    : 'ERROR: Cannot define an element state property that clashes with native HTMLElement properties.';
+> =
+    Extract<keyof StateInit, keyof HTMLElement> extends never
+        ? DeclarativeElementInit<
+              TagName,
+              Inputs,
+              StateInit,
+              EventsInit,
+              HostClassKeys,
+              CssVarKeys,
+              SlotNames
+          >
+        : 'ERROR: Cannot define an element state property that clashes with native HTMLElement properties.';
 
 export function defineElementNoInputs<
     const TagName extends CustomElementTagName = '-',

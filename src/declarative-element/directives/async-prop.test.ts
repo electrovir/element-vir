@@ -205,6 +205,9 @@ describe(asyncProp.name, () => {
         const forceUpdateButton = instance.shadowRoot.querySelector('#force-update');
         const assignResolvedButton = instance.shadowRoot.querySelector('#assign-resolved-value');
 
+        assert.isUndefined(instance.instanceState.myAsyncProp.latestResolvedValue);
+        const initialPromise = instance.instanceState.myAsyncProp.value;
+
         assertDefined(newPromiseButton);
         assertDefined(forceUpdateButton);
         assertDefined(assignResolvedButton);
@@ -239,9 +242,12 @@ describe(asyncProp.name, () => {
         deferredPromiseWrappers[1].resolve(resolutionValue);
 
         await waitUntil(() => renderCount === 4, 'Render count failed to reach 4');
+        const initialPromiseResult = await initialPromise;
 
         assert.lengthOf(deferredPromiseWrappers, 2);
         assert.strictEqual(instance.instanceState.myAsyncProp.value, resolutionValue);
+        assert.strictEqual(initialPromiseResult, resolutionValue);
+        assert.strictEqual(instance.instanceState.myAsyncProp.latestResolvedValue, resolutionValue);
 
         // assign a new input; element should re-render and create a new promise
         instance.assignInputs({

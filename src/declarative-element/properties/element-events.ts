@@ -18,9 +18,10 @@ export function defineElementEvent<
 export type EventInitMapEventDetailExtractor<
     EventTypeNameGeneric extends keyof EventsInitGeneric,
     EventsInitGeneric extends EventsInitMap,
-> = EventsInitGeneric[EventTypeNameGeneric] extends DefinedTypedEventNameDefinition<infer R>
-    ? R
-    : never;
+> =
+    EventsInitGeneric[EventTypeNameGeneric] extends DefinedTypedEventNameDefinition<infer R>
+        ? R
+        : never;
 
 export type EventDescriptorMap<
     TagName extends CustomElementTagName,
