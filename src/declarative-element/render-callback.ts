@@ -1,4 +1,5 @@
 import {getObjectTypedKeys, RequiredAndNotNullBy} from '@augment-vir/common';
+import {HtmlInterpolation} from '../template-transforms/vir-html/html-interpolation';
 import {TypedEvent} from '../typed-event/typed-event';
 import {CustomElementTagName} from './custom-tag-name';
 import type {DeclarativeElement, DeclarativeElementHost} from './declarative-element';
@@ -21,10 +22,9 @@ export type RenderCallback<
     EventsInit extends EventsInitMap = any,
     HostClassKeys extends BaseCssPropertyName<TagName> = any,
     CssVarKeys extends BaseCssPropertyName<TagName> = any,
-    RenderOutput = any,
 > = (
     params: RenderParams<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>,
-) => RenderOutput;
+) => HtmlInterpolation;
 
 export type InitCallback<
     TagName extends CustomElementTagName,
@@ -73,17 +73,8 @@ export function createRenderParams<
     EventsInit extends EventsInitMap,
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
-    RenderOutput,
 >(
-    element: DeclarativeElement<
-        TagName,
-        Inputs,
-        StateInit,
-        EventsInit,
-        HostClassKeys,
-        CssVarKeys,
-        RenderOutput
-    >,
+    element: DeclarativeElement<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>,
     eventsMap: EventDescriptorMap<TagName, EventsInit>,
 ): RenderParams<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys> {
     function updateState(newStatePartial: Parameters<UpdateStateCallback<StateInit>>[0]) {

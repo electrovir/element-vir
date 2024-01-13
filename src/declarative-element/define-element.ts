@@ -14,7 +14,6 @@ export function defineElement<InputsGeneric extends PropertyInitMapBase = {}>() 
         EventsInit extends EventsInitMap = {},
         HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
         CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
-        RenderOutput = any,
     >(
         initInput: DeclarativeElementInit<
             TagName,
@@ -22,8 +21,7 @@ export function defineElement<InputsGeneric extends PropertyInitMapBase = {}>() 
             StateInit,
             EventsInit,
             HostClassKeys,
-            CssVarKeys,
-            RenderOutput
+            CssVarKeys
         >,
     ): DeclarativeElementDefinition<
         TagName,
@@ -31,8 +29,7 @@ export function defineElement<InputsGeneric extends PropertyInitMapBase = {}>() 
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys,
-        RenderOutput
+        CssVarKeys
     > => {
         return defineElementNoInputs({
             ...initInput,

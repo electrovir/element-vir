@@ -126,6 +126,7 @@ describe('RenderCallback', () => {
         const renderSomething: RenderCallback = () => {
             return undefined;
         };
+        // @ts-expect-error this should return something
         const renderSomething2: RenderCallback = () => {
             return;
         };

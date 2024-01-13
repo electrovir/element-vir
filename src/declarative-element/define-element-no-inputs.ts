@@ -43,7 +43,6 @@ export function defineElementNoInputs<
     EventsInit extends EventsInitMap = {},
     const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
     const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
-    RenderOutput = any,
 >(
     initInput: DeclarativeElementInit<
         TagName,
@@ -51,26 +50,16 @@ export function defineElementNoInputs<
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys,
-        RenderOutput
+        CssVarKeys
     >,
-): DeclarativeElementDefinition<
-    TagName,
-    Inputs,
-    StateInit,
-    EventsInit,
-    HostClassKeys,
-    CssVarKeys,
-    RenderOutput
-> {
+): DeclarativeElementDefinition<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys> {
     type ThisElementDefinition = DeclarativeElementDefinition<
         TagName,
         Inputs,
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys,
-        RenderOutput
+        CssVarKeys
     >;
     type ThisElementStaticClass = typeof DeclarativeElement<
         TagName,
@@ -78,8 +67,7 @@ export function defineElementNoInputs<
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys,
-        RenderOutput
+        CssVarKeys
     >;
     type ThisElementInstance = InstanceType<ThisElementStaticClass>;
 
@@ -129,8 +117,7 @@ export function defineElementNoInputs<
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys,
-        RenderOutput
+        CssVarKeys
     >['renderCallback'] = initInput.renderCallback;
 
     function typedAssignCallback(...[inputs]: Parameters<ThisElementStaticClass['assign']>) {
@@ -149,8 +136,7 @@ export function defineElementNoInputs<
         StateInit,
         EventsInit,
         HostClassKeys,
-        CssVarKeys,
-        RenderOutput
+        CssVarKeys
     > {
         public static override readonly tagName = initInput.tagName;
         public static override readonly styles = calculatedStyles;
@@ -179,8 +165,7 @@ export function defineElementNoInputs<
             StateInit,
             EventsInit,
             HostClassKeys,
-            CssVarKeys,
-            RenderOutput
+            CssVarKeys
         >['events'] = eventsMap;
         public static override readonly renderCallback: ThisElementStaticClass['renderCallback'] =
             typedRenderCallback as DeclarativeElementDefinition['renderCallback'] as ThisElementStaticClass['renderCallback'];
@@ -190,8 +175,7 @@ export function defineElementNoInputs<
             StateInit,
             EventsInit,
             HostClassKeys,
-            CssVarKeys,
-            RenderOutput
+            CssVarKeys
         >['hostClasses'] = hostClassNames;
         public static override readonly cssVars: StaticDeclarativeElementProperties<
             TagName,
@@ -199,8 +183,7 @@ export function defineElementNoInputs<
             StateInit,
             EventsInit,
             HostClassKeys,
-            CssVarKeys,
-            RenderOutput
+            CssVarKeys
         >['cssVars'] = cssVars;
         public static override readonly stateInitStatic: StaticDeclarativeElementProperties<
             TagName,
@@ -208,16 +191,14 @@ export function defineElementNoInputs<
             PropertyInitMapBase,
             EventsInitMap,
             HostClassKeys,
-            CssVarKeys,
-            RenderOutput
+            CssVarKeys
         >['stateInitStatic'] = initInput.stateInitStatic as StaticDeclarativeElementProperties<
             TagName,
             PropertyInitMapBase,
             PropertyInitMapBase,
             EventsInitMap,
             HostClassKeys,
-            CssVarKeys,
-            RenderOutput
+            CssVarKeys
         >['stateInitStatic'];
         public get instanceType() {
             throw new Error(

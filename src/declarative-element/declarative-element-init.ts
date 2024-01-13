@@ -16,7 +16,6 @@ export type DeclarativeElementInit<
     EventsInit extends EventsInitMap,
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
-    RenderOutput,
 > = {
     /**
      * HTML tag name. This should not be used directly, as interpolating it with the html tagged
@@ -49,17 +48,13 @@ export type DeclarativeElementInit<
     cssVars?: CssVarsInitMap<TagName, CssVarKeys>;
     /** Called as part of the first renderCallback call, before the first renderCallback call. */
     initCallback?: InitCallback<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys>;
-    renderCallback: RequireNonVoidReturn<
-        RenderOutput,
-        RenderCallback<
-            TagName,
-            Inputs,
-            StateInit,
-            EventsInit,
-            HostClassKeys,
-            CssVarKeys,
-            RenderOutput
-        >
+    renderCallback: RenderCallback<
+        TagName,
+        Inputs,
+        StateInit,
+        EventsInit,
+        HostClassKeys,
+        CssVarKeys
     >;
     cleanupCallback?: InitCallback<
         TagName,
