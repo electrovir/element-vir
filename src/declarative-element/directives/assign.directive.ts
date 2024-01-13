@@ -1,4 +1,10 @@
-import {directive, Directive, DirectiveResult, noChange, PartInfo} from '../../lit-exports';
+import {
+    directive,
+    Directive,
+    DirectiveResult,
+    noChange,
+    PartInfo,
+} from '../../lit-exports/all-lit-exports';
 import {assignInputs} from '../properties/assign-inputs';
 import {PropertyInitMapBase} from '../properties/element-properties';
 import {extractElement} from './directive-helpers';

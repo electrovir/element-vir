@@ -1,5 +1,5 @@
 import {html as litHtml} from 'lit';
-import {HTMLTemplateResult} from '../../lit-exports';
+import {HTMLTemplateResult} from '../../lit-exports/all-lit-exports';
 import {getTransformedTemplate} from '../transform-template';
 import {transformHtmlTemplate} from './html-transform';
 

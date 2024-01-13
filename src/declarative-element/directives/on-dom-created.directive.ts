@@ -1,4 +1,4 @@
-import {directive, Directive, PartInfo} from '../../lit-exports';
+import {directive, Directive, PartInfo} from '../../lit-exports/all-lit-exports';
 import {assertIsElementPartInfo} from './directive-helpers';
 
 export type OnDomCreatedCallback = (element: Element) => void;

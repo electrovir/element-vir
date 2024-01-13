@@ -32,7 +32,7 @@ export * from './declarative-element/properties/styles';
 export * from './declarative-element/properties/tag-name';
 export * from './declarative-element/render-callback';
 export * from './declarative-element/wrap-define-element';
-export * from './lit-exports';
+export * from './lit-exports/all-lit-exports';
 export {requireAllCustomElementsToBeDeclarativeElements} from './require-declarative-element';
 export * from './template-transforms/minimal-element-definition';
 export * from './template-transforms/vir-css/vir-css';

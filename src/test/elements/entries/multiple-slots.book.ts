@@ -1,7 +1,7 @@
 import {defineBookPage} from 'element-book';
 import {defineElement} from '../../../declarative-element/define-element';
 import {defineElementNoInputs} from '../../../declarative-element/define-element-no-inputs';
-import {HTMLTemplateResult} from '../../../lit-exports';
+import {HTMLTemplateResult} from '../../../lit-exports/all-lit-exports';
 import {css} from '../../../template-transforms/vir-css/vir-css';
 import {html} from '../../../template-transforms/vir-html/vir-html';
 

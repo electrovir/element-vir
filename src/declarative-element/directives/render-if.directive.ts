@@ -1,4 +1,4 @@
-import {when} from '../../lit-exports';
+import {when} from '../../lit-exports/all-lit-exports';
 
 export function renderIf<TrueCondition = unknown, FalseCondition = undefined>(
     condition: boolean,

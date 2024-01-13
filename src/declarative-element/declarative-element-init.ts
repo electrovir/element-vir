@@ -1,5 +1,4 @@
-import {CSSResult} from '../lit-exports';
-import {RequireNonVoidReturn} from '../util/type';
+import {CSSResult} from '../lit-exports/all-lit-exports';
 import {CustomElementTagName} from './custom-tag-name';
 import {DeclarativeElementDefinitionOptions} from './definition-options';
 import {BaseCssPropertyName} from './properties/css-properties';

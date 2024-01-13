@@ -1,4 +1,4 @@
-import {CSSResultGroup} from '../../lit-exports';
+import {CSSResultGroup} from '../../lit-exports/all-lit-exports';
 import {MinimalElementDefinition, isMinimalElementDefinition} from '../minimal-element-definition';
 import {TemplateTransform} from '../template-transform-type';
 import {ValueTransformCallback, transformTemplate} from '../transform-template';

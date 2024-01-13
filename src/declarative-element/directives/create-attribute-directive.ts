@@ -1,4 +1,4 @@
-import {directive, Directive, noChange, PartInfo} from '../../lit-exports';
+import {directive, Directive, noChange, PartInfo} from '../../lit-exports/all-lit-exports';
 import {extractElement} from './directive-helpers';
 
 export function createAttributeDirective(attributeName: string) {

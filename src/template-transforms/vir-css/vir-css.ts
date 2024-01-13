@@ -1,5 +1,5 @@
 import {css as litCss} from 'lit';
-import {CSSResult, CSSResultGroup} from '../../lit-exports';
+import {CSSResult, CSSResultGroup} from '../../lit-exports/all-lit-exports';
 import {MinimalElementDefinition} from '../minimal-element-definition';
 import {getTransformedTemplate} from '../transform-template';
 import {transformCssTemplate} from './css-transform';

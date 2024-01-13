@@ -1,4 +1,10 @@
-import {directive, Directive, DirectiveResult, noChange, PartInfo} from '../../lit-exports';
+import {
+    directive,
+    Directive,
+    DirectiveResult,
+    noChange,
+    PartInfo,
+} from '../../lit-exports/all-lit-exports';
 import {DefinedTypedEvent, TypedEvent} from '../../typed-event/typed-event';
 import {extractElement} from './directive-helpers';
 

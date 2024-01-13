@@ -24,7 +24,6 @@ export * from 'lit/directives/live.js';
 export * from 'lit/directives/map.js';
 export * from 'lit/directives/range.js';
 export * from 'lit/directives/ref.js';
-export * from 'lit/directives/repeat.js';
 export * from 'lit/directives/style-map.js';
 export * from 'lit/directives/template-content.js';
 export * from 'lit/directives/unsafe-html.js';

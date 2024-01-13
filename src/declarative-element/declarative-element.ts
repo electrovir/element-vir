@@ -1,5 +1,5 @@
 import {RequiredAndNotNullBy, RequiredBy} from '@augment-vir/common';
-import {CSSResult, LitElement} from '../lit-exports';
+import {CSSResult, LitElement} from '../lit-exports/all-lit-exports';
 import {WrappedMinimalDefinition} from '../template-transforms/minimal-element-definition';
 import {CustomElementTagName} from './custom-tag-name';
 import {DeclarativeElementInit} from './declarative-element-init';

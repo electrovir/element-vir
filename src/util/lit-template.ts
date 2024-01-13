@@ -1,5 +1,5 @@
 import {collapseWhiteSpace} from '@augment-vir/common';
-import type {TemplateResult, unsafeHTML, unsafeSVG} from '../lit-exports';
+import type {TemplateResult, unsafeHTML, unsafeSVG} from '../lit-exports/all-lit-exports';
 
 export function convertTemplateToString(
     template:
