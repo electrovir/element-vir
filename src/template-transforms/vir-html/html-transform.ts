@@ -1,5 +1,4 @@
 import {collapseWhiteSpace, isTruthy, safeMatch} from '@augment-vir/common';
-import {IgnoreUnsetInputsWarningSymbol} from '../../declarative-element/definition-options';
 import {assign} from '../../declarative-element/directives/assign.directive';
 import {HTMLTemplateResult} from '../../lit-exports/all-lit-exports';
 import {declarativeElementRequired} from '../../require-declarative-element';
@@ -46,7 +45,7 @@ function transformHtml(
 
     if (
         isOpeningTag &&
-        !currentValue.elementOptions[IgnoreUnsetInputsWarningSymbol] &&
+        !currentValue.elementOptions.ignoreUnsetInputs &&
         !isMinimalDefinitionWithInputs(rawCurrentValue)
     ) {
         throw new Error(`Missing inputs for '${currentValue.tagName}'`);

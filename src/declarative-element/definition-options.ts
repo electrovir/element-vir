@@ -1,10 +1,6 @@
-export const IgnoreUnsetInputsWarningSymbol = Symbol(
-    'key for ignoring inputs not having been set yet',
-);
-
 export type DeclarativeElementDefinitionOptions = {
     /** For internal use only. */
-    [IgnoreUnsetInputsWarningSymbol]: boolean;
+    ignoreUnsetInputs: boolean;
     /**
      * If set to true, state property keys will be allowed to change at run time. Turning this on
      * will greatly reduce type safety and should be avoided.
@@ -13,6 +9,6 @@ export type DeclarativeElementDefinitionOptions = {
 };
 
 export const defaultDeclarativeElementDefinitionOptions: DeclarativeElementDefinitionOptions = {
-    [IgnoreUnsetInputsWarningSymbol]: true,
+    ignoreUnsetInputs: true,
     allowPolymorphicState: false,
 };

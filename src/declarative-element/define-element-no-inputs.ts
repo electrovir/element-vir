@@ -18,7 +18,6 @@ import {
 import {DeclarativeElementInit} from './declarative-element-init';
 import {
     DeclarativeElementDefinitionOptions,
-    IgnoreUnsetInputsWarningSymbol,
     defaultDeclarativeElementDefinitionOptions,
 } from './definition-options';
 import {hasDeclarativeElementParent} from './has-declarative-element-parent';
@@ -303,7 +302,7 @@ export function defineElementNoInputs<
                     // other elements (cause they have no custom element ancestors).
                     hasDeclarativeElementParent(this) &&
                     !this._haveInputsBeenSet &&
-                    !elementOptions[IgnoreUnsetInputsWarningSymbol]
+                    !elementOptions.ignoreUnsetInputs
                 ) {
                     console.warn(
                         this,

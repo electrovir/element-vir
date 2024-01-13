@@ -3,7 +3,6 @@ import {CustomElementTagName} from './custom-tag-name';
 import {DeclarativeElementDefinition} from './declarative-element';
 import {DeclarativeElementInit} from './declarative-element-init';
 import {defineElementNoInputs, VerifiedElementNoInputsInit} from './define-element-no-inputs';
-import {IgnoreUnsetInputsWarningSymbol} from './definition-options';
 import {BaseCssPropertyName} from './properties/css-properties';
 import {EventsInitMap} from './properties/element-events';
 import {PropertyInitMapBase} from './properties/element-properties';
@@ -77,7 +76,7 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>() {
         return defineElementNoInputs({
             ...init,
             options: {
-                [IgnoreUnsetInputsWarningSymbol]: false,
+                ignoreUnsetInputs: false,
                 ...init.options,
             },
         } as VerifiedElementNoInputsInit<
