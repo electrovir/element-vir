@@ -9,7 +9,7 @@ describe(defineElement.name, () => {
         }>()(
             // @ts-expect-error style is a default HTMLElement key
             {
-                tagName: 'blah-blah-blah',
+                tagName: 'blah-blah-blah-1',
                 renderCallback() {
                     return 'hi';
                 },
@@ -18,7 +18,7 @@ describe(defineElement.name, () => {
         defineElement<{}>()(
             // @ts-expect-error classList is a default HTMLElement key
             {
-                tagName: 'blah-blah-blah',
+                tagName: 'blah-blah-blah-2',
                 stateInitStatic: {
                     classList: ['hi'],
                 },
@@ -35,7 +35,7 @@ describe(defineElement.name, () => {
         }>()(
             // @ts-expect-error inputKey clashes between inputs and state
             {
-                tagName: 'blah-blah-blah',
+                tagName: 'blah-blah-blah-3',
                 stateInitStatic: {
                     inputKey: 0,
                     otherKey: 'hi',

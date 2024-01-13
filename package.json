@@ -1,75 +1,35 @@
 {
-    "name": "element-vir",
+    "name": "@electrovir/element-vir-mono-repo",
     "version": "20.0.0",
-    "keywords": [
-        "custom",
-        "web",
-        "components",
-        "elements",
-        "declarative",
-        "lit"
-    ],
-    "homepage": "https://github.com/electrovir/element-vir",
-    "bugs": {
-        "url": "https://github.com/electrovir/element-vir/issues"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/electrovir/element-vir"
-    },
+    "private": true,
     "license": "(MIT or CC0 1.0)",
     "author": {
         "name": "electrovir",
         "url": "https://github.com/electrovir"
     },
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "workspaces": [
+        "packages/*"
+    ],
     "scripts": {
-        "compile": "virmator compile",
-        "docs": "virmator docs",
+        "compile": "mono-vir for-each npm run compile",
+        "docs": "mono-vir for-each-async virmator docs",
         "format": "virmator format",
         "publish": "virmator publish \"npm run compile && npm run test:all\"",
-        "start": "npm run compile && npm install && virmator frontend",
-        "test": "virmator test-web",
-        "test:all": "concurrently -c auto --kill-others-on-fail --colors --names types,tests,spelling,format,docs \"npm run test:types\" \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\"",
-        "test:coverage": "virmator test-web coverage",
+        "test": "mono-vir for-each-async npm test",
+        "test:all": "npm run compile && concurrently -c auto -m 90% --kill-others-on-fail --colors --names tests,spelling,format,docs \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\"",
+        "test:coverage": "npm run test coverage",
         "test:deps": "virmator deps check",
-        "test:docs": "virmator docs check",
+        "test:docs": "mono-vir for-each-async virmator docs check",
         "test:format": "virmator format check",
         "test:spelling": "virmator spellcheck",
-        "test:types": "tsc --noEmit"
-    },
-    "dependencies": {
-        "@augment-vir/common": "^22.4.0",
-        "date-vir": "^5.0.0",
-        "lit": "^3.1.1",
-        "lit-css-vars": "^3.0.8",
-        "lit-html": "^3.1.1",
-        "object-shape-tester": "^1.0.3",
-        "run-time-assertions": "^0.3.0"
+        "test:types": "npm run compile"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^22.4.0",
-        "@augment-vir/node-js": "^22.4.0",
-        "@istanbuljs/nyc-config-typescript": "^1.0.2",
-        "@open-wc/testing": "^4.0.0",
-        "@types/chai": "^4.3.11",
-        "@types/mocha": "^10.0.6",
-        "@web/dev-server-esbuild": "^1.0.1",
-        "@web/test-runner": "^0.18.0",
-        "@web/test-runner-commands": "^0.9.0",
-        "@web/test-runner-playwright": "^0.11.0",
-        "@web/test-runner-visual-regression": "^0.9.0",
-        "ansi-colors": "^4.1.3",
-        "concurrently": "^8.2.2",
         "cspell": "^8.3.2",
         "dependency-cruiser": "^16.0.0",
-        "element-book": "^10.1.10",
         "element-vir": "file:./",
         "esbuild": "^0.19.11",
-        "istanbul-smart-text-reporter": "^1.1.3",
         "markdown-code-example-inserter": "^0.3.3",
-        "mocha-spec-reporter-with-file-names": "^0.0.3",
         "npm-check-updates": "~16.12.3",
         "nyc": "^15.1.0",
         "prettier": "^3.2.1",
@@ -81,13 +41,9 @@
         "prettier-plugin-sort-json": "^3.1.0",
         "prettier-plugin-toml": "^2.0.1",
         "ts-node": "^10.9.2",
-        "type-fest": "^4.9.0",
         "typedoc": "^0.25.7",
         "typescript": "^5.3.3",
-        "vira": "^2.5.5",
-        "virmator": "^11.2.0",
-        "vite": "^4.5.0",
-        "vite-tsconfig-paths": "^4.2.3"
+        "virmator": "^11.2.0"
     },
     "overrides": {
         "lit": "^3.1.1",

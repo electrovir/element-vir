@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "declaration": true,
+        "noEmit": false
+    },
+    "extends": "virmator/base-configs/tsconfig.base.json"
+}
