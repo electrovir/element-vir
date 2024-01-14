@@ -37,7 +37,7 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>() {
         EventsInit extends EventsInitMap = {},
         HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
         CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
-        SlotNames extends ReadonlyArray<string> = [],
+        SlotNames extends ReadonlyArray<string> = Readonly<[]>,
     >(
         initInput: VerifiedElementInit<
             TagName,

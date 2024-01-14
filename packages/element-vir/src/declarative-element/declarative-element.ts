@@ -1,4 +1,5 @@
-import {RequiredAndNotNullBy} from '@augment-vir/common';
+import {AnyFunction, RequiredAndNotNullBy} from '@augment-vir/common';
+import {IsAny, IsEmptyObject} from 'type-fest';
 import {CSSResult, LitElement} from '../lit-exports/all-lit-exports';
 import {MinimalDefinitionWithInputs} from '../template-transforms/minimal-element-definition';
 import {CustomElementTagName} from './custom-tag-name';
@@ -239,6 +240,7 @@ export abstract class DeclarativeElement<
         inputs: {} extends Required<Inputs> ? never : Partial<Inputs>,
     ): void;
     public abstract _haveInputsBeenSet: boolean;
+    /** The element definition for this element instance. */
     public abstract readonly definition: DeclarativeElementDefinition<
         TagName,
         Inputs,
@@ -250,7 +252,16 @@ export abstract class DeclarativeElement<
     >;
 }
 
-export interface StaticDeclarativeElementProperties<
+export type AssignMethod<Inputs extends PropertyInitMapBase> =
+    IsAny<Inputs> extends true
+        ? AnyFunction
+        : IsEmptyObject<Required<Inputs>> extends true
+          ? (inputsObject: never) => never
+          : (
+                inputsObject: IsEmptyObject<Required<Inputs>> extends true ? never : Inputs,
+            ) => MinimalDefinitionWithInputs;
+
+export type StaticDeclarativeElementProperties<
     TagName extends CustomElementTagName,
     Inputs extends PropertyInitMapBase,
     StateInit extends PropertyInitMapBase,
@@ -258,11 +269,9 @@ export interface StaticDeclarativeElementProperties<
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
     SlotNames extends ReadonlyArray<string>,
-> {
+> = {
     /** Assign inputs to an element directly on its interpolated tag. */
-    readonly assign: (
-        inputsObject: {} extends Required<Inputs> ? never : Inputs,
-    ) => MinimalDefinitionWithInputs;
+    readonly assign: AssignMethod<Inputs>;
     assignedInputs: Inputs | undefined;
 
     /** Pass through the render callback for direct unit testability */
@@ -307,4 +316,4 @@ export interface StaticDeclarativeElementProperties<
 
     readonly tagName: string;
     readonly styles: CSSResult;
-}
+};

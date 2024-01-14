@@ -1,0 +1,27 @@
+{
+    "name": "@electrovir/vira-book",
+    "version": "20.0.1",
+    "private": true,
+    "license": "(MIT or CC0 1.0)",
+    "author": {
+        "name": "electrovir",
+        "url": "https://github.com/electrovir"
+    },
+    "scripts": {
+        "compile": "rm -rf dist && tsc -b -f --pretty",
+        "start": "npm run compile && virmator frontend",
+        "test": "exit 0;"
+    },
+    "dependencies": {
+        "element-book": "*",
+        "element-vir": "*",
+        "vira": "*"
+    },
+    "devDependencies": {
+        "markdown-code-example-inserter": "^0.3.3",
+        "typedoc": "^0.25.7",
+        "typescript": "^5.3.3",
+        "vite": "^4.5.0",
+        "vite-tsconfig-paths": "^4.2.3"
+    }
+}

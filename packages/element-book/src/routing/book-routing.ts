@@ -25,6 +25,7 @@ export const defaultBookFullRoute: Readonly<BookFullRoute> = {
     search: undefined,
 } as const;
 
-export type BookRouter = BookFullRoute extends FullRoute<infer Paths, infer Search, infer Hash>
-    ? Readonly<SpaRouter<Paths, Search, Hash>>
-    : never;
+export type BookRouter =
+    BookFullRoute extends FullRoute<infer Paths, infer Search, infer Hash>
+        ? Readonly<SpaRouter<Paths, Search, Hash>>
+        : never;

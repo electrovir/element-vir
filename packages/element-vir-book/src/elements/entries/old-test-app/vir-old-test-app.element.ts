@@ -118,24 +118,22 @@ export const VirOldTestApp = defineElementNoInputs({
                     })}
                 ></${TestChildElement}>
                 <hr />
-                ${
-                    state.showChild
-                        ? html`
-                              <span>Child just with clean up assign (no event listeners)</span>
-                              <br />
-                              <!-- prettier-ignore -->
-                              <!-- intentionally not interpolated to make sure we're logging errors for it -->
-                              <element-vir-test-child
-                                  class="darker weird-colors"
-                                  ${assign(TestChildElement, {
-                                      displayNumber: state.funnyNumber,
-                                      width: -1,
-                                  })}
-                              ></element-vir-test-child>
-                              <hr />
-                          `
-                        : ''
-                }
+                ${state.showChild
+                    ? html`
+                          <span>Child just with clean up assign (no event listeners)</span>
+                          <br />
+                          <!-- prettier-ignore -->
+                          <!-- intentionally not interpolated to make sure we're logging errors for it -->
+                          <element-vir-test-child
+                              class="darker weird-colors"
+                              ${assign(TestChildElement, {
+                                  displayNumber: state.funnyNumber,
+                                  width: -1,
+                              })}
+                          ></element-vir-test-child>
+                          <hr />
+                      `
+                    : ''}
                 <${AsyncChild.assign({
                     trigger: state.funnyNumber,
                 })}></${AsyncChild}>

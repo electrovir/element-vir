@@ -65,7 +65,7 @@ export function defineElementNoInputs<
     EventsInit extends EventsInitMap = {},
     const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
     const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
-    const SlotNames extends ReadonlyArray<string> = [],
+    const SlotNames extends ReadonlyArray<string> = Readonly<[]>,
 >(
     initInput: VerifiedElementNoInputsInit<
         TagName,
@@ -245,7 +245,7 @@ export function defineElementNoInputs<
             CssVarKeys,
             SlotNames
         >['cssVars'] = cssVars;
-        public static override readonly init = init as (typeof DeclarativeElement)['init'];
+        public static override readonly init = init as any;
         public static override readonly slotNames: StaticDeclarativeElementProperties<
             TagName,
             Inputs,

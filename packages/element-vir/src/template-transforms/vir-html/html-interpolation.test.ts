@@ -1,5 +1,6 @@
 import {assertTypeOf} from 'run-time-assertions';
 import {renderIf} from '../../declarative-element/directives/render-if.directive';
+import {RenderCallback} from '../../declarative-element/render-callback';
 import {classMap} from '../../lit-exports/all-lit-exports';
 import {DirectiveOutput, HtmlInterpolation} from './html-interpolation';
 import {html} from './vir-html';
@@ -47,5 +48,21 @@ describe('HtmlInterpolation', () => {
                 }}
             ></div>
         `;
+    });
+
+    it('allows vira icon definitions', () => {
+        assertTypeOf<
+            RenderCallback<
+                'vira-icon',
+                {
+                    fitContainer?: boolean | undefined;
+                },
+                {},
+                {},
+                'vira-icon-fit-container',
+                `vira-icon-${string}`,
+                string[]
+            >
+        >().toMatchTypeOf<RenderCallback<any, any, any, any, any, any, any>>();
     });
 });

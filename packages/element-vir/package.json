@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "20.0.0",
+    "version": "20.0.1",
     "keywords": [
         "custom",
         "web",
@@ -62,7 +62,6 @@
         "type-fest": "^4.9.0",
         "typedoc": "^0.25.7",
         "typescript": "^5.3.3",
-        "vira": "^2.5.5",
         "vite": "^4.5.0",
         "vite-tsconfig-paths": "^4.2.3"
     }

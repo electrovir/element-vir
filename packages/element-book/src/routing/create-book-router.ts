@@ -3,9 +3,10 @@ import {createSpaRouter, SpaRouter} from 'spa-router-vir';
 import {BookMainRoute, BookRouter, defaultBookFullRoute, ValidBookPaths} from './book-routing';
 
 export function createBookRouter(baseRoute: string | undefined): BookRouter {
-    type SubTypes = BookRouter extends SpaRouter<infer Paths, infer Search, infer Hash>
-        ? {paths: Paths; search: Search; hash: Hash}
-        : never;
+    type SubTypes =
+        BookRouter extends SpaRouter<infer Paths, infer Search, infer Hash>
+            ? {paths: Paths; search: Search; hash: Hash}
+            : never;
 
     return createSpaRouter<SubTypes['paths'], SubTypes['search'], SubTypes['hash']>({
         routeBase: baseRoute,

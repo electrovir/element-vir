@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-vir-book",
-    "version": "20.0.0",
+    "version": "20.0.1",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "author": {
@@ -9,23 +9,19 @@
     },
     "scripts": {
         "compile": "rm -rf dist && tsc -b -f --pretty",
-        "start": "virmator frontend"
+        "start": "virmator frontend",
+        "test": "exit 0;"
     },
     "dependencies": {
-        "@augment-vir/common": "^22.4.0",
-        "date-vir": "^5.0.0",
-        "lit": "^3.1.1",
-        "lit-css-vars": "^3.0.8",
-        "lit-html": "^3.1.1",
-        "object-shape-tester": "^1.0.3",
-        "run-time-assertions": "^0.3.0"
+        "element-book": "*",
+        "element-vir": "*",
+        "vira": "*"
     },
     "devDependencies": {
         "@augment-vir/browser-testing": "^22.4.0",
-        "element-book": "*",
-        "element-vir": "*",
+        "markdown-code-example-inserter": "^0.3.3",
+        "typedoc": "^0.25.7",
         "typescript": "^5.3.3",
-        "vira": "^2.5.5",
         "vite": "^4.5.0",
         "vite-tsconfig-paths": "^4.2.3"
     }
