@@ -28,7 +28,7 @@ Make sure to install this as a normal dependency (not just a dev dependency) bec
 
 # Usage
 
-Most usage of this package is done through the `defineElement` or `defineElementNoInputs` functions. See the [`DeclarativeElementInit`](https://github.com/electrovir/element-vir/blob/main/src/declarative-element/declarative-element-init.ts) type for that function's full inputs. The inputs are also described below with examples.
+Most usage of this package is done through the `defineElement` or `defineElementNoInputs` functions. See the [`DeclarativeElementInit`](https://github.com/electrovir/element-vir/blob/dev/packages/src/declarative-element/declarative-element-init.ts) type for that function's full inputs. The inputs are also described below with examples.
 
 All of [`lit`](https://lit.dev)'s syntax and functionality is available for use if you wish.
 

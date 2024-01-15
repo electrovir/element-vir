@@ -31,7 +31,7 @@
         "build:pages": "npm run docs && rm -rf ../../dist/element-vir/ && mkdir -p ../../dist/element-vir && cp -r ./dist-docs/* ../../dist/element-vir/",
         "compile": "rm -rf dist && tsc -b -f --pretty",
         "docs": "virmator docs",
-        "start": "npm run compile && npm install && virmator frontend",
+        "start": "cd ../element-vir-example && npm start",
         "test": "virmator test-web",
         "test:coverage": "npm run test coverage",
         "test:docs": "virmator docs check",

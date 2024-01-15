@@ -1,10 +1,6 @@
 # element-book
 
-An [`element-vir`](https://npmjs.com/element-vir) drop-in element for building, testing, and demonstrating a collection of elements (or, in other words, a design system).
-
-Currently in MVP form. Functional, but WIP and frequently changing.
-
-[Example here.](https://electrovir.github.io/element-book/)
+An [`element-vir`](https://npmjs.com/package/element-vir) drop-in element for building, testing, and demonstrating a collection of elements (or, in other words, a design system).
 
 # Installation
 
