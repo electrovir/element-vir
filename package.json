@@ -11,7 +11,7 @@
         "packages/*"
     ],
     "scripts": {
-        "build:pages": "mono-vir for-each-async npm run --if-present build:pages",
+        "build:pages": "npm run --workspace @electrovir/scripts build",
         "compile": "mono-vir for-each \"rm -rf dist && rm -f tsconfig.tsbuildinfo && tsc -b --pretty\"",
         "docs": "mono-vir for-each-async npm run --if-present docs",
         "format": "virmator format",

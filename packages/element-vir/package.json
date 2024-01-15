@@ -28,7 +28,7 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build:pages": "npm run docs && rm -rf ../../dist/element-vir/ && mkdir -p ../../dist/element-vir && cp -r ./dist-docs/* ../../dist/element-vir/",
+        "build:pages": "npm run docs",
         "compile": "rm -rf dist && tsc -b -f --pretty",
         "docs": "virmator docs",
         "start": "cd ../element-vir-example && npm start",

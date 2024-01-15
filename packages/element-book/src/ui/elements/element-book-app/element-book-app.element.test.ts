@@ -25,18 +25,25 @@ describe(ElementBookApp.tagName, () => {
     ): Promise<string> {
         let errorWrapper: Element | undefined;
 
-        await waitUntil(() => {
-            try {
-                errorWrapper = queryThroughShadow({
-                    element: elementBookAppInstance,
-                    query: BookError.tagName,
-                });
-                assertInstanceOf(errorWrapper, BookError);
-                return true;
-            } catch (error) {
-                return false;
-            }
-        }, `Failed to find ${BookError.tagName}`);
+        await waitUntil(
+            () => {
+                try {
+                    errorWrapper = queryThroughShadow({
+                        element: elementBookAppInstance,
+                        query: BookError.tagName,
+                    });
+                    assertInstanceOf(errorWrapper, BookError);
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            },
+            `Failed to find '${BookError.tagName}'`,
+            {
+                interval: 100,
+                timeout: 10_000,
+            },
+        );
 
         assertInstanceOf(errorWrapper, BookError);
         return errorWrapper.shadowRoot.innerHTML;

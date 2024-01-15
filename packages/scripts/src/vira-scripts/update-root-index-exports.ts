@@ -1,5 +1,6 @@
 import {dirname, join} from 'path';
-import {generateExportsFromFilePaths, getExportableTsFilePaths, viraSrcDir} from '../repo-paths';
+import {viraSrcDir} from '../repo-paths';
+import {generateExportsFromFilePaths, getExportableTsFilePaths} from './common/file-paths';
 import {
     UpdateExportsArgs,
     UpdateExportsConfig,

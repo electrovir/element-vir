@@ -8,7 +8,7 @@
         "url": "https://github.com/electrovir"
     },
     "scripts": {
-        "build:pages": "virmator frontend build && rm -rf ../../dist/vira/ && mkdir -p ../../dist/vira && cp -r ./dist-book/* ../../dist/vira/",
+        "build:pages": "virmator frontend build",
         "compile": "rm -rf dist && tsc -b -f --pretty",
         "start": "npm run compile && virmator frontend",
         "test": "exit 0;"

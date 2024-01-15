@@ -8,8 +8,9 @@
         "url": "https://github.com/electrovir"
     },
     "scripts": {
+        "build": "ts-node src/build-all.ts",
+        "build:exports": "ts-node src/vira-scripts/update-all-exports.ts",
         "compile": "rm -rf dist && tsc -b -f --pretty",
-        "execute": "ts-node src/vira-scripts/update-all-exports.ts",
         "test": "npm run test:exports",
         "test:exports": "ts-node src/vira-scripts/update-all-exports.ts --check"
     },

@@ -1,6 +1,7 @@
 import {combineErrorMessages, combineErrors, ensureError, isTruthy} from '@augment-vir/common';
 import {join} from 'path';
-import {generateExportsFromFilePaths, getExportableTsFilePaths, viraSrcDir} from '../repo-paths';
+import {viraSrcDir} from '../repo-paths';
+import {generateExportsFromFilePaths, getExportableTsFilePaths} from './common/file-paths';
 import {
     NotUpToDateError,
     UpdateExportsArgs,
