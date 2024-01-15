@@ -8,6 +8,7 @@
         "url": "https://github.com/electrovir"
     },
     "scripts": {
+        "build:pages": "virmator frontend build && rm -rf ../../dist/vira/ && mkdir -p ../../dist/vira && cp -r ./dist-book/* ../../dist/vira/",
         "compile": "rm -rf dist && tsc -b -f --pretty",
         "start": "npm run compile && virmator frontend",
         "test": "exit 0;"
@@ -18,6 +19,8 @@
         "vira": "*"
     },
     "devDependencies": {
+        "@augment-vir/node-js": "^22.4.0",
+        "esbuild": "^0.19.11",
         "markdown-code-example-inserter": "^0.3.3",
         "typedoc": "^0.25.7",
         "typescript": "^5.3.3",

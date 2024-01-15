@@ -12,7 +12,7 @@
         "lit-html",
         "html"
     ],
-    "homepage": "https://github.com/electrovir/element-vir/packages/element-vir",
+    "homepage": "https://electrovir.github.io/element-vir/element-vir",
     "bugs": {
         "url": "https://github.com/electrovir/element-vir/issues"
     },
@@ -34,6 +34,7 @@
         "start": "npm run compile && npm install && virmator frontend",
         "test": "virmator test-web",
         "test:coverage": "npm run test coverage",
+        "test:docs": "virmator docs check",
         "test:types": "npm run compile"
     },
     "dependencies": {

@@ -11,16 +11,16 @@
         "packages/*"
     ],
     "scripts": {
-        "build:pages": "mono-vir for-each-async npm run build:pages",
+        "build:pages": "mono-vir for-each-async npm run --if-present build:pages",
         "compile": "mono-vir for-each \"rm -rf dist && rm -f tsconfig.tsbuildinfo && tsc -b --pretty\"",
-        "docs": "mono-vir for-each-async npm run docs",
+        "docs": "mono-vir for-each-async npm run --if-present docs",
         "format": "virmator format",
-        "publish": "virmator publish \"npm run compile && npm run test:all\"",
+        "publish": "virmator publish \"npm run test:all\"",
         "test": "mono-vir for-each-async npm test",
-        "test:all": "npm run compile && concurrently -c auto -m 90% --kill-others-on-fail --colors --names tests,spelling,format,docs \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\"",
+        "test:all": "npm run compile && concurrently -c auto -m 90% --kill-others-on-fail --colors --names tests,spelling,format,docs,build \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\" \"npm run build:pages\"",
         "test:coverage": "npm run test coverage",
         "test:deps": "virmator deps check",
-        "test:docs": "mono-vir for-each-async virmator docs check",
+        "test:docs": "mono-vir for-each-async npm run --if-present test:docs",
         "test:format": "virmator format check",
         "test:spelling": "virmator spellcheck",
         "test:types": "npm run compile"

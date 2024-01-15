@@ -14,13 +14,13 @@
         "storybook",
         "system"
     ],
-    "homepage": "https://github.com/electrovir/element-book",
+    "homepage": "https://electrovir.github.io/element-vir/element-book",
     "bugs": {
-        "url": "https://github.com/electrovir/element-book/issues"
+        "url": "https://github.com/electrovir/element-vir/issues"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/electrovir/element-book"
+        "url": "https://github.com/electrovir/element-vir"
     },
     "license": "(MIT or CC0 1.0)",
     "author": {
@@ -31,10 +31,12 @@
     "module": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
+        "build:pages": "npm run docs && rm -rf ../../dist/element-book/ && mkdir -p ../../dist/element-book && cp -r ./dist-docs/* ../../dist/element-book/",
         "compile": "rm -rf dist && tsc -b -f --pretty",
         "docs": "virmator docs",
         "test": "virmator test-web",
         "test:coverage": "npm run test coverage",
+        "test:docs": "virmator docs check",
         "test:types": "npm run compile",
         "test:watch": "web-test-runner --color --watch --config configs/web-test-runner.config.mjs"
     },
