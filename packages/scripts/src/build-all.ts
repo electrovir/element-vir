@@ -1,5 +1,5 @@
 import {log, runShellCommand} from '@augment-vir/node-js';
-import {cp, mkdir, rm} from 'fs/promises';
+import {cp, mkdir, rm, writeFile} from 'fs/promises';
 import {join} from 'path';
 import {packagesDir, rootDistDir} from './repo-paths';
 
@@ -30,7 +30,7 @@ const buildPackageInfos: ReadonlyArray<Readonly<BuildPackageInfo>> = [
     },
 ];
 
-async function buildPackagePages(buildInfo: Readonly<BuildPackageInfo>): Promise<void> {
+async function buildPackagePage(buildInfo: Readonly<BuildPackageInfo>): Promise<void> {
     const packagePath = join(packagesDir, buildInfo.packagePath);
     try {
         log.info(`Building ${packagePath}...`);
@@ -52,12 +52,40 @@ async function buildPackagePages(buildInfo: Readonly<BuildPackageInfo>): Promise
     }
 }
 
+function buildTopLevelIndexFile() {
+    return /* HTML */ `
+        <!doctype html>
+        <html>
+            <head>
+                <title>Element-Vir Packages</title>
+                <style>
+                    body {
+                        font-family: sans-serif;
+                    }
+                </style>
+            </head>
+            <body>
+                <ul>
+                    ${buildPackageInfos
+                        .map((buildInfo) => {
+                            return /* HTML */ `
+                                <li><a href="./${buildInfo.copyTo}">${buildInfo.copyTo}</a></li>
+                            `;
+                        })
+                        .join('')}
+                </ul>
+            </body>
+        </html>
+    `;
+}
+
 async function buildPages() {
     await Promise.all(
         buildPackageInfos.map(async (buildInfo) => {
-            await buildPackagePages(buildInfo);
+            await buildPackagePage(buildInfo);
         }),
     );
+    await writeFile(join(rootDistDir, 'index.html'), buildTopLevelIndexFile());
 }
 
 buildPages();
