@@ -14,6 +14,7 @@
         "test": "exit 0;"
     },
     "dependencies": {
+        "@augment-vir/common": "^22.4.0",
         "element-book": "*",
         "element-vir": "*",
         "vira": "*"
