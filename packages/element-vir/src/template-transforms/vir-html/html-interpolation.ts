@@ -22,11 +22,18 @@ export type HtmlInterpolation =
     | boolean
     | bigint
     | CSSResult
+    | Readonly<CSSResult>
     | Element
+    | Readonly<Element>
     | TemplateResult
+    | Readonly<TemplateResult>
     | MinimalDefinitionWithInputs
+    | Readonly<MinimalDefinitionWithInputs>
     | DeclarativeElementDefinition
+    | Readonly<DeclarativeElementDefinition>
     | DirectiveOutput
+    | Readonly<DirectiveOutput>
     | AnyFunction
     | typeof nothing
-    | HtmlInterpolation[];
+    | HtmlInterpolation[]
+    | ReadonlyArray<HtmlInterpolation>;
