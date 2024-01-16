@@ -9,10 +9,11 @@
     },
     "scripts": {
         "build": "ts-node src/build-all.ts",
-        "build:exports": "ts-node src/vira-scripts/update-all-exports.ts",
         "compile": "rm -rf dist && tsc -b -f --pretty",
         "test": "npm run test:exports",
-        "test:exports": "ts-node src/vira-scripts/update-all-exports.ts --check"
+        "test:exports": "ts-node src/vira-scripts/update-all-exports.ts --check",
+        "update:deps": "ts-node src/update-internal-deps.ts",
+        "update:exports": "ts-node src/vira-scripts/update-all-exports.ts"
     },
     "dependencies": {
         "@augment-vir/common": "^22.4.0",
