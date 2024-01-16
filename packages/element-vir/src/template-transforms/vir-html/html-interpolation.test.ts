@@ -1,7 +1,7 @@
 import {assertTypeOf} from 'run-time-assertions';
 import {renderIf} from '../../declarative-element/directives/render-if.directive';
 import {RenderCallback} from '../../declarative-element/render-callback';
-import {classMap} from '../../lit-exports/all-lit-exports';
+import {classMap, ifDefined} from '../../lit-exports/all-lit-exports';
 import {DirectiveOutput, HtmlInterpolation} from './html-interpolation';
 import {html} from './vir-html';
 
@@ -20,6 +20,12 @@ describe('HtmlInterpolation', () => {
 
     it('blocks symbols', () => {
         assertTypeOf(Symbol('hello')).not.toMatchTypeOf<HtmlInterpolation>();
+    });
+
+    it('allows the ifDefined directive', () => {
+        html`
+            <div title=${ifDefined(Math.random() > 0.5 ? undefined : 'hello')}></div>
+        `;
     });
 
     /** In order to support directive results, this must also be the case. */

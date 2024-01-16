@@ -1,5 +1,5 @@
 import {isLengthAtLeast, mapObjectValues} from '@augment-vir/common';
-import {HTMLTemplateResult, HtmlInterpolation, html, repeat} from 'element-vir';
+import {HTMLTemplateResult, HtmlInterpolation, html, nothing, repeat} from 'element-vir';
 import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
 import {
     BookPageControlsInitBase,
@@ -123,12 +123,12 @@ export function createNodeTemplates({
                       fullUrlBreadcrumbs: hiddenAncestorControls.breadcrumbs,
                   })}></${BookPageControls}>
               `
-            : '';
+            : nothing;
 
     const templates = repeat(
         currentNodes,
         (node) => node.fullUrlBreadcrumbs.join('>'),
-        (currentNode, index): HTMLTemplateResult | string => {
+        (currentNode, index): HTMLTemplateResult | typeof nothing => {
             if (isBookTreeNode(currentNode, BookEntryTypeEnum.Page)) {
                 return html`
                     <${BookPageWrapper.assign({
@@ -156,7 +156,7 @@ export function createNodeTemplates({
                     ></${BookElementExampleWrapper}>
                 `;
             } else if (isBookTreeNode(currentNode, BookEntryTypeEnum.Root)) {
-                return '';
+                return nothing;
             } else {
                 return html`
                     <${BookError.assign({
@@ -172,5 +172,5 @@ export function createNodeTemplates({
     return [
         hiddenAncestorControlsTemplate,
         templates,
-    ].flat();
+    ];
 }

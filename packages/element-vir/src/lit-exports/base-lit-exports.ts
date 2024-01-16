@@ -1,4 +1,4 @@
-export {LitElement, noChange, svg, unsafeCSS} from 'lit';
+export {LitElement, noChange, nothing, svg, unsafeCSS} from 'lit';
 export type {
     CSSResult,
     CSSResultGroup,

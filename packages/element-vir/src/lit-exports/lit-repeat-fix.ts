@@ -41,12 +41,12 @@ export interface RepeatDirectiveFn {
         items: Iterable<T>,
         keyFnOrTemplate: KeyFn<T> | ItemTemplate<T>,
         template?: ItemTemplate<T>,
-    ): HtmlInterpolation;
-    <T>(items: Iterable<T>, template: ItemTemplate<T>): HtmlInterpolation;
+    ): HtmlInterpolation[];
+    <T>(items: Iterable<T>, template: ItemTemplate<T>): HtmlInterpolation[];
     <T>(
         items: Iterable<T>,
         keyFn: KeyFn<T> | ItemTemplate<T>,
         template: ItemTemplate<T>,
-    ): HtmlInterpolation;
+    ): HtmlInterpolation[];
 }
 export const repeat = repeatImport as RepeatDirectiveFn;

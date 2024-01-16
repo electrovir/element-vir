@@ -1,5 +1,5 @@
 import {AnyFunction} from '@augment-vir/common';
-import {CSSResult, TemplateResult} from 'lit';
+import {CSSResult, TemplateResult, nothing} from 'lit';
 import {EmptyObject} from 'type-fest';
 import {DeclarativeElementDefinition} from '../../declarative-element/declarative-element';
 import {MinimalDefinitionWithInputs} from '../minimal-element-definition';
@@ -28,4 +28,5 @@ export type HtmlInterpolation =
     | DeclarativeElementDefinition
     | DirectiveOutput
     | AnyFunction
+    | typeof nothing
     | HtmlInterpolation[];

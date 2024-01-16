@@ -341,6 +341,7 @@ export function defineElementNoInputs<
                     caught,
                     `Failed to render ${init.tagName}`,
                 );
+                console.error(error);
                 this._lastRenderError = error;
                 return extractErrorMessage(error);
             }
