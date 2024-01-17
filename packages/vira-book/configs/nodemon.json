@@ -1,0 +1,13 @@
+{
+    "exec": "cd ../ && npm run compile && cd - && virmator frontend",
+    "exitcrash": false,
+    "ext": "ts",
+    "ignore": [
+        "*.test.ts"
+    ],
+    "watch": [
+        "../vira/src",
+        "../element-vir/src",
+        "../element-book/src"
+    ]
+}

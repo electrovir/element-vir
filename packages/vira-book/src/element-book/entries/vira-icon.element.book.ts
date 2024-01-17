@@ -1,5 +1,5 @@
 import {defineBookPage} from 'element-book';
-import {html} from 'element-vir';
+import {css, html} from 'element-vir';
 import {Element24Icon, ViraIcon, createColoredIcon} from 'vira';
 import {elementsBookPage} from '../elements.book';
 
@@ -26,6 +26,26 @@ export const viraIconBookPage = defineBookPage({
                         icon: createColoredIcon(Element24Icon, {
                             'vira-icon-stroke-color': 'red',
                         }),
+                    })}></${ViraIcon}>
+                `;
+            },
+        });
+        defineExample({
+            title: 'fit container',
+            styles: css`
+                ${ViraIcon} {
+                    width: 200px;
+                    height: 200px;
+                    border: 1px solid #eee;
+                }
+            `,
+            renderCallback() {
+                return html`
+                    <${ViraIcon.assign({
+                        icon: createColoredIcon(Element24Icon, {
+                            'vira-icon-stroke-color': 'red',
+                        }),
+                        fitContainer: true,
                     })}></${ViraIcon}>
                 `;
             },

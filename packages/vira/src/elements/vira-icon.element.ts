@@ -25,7 +25,7 @@ export const ViraIcon = defineViraElement<{
             display: block;
         }
 
-        ${hostClasses['vira-icon-fit-container'].selector} svg 
+        ${hostClasses['vira-icon-fit-container'].selector} svg {
             height: 100%;
             width: 100%;
         }
