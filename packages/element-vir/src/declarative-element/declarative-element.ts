@@ -1,4 +1,4 @@
-import {AnyFunction, RequiredAndNotNullBy} from '@augment-vir/common';
+import {RequiredAndNotNullBy} from '@augment-vir/common';
 import {IsAny, IsEmptyObject} from 'type-fest';
 import {CSSResult, LitElement} from '../lit-exports/all-lit-exports';
 import {MinimalDefinitionWithInputs} from '../template-transforms/minimal-element-definition';
@@ -254,7 +254,7 @@ export abstract class DeclarativeElement<
 
 export type AssignMethod<Inputs extends PropertyInitMapBase> =
     IsAny<Inputs> extends true
-        ? AnyFunction
+        ? any
         : IsEmptyObject<Required<Inputs>> extends true
           ? (inputsObject: never) => never
           : (
