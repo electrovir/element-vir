@@ -138,7 +138,10 @@ function setupAsyncProp<
                          */
                     });
 
-                    rejectValue(ensureError(reason));
+                    const error = ensureError(reason);
+                    console.error(error);
+
+                    rejectValue(error);
                 }
             });
     }
