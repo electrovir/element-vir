@@ -5,7 +5,7 @@ import {
     randomString,
     typedMap,
     wait,
-    waitForCondition,
+    waitUntilTruthy,
 } from '@augment-vir/common';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {assertDefined, assertInstanceOf, assertThrows, assertTypeOf} from 'run-time-assertions';
@@ -337,13 +337,11 @@ describe(asyncProp.name, () => {
 
         // get elements
         assertInstanceOf(instance, ElementWithAsyncPropError);
-        await waitForCondition({
-            conditionCallback() {
-                return (
-                    instance.instanceState.myAsyncProp.value instanceof Error &&
-                    instance.instanceState.myAsyncProp.value.message === errorMessage
-                );
-            },
+        await waitUntilTruthy(() => {
+            return (
+                instance.instanceState.myAsyncProp.value instanceof Error &&
+                instance.instanceState.myAsyncProp.value.message === errorMessage
+            );
         });
     });
 

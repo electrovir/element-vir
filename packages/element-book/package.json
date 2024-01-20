@@ -1,6 +1,6 @@
 {
     "name": "element-book",
-    "version": "20.0.6",
+    "version": "20.0.7",
     "keywords": [
         "book",
         "design system",
@@ -42,17 +42,17 @@
         "test:watch": "web-test-runner --color --watch --config configs/web-test-runner.config.mjs"
     },
     "dependencies": {
-        "@augment-vir/browser": "^22.4.0",
-        "@augment-vir/common": "^22.4.0",
+        "@augment-vir/browser": "^23.0.0",
+        "@augment-vir/common": "^23.0.0",
         "colorjs.io": "0.4.5",
         "lit-css-vars": "^3.0.8",
-        "object-shape-tester": "^1.0.3",
+        "object-shape-tester": "^2.1.0",
         "spa-router-vir": "^3.0.3",
         "typed-event-target": "^3.0.1",
-        "vira": "20.0.6"
+        "vira": "20.0.7"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^22.4.0",
+        "@augment-vir/browser-testing": "^23.0.0",
         "@open-wc/testing": "^4.0.0",
         "@types/chai": "^4.3.11",
         "@types/mocha": "^10.0.6",
