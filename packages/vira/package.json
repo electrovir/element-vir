@@ -1,6 +1,6 @@
 {
     "name": "vira",
-    "version": "20.0.7",
+    "version": "20.0.8",
     "description": "A simple and highly versatile design system using element-vir.",
     "keywords": [
         "design",
@@ -38,7 +38,7 @@
         "date-vir": "^5.1.2",
         "lit-css-vars": "^3.0.8",
         "spa-router-vir": "^3.0.3",
-        "type-fest": "^4.9.0"
+        "type-fest": "^4.10.0"
     },
     "devDependencies": {
         "@augment-vir/browser-testing": "^23.0.0",
