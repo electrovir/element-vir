@@ -98,6 +98,8 @@ export function createIntervalObservableProp<ValueType, UpdateInputType = undefi
         resumeInterval();
     }
 
+    const originalDestroy = baseObservableProp.destroy;
+
     const observablePropertyWithInterval: IntervalObservableProp<ValueType, UpdateInputType> =
         Object.assign(baseObservableProp, {
             forceUpdate: updateValue as TriggerUpdateFunction<ValueType, UpdateInputType>,
@@ -105,7 +107,7 @@ export function createIntervalObservableProp<ValueType, UpdateInputType = undefi
             resumeInterval,
             destroy() {
                 pauseInterval();
-                baseObservableProp.destroy();
+                originalDestroy();
             },
         });
 
