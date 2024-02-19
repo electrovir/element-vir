@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-vir-example",
-    "version": "20.0.8",
+    "version": "20.0.9",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "author": {
@@ -18,11 +18,11 @@
         "vira": "*"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^23.0.0",
-        "@augment-vir/node-js": "^23.0.0",
-        "esbuild": "^0.19.11",
-        "markdown-code-example-inserter": "^0.3.3",
-        "typedoc": "^0.25.7",
+        "@augment-vir/browser-testing": "^23.3.4",
+        "@augment-vir/node-js": "^23.3.4",
+        "esbuild": "^0.20.1",
+        "markdown-code-example-inserter": "^1.0.0",
+        "typedoc": "^0.25.8",
         "typescript": "^5.3.3",
         "vite": "^4.5.0",
         "vite-tsconfig-paths": "^4.3.1"
