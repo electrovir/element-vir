@@ -1,5 +1,5 @@
 {
-    "exec": "cd ../ && npm i && npm run compile && cd - && virmator frontend",
+    "exec": "cd ../ && npm i && npm run compile && cd vira-book && virmator frontend",
     "exitcrash": false,
     "ext": "ts",
     "ignore": [
