@@ -18,6 +18,7 @@ export const Commit24Icon = defineIcon({
             width="24"
             height="24"
             style="fill-rule:evenodd;clip-rule:evenodd;stroke-miterlimit:1.5"
+            viewBox="0 0 24 24"
         >
             <circle
                 cx="12"

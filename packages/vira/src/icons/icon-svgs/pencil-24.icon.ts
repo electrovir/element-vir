@@ -12,7 +12,7 @@ import {defineIcon} from '../icon-svg.js';
 export const Pencil24Icon = defineIcon({
     name: 'Pencil24Icon',
     svgTemplate: html`
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <path
                 d="M20.041 4.966c.303-.418.097-1.085-.459-1.489l-1.771-1.285c-.557-.404-1.255-.393-1.558.025L5.12 17.561l-.167 4.215 3.955-1.467S19.965 5.071 20.041 4.966"
                 stroke=${viraIconCssVars['vira-icon-stroke-color'].value}

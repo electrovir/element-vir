@@ -12,7 +12,13 @@ import {defineIcon} from '../icon-svg.js';
 export const Document24Icon = defineIcon({
     name: 'Document24Icon',
     svgTemplate: html`
-        <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="24" height="24">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            xml:space="preserve"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+        >
             <path
                 d="m19 9-6-6H5v18h14V9Z"
                 stroke=${viraIconCssVars['vira-icon-stroke-color'].value}
