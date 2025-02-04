@@ -304,7 +304,12 @@ export const ViraInput = defineViraElement<
             : '';
 
         const shouldBlockBrowserHelps =
-            inputs.disableBrowserHelps || inputs.type !== ViraInputType.Default;
+            inputs.disableBrowserHelps ||
+            /**
+             * Some browsers leaks passwords with their browser helps (like Chrome with
+             * spellchecking).
+             */
+            inputs.type === ViraInputType.Password;
 
         return html`
             <label>
@@ -334,7 +339,7 @@ export const ViraInput = defineViraElement<
                     ${listen('input', (event) => {
                         textInputListener({
                             inputs,
-                            filteredValue,
+                            previousValue: filteredValue,
                             event,
                             inputBlockedCallback(blockedInput) {
                                 dispatch(new events.inputBlocked(blockedInput));

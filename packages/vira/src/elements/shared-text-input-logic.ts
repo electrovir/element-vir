@@ -112,13 +112,14 @@ export function filterTextInputValue(inputs: IsAllowedInputs): {
  */
 export function textInputListener({
     inputs,
-    filteredValue,
+    previousValue,
     event,
     inputBlockedCallback,
     newValueCallback,
 }: {
     inputs: SharedTextInputElementInputs;
-    filteredValue: string;
+    /** The value of the input element before this listener fired. */
+    previousValue: string;
     event: Event;
     inputBlockedCallback: (blockedInput: string) => void;
     newValueCallback: (newValue: string) => void;
@@ -133,46 +134,33 @@ export function textInputListener({
      * For example, when a bunch of characters are pasted, this will be the entire pasted contents.
      */
     const changedText = event.data;
-    const beforeChangeText = filteredValue;
-
-    // this will be overwritten below if blocked characters are encountered
-    let finalText = inputElement.value;
 
     /**
      * When changedText is falsy, that means an operation other than inserting characters happened.
      * Such as: deleting, cutting the text, etc.
      */
     if (changedText) {
-        if (changedText.length === 1) {
-            if (
-                !isAllowed({
-                    value: changedText,
-                    allowed: inputs.allowedInputs,
-                    blocked: inputs.blockedInputs,
-                })
-            ) {
-                // prevent the change from happening
-                finalText = beforeChangeText;
-                inputBlockedCallback(changedText);
-            }
-        }
-        // filters out blocked pasted letters
-        else {
-            const {filtered, blocked} = filterTextInputValue({
-                value: changedText,
-                allowed: inputs.allowedInputs,
-                blocked: inputs.blockedInputs,
-            });
-            finalText = filtered;
+        const {blocked} = filterTextInputValue({
+            value: changedText,
+            allowed: inputs.allowedInputs,
+            blocked: inputs.blockedInputs,
+        });
+        if (blocked.length) {
             inputBlockedCallback(blocked);
         }
     }
 
-    if (inputElement.value !== finalText) {
+    const finalValue = filterTextInputValue({
+        value: inputElement.value,
+        allowed: inputs.allowedInputs,
+        blocked: inputs.blockedInputs,
+    }).filtered;
+
+    if (inputElement.value !== finalValue) {
         // this prevents blocked inputs by simply overwriting them
-        inputElement.value = finalText;
+        inputElement.value = finalValue;
     }
-    if (beforeChangeText !== finalText) {
-        newValueCallback(finalText);
+    if (previousValue !== finalValue) {
+        newValueCallback(finalValue);
     }
 }
