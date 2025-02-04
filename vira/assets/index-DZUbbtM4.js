@@ -533,7 +533,7 @@ does not match RegExp
             `});return v`
             <slot>${r}</slot>
         `}}),lA=fe({name:"Chat24Icon",svgTemplate:v`
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <path
                 d="M5 15.4c-1.6-1.2-2.6-2.7-2.6-4.4 0-3.5 4.3-6.3 9.6-6.3s9.6 2.8 9.6 6.3-4.3 6.4-9.6 6.4L9 17l-5 3.8 1-5.5Z"
                 stroke=${T["vira-icon-stroke-color"].value}
@@ -581,6 +581,7 @@ does not match RegExp
             width="24"
             height="24"
             style="fill-rule:evenodd;clip-rule:evenodd;stroke-miterlimit:1.5"
+            viewBox="0 0 24 24"
         >
             <circle
                 cx="12"
@@ -598,7 +599,13 @@ does not match RegExp
             />
         </svg>
     `}),fA=fe({name:"Document24Icon",svgTemplate:v`
-        <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="24" height="24">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            xml:space="preserve"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+        >
             <path
                 d="m19 9-6-6H5v18h14V9Z"
                 stroke=${T["vira-icon-stroke-color"].value}
@@ -711,7 +718,7 @@ does not match RegExp
             />
         </svg>
     `}),hA=fe({name:"Pencil24Icon",svgTemplate:v`
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <path
                 d="M20.041 4.966c.303-.418.097-1.085-.459-1.489l-1.771-1.285c-.557-.404-1.255-.393-1.558.025L5.12 17.561l-.167 4.215 3.955-1.467S19.965 5.071 20.041 4.966"
                 stroke=${T["vira-icon-stroke-color"].value}
@@ -726,7 +733,13 @@ does not match RegExp
             />
         </svg>
     `}),mA=fe({name:"Shield24Icon",svgTemplate:v`
-        <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="24" height="24">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            xml:space="preserve"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+        >
             <path
                 d="M12 21s-8-3.5-8-10V6s4.8-.1 8-3c3.2 2.9 8 3 8 3v5c0 6.5-8 10-8 10Z"
                 stroke=${T["vira-icon-stroke-color"].value}
@@ -735,7 +748,13 @@ does not match RegExp
             />
         </svg>
     `}),pA=fe({name:"Star24Icon",svgTemplate:v`
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke-miterlimit="2">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            stroke-miterlimit="2"
+            viewBox="0 0 24 24"
+        >
             <path
                 d="m12 2 2.25 6.91h7.26l-5.88 4.27 2.25 6.91L12 15.82l-5.88 4.27 2.25-6.91-5.88-4.27h7.27L12 2Z"
                 stroke=${T["vira-icon-stroke-color"].value}
