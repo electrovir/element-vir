@@ -13,6 +13,7 @@ export * from './declarative-element/directives/is-resolved.directive.js';
 export * from './declarative-element/directives/listen.directive.js';
 export * from './declarative-element/directives/on-dom-created.directive.js';
 export * from './declarative-element/directives/on-dom-rendered.directive.js';
+export * from './declarative-element/directives/on-intersect.directive.js';
 export * from './declarative-element/directives/on-resize.directive.js';
 export * from './declarative-element/directives/render-async.directive.js';
 export * from './declarative-element/directives/render-if.directive.js';
