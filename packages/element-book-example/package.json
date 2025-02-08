@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-book-example",
-    "version": "23.2.1",
+    "version": "23.3.0",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "type": "module",
@@ -12,8 +12,8 @@
     },
     "dependencies": {
         "@augment-vir/web": "^31.9.1",
-        "element-book": "^23.2.1",
-        "element-vir": "^23.2.1"
+        "element-book": "^23.3.0",
+        "element-vir": "^23.3.0"
     },
     "devDependencies": {
         "@web/dev-server-esbuild": "^1.0.3",

@@ -13,6 +13,10 @@ import {LoaderAnimated24Icon} from './icon-svgs/loader-animated-24.icon.js';
 import {Options24Icon} from './icon-svgs/options-24.icon.js';
 import {Pencil24Icon} from './icon-svgs/pencil-24.icon.js';
 import {Shield24Icon} from './icon-svgs/shield-24.icon.js';
+import {SpeakerLoud24Icon} from './icon-svgs/speaker-loud-24.icon.js';
+import {SpeakerMedium24Icon} from './icon-svgs/speaker-medium-24.icon.js';
+import {SpeakerMuted24Icon} from './icon-svgs/speaker-muted-24.icon.js';
+import {SpeakerQuiet24Icon} from './icon-svgs/speaker-quiet-24.icon.js';
 import {Star24Icon} from './icon-svgs/star-24.icon.js';
 import {StatusFailure24Icon} from './icon-svgs/status-failure-24.icon.js';
 import {StatusInProgress24Icon} from './icon-svgs/status-in-progress-24.icon.js';
@@ -35,6 +39,10 @@ export * from './icon-svgs/loader-animated-24.icon.js';
 export * from './icon-svgs/options-24.icon.js';
 export * from './icon-svgs/pencil-24.icon.js';
 export * from './icon-svgs/shield-24.icon.js';
+export * from './icon-svgs/speaker-loud-24.icon.js';
+export * from './icon-svgs/speaker-medium-24.icon.js';
+export * from './icon-svgs/speaker-muted-24.icon.js';
+export * from './icon-svgs/speaker-quiet-24.icon.js';
 export * from './icon-svgs/star-24.icon.js';
 export * from './icon-svgs/status-failure-24.icon.js';
 export * from './icon-svgs/status-in-progress-24.icon.js';
@@ -61,6 +69,10 @@ export const allIconsByName = {
     Options24Icon,
     Pencil24Icon,
     Shield24Icon,
+    SpeakerLoud24Icon,
+    SpeakerMedium24Icon,
+    SpeakerMuted24Icon,
+    SpeakerQuiet24Icon,
     Star24Icon,
     StatusFailure24Icon,
     StatusInProgress24Icon,
