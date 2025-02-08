@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-vir-mono-repo",
-    "version": "23.2.0",
+    "version": "23.2.1",
     "private": true,
     "repository": {
         "type": "git",
@@ -38,7 +38,7 @@
         "@typescript-eslint/eslint-plugin": "^8.23.0",
         "cspell": "^8.17.3",
         "dependency-cruiser": "^16.9.0",
-        "esbuild": "^0.24.2",
+        "esbuild": "^0.25.0",
         "eslint": "^9.16.0",
         "eslint-config-prettier": "^10.0.1",
         "eslint-plugin-jsdoc": "^50.6.3",
@@ -60,7 +60,7 @@
         "prettier-plugin-sort-json": "^4.1.1",
         "prettier-plugin-toml": "^2.0.1",
         "typescript-eslint": "^8.23.0",
-        "virmator": "^13.12.0"
+        "virmator": "^13.13.0"
     },
     "engines": {
         "node": ">=22"
