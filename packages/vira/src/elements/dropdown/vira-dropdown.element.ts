@@ -120,7 +120,7 @@ export const ViraDropdown = defineViraElement<
         }
 
         .trigger-icon {
-            transform: rotate(0);
+            transform: rotate(180deg);
             transition: ${viraAnimationDurations['vira-interaction-animation-duration'].value}
                 linear transform;
             align-self: flex-start;
@@ -133,7 +133,7 @@ export const ViraDropdown = defineViraElement<
         }
 
         .dropdown-wrapper.open .trigger-icon {
-            transform: rotate(180deg);
+            transform: rotate(0);
         }
 
         .dropdown-wrapper.open:not(.open-upwards) {
@@ -189,6 +189,7 @@ export const ViraDropdown = defineViraElement<
             right: 28px;
             /* minus the border width */
             top: calc(100% - 1px);
+            left: 0;
         }
 
         .using-placeholder {

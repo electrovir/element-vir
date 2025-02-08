@@ -54,6 +54,21 @@ const examples: ReadonlyArray<{
         },
     },
     {
+        title: 'short options',
+        inputs: {
+            options: [
+                {
+                    id: '1',
+                    label: '1',
+                },
+                {
+                    id: '2',
+                    label: '2',
+                },
+            ],
+        },
+    },
+    {
         title: 'multi select',
         inputs: {
             isMultiSelect: true,
