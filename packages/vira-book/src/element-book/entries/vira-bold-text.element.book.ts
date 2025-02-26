@@ -1,0 +1,53 @@
+import {BookPageControlType, defineBookPage} from 'element-book';
+import {html} from 'element-vir';
+import {ViraBoldText} from 'vira';
+import {elementsBookPage} from '../elements.book.js';
+
+export const viraBoldTextPage = defineBookPage({
+    parent: elementsBookPage,
+    title: ViraBoldText.tagName,
+    descriptionParagraphs: [
+        "Reserves space for bolded text, even if the text isn't currently bold.",
+    ],
+    controls: {
+        bolded: {
+            controlType: BookPageControlType.Checkbox,
+            initValue: false,
+        },
+    },
+    defineExamples({defineExample}) {
+        defineExample({
+            title: 'Not bold',
+            render() {
+                return html`
+                    <${ViraBoldText.assign({
+                        text: 'Text here',
+                        bold: false,
+                    })}></${ViraBoldText}>
+                `;
+            },
+        });
+        defineExample({
+            title: 'Bold',
+            render() {
+                return html`
+                    <${ViraBoldText.assign({
+                        text: 'Text here',
+                        bold: true,
+                    })}></${ViraBoldText}>
+                `;
+            },
+        });
+        defineExample({
+            title: 'Dynamic',
+            render({controls}) {
+                return html`
+                    <${ViraBoldText.assign({
+                        text: 'Text here',
+                        bold: controls.bolded,
+                    })}></${ViraBoldText}>
+                `;
+            },
+        });
+    },
+});
