@@ -65,11 +65,17 @@ export const ViraLink = defineViraElement<
                 return;
             }
 
-            if (
-                inputs.route.router.setRouteOnDirectNavigation(inputs.route.route, event) &&
-                inputs.route.scrollToTop
-            ) {
-                window.scrollTo(0, 0);
+            const routed = inputs.route.router.setRouteOnDirectNavigation(
+                inputs.route.route,
+                event,
+            );
+
+            if (inputs.route.scrollToTop) {
+                window.scrollTo({
+                    left: 0,
+                    top: 0,
+                    behavior: routed ? 'instant' : 'smooth',
+                });
             }
         }
 
