@@ -1510,7 +1510,7 @@ does not match RegExp
         a:active {
             color: ${e["vira-link-hover-color"].value};
         }
-    `,render({inputs:e}){function t(n){e.route&&e.route.router.setRouteOnDirectNavigation(e.route.route,n)&&e.route.scrollToTop&&window.scrollTo(0,0)}if(e.link?.newTab)return E`
+    `,render({inputs:e}){function t(n){if(!e.route)return;const r=e.route.router.setRouteOnDirectNavigation(e.route.route,n);e.route.scrollToTop&&window.scrollTo({left:0,top:0,behavior:r?"instant":"smooth"})}if(e.link?.newTab)return E`
                 <a href=${e.link.url} target="_blank" rel="noopener noreferrer">
                     <slot></slot>
                 </a>
