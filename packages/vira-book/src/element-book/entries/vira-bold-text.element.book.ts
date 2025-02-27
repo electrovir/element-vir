@@ -1,5 +1,5 @@
 import {BookPageControlType, defineBookPage} from 'element-book';
-import {html} from 'element-vir';
+import {css, html} from 'element-vir';
 import {ViraBoldText} from 'vira';
 import {elementsBookPage} from '../elements.book.js';
 
@@ -45,6 +45,29 @@ export const viraBoldTextPage = defineBookPage({
                     <${ViraBoldText.assign({
                         text: 'Text here',
                         bold: controls.bolded,
+                    })}></${ViraBoldText}>
+                `;
+            },
+        });
+        defineExample({
+            title: 'Resized',
+            styles: css`
+                ${ViraBoldText} {
+                    display: flex;
+                    border: 1px solid dodgerblue;
+                    border-radius: 8px;
+                    padding: 16px;
+                }
+            `,
+            render() {
+                return html`
+                    <${ViraBoldText.assign({
+                        text: 'Not Bolded',
+                        bold: false,
+                    })}></${ViraBoldText}>
+                    <${ViraBoldText.assign({
+                        text: 'Bolded',
+                        bold: true,
                     })}></${ViraBoldText}>
                 `;
             },
