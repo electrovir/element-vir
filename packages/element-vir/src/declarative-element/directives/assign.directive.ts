@@ -12,7 +12,7 @@ import {extractElement} from './directive-helpers.js';
 
 export type ElementDefinitionWithInputsType<
     InputsType extends PropertyInitMapBase = PropertyInitMapBase,
-> = {inputsType: InputsType};
+> = {InputsType: InputsType};
 
 /**
  * Assign an object matching an element's inputs to its inputs.
@@ -24,9 +24,9 @@ export type ElementDefinitionWithInputsType<
  */
 export function assign<const SpecificDeclarativeElement extends ElementDefinitionWithInputsType>(
     declarativeElement: SpecificDeclarativeElement,
-    inputsObject: EmptyObject extends Required<SpecificDeclarativeElement['inputsType']>
+    inputsObject: EmptyObject extends Required<SpecificDeclarativeElement['InputsType']>
         ? never
-        : SpecificDeclarativeElement['inputsType'],
+        : SpecificDeclarativeElement['InputsType'],
 ): DirectiveResult;
 /**
  * Assign an object matching an element's inputs to its inputs.
@@ -38,7 +38,7 @@ export function assign<const SpecificDeclarativeElement extends ElementDefinitio
  */
 export function assign<
     const SpecificDeclarativeElement extends ElementDefinitionWithInputsType,
-    const SpecificInput extends SpecificDeclarativeElement['inputsType'],
+    const SpecificInput extends SpecificDeclarativeElement['InputsType'],
 >(inputsObject: SpecificInput extends typeof HTMLElement ? never : SpecificInput): DirectiveResult;
 /**
  * Assign an object matching an element's inputs to its inputs.
@@ -50,9 +50,9 @@ export function assign<
  */
 export function assign<const SpecificDeclarativeElement extends ElementDefinitionWithInputsType>(
     declarativeElementOrInputs: SpecificDeclarativeElement,
-    inputsObject?: EmptyObject extends Required<SpecificDeclarativeElement['inputsType']>
+    inputsObject?: EmptyObject extends Required<SpecificDeclarativeElement['InputsType']>
         ? never
-        : SpecificDeclarativeElement['inputsType'],
+        : SpecificDeclarativeElement['InputsType'],
 ): DirectiveResult {
     /**
      * The directive generics (in listenDirective) are not strong enough to maintain their values.

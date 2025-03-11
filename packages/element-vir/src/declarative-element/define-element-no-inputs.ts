@@ -245,9 +245,9 @@ export function defineElementNoInputs<
                 `"instanceType" was called on ${init.tagName} as a value but it is only for types.`,
             );
         }
-        public static override get inputsType(): Inputs {
+        public static override get InputsType(): Inputs {
             throw new Error(
-                `"inputsType" was called on ${init.tagName} as a value but it is only for types.`,
+                `'InputsType' was called on ${init.tagName} as a value but it is only for types.`,
             );
         }
         public static override get StateType(): State {

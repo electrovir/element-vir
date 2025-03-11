@@ -13,7 +13,7 @@ const expectedStaticProperties = getObjectTypedKeys({
     events: '',
     hostClasses: '',
     init: '',
-    inputsType: '',
+    InputsType: '',
     render: '',
     slotNames: '',
     StateType: '',

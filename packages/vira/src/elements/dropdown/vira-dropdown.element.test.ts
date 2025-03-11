@@ -8,7 +8,7 @@ import {mockOptions} from './dropdown.mock.js';
 import {viraDropdownOptionsTestIds} from './vira-dropdown-options.element.js';
 import {ViraDropdown, viraDropdownTestIds} from './vira-dropdown.element.js';
 
-async function setupDropdownTest(inputs?: Partial<(typeof ViraDropdown)['inputsType']>) {
+async function setupDropdownTest(inputs?: Partial<(typeof ViraDropdown)['InputsType']>) {
     const events: {
         [EventKey in keyof typeof ViraDropdown.events]: InstanceType<
             (typeof ViraDropdown.events)[EventKey]

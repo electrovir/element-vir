@@ -35,7 +35,7 @@ export const viraButtonBookPage = defineBookPage({
         }: {
             title: string;
             styles?: CSSResult;
-            inputs?: Omit<(typeof ViraButton)['inputsType'], 'text'>;
+            inputs?: Omit<(typeof ViraButton)['InputsType'], 'text'>;
         }) {
             const styles = inputStyles ?? css``;
 

@@ -37,7 +37,7 @@ export const viraInputBookPage = defineBookPage({
         type Example = {
             styles?: CSSResult;
             title: string;
-            inputs: (typeof ViraInput)['inputsType'];
+            inputs: (typeof ViraInput)['InputsType'];
         };
 
         function defineInputExample({styles, title, inputs}: Readonly<Example>) {

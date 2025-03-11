@@ -41,7 +41,7 @@ const exampleDropdownOptions: ReadonlyArray<Readonly<ViraDropdownOption>> = [
 
 const examples: ReadonlyArray<{
     title: string;
-    inputs?: Partial<typeof ViraDropdown.inputsType>;
+    inputs?: Partial<typeof ViraDropdown.InputsType>;
     customStyle?: CSSResult;
 }> = [
     {
@@ -218,7 +218,7 @@ export const viraDropdownPage = defineBookPage({
                 },
                 styles: example.customStyle,
                 render({state, updateState, controls}) {
-                    const finalInputs: typeof ViraDropdown.inputsType = {
+                    const finalInputs: typeof ViraDropdown.InputsType = {
                         placeholder:
                             example.inputs && 'placeholder' in example.inputs
                                 ? example.inputs.placeholder

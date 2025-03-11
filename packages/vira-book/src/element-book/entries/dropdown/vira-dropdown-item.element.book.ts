@@ -5,7 +5,7 @@ import {dropdownPage} from './vira-dropdown.book.js';
 
 const examples: ReadonlyArray<{
     title: string;
-    inputs: typeof ViraDropdownItem.inputsType;
+    inputs: typeof ViraDropdownItem.InputsType;
     customStyle?: CSSResult;
     customTemplate?: HTMLTemplateResult;
 }> = [
@@ -88,7 +88,7 @@ export const ViraDropdownItemPage = defineBookPage({
                 },
                 styles: example.customStyle,
                 render({controls}) {
-                    const finalInputs: typeof ViraDropdownItem.inputsType = {
+                    const finalInputs: typeof ViraDropdownItem.InputsType = {
                         label: controls.Label || example.inputs.label,
                         selected: controls.Selected
                             ? controls.Selected === 'all'

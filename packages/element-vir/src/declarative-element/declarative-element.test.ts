@@ -13,7 +13,7 @@ import {
 } from '../index.js';
 
 describe('StaticDeclarativeElementProperties', () => {
-    it('excludes observables in inputsType', () => {
+    it('excludes observables in InputsType', () => {
         assert
             .tsType<
                 StaticDeclarativeElementProperties<
@@ -24,7 +24,7 @@ describe('StaticDeclarativeElementProperties', () => {
                     any,
                     any,
                     any
-                >['inputsType']
+                >['InputsType']
             >()
             .equals<{hi: number}>();
     });

@@ -14,7 +14,7 @@ export const viraImageBookPage = defineBookPage({
     defineExamples({defineExample}) {
         const examples: ReadonlyArray<{
             title: string;
-            inputs: typeof ViraImage.inputsType;
+            inputs: typeof ViraImage.InputsType;
             loadingSlot?: TemplateResult;
             errorSlot?: TemplateResult;
             styles?: CSSResult;

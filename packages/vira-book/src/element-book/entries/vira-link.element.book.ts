@@ -25,7 +25,7 @@ export const viraLinkBookPage = defineBookPage({
             inputs,
         }: {
             title: string;
-            inputs: (typeof ViraLink)['inputsType'];
+            inputs: (typeof ViraLink)['InputsType'];
         }) {
             defineExample({
                 title,
