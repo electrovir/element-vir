@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-book-example",
-    "version": "23.4.2",
+    "version": "24.0.0",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "type": "module",
@@ -11,20 +11,20 @@
         "test:types": "npm run compile"
     },
     "dependencies": {
-        "@augment-vir/web": "^31.9.2",
-        "element-book": "^23.4.2",
-        "element-vir": "^23.4.2"
+        "@augment-vir/web": "^31.10.0",
+        "element-book": "^24.0.0",
+        "element-vir": "^24.0.0"
     },
     "devDependencies": {
         "@web/dev-server-esbuild": "^1.0.4",
         "@web/test-runner": "^0.20.0",
         "@web/test-runner-commands": "^0.9.0",
         "@web/test-runner-playwright": "^0.11.0",
-        "esbuild": "^0.25.0",
+        "esbuild": "^0.25.1",
         "markdown-code-example-inserter": "^3.0.3",
         "typedoc": "^0.27.9",
-        "typescript": "5.7.3",
-        "vite": "^6.2.0",
+        "typescript": "5.8.2",
+        "vite": "^6.2.1",
         "vite-tsconfig-paths": "^5.1.4"
     }
 }

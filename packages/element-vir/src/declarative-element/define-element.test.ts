@@ -1,5 +1,5 @@
 import {assert} from '@augment-vir/assert';
-import {randomBoolean, randomString} from '@augment-vir/common';
+import {randomBoolean} from '@augment-vir/common';
 import {describe, it} from '@augment-vir/test';
 import {defineElement} from './define-element.js';
 
@@ -50,13 +50,13 @@ describe(defineElement.name, () => {
 
     it('blocks render callbacks without a return type', () => {
         defineElement()({
-            tagName: `some-tag-${randomString()}`,
+            tagName: `some-tag-2`,
             cleanup({host}) {},
             // @ts-expect-error: render callback must return something
             render() {},
         });
         defineElement()({
-            tagName: `some-tag-2-${randomString()}`,
+            tagName: `some-tag-2-3`,
             // returning undefined is cool
             render() {
                 return undefined;
@@ -68,7 +68,7 @@ describe(defineElement.name, () => {
             maybeInput?: string;
             maybeUndefined?: string | undefined;
         }>()({
-            tagName: `some-tag-${randomString()}`,
+            tagName: `some-tag-4`,
             cleanup({host}) {},
             // @ts-expect-error: render callback must return something
             render() {},
@@ -108,7 +108,7 @@ describe(defineElement.name, () => {
 
     it('blocks render callbacks that are async', () => {
         defineElement()({
-            tagName: `some-tag-${randomString()}`,
+            tagName: `some-tag-5`,
             // @ts-expect-error: render cannot be async
             // eslint-disable-next-line @typescript-eslint/require-await
             async render() {
@@ -116,7 +116,7 @@ describe(defineElement.name, () => {
             },
         });
         defineElement()({
-            tagName: `some-tag-2-${randomString()}`,
+            tagName: `some-tag-2-6`,
             render() {
                 return 'hello';
             },
@@ -125,7 +125,7 @@ describe(defineElement.name, () => {
 
     it('blocks init callbacks that are async', () => {
         defineElement()({
-            tagName: `some-tag-${randomString()}`,
+            tagName: `some-tag-7`,
             // init callback does not need to return something
 
             // @ts-expect-error: init cannot be async
@@ -138,7 +138,7 @@ describe(defineElement.name, () => {
             },
         });
         defineElement()({
-            tagName: `some-tag-2-${randomString()}`,
+            tagName: `some-tag-2-8`,
             init() {
                 return undefined;
             },
@@ -152,7 +152,7 @@ describe(defineElement.name, () => {
 
     it('allows host to be assigned to instance type', () => {
         const MyElement = defineElement()({
-            tagName: `some-tag-${randomString()}`,
+            tagName: `some-tag-9`,
             // init callback does not need to return something
             init({host}) {
                 acceptHost(host);
@@ -170,7 +170,7 @@ describe(defineElement.name, () => {
     });
     it('can include updateState in init', () => {
         const MyElement = defineElement()({
-            tagName: `some-tag-${randomString()}`,
+            tagName: `some-tag-10`,
             state() {
                 return {
                     prop1: 'hi',

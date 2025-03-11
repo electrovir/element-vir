@@ -71,6 +71,9 @@ describe(wrapDefineElement.name, () => {
                     cssVars: {
                         'my-tag-abc4-var': 'blue',
                     },
+                    events: {
+                        outputOne: defineElementEvent<string>(),
+                    },
                     styles: ({cssVars, hostClasses}) => css`
                         ${hostClasses['my-tag-abc4-do-thing'].selector} {
                             color: ${cssVars['my-tag-abc4-var'].value};
@@ -80,15 +83,12 @@ describe(wrapDefineElement.name, () => {
                             ${cssVars['my-tag-abc4-var'].name}: green;
                         }
                     `,
-                    events: {
-                        outputOne: defineElementEvent<string>(),
-                    },
                     render() {
                         return '';
                     },
                 }),
             )
-            .matches(
+            .equals(
                 defineElementNoInputs({
                     tagName: 'my-tag-abc5' as 'my-tag-abc4',
                     hostClasses: {

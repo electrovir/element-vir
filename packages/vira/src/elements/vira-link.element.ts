@@ -1,5 +1,5 @@
 import {css, html, listen} from 'element-vir';
-import {FullRoute, SpaRouter} from 'spa-router-vir';
+import {SpaRoute, SpaRouter} from 'spa-router-vir';
 import {RequireExactlyOne} from 'type-fest';
 import {defineViraElement} from './define-vira-element.js';
 
@@ -26,7 +26,7 @@ export const ViraLink = defineViraElement<
          * is provided for the inputs, don't provide a link property.
          */
         route: {
-            route: FullRoute<any, any, any>;
+            route: SpaRoute<any, any, any>;
             router: Pick<SpaRouter<any, any, any>, 'createRouteUrl' | 'setRouteOnDirectNavigation'>;
             scrollToTop?: boolean;
         };

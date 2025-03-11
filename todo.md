@@ -1,13 +1,13 @@
-- rename `stateType` to `StateType`
-- rename `inputsType` to `InputsType`
-- rename `updateStateType` to `UpdateStateType`
-- remove the need to is `isAsyncError` or `isResolved`, instead add the following properties:
-    - `state` (either `waiting`, `rejected`, or `resolved`)
-    - `error` (only populated if the promise rejected)
-    - `value` (only populated if the promise resolved)
-    - `promise` (the promise, remains until overwritten)
-- remove `isStrictInstance`
-- add testIds to an element's definition
-- allow arbitrary static data in the element definition
-- unify event types with the `typed-event-listener` package
-- allow manually applying host classes (without overwriting them)
+-   rename `stateType` to `StateType`
+-   rename `inputsType` to `InputsType`
+-   rename `updateStateType` to `UpdateStateType`
+-   remove the need to is `isAsyncError` or `isResolved`, instead add the following properties:
+    -   `state` (either `waiting`, `rejected`, or `resolved`)
+    -   `error` (only populated if the promise rejected)
+    -   `value` (only populated if the promise resolved)
+    -   `promise` (the promise, remains until overwritten)
+-   remove `isStrictInstance`
+-   add testIds to an element's definition
+-   allow arbitrary static data in the element definition
+-   unify event types with the `typed-event-listener` package
+-   allow manually applying host classes (without overwriting them)

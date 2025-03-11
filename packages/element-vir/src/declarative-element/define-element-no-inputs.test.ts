@@ -9,12 +9,12 @@ import {defineElementNoInputs} from './define-element-no-inputs.js';
 describe(defineElementNoInputs.name, () => {
     it('blocks render callbacks without a return type', () => {
         defineElementNoInputs({
-            tagName: `some-tag-${randomString()}`,
+            tagName: `some-tag-3`,
             // @ts-expect-error: render callback must return something
             render() {},
         });
         defineElementNoInputs({
-            tagName: `some-tag-2-${randomString()}`,
+            tagName: `some-tag-2-2`,
             // returning undefined is cool
             render() {
                 return undefined;
@@ -24,7 +24,7 @@ describe(defineElementNoInputs.name, () => {
 
     it('blocks init return', () => {
         defineElementNoInputs({
-            tagName: `some-tag-${randomString()}`,
+            tagName: `some-tag-4`,
             // @ts-expect-error: this callback should not return anything
             init() {
                 return 'hi';
@@ -34,7 +34,7 @@ describe(defineElementNoInputs.name, () => {
             },
         });
         defineElementNoInputs({
-            tagName: `some-tag-${randomString()}`,
+            tagName: `some-tag-5`,
             // @ts-expect-error: this callback should not return anything
             cleanup() {
                 return 'hi';
@@ -47,7 +47,7 @@ describe(defineElementNoInputs.name, () => {
 
     it('does not infer render output type from init callback', () => {
         defineElementNoInputs({
-            tagName: `some-tag-${randomString()}`,
+            tagName: `some-tag-6`,
             init() {
                 return undefined;
             },
@@ -74,7 +74,7 @@ describe(defineElementNoInputs.name, () => {
 
     it('does not allow updating state properties that do not exist in the state', () => {
         defineElementNoInputs({
-            tagName: `some-tag-${randomString()}`,
+            tagName: `some-tag-7`,
             state() {
                 return {
                     selectedFeeIndex: undefined as number | undefined,
@@ -106,7 +106,7 @@ describe(defineElementNoInputs.name, () => {
 
     it('allows host to be assigned to instance type', () => {
         const MyElement = defineElementNoInputs({
-            tagName: `some-tag-${randomString()}`,
+            tagName: `some-tag-1`,
             // render callback must return something
             init({host}) {
                 acceptHost(host);
@@ -128,7 +128,7 @@ describe(defineElementNoInputs.name, () => {
         let count = 0;
 
         const MyElement = defineElementNoInputs({
-            tagName: `some-tag-${randomString()}`,
+            tagName: `some-tag-2`,
             state() {
                 return {
                     intervalObservable: new IntervalObservable({

@@ -1,4 +1,4 @@
-import {FullRoute} from 'spa-router-vir';
+import {FullSpaRoute} from 'spa-router-vir';
 
 /**
  * Top level routes supported by the element-book app.
@@ -22,7 +22,7 @@ export type ValidBookPaths = [BookMainRoute.Search, string] | [BookMainRoute.Boo
  *
  * @category Internal
  */
-export type BookFullRoute = Required<Readonly<FullRoute<ValidBookPaths, undefined, undefined>>>;
+export type BookFullRoute = Readonly<FullSpaRoute<ValidBookPaths, undefined, undefined>>;
 
 /**
  * Extract the current search query from the current route paths.

@@ -40,7 +40,7 @@ describe(asyncProp.name, () => {
         });
 
         const elementWithAsyncProp = defineElementNoInputs({
-            tagName: `element-with-async-prop-${randomString()}`,
+            tagName: `element-with-async-prop-2`,
             state() {
                 return {
                     myAsyncProp: asyncProp({
@@ -132,7 +132,7 @@ describe(asyncProp.name, () => {
         const ElementWithAsyncProp = defineElement<{
             promiseUpdateTrigger: number | undefined;
         }>()({
-            tagName: `element-with-async-prop-${randomString()}`,
+            tagName: `element-with-async-prop-3`,
             state() {
                 return {
                     myAsyncProp: asyncProp({
@@ -324,7 +324,7 @@ describe(asyncProp.name, () => {
         ].join(' ');
 
         const ElementWithAsyncPropError = defineElementNoInputs({
-            tagName: `element-with-async-prop-error-${randomString()}`,
+            tagName: `element-with-async-prop-error-4`,
             state() {
                 return {
                     myAsyncProp: asyncProp({
@@ -359,7 +359,7 @@ describe(asyncProp.name, () => {
         const ElementWithAsyncProp = defineElement<{
             promiseUpdateTrigger: number | undefined;
         }>()({
-            tagName: `element-with-async-prop-${randomString()}`,
+            tagName: `element-with-async-prop-5`,
             state() {
                 return {
                     myRandomNumber: asyncProp({
@@ -445,7 +445,7 @@ describe(asyncProp.name, () => {
 
     it('works even if the value is undefined', async () => {
         const ElementWithUndefinedAsyncProp = defineElementNoInputs({
-            tagName: `element-with-undefined-async-prop-${randomString()}`,
+            tagName: `element-with-undefined-async-prop-1`,
             state() {
                 return {
                     myAsyncProp: asyncProp({defaultValue: undefined as number | undefined}),
