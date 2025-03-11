@@ -242,17 +242,22 @@ export function defineElementNoInputs<
         >['slotNames'] = slotNamesMap;
         public get instanceType() {
             throw new Error(
-                `"instanceType" was called on ${init.tagName} as a value but it is only for types.`,
+                `"instanceType" was called on ${init.tagName} as a value but it is only a type.`,
             );
         }
         public static override get InputsType(): Inputs {
             throw new Error(
-                `'InputsType' was called on ${init.tagName} as a value but it is only for types.`,
+                `'InputsType' was called on ${init.tagName} as a value but it is only a type.`,
             );
         }
         public static override get StateType(): State {
             throw new Error(
-                `'StateType' was called on ${init.tagName} as a value but it is only for types.`,
+                `'StateType' was called on ${init.tagName} as a value but it is only a type.`,
+            );
+        }
+        public static override get UpdateStateType(): any {
+            throw new Error(
+                `'UpdateStateType' was called on ${init.tagName} as a value but it is only a type.`,
             );
         }
 

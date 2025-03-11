@@ -1,4 +1,3 @@
--   rename `updateStateType` to `UpdateStateType`
 -   remove the need to is `isAsyncError` or `isResolved`, instead add the following properties:
     -   `state` (either `waiting`, `rejected`, or `resolved`)
     -   `error` (only populated if the promise rejected)
