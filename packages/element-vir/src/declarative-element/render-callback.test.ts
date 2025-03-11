@@ -126,7 +126,7 @@ describe('UpdateStateCallback', () => {
             },
         });
 
-        function acceptStateFromElementDefinition(state: (typeof customElement)['stateType']) {
+        function acceptStateFromElementDefinition(state: (typeof customElement)['StateType']) {
             state.doThing.setValue('yo');
         }
     });

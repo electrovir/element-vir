@@ -166,7 +166,7 @@ export abstract class DeclarativeElement<
         BaseCssPropertyName<CustomElementTagName>,
         ReadonlyArray<string>
     >['inputsType'];
-    public static readonly stateType: StaticDeclarativeElementProperties<
+    public static readonly StateType: StaticDeclarativeElementProperties<
         CustomElementTagName,
         PropertyInitMapBase,
         PropertyInitMapBase,
@@ -174,7 +174,7 @@ export abstract class DeclarativeElement<
         BaseCssPropertyName<CustomElementTagName>,
         BaseCssPropertyName<CustomElementTagName>,
         ReadonlyArray<string>
-    >['stateType'];
+    >['StateType'];
     public static readonly updateStateType: StaticDeclarativeElementProperties<
         CustomElementTagName,
         PropertyInitMapBase,
@@ -329,7 +329,7 @@ export type StaticDeclarativeElementProperties<
     >;
     readonly elementOptions: DeclarativeElementDefinitionOptions;
     readonly inputsType: Inputs;
-    readonly stateType: Readonly<State>;
+    readonly StateType: Readonly<State>;
     readonly updateStateType: UpdateStateCallback<State>;
     readonly hostClasses: HostClassNamesMap<string, HostClassKeys>;
     readonly cssVars: CssVars<TagName, CssVarKeys>;

@@ -105,7 +105,7 @@ describe(asyncProp.name, () => {
             .equals<AsyncProp<SomethingObject, TriggerType>>();
 
         assert
-            .tsType<(typeof elementWithAsyncProp)['stateType']['myAsyncProp']['value']>()
+            .tsType<(typeof elementWithAsyncProp)['StateType']['myAsyncProp']['value']>()
             .equals<AsyncValue<SomethingObject>>();
 
         assert

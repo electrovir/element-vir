@@ -1,4 +1,3 @@
--   rename `stateType` to `StateType`
 -   rename `inputsType` to `InputsType`
 -   rename `updateStateType` to `UpdateStateType`
 -   remove the need to is `isAsyncError` or `isResolved`, instead add the following properties:
