@@ -9,7 +9,6 @@ export * from './declarative-element/definition-options.js';
 export * from './declarative-element/directives/async-prop.js';
 export * from './declarative-element/directives/create-attribute-directive.js';
 export * from './declarative-element/directives/directive-helpers.js';
-export * from './declarative-element/directives/is-resolved.directive.js';
 export * from './declarative-element/directives/listen.directive.js';
 export * from './declarative-element/directives/on-dom-created.directive.js';
 export * from './declarative-element/directives/on-dom-rendered.directive.js';

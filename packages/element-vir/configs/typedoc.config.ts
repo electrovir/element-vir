@@ -38,7 +38,6 @@ export const typeDocConfig: Partial<TypeDocOptions> = {
     ],
     logLevel: 'Verbose',
     intentionallyNotExported: [
-        'InternalAsyncPropClass',
         '__class',
     ],
     defaultCategory: 'MISSING CATEGORY',

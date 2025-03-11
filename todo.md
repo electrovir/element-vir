@@ -1,8 +1,3 @@
--   remove the need to is `isAsyncError` or `isResolved`, instead add the following properties:
-    -   `state` (either `waiting`, `rejected`, or `resolved`)
-    -   `error` (only populated if the promise rejected)
-    -   `value` (only populated if the promise resolved)
-    -   `promise` (the promise, remains until overwritten)
 -   add testIds to an element's definition
 -   allow arbitrary static data in the element definition
 -   unify event types with the `typed-event-listener` package

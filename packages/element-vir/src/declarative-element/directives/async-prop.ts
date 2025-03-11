@@ -1,13 +1,94 @@
-import {CallbackObservable, CallbackObservableInit} from 'observavir';
-import {Constructor} from 'type-fest';
+import type {Overwrite} from '@augment-vir/common';
+import {CallbackObservable, CallbackObservableInit, type AsyncValue} from 'observavir';
 
 export type {AsyncValue} from 'observavir';
 
-/** Class for constructing async props. Should not be referenced directly, use `AsyncProp` instead. */
-class InternalAsyncPropClass<Value, Params> extends CallbackObservable<Value, Params> {}
+/**
+ * The current state of an {@link AsyncProp}'s value.
+ *
+ * @category Internal
+ */
+export enum AsyncValueState {
+    /** The `.value` Promise has been rejected. */
+    Rejected = 'rejected',
+    /** The `.value` Promise has not settled yet. */
+    Waiting = 'waiting',
+    /** The `.value` Promise has been resolved into an awaited value. */
+    Resolved = 'resolved',
+}
 
 /**
- * An async property created by {@link asyncProp} for use within declarative elements.
+ * Class for constructing async props. Do not use this directly as its internal types won't be
+ * inferred correctly. Instead use {@link asyncProp} an async prop or {@link AsyncProp} for types.
+ *
+ * @category Internal
+ */
+export class InternalAsyncPropClass<Value, Params> extends CallbackObservable<Value, Params> {
+    /**
+     * The current `.value` if it has settled (into either a resolved value or an Error), or
+     * `undefined` if it has not.
+     */
+    public get resolvedValue(): Exclude<typeof this.value, Promise<any>> | undefined {
+        if (this.isResolved()) {
+            return this.value as Exclude<typeof this.value, Promise<any>>;
+        } else {
+            return undefined;
+        }
+    }
+
+    /** The state of the current `.value`. */
+    public get state(): AsyncValueState {
+        if (this.isResolved()) {
+            return AsyncValueState.Resolved;
+        } else if (this.isError()) {
+            return AsyncValueState.Rejected;
+        } else {
+            return AsyncValueState.Waiting;
+        }
+    }
+
+    /**
+     * Checks if the current `.value` has resolved (meaning the Promise has settled and it was not
+     * rejected). This type guards the current instance's `.value` property.
+     */
+    public isResolved(): this is Overwrite<
+        this,
+        {value: Exclude<AsyncValue<Value>, Promise<any> | Error>}
+    > {
+        return !(this.value instanceof Promise);
+    }
+
+    /**
+     * Checks if the current `.value` has settled (meaning it is either a rejection error or a
+     * resolved value). This type guards the current instance's `.value` property.
+     */
+    public isSettled(): this is Overwrite<this, {value: Exclude<AsyncValue<Value>, Promise<any>>}> {
+        return !(this.value instanceof Promise);
+    }
+
+    /**
+     * Checks if the current `.value` has not settled yet settled (meaning it is still an unsettled
+     * Promise). This type guards the current instance's `.value` property.
+     */
+    public isWaiting(): this is Overwrite<
+        this,
+        {value: Extract<AsyncValue<Value>, Promise<any> | Error>}
+    > {
+        return this.value instanceof Promise;
+    }
+
+    /**
+     * Checks if the current `.value` is a rejection error. This type guards the current instance's
+     * `.value` property.
+     */
+    public isError(): this is Overwrite<this, {value: Extract<AsyncValue<Value>, Error>}> {
+        return this.value instanceof Error;
+    }
+}
+
+/**
+ * An async property created by {@link asyncProp} for use within declarative elements. Do not use
+ * this directly as its internal types won't be inferred correctly.
  *
  * @category Internal
  */
@@ -23,16 +104,6 @@ export type AsyncProp<Value, Params> = Omit<
     | 'listenToEvent'
     | 'listen'
 >;
-
-/**
- * An async property created by {@link asyncProp} for use within declarative elements.
- *
- * @category Internal
- */
-export const AsyncProp: Constructor<
-    AsyncProp<unknown, unknown>,
-    ConstructorParameters<typeof InternalAsyncPropClass<unknown, unknown>>
-> = InternalAsyncPropClass;
 
 /**
  * Create an async prop for a declarative element's state.

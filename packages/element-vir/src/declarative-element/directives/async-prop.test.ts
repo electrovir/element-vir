@@ -1,6 +1,6 @@
 import {assert, waitUntil} from '@augment-vir/assert';
 import {DeferredPromise, randomString, typedMap, wait, waitValue} from '@augment-vir/common';
-import {describe, it, testWeb} from '@augment-vir/test';
+import {describe, it, itCases, testWeb} from '@augment-vir/test';
 import {isObservableBase, noUpdate} from 'observavir';
 import {nothing} from '../../lit-exports/all-lit-exports.js';
 import {html} from '../../template-transforms/vir-html/vir-html.js';
@@ -8,7 +8,6 @@ import {defineElementNoInputs} from '../define-element-no-inputs.js';
 import {defineElement} from '../define-element.js';
 import {defineElementEvent} from '../properties/element-events.js';
 import {AsyncProp, AsyncValue, asyncProp} from './async-prop.js';
-import {isAsyncError, isResolved} from './is-resolved.directive.js';
 import {listen} from './listen.directive.js';
 import {renderAsync} from './render-async.directive.js';
 
@@ -150,8 +149,11 @@ describe(asyncProp.name, () => {
                     circularReference,
                 });
 
-                if (isResolved(state.myAsyncProp.value) && !isAsyncError(state.myAsyncProp.value)) {
-                    assert.tsType(state.myAsyncProp.value).equals<number>();
+                if (
+                    !(state.myAsyncProp.resolvedValue instanceof Error) &&
+                    state.myAsyncProp.resolvedValue
+                ) {
+                    assert.tsType(state.myAsyncProp.resolvedValue).equals<number>();
                 }
 
                 renderCount++;
@@ -455,7 +457,7 @@ describe(asyncProp.name, () => {
                 wasRendered: defineElementEvent<void>(),
             },
             render({dispatch, events, state}) {
-                if (isResolved(state.myAsyncProp.value) && !isAsyncError(state.myAsyncProp.value)) {
+                if (state.myAsyncProp.isResolved()) {
                     assert.tsType(state.myAsyncProp.value).equals<number | undefined>();
                 }
 
@@ -610,12 +612,12 @@ describe(asyncProp.name, () => {
                 state.myProp.update(inputs);
             },
             render({state}) {
-                if (!isResolved(state.myProp.value)) {
-                    return 'loading';
-                } else if (isAsyncError(state.myProp.value)) {
+                if (state.myProp.isResolved()) {
+                    return state.myProp.value;
+                } else if (state.myProp.isError()) {
                     return 'error';
                 } else {
-                    return state.myProp.value;
+                    return 'loading...';
                 }
             },
         });
@@ -711,5 +713,92 @@ describe(asyncProp.name, () => {
         assert.instanceOf(rendered, VirAsyncPropWithNoUpdate);
         await waitUntil.isTruthy(() => rendered._internalRenderCount > 0);
         assert.instanceOf(rendered.instanceState.asyncValues.value, Promise);
+    });
+});
+
+describe('AsyncProp value type guards', () => {
+    it('type guards itself', () => {
+        const myAsyncProp = asyncProp({
+            async updateCallback(trigger: {callback: number}) {
+                await wait({milliseconds: 0});
+                return 'five';
+            },
+        });
+
+        assert.tsType(myAsyncProp.value).equals<AsyncValue<string>>();
+
+        if (myAsyncProp.isSettled()) {
+            assert.tsType(myAsyncProp.value).equals<string | Error>();
+        } else if (myAsyncProp.isError()) {
+            assert.tsType(myAsyncProp.value).equals<Error>();
+        }
+
+        assert.tsType(myAsyncProp.resolvedValue).equals<string | Error | undefined>();
+    });
+    function testIsSettled(value: unknown) {
+        const myAsyncProp = asyncProp();
+
+        myAsyncProp.setValue(value);
+
+        return myAsyncProp.isSettled();
+    }
+
+    itCases(testIsSettled, [
+        {
+            it: 'rejects promises',
+            input: new Promise(() => {}),
+            expect: false,
+        },
+        {
+            it: 'accepts errors',
+            input: new Error() as AsyncValue<any>,
+            expect: true,
+        },
+        {
+            it: 'accepts plain values',
+            input: {
+                stuff: 'hello',
+            } as AsyncValue<any>,
+            expect: true,
+        },
+    ]);
+
+    it('works with isSettled', () => {
+        const exampleAsyncProp = asyncProp({defaultValue: Promise.resolve('hi')});
+
+        if (exampleAsyncProp.isSettled()) {
+            assert.tsType(exampleAsyncProp.value).equals<string | Error>();
+        }
+    });
+
+    it('works with isError', () => {
+        const myAsyncProp = asyncProp({defaultValue: {hi: ''}});
+
+        if (myAsyncProp.isError()) {
+            assert.tsType(myAsyncProp.value).equals<Error>();
+            throw myAsyncProp.value;
+        } else if (myAsyncProp.isSettled()) {
+            assert.tsType(myAsyncProp.value).equals<
+                | {
+                      hi: string;
+                  }
+                | Error
+            >();
+            assert.isObject(myAsyncProp.value);
+        }
+    });
+
+    it('enables a type guard chain', () => {
+        const myAsyncProp = asyncProp({defaultValue: {hi: ''}});
+
+        if (myAsyncProp.resolvedValue instanceof Error) {
+            assert.tsType(myAsyncProp.resolvedValue).equals<Error>();
+            return;
+        } else if (!myAsyncProp.resolvedValue) {
+            assert.tsType(myAsyncProp.resolvedValue).equals<undefined>();
+            return;
+        }
+
+        assert.tsType(myAsyncProp.resolvedValue).equals<{hi: string}>;
     });
 });
