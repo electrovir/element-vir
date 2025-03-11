@@ -148,7 +148,7 @@ function createControlInput(
         return html`
             <input
                 type="checkbox"
-                .value=${value}
+                ?checked=${value}
                 ${listen('input', (event) => {
                     const inputElement = extractEventTarget(event, HTMLInputElement);
 
