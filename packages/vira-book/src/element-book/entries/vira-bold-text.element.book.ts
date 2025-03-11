@@ -72,5 +72,48 @@ export const viraBoldTextPage = defineBookPage({
                 `;
             },
         });
+
+        defineExample({
+            title: 'Alignment',
+            styles: css`
+                ${ViraBoldText} {
+                    width: 300px;
+                    display: block;
+                    text-align: right;
+                }
+            `,
+            render() {
+                return html`
+                    <${ViraBoldText.assign({
+                        text: 'Not Bolded',
+                        bold: false,
+                    })}></${ViraBoldText}>
+                    <${ViraBoldText.assign({
+                        text: 'Bolded',
+                        bold: true,
+                    })}></${ViraBoldText}>
+                `;
+            },
+        });
+        defineExample({
+            title: 'Stylized',
+            styles: css`
+                ${ViraBoldText} {
+                    text-decoration: underline;
+                }
+            `,
+            render() {
+                return html`
+                    <${ViraBoldText.assign({
+                        text: 'Not Bolded',
+                        bold: false,
+                    })}></${ViraBoldText}>
+                    <${ViraBoldText.assign({
+                        text: 'Bolded',
+                        bold: true,
+                    })}></${ViraBoldText}>
+                `;
+            },
+        });
     },
 });

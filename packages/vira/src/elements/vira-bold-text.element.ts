@@ -10,8 +10,17 @@ export const ViraBoldText = defineElement<{bold: boolean; text: string}>()({
         'vira-bold-bold': ({inputs}) => inputs.bold,
     },
     styles: ({hostClasses, cssVars}) => css`
+        span {
+            text-decoration: inherit;
+            white-space: inherit;
+        }
+
         .bold-wrapper {
             position: relative;
+        }
+
+        .everything-wrapper {
+            width: 100%;
         }
 
         .bold {
@@ -40,10 +49,12 @@ export const ViraBoldText = defineElement<{bold: boolean; text: string}>()({
     `,
     render({inputs}) {
         return html`
-            <span class="bold-wrapper">
-                <span class="bold">${inputs.text}</span>
+            <span class="everything-wrapper">
+                <span class="bold-wrapper">
+                    <span class="bold">${inputs.text}</span>
 
-                <span class="normal">${inputs.text}</span>
+                    <span class="normal">${inputs.text}</span>
+                </span>
             </span>
         `;
     },
