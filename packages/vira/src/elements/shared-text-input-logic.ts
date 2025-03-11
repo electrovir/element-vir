@@ -1,3 +1,4 @@
+import {check, checkWrap} from '@augment-vir/assert';
 import {extractEventTarget} from '@augment-vir/web';
 
 /**
@@ -124,16 +125,17 @@ export function textInputListener({
     inputBlockedCallback: (blockedInput: string) => void;
     newValueCallback: (newValue: string) => void;
 }) {
-    if (!(event instanceof InputEvent)) {
-        throw new TypeError('Text input event was not an InputEvent.');
-    }
-
     const inputElement = extractEventTarget(event, HTMLInputElement);
     /**
      * This is usually a single character, but can be a bunch of characters in some circumstances.
      * For example, when a bunch of characters are pasted, this will be the entire pasted contents.
+     *
+     * When a password manager auto fills the password, at least for Safari + iCloud Keychain, it'll
+     * fire a `CustomEvent` (rather than the typical `InputEvent`) and `event.data` won't be
+     * populated.
      */
-    const changedText = event.data;
+    const changedText: string =
+        (check.hasKey(event, 'data') && checkWrap.isString(event.data)) || '';
 
     /**
      * When changedText is falsy, that means an operation other than inserting characters happened.

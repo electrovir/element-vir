@@ -56,17 +56,6 @@ export const ViraInput = defineViraElement<
     } & SharedTextInputElementInputs
 >()({
     tagName: 'vira-input',
-    state() {
-        return {
-            forcedInputWidth: 0,
-            showPassword: false,
-        };
-    },
-    hostClasses: {
-        'vira-input-disabled': ({inputs}) => !!inputs.disabled,
-        'vira-input-fit-text': ({inputs}) => !!inputs.fitText,
-        'vira-input-clear-button-shown': ({inputs}) => !!inputs.showClearButton,
-    },
     cssVars: {
         'vira-input-background-color': 'white',
         'vira-input-placeholder-color': '#cccccc',
@@ -87,19 +76,6 @@ export const ViraInput = defineViraElement<
 
         'vira-input-padding-horizontal': '10px',
         'vira-input-padding-vertical': '6px',
-    },
-    events: {
-        /**
-         * Fires whenever a user input created a new value. Does not fire if all input letters are
-         * filtered out due to input restrictions.
-         */
-        valueChange: defineElementEvent<string>(),
-        /**
-         * Fires when inputs are blocked. Useful for showing warnings or error messages to inform
-         * the user why their input did not propagate if it was blocked. This does not fire for text
-         * that was blocked out of programmatic "value" property assignments.
-         */
-        inputBlocked: defineElementEvent<string>(),
     },
     styles: ({hostClasses, cssVars}) => {
         return css`
@@ -285,6 +261,30 @@ export const ViraInput = defineViraElement<
                 color: ${cssVars['vira-input-show-password-button-active-color'].value};
             }
         `;
+    },
+    events: {
+        /**
+         * Fires whenever a user input created a new value. Does not fire if all input letters are
+         * filtered out due to input restrictions.
+         */
+        valueChange: defineElementEvent<string>(),
+        /**
+         * Fires when inputs are blocked. Useful for showing warnings or error messages to inform
+         * the user why their input did not propagate if it was blocked. This does not fire for text
+         * that was blocked out of programmatic "value" property assignments.
+         */
+        inputBlocked: defineElementEvent<string>(),
+    },
+    state() {
+        return {
+            forcedInputWidth: 0,
+            showPassword: false,
+        };
+    },
+    hostClasses: {
+        'vira-input-disabled': ({inputs}) => !!inputs.disabled,
+        'vira-input-fit-text': ({inputs}) => !!inputs.fitText,
+        'vira-input-clear-button-shown': ({inputs}) => !!inputs.showClearButton,
     },
     render: ({inputs, dispatch, state, updateState, events}) => {
         const {filtered: filteredValue} = filterTextInputValue({

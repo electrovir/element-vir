@@ -98,6 +98,7 @@ export const viraInputBookPage = defineBookPage({
                                 updateState({
                                     value: event.detail,
                                 });
+                                console.info('changed:', event.detail);
                             })}
                         ></${ViraInput}>
                     `;
