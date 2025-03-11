@@ -3,7 +3,6 @@
     -   `error` (only populated if the promise rejected)
     -   `value` (only populated if the promise resolved)
     -   `promise` (the promise, remains until overwritten)
--   remove `isStrictInstance`
 -   add testIds to an element's definition
 -   allow arbitrary static data in the element definition
 -   unify event types with the `typed-event-listener` package

@@ -164,7 +164,7 @@ describe(defineElement.name, () => {
             },
         });
 
-        function acceptHost(host: (typeof MyElement)['instanceType']) {
+        function acceptHost(host: (typeof MyElement)['InstanceType']) {
             return {};
         }
     });
@@ -186,7 +186,7 @@ describe(defineElement.name, () => {
                 return '';
             },
         });
-        function acceptHost(host: (typeof MyElement)['instanceType']) {
+        function acceptHost(host: (typeof MyElement)['InstanceType']) {
             return {};
         }
     });

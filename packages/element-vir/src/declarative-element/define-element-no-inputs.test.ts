@@ -119,7 +119,7 @@ describe(defineElementNoInputs.name, () => {
             },
         });
 
-        function acceptHost(host: (typeof MyElement)['instanceType']) {
+        function acceptHost(host: (typeof MyElement)['InstanceType']) {
             return {};
         }
     });

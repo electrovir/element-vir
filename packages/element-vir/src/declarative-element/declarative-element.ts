@@ -82,7 +82,7 @@ export type DeclarativeElementDefinition<
         CssVarKeys,
         SlotNames
     > & {
-        instanceType: DeclarativeElementHost<
+        InstanceType: DeclarativeElementHost<
             TagName,
             Inputs,
             State,

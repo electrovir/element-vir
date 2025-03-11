@@ -21,7 +21,7 @@ describe(ElementBookApp.tagName, () => {
     }
 
     async function getBookErrorMessage(
-        elementBookAppInstance: (typeof ElementBookApp)['instanceType'],
+        elementBookAppInstance: (typeof ElementBookApp)['InstanceType'],
     ): Promise<string> {
         const errorWrapper = await waitUntil.isTruthy(
             () => {

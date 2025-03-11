@@ -110,7 +110,7 @@ describe(asyncProp.name, () => {
 
         assert
             .tsType<
-                (typeof elementWithAsyncProp)['instanceType']['instanceState']['myAsyncProp']['value']
+                (typeof elementWithAsyncProp)['InstanceType']['instanceState']['myAsyncProp']['value']
             >()
             .equals<AsyncValue<SomethingObject>>();
     });

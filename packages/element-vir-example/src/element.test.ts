@@ -117,7 +117,7 @@ describe('test elements', () => {
         };
 
         // @ts-expect-error: element constructor should not be able to be assigned to an instance
-        const instance: typeof VirTestBookApp.instanceType = VirTestBookApp;
+        const instance: typeof VirTestBookApp.InstanceType = VirTestBookApp;
         // @ts-expect-error: I don't know why I added this check
         const instance2: DeclarativeElement = VirTestBookApp;
 

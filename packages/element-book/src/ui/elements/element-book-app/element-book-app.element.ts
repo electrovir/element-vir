@@ -358,7 +358,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
 });
 
 async function scrollNav(
-    host: typeof ElementBookApp.instanceType,
+    host: typeof ElementBookApp.InstanceType,
     searchQuery: string,
     currentRoutes: BookFullRoute,
 ) {

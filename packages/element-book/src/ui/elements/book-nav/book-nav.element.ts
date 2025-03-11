@@ -135,7 +135,7 @@ export const BookNav = defineBookElement<{
 });
 
 export async function scrollSelectedNavElementIntoView(
-    bookNavInstance: typeof BookNav.instanceType,
+    bookNavInstance: typeof BookNav.InstanceType,
 ) {
     await waitForAnimationFrame(2);
 

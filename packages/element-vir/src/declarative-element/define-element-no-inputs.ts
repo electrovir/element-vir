@@ -240,9 +240,9 @@ export function defineElementNoInputs<
             CssVarKeys,
             SlotNames
         >['slotNames'] = slotNamesMap;
-        public get instanceType() {
+        public get InstanceType() {
             throw new Error(
-                `"instanceType" was called on ${init.tagName} as a value but it is only a type.`,
+                `'InstanceType' was called on ${init.tagName} as a value but it is only a type.`,
             );
         }
         public static override get InputsType(): Inputs {

@@ -16,4 +16,4 @@ export const TestTypesProgress = defineElement<TestTypesProgressInputs>()({
 });
 
 // test that this property exists
-assert.tsType<typeof TestTypesProgress.instanceType>().matches<{instanceInputs: any}>();
+assert.tsType<typeof TestTypesProgress.InstanceType>().matches<{instanceInputs: any}>();
