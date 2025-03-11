@@ -19,8 +19,8 @@ import {BookElementExample, BookElementExampleInit, BookPage} from './book-page.
 export type DefineExampleCallback<
     GlobalValuesType extends GlobalValues = {},
     ControlsInit extends BookPageControlsInitBase = BookPageControlsInitBase,
-> = <StateInit extends PropertyInitMapBase>(
-    exampleInit: BookElementExampleInit<GlobalValuesType, ControlsInit, StateInit>,
+> = <State extends PropertyInitMapBase>(
+    exampleInit: BookElementExampleInit<GlobalValuesType, ControlsInit, State>,
 ) => void;
 
 /**

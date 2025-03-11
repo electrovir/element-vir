@@ -20,6 +20,11 @@ export const BookEntryDisplay = defineBookElement<{
     showLoading: boolean;
 }>()({
     tagName: 'book-entry-display',
+    state() {
+        return {
+            lastElement: undefined as undefined | Element,
+        };
+    },
     styles: css`
         :host {
             display: flex;
@@ -79,9 +84,6 @@ export const BookEntryDisplay = defineBookElement<{
     `,
     events: {
         loadingRender: defineElementEvent<boolean>(),
-    },
-    stateInitStatic: {
-        lastElement: undefined as undefined | Element,
     },
     render: ({inputs, dispatch, events, state, updateState}) => {
         const currentSearch = extractSearchQuery(inputs.currentRoute.paths);

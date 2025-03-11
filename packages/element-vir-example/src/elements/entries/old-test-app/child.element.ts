@@ -33,15 +33,17 @@ export const TestChildElement = defineElement<{
             }
         `;
     },
+    state() {
+        return {
+            button: undefined as undefined | HTMLButtonElement,
+        };
+    },
     cssVars: {
         'element-vir-test-child-derp': 'white',
     },
     hostClasses: {
         'element-vir-test-child-test': false,
         'element-vir-test-child-automatic': ({inputs}) => inputs.displayNumber === 15,
-    },
-    stateInitStatic: {
-        button: undefined as undefined | HTMLButtonElement,
     },
     events: {
         speak: defineElementEvent<string>(),

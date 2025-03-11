@@ -3,8 +3,8 @@
 import {PartialWithNullable} from '@augment-vir/common';
 import {CustomElementTagName} from './custom-tag-name.js';
 import {DeclarativeElementInit} from './declarative-element-init.js';
-import {defineElementNoInputs, VerifiedElementNoInputsInit} from './define-element-no-inputs.js';
-import {defineElement, VerifiedElementInit} from './define-element.js';
+import {defineElementNoInputs} from './define-element-no-inputs.js';
+import {DeclarativeElementInputErrorParams, defineElement} from './define-element.js';
 import {BaseCssPropertyName} from './properties/css-properties.js';
 import {EventsInitMap} from './properties/element-events.js';
 import {PropertyInitMapBase} from './properties/element-properties.js';
@@ -17,7 +17,7 @@ import {PropertyInitMapBase} from './properties/element-properties.js';
 export type WrapDefineElementOptions<
     TagNameRequirement extends CustomElementTagName = CustomElementTagName,
     InputsRequirement extends PropertyInitMapBase = {},
-    StateInitRequirement extends PropertyInitMapBase = {},
+    StateRequirement extends PropertyInitMapBase = {},
     EventsInitRequirement extends EventsInitMap = {},
 > = PartialWithNullable<{
     /**
@@ -28,7 +28,7 @@ export type WrapDefineElementOptions<
         inputInit: DeclarativeElementInit<
             TagNameRequirement,
             InputsRequirement,
-            StateInitRequirement,
+            StateRequirement,
             EventsInitRequirement,
             BaseCssPropertyName<TagNameRequirement>,
             BaseCssPropertyName<TagNameRequirement>,
@@ -43,7 +43,7 @@ export type WrapDefineElementOptions<
         inputInit: DeclarativeElementInit<
             TagNameRequirement,
             InputsRequirement,
-            StateInitRequirement,
+            StateRequirement,
             EventsInitRequirement,
             BaseCssPropertyName<TagNameRequirement>,
             BaseCssPropertyName<TagNameRequirement>,
@@ -52,7 +52,7 @@ export type WrapDefineElementOptions<
     ) => DeclarativeElementInit<
         TagNameRequirement,
         InputsRequirement,
-        StateInitRequirement,
+        StateRequirement,
         EventsInitRequirement,
         BaseCssPropertyName<TagNameRequirement>,
         BaseCssPropertyName<TagNameRequirement>,
@@ -75,7 +75,7 @@ export type WrapDefineElementOptions<
 export function wrapDefineElement<
     TagNameRequirement extends CustomElementTagName = CustomElementTagName,
     InputsRequirement extends PropertyInitMapBase = {},
-    StateInitRequirement extends PropertyInitMapBase = {},
+    StateRequirement extends PropertyInitMapBase = {},
     EventsInitRequirement extends EventsInitMap = {},
 >(options?: WrapDefineElementOptions | undefined) {
     const {assertInputs, transformInputs}: WrapDefineElementOptions = {
@@ -85,19 +85,21 @@ export function wrapDefineElement<
 
     return {
         /** A wrapped function for defining an element with inputs. */
-        defineElement: <Inputs extends InputsRequirement>() => {
+        defineElement: <Inputs extends InputsRequirement>(
+            ...errorParams: DeclarativeElementInputErrorParams<Inputs>
+        ) => {
             return <
                 const TagName extends TagNameRequirement,
-                StateInit extends StateInitRequirement,
+                State extends StateRequirement,
                 EventsInit extends EventsInitRequirement,
                 const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
                 const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
                 const SlotNames extends ReadonlyArray<string> = Readonly<[]>,
             >(
-                inputs: VerifiedElementInit<
+                inputs: DeclarativeElementInit<
                     TagName,
                     Inputs,
-                    StateInit,
+                    State,
                     EventsInit,
                     HostClassKeys,
                     CssVarKeys,
@@ -105,13 +107,13 @@ export function wrapDefineElement<
                 >,
             ) => {
                 assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
-                return defineElement<Inputs>()(
+                return defineElement<Inputs>(...errorParams)(
                     transformInputs(
                         inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
-                    ) as unknown as VerifiedElementInit<
+                    ) as unknown as DeclarativeElementInit<
                         TagName,
                         Inputs,
-                        StateInit,
+                        State,
                         EventsInit,
                         HostClassKeys,
                         CssVarKeys,
@@ -124,16 +126,16 @@ export function wrapDefineElement<
         defineElementNoInputs: <
             const TagName extends TagNameRequirement,
             Inputs extends InputsRequirement,
-            StateInit extends StateInitRequirement,
+            State extends StateRequirement,
             EventsInit extends EventsInitRequirement,
             const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
             const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
             const SlotNames extends ReadonlyArray<string> = Readonly<[]>,
         >(
-            inputs: VerifiedElementNoInputsInit<
+            inputs: DeclarativeElementInit<
                 TagName,
                 Inputs,
-                StateInit,
+                State,
                 EventsInit,
                 HostClassKeys,
                 CssVarKeys,
@@ -144,10 +146,10 @@ export function wrapDefineElement<
             return defineElementNoInputs(
                 transformInputs(
                     inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
-                ) as unknown as VerifiedElementNoInputsInit<
+                ) as unknown as DeclarativeElementInit<
                     TagName,
                     Inputs,
-                    StateInit,
+                    State,
                     EventsInit,
                     HostClassKeys,
                     CssVarKeys,

@@ -207,8 +207,10 @@ export const viraImageBookPage = defineBookPage({
                         align-items: center;
                     }
                 `,
-                stateInitStatic: {
-                    imageUrl: example.inputs.imageUrl,
+                state() {
+                    return {
+                        imageUrl: example.inputs.imageUrl,
+                    };
                 },
                 render({state, updateState}) {
                     return html`

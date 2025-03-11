@@ -4,7 +4,6 @@ import {type CustomElementTagName} from '../custom-tag-name.js';
 import {type BaseCssPropertyName} from './css-properties.js';
 import {type CssVars} from './css-vars.js';
 import {type PropertyInitMapBase} from './element-properties.js';
-import {type FlattenElementVirStateSetup} from './element-vir-state-setup.js';
 import {type HostClassNamesMap, type HostClassesInitMap} from './host-classes.js';
 
 /**
@@ -77,7 +76,7 @@ export function createStylesCallbackInput<
 export function applyHostClasses<
     TagName extends CustomElementTagName,
     Inputs extends PropertyInitMapBase,
-    StateInit extends PropertyInitMapBase,
+    State extends PropertyInitMapBase,
     HostClassKeys extends BaseCssPropertyName<TagName>,
 >({
     host,
@@ -88,10 +87,10 @@ export function applyHostClasses<
 }: {
     host: HTMLElement;
     hostClassesInit:
-        | Readonly<HostClassesInitMap<TagName, HostClassKeys, Inputs, StateInit>>
+        | Readonly<HostClassesInitMap<TagName, HostClassKeys, Inputs, State>>
         | undefined;
     hostClassNames: HostClassNamesMap<string, HostClassKeys>;
-    state: Readonly<FlattenElementVirStateSetup<StateInit>>;
+    state: Readonly<State>;
     inputs: Readonly<Inputs>;
 }): void {
     if (!hostClassesInit) {

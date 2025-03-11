@@ -42,25 +42,27 @@ export type ColorThemeState = {config: ThemeConfig | undefined; theme: ColorThem
  */
 export const ElementBookApp = defineElement<ElementBookConfig>()({
     tagName: 'element-book-app',
+    state() {
+        return {
+            currentRoute: defaultBookFullRoute,
+            router: undefined as undefined | BookRouter,
+            loading: true,
+            colors: {
+                config: undefined,
+                theme: createTheme(undefined),
+            } as ColorThemeState,
+            treeBasedControls: undefined as
+                | {
+                      pages: ElementBookConfig['pages'];
+                      lastGlobalInputs: GlobalValues;
+                      controls: ControlsWrapper;
+                  }
+                | undefined,
+            originalWindowTitle: undefined as string | undefined,
+        };
+    },
     events: {
         pathUpdate: defineElementEvent<ReadonlyArray<string>>(),
-    },
-    stateInitStatic: {
-        currentRoute: defaultBookFullRoute,
-        router: undefined as undefined | BookRouter,
-        loading: true,
-        colors: {
-            config: undefined,
-            theme: createTheme(undefined),
-        } as ColorThemeState,
-        treeBasedControls: undefined as
-            | {
-                  pages: ElementBookConfig['pages'];
-                  lastGlobalInputs: GlobalValues;
-                  controls: ControlsWrapper;
-              }
-            | undefined,
-        originalWindowTitle: undefined as string | undefined,
     },
     styles: css`
         :host {

@@ -58,7 +58,11 @@ export const multipleSlotsPage = defineBookPage({
     defineExamples({defineExample}) {
         defineExample({
             title: 'multiple slotted elements',
-            stateInitStatic: {value: 0},
+            state() {
+                return {
+                    value: 0,
+                };
+            },
             render() {
                 return html`
                     <${VirTestMultipleSlots}>
@@ -75,7 +79,11 @@ export const multipleSlotsPage = defineBookPage({
         });
         defineExample({
             title: 'single template to multiple slots',
-            stateInitStatic: {value: 0},
+            state() {
+                return {
+                    value: 0,
+                };
+            },
             render() {
                 return html`
                     <${VirTestSingleTemplateToMultipleSlots.assign({

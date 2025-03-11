@@ -20,9 +20,11 @@ export const viraCollapsibleBookPage = defineBookPage({
                     margin-top: -1px;
                 }
             `,
-            stateInitStatic: {
-                expandedStates: [] as boolean[],
-                showMoreStates: [] as boolean[],
+            state() {
+                return {
+                    expandedStates: [] as boolean[],
+                    showMoreStates: [] as boolean[],
+                };
             },
             render({updateState, state}) {
                 return new Array(3).fill(0).map((value, index) => {
@@ -74,9 +76,11 @@ export const viraCollapsibleBookPage = defineBookPage({
                     margin-top: -1px;
                 }
             `,
-            stateInitStatic: {
-                expandedStates: [] as boolean[],
-                showMoreStates: [] as boolean[],
+            state() {
+                return {
+                    expandedStates: [] as boolean[],
+                    showMoreStates: [] as boolean[],
+                };
             },
             render({updateState, state}) {
                 return new Array(3).fill(0).map((value, index) => {

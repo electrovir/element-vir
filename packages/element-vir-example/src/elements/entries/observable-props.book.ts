@@ -6,8 +6,10 @@ const myObservable = new Observable({defaultValue: 5});
 
 const VirObservablesTestParent = defineElementNoInputs({
     tagName: 'vir-observable-prop-input-test-parent',
-    stateInitStatic: {
-        renderCount: 0,
+    state() {
+        return {
+            renderCount: 0,
+        };
     },
     render({state, updateState}) {
         updateState({renderCount: state.renderCount + 1});
@@ -32,8 +34,10 @@ const VirObservablesTestParent = defineElementNoInputs({
 });
 const VirObservablesTestChild = defineElement<{observableProp: typeof myObservable}>()({
     tagName: 'vir-observable-prop-input-test-child',
-    stateInitStatic: {
-        renderCount: 0,
+    state() {
+        return {
+            renderCount: 0,
+        };
     },
     render({inputs, state, updateState}) {
         updateState({renderCount: state.renderCount + 1});

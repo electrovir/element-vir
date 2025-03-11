@@ -18,12 +18,15 @@ async function loadSomething(endpoint: string): Promise<EndpointData> {
 
 export const MyWithAsyncProp = defineElement<{endpoint: string}>()({
     tagName: 'my-with-async-prop',
-    stateInitStatic: {
-        data: asyncProp({
-            async updateCallback({endpoint}: {endpoint: string}) {
-                return loadSomething(endpoint);
-            },
-        }),
+    state() {
+        return {
+            data: asyncProp({
+                async updateCallback({endpoint}: {endpoint: string}) {
+                    return loadSomething(endpoint);
+                },
+            }),
+            hi: '',
+        };
     },
     render({inputs, state}) {
         /**

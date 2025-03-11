@@ -169,13 +169,15 @@ import {defineElementNoInputs, html, listen} from 'element-vir';
 
 export const MyWithUpdateState = defineElementNoInputs({
     tagName: 'my-with-update-state',
-    stateInitStatic: {
-        username: 'dev',
-        /**
-         * Use "as" to create state properties that can be types other than the initial value's
-         * type. This is particularly useful when, as below, the initial value is undefined.
-         */
-        email: undefined as string | undefined,
+    state() {
+        return {
+            username: 'dev',
+            /**
+             * Use "as" to create state properties that can be types other than the initial value's
+             * type. This is particularly useful when, as below, the initial value is undefined.
+             */
+            email: undefined as string | undefined,
+        };
     },
     render({state, updateState}) {
         return html`
@@ -229,24 +231,18 @@ import {defineElementNoInputs, html} from 'element-vir';
 
 export const MyWithAssignmentCleanupCallback = defineElementNoInputs({
     tagName: 'my-with-cleanup-callback',
-    stateInitStatic: {
-        intervalId: undefined as undefined | number,
-    },
-    init: ({updateState}) => {
-        updateState({
+    state() {
+        return {
             intervalId: window.setInterval(() => console.info('hi'), 1000),
-        });
+        };
     },
     render() {
         return html`
             <h1>My App</h1>
         `;
     },
-    cleanup: ({state, updateState}) => {
+    cleanup({state}) {
         window.clearInterval(state.intervalId);
-        updateState({
-            intervalId: undefined,
-        });
     },
 });
 ```
@@ -296,8 +292,10 @@ import {MyWithEvents} from './my-with-events.element.js';
 
 export const MyWithEventListening = defineElementNoInputs({
     tagName: 'my-with-event-listening',
-    stateInitStatic: {
-        myNumber: -1,
+    state() {
+        return {
+            myNumber: -1,
+        };
     },
     render({state, updateState}) {
         return html`
@@ -381,8 +379,10 @@ import {css, defineElementNoInputs, html} from 'element-vir';
 
 export const MyWithHostClassDefinition = defineElementNoInputs({
     tagName: 'my-with-host-class-definition',
-    stateInitStatic: {
-        myProp: 'hello there',
+    state() {
+        return {
+            myProp: 'hello there',
+        };
     },
     hostClasses: {
         /**
@@ -629,12 +629,15 @@ async function loadSomething(endpoint: string): Promise<EndpointData> {
 
 export const MyWithAsyncProp = defineElement<{endpoint: string}>()({
     tagName: 'my-with-async-prop',
-    stateInitStatic: {
-        data: asyncProp({
-            async updateCallback({endpoint}: {endpoint: string}) {
-                return loadSomething(endpoint);
-            },
-        }),
+    state() {
+        return {
+            data: asyncProp({
+                async updateCallback({endpoint}: {endpoint: string}) {
+                    return loadSomething(endpoint);
+                },
+            }),
+            hi: '',
+        };
     },
     render({inputs, state}) {
         /**

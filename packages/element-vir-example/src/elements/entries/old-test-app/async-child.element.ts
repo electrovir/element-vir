@@ -10,13 +10,15 @@ export const AsyncChild = defineElement<{
     trigger: number;
 }>()({
     tagName: 'async-child',
-    stateInitStatic: {
-        loadThing: asyncProp({
-            async updateCallback({trigger}: {trigger: number; circularReference: any}) {
-                await wait({seconds: 1.5});
-                return Math.pow(trigger, 2);
-            },
-        }),
+    state() {
+        return {
+            loadThing: asyncProp({
+                async updateCallback({trigger}: {trigger: number; circularReference: any}) {
+                    await wait({seconds: 1.5});
+                    return Math.pow(trigger, 2);
+                },
+            }),
+        };
     },
     render({state, inputs}) {
         console.info('rendering async child');

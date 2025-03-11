@@ -2,8 +2,10 @@ import {css, defineElementNoInputs, html} from '../index.js';
 
 export const MyWithHostClassDefinition = defineElementNoInputs({
     tagName: 'my-with-host-class-definition',
-    stateInitStatic: {
-        myProp: 'hello there',
+    state() {
+        return {
+            myProp: 'hello there',
+        };
     },
     hostClasses: {
         /**

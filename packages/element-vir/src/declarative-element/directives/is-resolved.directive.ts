@@ -14,8 +14,10 @@ import {AsyncProp, AsyncValue} from './async-prop.js';
  *
  * const MyElement = defineElementNoInputs({
  *     tagName: 'my-element',
- *     stateInitStatic: {
- *         myProp: asyncProp({defaultValue: waitValue({seconds: 10}, 'value')}),
+ *     state() {
+ *         return {
+ *             myProp: asyncProp({defaultValue: waitValue({seconds: 10}, 'value')}),
+ *         };
  *     },
  *     render({state}) {
  *         if (isAsyncError(state.myProp.value)) {
@@ -61,8 +63,10 @@ export function isResolved<Value extends AsyncValue<any>>(
  *
  * const MyElement = defineElementNoInputs({
  *     tagName: 'my-element',
- *     stateInitStatic: {
- *         myProp: asyncProp({defaultValue: waitValue({seconds: 10}, 'value')}),
+ *     state() {
+ *         return {
+ *             myProp: asyncProp({defaultValue: waitValue({seconds: 10}, 'value')}),
+ *         };
  *     },
  *     render({state}) {
  *         if (isAsyncError(state.myProp.value)) {
@@ -106,8 +110,10 @@ export function isAsyncError<Value extends AsyncValue<any>>(
  *
  * const MyElement = defineElementNoInputs({
  *     tagName: 'my-element',
- *     stateInitStatic: {
- *         myProp: asyncProp({defaultValue: waitValue({seconds: 10}, 'value')}),
+ *     state() {
+ *         return {
+ *             myProp: asyncProp({defaultValue: waitValue({seconds: 10}, 'value')}),
+ *         };
  *     },
  *     render({state}) {
  *         const resolvedValue = resolvedOrUndefined(state.myProp.value);

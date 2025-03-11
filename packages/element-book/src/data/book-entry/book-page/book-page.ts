@@ -46,8 +46,8 @@ export type BookPage<
 export type BookPageExampleRenderParams<
     GlobalValuesType extends GlobalValues,
     ControlsInit extends BookPageControlsInitBase,
-    StateInit extends PropertyInitMapBase,
-> = Pick<RenderParams<any, any, StateInit, any, any, any, any>, 'state' | 'updateState'> & {
+    State extends PropertyInitMapBase,
+> = Pick<RenderParams<any, any, State, any, any, any, any>, 'state' | 'updateState'> & {
     controls: ControlsToValues<ControlsInit> & GlobalValuesType;
 };
 
@@ -59,15 +59,18 @@ export type BookPageExampleRenderParams<
 export type BookElementExample<
     GlobalValuesType extends GlobalValues = {},
     ControlsInit extends BookPageControlsInitBase = {},
-    StateInit extends PropertyInitMapBase = {},
+    State extends PropertyInitMapBase = {},
 > = Overwrite<
     BaseBookEntry,
     {
         parent: BookPage | undefined;
         entryType: BookEntryType.ElementExample;
     } & {
-        /** Initialize the state for this example. */
-        stateInitStatic?: StateInit | undefined;
+        /**
+         * Initialize the state for this example. This is only called once, before the first render
+         * of the example.
+         */
+        state?: (() => State) | undefined;
         /** Specify which events this example should intercept (so the user can see them). */
         showEvents?: ReadonlyArray<string | TypedEvent> | undefined;
         /**
@@ -77,7 +80,7 @@ export type BookElementExample<
         styles?: CSSResult | undefined;
         /** Render the example. */
         render: (
-            renderParams: BookPageExampleRenderParams<GlobalValuesType, ControlsInit, StateInit>,
+            renderParams: BookPageExampleRenderParams<GlobalValuesType, ControlsInit, State>,
         ) => HtmlInterpolation;
     }
 >;
@@ -91,11 +94,8 @@ export type BookElementExample<
 export type BookElementExampleInit<
     GlobalValuesType extends GlobalValues,
     Controls extends BookPageControlsInitBase,
-    StateInit extends PropertyInitMapBase,
+    State extends PropertyInitMapBase,
 > = SetOptionalAndNullable<
-    Omit<
-        BookElementExample<GlobalValuesType, Controls, StateInit>,
-        'entryType' | 'parent' | 'errors'
-    >,
+    Omit<BookElementExample<GlobalValuesType, Controls, State>, 'entryType' | 'parent' | 'errors'>,
     'descriptionParagraphs'
 >;

@@ -31,39 +31,11 @@ import {
     createEventDescriptorMap,
 } from './properties/element-events.js';
 import {PropertyInitMapBase} from './properties/element-properties.js';
-import {FlattenElementVirStateSetup} from './properties/element-vir-state-setup.js';
 import {HostClassNamesMap, createHostClassNamesMap} from './properties/host-classes.js';
 import {bindReactiveProperty, createElementPropertyProxy} from './properties/property-proxy.js';
 import {applyHostClasses, createStylesCallbackInput} from './properties/styles.js';
 import {RenderParams, createRenderParams} from './render-callback.js';
 import {createSlotNamesMap} from './slot-names.js';
-
-/**
- * Verifies that the given {@link DeclarativeElementInit} for an element definition without inputs
- * does not have any state properties that clash with built-in HTML element properties.
- *
- * @category Internal
- */
-export type VerifiedElementNoInputsInit<
-    TagName extends CustomElementTagName,
-    Inputs extends PropertyInitMapBase,
-    StateInit extends PropertyInitMapBase,
-    EventsInit extends EventsInitMap,
-    HostClassKeys extends BaseCssPropertyName<TagName>,
-    CssVarKeys extends BaseCssPropertyName<TagName>,
-    SlotNames extends ReadonlyArray<string>,
-> =
-    Extract<keyof StateInit, keyof HTMLElement> extends never
-        ? DeclarativeElementInit<
-              TagName,
-              Inputs,
-              StateInit,
-              EventsInit,
-              HostClassKeys,
-              CssVarKeys,
-              SlotNames
-          >
-        : 'ERROR: Cannot define an element state property that clashes with native HTMLElement properties.';
 
 /**
  * Defines an element without any inputs.
@@ -87,16 +59,16 @@ export type VerifiedElementNoInputsInit<
 export function defineElementNoInputs<
     const TagName extends CustomElementTagName = '-',
     Inputs extends PropertyInitMapBase = {},
-    StateInit extends PropertyInitMapBase = {},
+    State extends PropertyInitMapBase = {},
     EventsInit extends EventsInitMap = {},
     const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
     const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
     const SlotNames extends ReadonlyArray<string> = Readonly<[]>,
 >(
-    initInput: VerifiedElementNoInputsInit<
+    init: DeclarativeElementInit<
         TagName,
         Inputs,
-        StateInit,
+        State,
         EventsInit,
         HostClassKeys,
         CssVarKeys,
@@ -105,22 +77,12 @@ export function defineElementNoInputs<
 ): DeclarativeElementDefinition<
     TagName,
     Inputs,
-    StateInit,
+    State,
     EventsInit,
     HostClassKeys,
     CssVarKeys,
     SlotNames
 > {
-    /** This as cast is safe only because of the following run-time type check. */
-    const init = initInput as DeclarativeElementInit<
-        TagName,
-        Inputs,
-        StateInit,
-        EventsInit,
-        HostClassKeys,
-        CssVarKeys,
-        SlotNames
-    >;
     if (!check.isObject(init)) {
         throw new TypeError('Cannot define element with non-object init: ${init}');
     }
@@ -131,7 +93,7 @@ export function defineElementNoInputs<
     type ThisElementDefinition = DeclarativeElementDefinition<
         TagName,
         Inputs,
-        StateInit,
+        State,
         EventsInit,
         HostClassKeys,
         CssVarKeys,
@@ -140,7 +102,7 @@ export function defineElementNoInputs<
     type ThisElementStaticClass = typeof DeclarativeElement<
         TagName,
         Inputs,
-        StateInit,
+        State,
         EventsInit,
         HostClassKeys,
         CssVarKeys,
@@ -192,7 +154,7 @@ export function defineElementNoInputs<
     const typedRenderCallback: StaticDeclarativeElementProperties<
         TagName,
         Inputs,
-        StateInit,
+        State,
         EventsInit,
         HostClassKeys,
         CssVarKeys,
@@ -212,7 +174,7 @@ export function defineElementNoInputs<
     const anonymousClass = class extends DeclarativeElement<
         TagName,
         Inputs,
-        StateInit,
+        State,
         EventsInit,
         HostClassKeys,
         CssVarKeys,
@@ -228,7 +190,7 @@ export function defineElementNoInputs<
         public createRenderParams(): RenderParams<
             TagName,
             Inputs,
-            StateInit,
+            State,
             EventsInit,
             HostClassKeys,
             CssVarKeys,
@@ -242,18 +204,18 @@ export function defineElementNoInputs<
         public static override readonly events: StaticDeclarativeElementProperties<
             TagName,
             Inputs,
-            StateInit,
+            State,
             EventsInit,
             HostClassKeys,
             CssVarKeys,
             SlotNames
         >['events'] = eventsMap;
         public static override readonly render: ThisElementStaticClass['render'] =
-            typedRenderCallback;
+            typedRenderCallback as ThisElementStaticClass['render'];
         public static override readonly hostClasses: StaticDeclarativeElementProperties<
             TagName,
             Inputs,
-            StateInit,
+            State,
             EventsInit,
             HostClassKeys,
             CssVarKeys,
@@ -262,7 +224,7 @@ export function defineElementNoInputs<
         public static override readonly cssVars: StaticDeclarativeElementProperties<
             TagName,
             Inputs,
-            StateInit,
+            State,
             EventsInit,
             HostClassKeys,
             CssVarKeys,
@@ -272,29 +234,12 @@ export function defineElementNoInputs<
         public static override readonly slotNames: StaticDeclarativeElementProperties<
             TagName,
             Inputs,
-            StateInit,
+            State,
             EventsInit,
             HostClassKeys,
             CssVarKeys,
             SlotNames
         >['slotNames'] = slotNamesMap;
-        public static override readonly stateInitStatic: StaticDeclarativeElementProperties<
-            TagName,
-            PropertyInitMapBase,
-            PropertyInitMapBase,
-            EventsInitMap,
-            HostClassKeys,
-            CssVarKeys,
-            SlotNames
-        >['stateInitStatic'] = init.stateInitStatic as StaticDeclarativeElementProperties<
-            TagName,
-            PropertyInitMapBase,
-            PropertyInitMapBase,
-            EventsInitMap,
-            HostClassKeys,
-            CssVarKeys,
-            SlotNames
-        >['stateInitStatic'];
         public get instanceType() {
             throw new Error(
                 `"instanceType" was called on ${init.tagName} as a value but it is only for types.`,
@@ -305,13 +250,14 @@ export function defineElementNoInputs<
                 `"inputsType" was called on ${init.tagName} as a value but it is only for types.`,
             );
         }
-        public static override get stateType(): StateInit {
+        public static override get stateType(): State {
             throw new Error(
                 `"stateType" was called on ${init.tagName} as a value but it is only for types.`,
             );
         }
 
         public _initCalled = false;
+        public _stateCalled = false;
         public _hasRendered = false;
         public _lastRenderedProps: ThisElementInstance['_lastRenderedProps'] = undefined as any;
 
@@ -335,6 +281,21 @@ export function defineElementNoInputs<
                 this._hasRendered = true;
 
                 const renderParams = this.createRenderParams();
+
+                if (!this._stateCalled && init.state) {
+                    this._stateCalled = true;
+                    const stateInit = init.state(renderParams);
+
+                    if (stateInit instanceof Promise) {
+                        throw new TypeError('init cannot be asynchronous');
+                    }
+
+                    getObjectTypedKeys(stateInit).forEach((stateKey) => {
+                        bindReactiveProperty(this, stateKey);
+
+                        (this.instanceState as PropertyInitMapBase)[stateKey] = stateInit[stateKey];
+                    });
+                }
 
                 if (!this._initCalled && init.init) {
                     this._initCalled = true;
@@ -416,23 +377,10 @@ export function defineElementNoInputs<
             createElementPropertyProxy<Readonly<Inputs>>(this, false);
 
         public readonly instanceState: ThisElementInstance['instanceState'] =
-            createElementPropertyProxy<FlattenElementVirStateSetup<StateInit>>(
-                this,
-                !elementOptions.allowPolymorphicState,
-            );
+            createElementPropertyProxy<State>(this, !elementOptions.allowPolymorphicState);
 
         constructor() {
             super();
-
-            const stateInitStatic: StateInit =
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                (init.stateInitStatic as StateInit) || ({} as StateInit);
-
-            getObjectTypedKeys(stateInitStatic).forEach((stateKey) => {
-                bindReactiveProperty(this, stateKey);
-
-                this.instanceState[stateKey] = stateInitStatic[stateKey] as any;
-            });
             this.definition = anonymousClass as unknown as ThisElementDefinition;
         }
     };

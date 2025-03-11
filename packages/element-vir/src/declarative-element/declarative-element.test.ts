@@ -52,8 +52,10 @@ describe(DeclarativeElement.name, () => {
             render() {
                 return html``;
             },
-            stateInitStatic: {
-                thing: '',
+            state() {
+                return {
+                    thing: '',
+                };
             },
             events: {
                 stuff: defineElementEvent<boolean>(),
@@ -65,8 +67,10 @@ describe(DeclarativeElement.name, () => {
             render() {
                 return html``;
             },
-            stateInitStatic: {
-                thing: 5,
+            state() {
+                return {
+                    thing: 5,
+                };
             },
             tagName: 'defined-declarative-element-98765',
         });

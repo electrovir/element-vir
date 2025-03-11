@@ -7,8 +7,6 @@ import {html} from '../../template-transforms/vir-html/vir-html.js';
 import {defineElementNoInputs} from '../define-element-no-inputs.js';
 import {defineElement} from '../define-element.js';
 import {defineElementEvent} from '../properties/element-events.js';
-import {StaticElementPropertyDescriptor} from '../properties/element-properties.js';
-import {ElementVirStateSetup, stateSetupKey} from '../properties/element-vir-state-setup.js';
 import {AsyncProp, AsyncValue, asyncProp} from './async-prop.js';
 import {isAsyncError, isResolved} from './is-resolved.directive.js';
 import {listen} from './listen.directive.js';
@@ -43,19 +41,21 @@ describe(asyncProp.name, () => {
 
         const elementWithAsyncProp = defineElementNoInputs({
             tagName: `element-with-async-prop-${randomString()}`,
-            stateInitStatic: {
-                myAsyncProp: asyncProp({
-                    updateCallback(trigger: TriggerType) {
-                        return Promise.resolve({something: 4});
-                    },
-                }),
-                myAsyncPropAgain: asyncProp({
-                    updateCallback(trigger: TriggerType & {hello: string; goodbye: number}) {
-                        return Promise.resolve({something: 4});
-                    },
-                }),
-                myProp: asyncProp({defaultValue: waitValue({seconds: 10}, 'value')}),
-                syncProp: {value: 'hi'},
+            state() {
+                return {
+                    myAsyncProp: asyncProp({
+                        updateCallback(trigger: TriggerType) {
+                            return Promise.resolve({something: 4});
+                        },
+                    }),
+                    myAsyncPropAgain: asyncProp({
+                        updateCallback(trigger: TriggerType & {hello: string; goodbye: number}) {
+                            return Promise.resolve({something: 4});
+                        },
+                    }),
+                    myProp: asyncProp({defaultValue: waitValue({seconds: 10}, 'value')}),
+                    syncProp: {value: 'hi'},
+                };
             },
             render({state, updateState}) {
                 updateState({
@@ -99,13 +99,10 @@ describe(asyncProp.name, () => {
         });
 
         assert
-            .tsType(elementWithAsyncProp.stateInitStatic.myAsyncProp)
-            .equals<
-                StaticElementPropertyDescriptor<
-                    string,
-                    ElementVirStateSetup<AsyncProp<SomethingObject, TriggerType>>
-                >
-            >();
+            .tsType<
+                ReturnType<NonNullable<typeof elementWithAsyncProp.init.state>>['myAsyncProp']
+            >()
+            .equals<AsyncProp<SomethingObject, TriggerType>>();
 
         assert
             .tsType<(typeof elementWithAsyncProp)['stateType']['myAsyncProp']['value']>()
@@ -119,7 +116,7 @@ describe(asyncProp.name, () => {
     });
 
     it('passes isObservableBase', () => {
-        const instance = asyncProp()[stateSetupKey]();
+        const instance = asyncProp();
         assert.isTrue(isObservableBase(instance));
     });
 
@@ -136,14 +133,16 @@ describe(asyncProp.name, () => {
             promiseUpdateTrigger: number | undefined;
         }>()({
             tagName: `element-with-async-prop-${randomString()}`,
-            stateInitStatic: {
-                myAsyncProp: asyncProp({
-                    updateCallback({newNumber}: {newNumber: number; circularReference: any}) {
-                        const newDeferredPromise = new DeferredPromise<typeof newNumber>();
-                        deferredPromiseWrappers.push(newDeferredPromise);
-                        return newDeferredPromise.promise;
-                    },
-                }),
+            state() {
+                return {
+                    myAsyncProp: asyncProp({
+                        updateCallback({newNumber}: {newNumber: number; circularReference: any}) {
+                            const newDeferredPromise = new DeferredPromise<typeof newNumber>();
+                            deferredPromiseWrappers.push(newDeferredPromise);
+                            return newDeferredPromise.promise;
+                        },
+                    }),
+                };
             },
             render({inputs, state}) {
                 state.myAsyncProp.update({
@@ -326,13 +325,15 @@ describe(asyncProp.name, () => {
 
         const ElementWithAsyncPropError = defineElementNoInputs({
             tagName: `element-with-async-prop-error-${randomString()}`,
-            stateInitStatic: {
-                myAsyncProp: asyncProp({
-                    async updateCallback() {
-                        await wait({seconds: 1});
-                        throw new Error(errorMessage);
-                    },
-                }),
+            state() {
+                return {
+                    myAsyncProp: asyncProp({
+                        async updateCallback() {
+                            await wait({seconds: 1});
+                            throw new Error(errorMessage);
+                        },
+                    }),
+                };
             },
             render({state}) {
                 state.myAsyncProp.update();
@@ -359,13 +360,15 @@ describe(asyncProp.name, () => {
             promiseUpdateTrigger: number | undefined;
         }>()({
             tagName: `element-with-async-prop-${randomString()}`,
-            stateInitStatic: {
-                myRandomNumber: asyncProp({
-                    async updateCallback({newNumber}: {newNumber: number | undefined}) {
-                        await wait({milliseconds: 0});
-                        return randomString();
-                    },
-                }),
+            state() {
+                return {
+                    myRandomNumber: asyncProp({
+                        async updateCallback({newNumber}: {newNumber: number | undefined}) {
+                            await wait({milliseconds: 0});
+                            return randomString();
+                        },
+                    }),
+                };
             },
             render({inputs, state, host}) {
                 state.myRandomNumber.update({
@@ -443,8 +446,10 @@ describe(asyncProp.name, () => {
     it('works even if the value is undefined', async () => {
         const ElementWithUndefinedAsyncProp = defineElementNoInputs({
             tagName: `element-with-undefined-async-prop-${randomString()}`,
-            stateInitStatic: {
-                myAsyncProp: asyncProp({defaultValue: undefined as number | undefined}),
+            state() {
+                return {
+                    myAsyncProp: asyncProp({defaultValue: undefined as number | undefined}),
+                };
             },
             events: {
                 wasRendered: defineElementEvent<void>(),
@@ -536,7 +541,7 @@ describe(asyncProp.name, () => {
     });
 
     it('has a simplified interface', () => {
-        const instance = asyncProp()[stateSetupKey]();
+        const instance = asyncProp();
 
         instance.destroy;
         instance.forceUpdate;
@@ -575,7 +580,7 @@ describe(asyncProp.name, () => {
             updateCallback(inputs: {prop1: string; callback: () => any}) {
                 return callCount++;
             },
-        })[stateSetupKey]();
+        });
 
         instance.update({prop1: 'hi', callback: () => {}});
         instance.update({prop1: 'hi', callback: () => {}});
@@ -591,13 +596,15 @@ describe(asyncProp.name, () => {
 
         const ElementWithProxyAsyncPropInput = defineElement<{inputValue: string}>()({
             tagName: 'vir-element-with-proxy-async-prop-input',
-            stateInitStatic: {
-                myProp: asyncProp({
-                    updateCallback(inputsProxy: {inputValue: string}) {
-                        callCount++;
-                        return inputsProxy.inputValue;
-                    },
-                }),
+            state() {
+                return {
+                    myProp: asyncProp({
+                        updateCallback(inputsProxy: {inputValue: string}) {
+                            callCount++;
+                            return inputsProxy.inputValue;
+                        },
+                    }),
+                };
             },
             init({state, inputs}) {
                 state.myProp.update(inputs);
@@ -635,16 +642,18 @@ describe(asyncProp.name, () => {
 
         const RaceConditionElement = defineElementNoInputs({
             tagName: 'vir-element-race-condition-between-set-value-and-promise-resolution',
-            stateInitStatic: {
-                myProp: asyncProp({
-                    async updateCallback() {
-                        await wait(updateDuration);
-                        setTimeout(() => {
-                            resolved = true;
-                        });
-                        return 5;
-                    },
-                }),
+            state() {
+                return {
+                    myProp: asyncProp({
+                        async updateCallback() {
+                            await wait(updateDuration);
+                            setTimeout(() => {
+                                resolved = true;
+                            });
+                            return 5;
+                        },
+                    }),
+                };
             },
             render({state}) {
                 state.myProp.update();
@@ -670,22 +679,24 @@ describe(asyncProp.name, () => {
     it('allows noUpdate', async () => {
         const VirAsyncPropWithNoUpdate = defineElementNoInputs({
             tagName: 'vir-async-prop-with-update',
-            stateInitStatic: {
-                asyncValues: asyncProp({
-                    updateCallback({
-                        shouldBypass,
-                        value,
-                    }: {
-                        value: string;
-                        shouldBypass: boolean;
-                    }): ReadonlyArray<string> | typeof noUpdate {
-                        if (shouldBypass) {
-                            return noUpdate;
-                        }
+            state() {
+                return {
+                    asyncValues: asyncProp({
+                        updateCallback({
+                            shouldBypass,
+                            value,
+                        }: {
+                            value: string;
+                            shouldBypass: boolean;
+                        }): ReadonlyArray<string> | typeof noUpdate {
+                            if (shouldBypass) {
+                                return noUpdate;
+                            }
 
-                        return new Array(10).fill(0).map(() => value);
-                    },
-                }),
+                            return new Array(10).fill(0).map(() => value);
+                        },
+                    }),
+                };
             },
             render: ({state}) => {
                 state.asyncValues.update({value: 'hello there', shouldBypass: true});

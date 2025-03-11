@@ -130,6 +130,33 @@ describe(wrapDefineElement.name, () => {
         });
     });
 
+    it('allows defining sub states', () => {
+        myDefineElementNoInputs({
+            tagName: 'my-thing-abc6',
+            state() {
+                return {
+                    hello: 'hi',
+                };
+            },
+            render({state}) {
+                assert.tsType(state).equals<Readonly<{hello: string}>>();
+                return html``;
+            },
+        });
+        myDefineElement<{something: string}>()({
+            tagName: 'my-thing-abc7',
+            state() {
+                return {
+                    hello: 'hi',
+                };
+            },
+            render({state}) {
+                assert.tsType(state).equals<Readonly<{hello: string}>>();
+                return html``;
+            },
+        });
+    });
+
     it('should still create a valid element', async () => {
         const MySpecificElement = myDefineElement<MySpecificInputs>()({
             tagName: 'my-tag-abc8',

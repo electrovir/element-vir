@@ -81,8 +81,10 @@ export const ViraDropdownItemPage = defineBookPage({
         examples.forEach((example) => {
             defineExample({
                 title: example.title,
-                stateInitStatic: {
-                    selected: example.inputs.selected || [],
+                state() {
+                    return {
+                        selected: example.inputs.selected || [],
+                    };
                 },
                 styles: example.customStyle,
                 render({controls}) {

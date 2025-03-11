@@ -3,8 +3,10 @@ import {MyWithEvents} from './my-with-events.element.js';
 
 export const MyWithEventListening = defineElementNoInputs({
     tagName: 'my-with-event-listening',
-    stateInitStatic: {
-        myNumber: -1,
+    state() {
+        return {
+            myNumber: -1,
+        };
     },
     render({state, updateState}) {
         return html`

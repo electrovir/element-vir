@@ -2,7 +2,6 @@ import {mapObjectValues} from '@augment-vir/common';
 import {CustomElementTagName} from '../custom-tag-name.js';
 import {BaseCssPropertyName} from './css-properties.js';
 import {PropertyInitMapBase} from './element-properties.js';
-import {FlattenElementVirStateSetup} from './element-vir-state-setup.js';
 import {WithTagName} from './tag-name.js';
 
 /**
@@ -14,18 +13,14 @@ export type HostClassesInitMap<
     TagName extends CustomElementTagName,
     HostClassKeys extends BaseCssPropertyName<TagName>,
     Inputs extends PropertyInitMapBase,
-    StateInit extends PropertyInitMapBase,
+    State extends PropertyInitMapBase,
 > = Record<
     HostClassKeys,
     /**
      * Callback to determine when host class should be enabled (based on current inputs and state),
      * or just undefined to mark that this host class name will only be manually applied.
      */
-    | ((inputs: {
-          state: Readonly<FlattenElementVirStateSetup<StateInit>>;
-          inputs: Readonly<Inputs>;
-      }) => boolean)
-    | false
+    ((inputs: {state: Readonly<State>; inputs: Readonly<Inputs>}) => boolean) | false
 >;
 
 /**

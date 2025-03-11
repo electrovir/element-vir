@@ -75,21 +75,23 @@ describe(defineElementNoInputs.name, () => {
     it('does not allow updating state properties that do not exist in the state', () => {
         defineElementNoInputs({
             tagName: `some-tag-${randomString()}`,
-            stateInitStatic: {
-                selectedFeeIndex: undefined as number | undefined,
-                errors: undefined as
-                    | undefined
-                    | Partial<{
-                          amount: boolean;
-                          fee: boolean;
-                      }>,
-                userInputConvertAmount: '',
-                generalError: '',
-                prepareConvertResult: undefined as unknown,
-                step2ConfirmationAccepted: false,
-                confirmedTxUrl: '',
-                showLoader: false,
-                isMax: false,
+            state() {
+                return {
+                    selectedFeeIndex: undefined as number | undefined,
+                    errors: undefined as
+                        | undefined
+                        | Partial<{
+                              amount: boolean;
+                              fee: boolean;
+                          }>,
+                    userInputConvertAmount: '',
+                    generalError: '',
+                    prepareConvertResult: undefined as unknown,
+                    step2ConfirmationAccepted: false,
+                    confirmedTxUrl: '',
+                    showLoader: false,
+                    isMax: false,
+                };
             },
             render({state, updateState}) {
                 updateState({
@@ -127,17 +129,19 @@ describe(defineElementNoInputs.name, () => {
 
         const MyElement = defineElementNoInputs({
             tagName: `some-tag-${randomString()}`,
-            stateInitStatic: {
-                intervalObservable: new IntervalObservable({
-                    defaultParams: undefined,
-                    intervalDuration: {
-                        milliseconds: 100,
-                    },
-                    updateCallback() {
-                        count++;
-                        return 'hi';
-                    },
-                }),
+            state() {
+                return {
+                    intervalObservable: new IntervalObservable({
+                        defaultParams: undefined,
+                        intervalDuration: {
+                            milliseconds: 100,
+                        },
+                        updateCallback() {
+                            count++;
+                            return 'hi';
+                        },
+                    }),
+                };
             },
             render() {
                 return '';
@@ -164,8 +168,10 @@ describe(defineElementNoInputs.name, () => {
     it('does not reconstruct children', async () => {
         const Parent = defineElementNoInputs({
             tagName: 'parent-that-updates',
-            stateInitStatic: {
-                value: 1,
+            state() {
+                return {
+                    value: 1,
+                };
             },
             render({state, updateState}) {
                 setTimeout(() => {

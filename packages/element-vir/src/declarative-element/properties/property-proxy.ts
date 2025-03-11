@@ -2,7 +2,6 @@ import {type ObservableListener, isObservableBase} from 'observavir';
 import {property} from '../../lit-exports/base-lit-exports.js';
 import {type DeclarativeElement} from '../declarative-element.js';
 import {type PropertyInitMapBase} from './element-properties.js';
-import {isElementVirStateSetup, stateSetupKey} from './element-vir-state-setup.js';
 
 /**
  * Used for a map of all observables registered to an element instance.
@@ -76,11 +75,7 @@ export function createElementPropertyProxy<PropertyInitGeneric extends PropertyI
 
     const propsProxy = new Proxy({} as Record<PropertyKey, unknown>, {
         get: valueGetter,
-        set(target, propertyKey: keyof PropertyInitGeneric | symbol, rawNewValue) {
-            const newValue = isElementVirStateSetup(rawNewValue)
-                ? rawNewValue[stateSetupKey]()
-                : rawNewValue;
-
+        set(target, propertyKey: keyof PropertyInitGeneric | symbol, newValue) {
             verifyProperty(propertyKey);
             const oldValue = elementAsProps[propertyKey];
 

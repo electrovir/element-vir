@@ -8,7 +8,6 @@ import {
     html,
     ifDefined,
     listen,
-    perInstance,
     renderIf,
     testId,
 } from 'element-vir';
@@ -81,6 +80,14 @@ export const ViraDropdown = defineViraElement<
     }>
 >()({
     tagName: 'vira-dropdown',
+    state() {
+        return {
+            /** `undefined` means the pop up is not currently showing. */
+            showPopUpResult: undefined as ShowPopUpResult | undefined,
+            popUpManager: new PopUpManager(),
+            navController: undefined as NavController | undefined,
+        };
+    },
     hostClasses: {
         'vira-dropdown-disabled': ({inputs}) => !!inputs.isDisabled,
     },
@@ -205,12 +212,6 @@ export const ViraDropdown = defineViraElement<
     events: {
         selectedChange: defineElementEvent<PropertyKey[]>(),
         openChange: defineElementEvent<boolean>(),
-    },
-    stateInitStatic: {
-        /** `undefined` means the pop up is not currently showing. */
-        showPopUpResult: undefined as ShowPopUpResult | undefined,
-        popUpManager: perInstance(() => new PopUpManager()),
-        navController: undefined as NavController | undefined,
     },
     cleanup({state, updateState}) {
         updateState({showPopUpResult: undefined});

@@ -46,8 +46,10 @@ export const viraInputBookPage = defineBookPage({
                 styles: css`
                     ${styles || css``}
                 `,
-                stateInitStatic: {
-                    value: inputs.value,
+                state() {
+                    return {
+                        value: inputs.value,
+                    };
                 },
                 render({state, updateState, controls}) {
                     const cssVarControlValues = {

@@ -11,6 +11,11 @@ import {defineViraElement} from './define-vira-element.js';
  */
 export const ViraCollapsibleWrapper = defineViraElement<{expanded: boolean}>()({
     tagName: 'vira-collapsible-wrapper',
+    state() {
+        return {
+            contentHeight: 0,
+        };
+    },
     hostClasses: {
         'vira-collapsible-wrapper-expanded': ({inputs}) => inputs.expanded,
     },
@@ -43,9 +48,6 @@ export const ViraCollapsibleWrapper = defineViraElement<{expanded: boolean}>()({
     `,
     events: {
         expandChange: defineElementEvent<boolean>(),
-    },
-    stateInitStatic: {
-        contentHeight: 0,
     },
     render({state, slotNames, updateState, dispatch, events, inputs}) {
         const collapsingStyles = inputs.expanded

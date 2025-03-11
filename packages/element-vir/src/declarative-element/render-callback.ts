@@ -11,10 +11,6 @@ import {
     type EventsInitMap,
 } from './properties/element-events.js';
 import {type PropertyInitMapBase} from './properties/element-properties.js';
-import {
-    type AllowElementVirStateSetup,
-    type FlattenElementVirStateSetup,
-} from './properties/element-vir-state-setup.js';
 import {type SlotNameMap} from './slot-names.js';
 
 /**
@@ -25,21 +21,13 @@ import {type SlotNameMap} from './slot-names.js';
 export type RenderCallback<
     TagName extends CustomElementTagName = any,
     Inputs extends PropertyInitMapBase = any,
-    StateInit extends PropertyInitMapBase = any,
+    State extends PropertyInitMapBase = any,
     EventsInit extends EventsInitMap = any,
     HostClassKeys extends BaseCssPropertyName<TagName> = any,
     CssVarKeys extends BaseCssPropertyName<TagName> = any,
     SlotNames extends ReadonlyArray<string> = any,
 > = (
-    params: RenderParams<
-        TagName,
-        Inputs,
-        StateInit,
-        EventsInit,
-        HostClassKeys,
-        CssVarKeys,
-        SlotNames
-    >,
+    params: RenderParams<TagName, Inputs, State, EventsInit, HostClassKeys, CssVarKeys, SlotNames>,
 ) => HtmlInterpolation;
 
 /**
@@ -50,21 +38,13 @@ export type RenderCallback<
 export type InitCallback<
     TagName extends CustomElementTagName,
     Inputs extends PropertyInitMapBase,
-    StateInit extends PropertyInitMapBase,
+    State extends PropertyInitMapBase,
     EventsInit extends EventsInitMap,
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
     SlotNames extends ReadonlyArray<string>,
 > = (
-    params: RenderParams<
-        TagName,
-        Inputs,
-        StateInit,
-        EventsInit,
-        HostClassKeys,
-        CssVarKeys,
-        SlotNames
-    >,
+    params: RenderParams<TagName, Inputs, State, EventsInit, HostClassKeys, CssVarKeys, SlotNames>,
 ) => undefined | void;
 
 /**
@@ -72,8 +52,8 @@ export type InitCallback<
  *
  * @category Internal
  */
-export type UpdateStateCallback<StateInit extends PropertyInitMapBase> = (
-    newState: Partial<AllowElementVirStateSetup<StateInit>>,
+export type UpdateStateCallback<State extends PropertyInitMapBase> = (
+    newState: Partial<State>,
 ) => void;
 
 /**
@@ -84,20 +64,20 @@ export type UpdateStateCallback<StateInit extends PropertyInitMapBase> = (
 export type RenderParams<
     TagName extends CustomElementTagName,
     Inputs extends PropertyInitMapBase,
-    StateInit extends PropertyInitMapBase,
+    State extends PropertyInitMapBase,
     EventsInit extends EventsInitMap,
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
     SlotNames extends ReadonlyArray<string>,
 > = {
-    state: Readonly<FlattenElementVirStateSetup<StateInit>>;
+    state: Readonly<State>;
     cssVars: Readonly<CssVars<TagName, CssVarKeys>>;
-    updateState: UpdateStateCallback<StateInit>;
+    updateState: UpdateStateCallback<State>;
     events: EventDescriptorMap<TagName, EventsInit>;
     host: DeclarativeElementHost<
         TagName,
         Inputs,
-        StateInit,
+        State,
         EventsInit,
         HostClassKeys,
         CssVarKeys,
@@ -125,7 +105,7 @@ export type RenderParams<
 export function createRenderParams<
     TagName extends CustomElementTagName,
     Inputs extends PropertyInitMapBase,
-    StateInit extends PropertyInitMapBase,
+    State extends PropertyInitMapBase,
     EventsInit extends EventsInitMap,
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
@@ -139,7 +119,7 @@ export function createRenderParams<
     element: DeclarativeElement<
         TagName,
         Inputs,
-        StateInit,
+        State,
         EventsInit,
         HostClassKeys,
         CssVarKeys,
@@ -148,12 +128,10 @@ export function createRenderParams<
     eventsMap: EventDescriptorMap<TagName, EventsInit>;
     cssVars: Readonly<CssVars<TagName, CssVarKeys>>;
     slotNamesMap: SlotNameMap<SlotNames>;
-}): RenderParams<TagName, Inputs, StateInit, EventsInit, HostClassKeys, CssVarKeys, SlotNames> {
-    function updateState(newStatePartial: Parameters<UpdateStateCallback<StateInit>>[0]) {
+}): RenderParams<TagName, Inputs, State, EventsInit, HostClassKeys, CssVarKeys, SlotNames> {
+    function updateState(newStatePartial: Parameters<UpdateStateCallback<State>>[0]) {
         getObjectTypedKeys(newStatePartial).forEach((stateKey) => {
-            const newValue = newStatePartial[
-                stateKey
-            ] as FlattenElementVirStateSetup<StateInit>[typeof stateKey];
+            const newValue = newStatePartial[stateKey] as State[typeof stateKey];
 
             element.instanceState[stateKey] = newValue;
         });
@@ -162,7 +140,7 @@ export function createRenderParams<
     const renderParams: RenderParams<
         TagName,
         Inputs,
-        StateInit,
+        State,
         EventsInit,
         HostClassKeys,
         CssVarKeys,

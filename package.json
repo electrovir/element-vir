@@ -18,6 +18,7 @@
     "scripts": {
         "build": "npm run --workspace @electrovir/scripts build",
         "compile": "virmator compile",
+        "docs": "npm run --workspaces --if-present docs",
         "format": "virmator format",
         "lint": "virmator lint fix",
         "publish": "virmator publish npm run test:all",

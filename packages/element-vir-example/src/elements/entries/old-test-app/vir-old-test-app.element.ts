@@ -57,14 +57,16 @@ export const VirOldTestApp = defineElementNoInputs({
             gap: 16px;
         }
     `,
-    stateInitStatic: {
-        funnyNumber: randomInteger({min: 0, max: 10}),
-        eventsReceived: 0,
-        lastReceivedMessage: '',
-        width: -1,
-        showChild: true,
-        derp: {hi: 'yo'} as Record<string, string>,
-        myObservable: new Observable({defaultValue: 5}),
+    state() {
+        return {
+            funnyNumber: randomInteger({min: 0, max: 10}),
+            eventsReceived: 0,
+            lastReceivedMessage: '',
+            width: -1,
+            showChild: true,
+            derp: {hi: 'yo'} as Record<string, string>,
+            myObservable: new Observable({defaultValue: 5}),
+        };
     },
     render({state, updateState}) {
         // log here to make sure it's not rendering too often

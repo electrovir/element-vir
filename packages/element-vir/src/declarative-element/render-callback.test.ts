@@ -14,7 +14,6 @@ import {
     defineElementNoInputs,
     html,
 } from '../index.js';
-import {MaybeElementVirStateSetup} from './properties/element-vir-state-setup.js';
 
 describe('RenderParams', () => {
     it('should produce proper types', () => {
@@ -22,16 +21,18 @@ describe('RenderParams', () => {
 
         defineElementNoInputs({
             tagName: 'test-element',
-            stateInitStatic: {
-                myAsyncProp: asyncProp({
-                    // eslint-disable-next-line @typescript-eslint/require-await
-                    async updateCallback({input}: MyAsyncPropTriggerType) {
-                        return 5;
-                    },
-                }),
-                myAsyncProp2: asyncProp({defaultValue: Promise.resolve(3)}),
-                myAsyncProp3: asyncProp({defaultValue: 3}),
-                myNumber: undefined as undefined | Observable<number>,
+            state() {
+                return {
+                    myAsyncProp: asyncProp({
+                        // eslint-disable-next-line @typescript-eslint/require-await
+                        async updateCallback({input}: MyAsyncPropTriggerType) {
+                            return 5;
+                        },
+                    }),
+                    myAsyncProp2: asyncProp({defaultValue: Promise.resolve(3)}),
+                    myAsyncProp3: asyncProp({defaultValue: 3}),
+                    myNumber: undefined as undefined | Observable<number>,
+                };
             },
             cssVars: {
                 'test-element-my-thing': '4px',
@@ -59,7 +60,7 @@ describe('RenderParams', () => {
 
                 assert
                     .tsType<NonNullable<Parameters<typeof updateState>[0]['myAsyncProp']>>()
-                    .equals<MaybeElementVirStateSetup<AsyncProp<number, MyAsyncPropTriggerType>>>();
+                    .equals<AsyncProp<number, MyAsyncPropTriggerType>>();
 
                 state.myAsyncProp.update({input: 'hi'});
 
@@ -115,7 +116,9 @@ describe('UpdateStateCallback', () => {
 
         const customElement = defineElementNoInputs({
             tagName: 'custom-element-for-testing-update-state-callback-type',
-            stateInitStatic: stateInit,
+            state() {
+                return stateInit;
+            },
             render({state}) {
                 acceptStateFromElementDefinition(state);
 

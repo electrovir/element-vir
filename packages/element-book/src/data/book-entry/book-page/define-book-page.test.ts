@@ -23,17 +23,14 @@ describe(defineBookPage.name, () => {
                 }),
             },
             defineExamples({defineExample}) {
-                // // does not work
-                // {
-                //     stateInitStatic: {value: 'hi'},
-                //     render({state}) {
-                //         return `yo ${state.value}`
-                //     },
-                // },
                 defineExample({
                     title: 'example with observable property state',
-                    stateInitStatic: {
-                        observable: new Observable<number | undefined>({defaultValue: undefined}),
+                    state() {
+                        return {
+                            observable: new Observable<number | undefined>({
+                                defaultValue: undefined,
+                            }),
+                        };
                     },
                     descriptionParagraphs: [
                         'yo',
@@ -109,8 +106,10 @@ describe('BookPageControlValues', () => {
                 return [
                     defineExample({
                         title: 'first example',
-                        stateInitStatic: {
-                            innerState: 'my value',
+                        state() {
+                            return {
+                                innerState: 'my value',
+                            };
                         },
                         render({controls, state}) {
                             assert.tsType(state.innerState).equals<string>();
@@ -149,8 +148,10 @@ describe('BookPageControlValues', () => {
                 return [
                     defineExample({
                         title: 'first example',
-                        stateInitStatic: {
-                            innerState: 'my value',
+                        state() {
+                            return {
+                                innerState: 'my value',
+                            };
                         },
                         render({controls, state}) {
                             assert.tsType(state.innerState).equals<string>();

@@ -18,10 +18,12 @@ export const VirThemeBookApp = defineElementNoInputs({
             flex-grow: 1;
         }
     `,
-    stateInitStatic: {
-        theme: createTheme({
-            elementTagPrefix: 'vir',
-        }),
+    state() {
+        return {
+            theme: createTheme({
+                elementTagPrefix: 'vir',
+            }),
+        };
     },
     render({state}) {
         return html`

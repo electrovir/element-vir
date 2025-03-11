@@ -18,8 +18,10 @@ describe(asyncProp.name, () => {
         setAsyncProp: Promise<number>;
     }>()({
         tagName: 'element-with-async-prop',
-        stateInitStatic: {
-            myAsyncProp: asyncProp<number>(),
+        state() {
+            return {
+                myAsyncProp: asyncProp<number>(),
+            };
         },
         events: {
             previousAsyncProp: defineElementEvent<AsyncValue<number>>(),
@@ -68,8 +70,10 @@ describe(asyncProp.name, () => {
 
         defineElementNoInputs({
             tagName: 'element-with-async-prop-again',
-            stateInitStatic: {
-                asyncProp: asyncProp<SomethingObject, any>(),
+            state() {
+                return {
+                    asyncProp: asyncProp<SomethingObject, any>(),
+                };
             },
             render({state}) {
                 assert.tsType(state.asyncProp.value).equals<AsyncValue<SomethingObject>>();

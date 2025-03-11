@@ -8,11 +8,7 @@ import {type DeclarativeElementDefinitionOptions} from './definition-options.js'
 import {type BaseCssPropertyName} from './properties/css-properties.js';
 import {type CssVars} from './properties/css-vars.js';
 import {type EventDescriptorMap, type EventsInitMap} from './properties/element-events.js';
-import {
-    type ElementPropertyDescriptorMap,
-    type PropertyInitMapBase,
-} from './properties/element-properties.js';
-import {type FlattenElementVirStateSetup} from './properties/element-vir-state-setup.js';
+import {type PropertyInitMapBase} from './properties/element-properties.js';
 import {type HostClassNamesMap} from './properties/host-classes.js';
 import {type ObservableListenerMap} from './properties/property-proxy.js';
 import {
@@ -31,7 +27,7 @@ import {type SlotNameMap} from './slot-names.js';
 export type DeclarativeElementHost<
     TagName extends CustomElementTagName = any,
     Inputs extends PropertyInitMapBase = any,
-    StateInit extends PropertyInitMapBase = any,
+    State extends PropertyInitMapBase = any,
     EventsInit extends EventsInitMap = any,
     HostClassKeys extends BaseCssPropertyName<TagName> = any,
     CssVarKeys extends BaseCssPropertyName<TagName> = any,
@@ -41,7 +37,7 @@ export type DeclarativeElementHost<
         DeclarativeElement<
             TagName,
             Inputs,
-            StateInit,
+            State,
             EventsInit,
             HostClassKeys,
             CssVarKeys,
@@ -63,7 +59,7 @@ export type DeclarativeElementHost<
 export type DeclarativeElementDefinition<
     TagName extends CustomElementTagName = any,
     Inputs extends PropertyInitMapBase = any,
-    StateInit extends PropertyInitMapBase = any,
+    State extends PropertyInitMapBase = any,
     EventsInit extends EventsInitMap = any,
     HostClassKeys extends BaseCssPropertyName<TagName> = any,
     CssVarKeys extends BaseCssPropertyName<TagName> = any,
@@ -71,7 +67,7 @@ export type DeclarativeElementDefinition<
 > = (new () => DeclarativeElementHost<
     TagName,
     Inputs,
-    StateInit,
+    State,
     EventsInit,
     HostClassKeys,
     CssVarKeys,
@@ -80,7 +76,7 @@ export type DeclarativeElementDefinition<
     StaticDeclarativeElementProperties<
         TagName,
         Inputs,
-        StateInit,
+        State,
         EventsInit,
         HostClassKeys,
         CssVarKeys,
@@ -89,7 +85,7 @@ export type DeclarativeElementDefinition<
         instanceType: DeclarativeElementHost<
             TagName,
             Inputs,
-            StateInit,
+            State,
             EventsInit,
             HostClassKeys,
             CssVarKeys,
@@ -105,7 +101,7 @@ export type DeclarativeElementDefinition<
 export abstract class DeclarativeElement<
     TagName extends CustomElementTagName = any,
     Inputs extends PropertyInitMapBase = any,
-    StateInit extends PropertyInitMapBase = any,
+    State extends PropertyInitMapBase = any,
     EventsInit extends EventsInitMap = any,
     HostClassKeys extends BaseCssPropertyName<TagName> = any,
     CssVarKeys extends BaseCssPropertyName<TagName> = any,
@@ -197,15 +193,6 @@ export abstract class DeclarativeElement<
         BaseCssPropertyName<CustomElementTagName>,
         ReadonlyArray<string>
     >['events'];
-    public static readonly stateInitStatic: StaticDeclarativeElementProperties<
-        CustomElementTagName,
-        PropertyInitMapBase,
-        PropertyInitMapBase,
-        EventsInitMap,
-        BaseCssPropertyName<CustomElementTagName>,
-        BaseCssPropertyName<CustomElementTagName>,
-        ReadonlyArray<string>
-    >['stateInitStatic'];
     public static readonly init: StaticDeclarativeElementProperties<
         CustomElementTagName,
         PropertyInitMapBase,
@@ -255,7 +242,7 @@ export abstract class DeclarativeElement<
     public abstract _lastRenderError: Error | undefined;
     public abstract _internalRenderCount: number;
     public abstract _lastRenderedProps: Readonly<
-        Pick<RenderParams<any, Inputs, StateInit, any, any, any, any>, 'inputs' | 'state'>
+        Pick<RenderParams<any, Inputs, State, any, any, any, any>, 'inputs' | 'state'>
     >;
     /**
      * Calls all destroy methods on all state properties, if they exist. This is automatically
@@ -263,10 +250,8 @@ export abstract class DeclarativeElement<
      */
     public abstract destroy(): void;
     public abstract override render(): unknown;
-    public abstract readonly instanceState: FlattenElementVirStateSetup<StateInit>;
-    public abstract readonly observablePropertyListenerMap: ObservableListenerMap<
-        StateInit & Inputs
-    >;
+    public abstract readonly instanceState: State;
+    public abstract readonly observablePropertyListenerMap: ObservableListenerMap<State & Inputs>;
     public abstract readonly instanceInputs: Inputs;
     /**
      * Used to assign inputs to the given element. This can be externally called as an API for
@@ -281,7 +266,7 @@ export abstract class DeclarativeElement<
     public abstract readonly definition: DeclarativeElementDefinition<
         TagName,
         Inputs,
-        StateInit,
+        State,
         EventsInit,
         HostClassKeys,
         CssVarKeys,
@@ -311,7 +296,7 @@ export type AssignMethod<Inputs extends PropertyInitMapBase> =
 export type StaticDeclarativeElementProperties<
     TagName extends CustomElementTagName,
     Inputs extends PropertyInitMapBase,
-    StateInit extends PropertyInitMapBase,
+    State extends PropertyInitMapBase,
     EventsInit extends EventsInitMap,
     HostClassKeys extends BaseCssPropertyName<TagName>,
     CssVarKeys extends BaseCssPropertyName<TagName>,
@@ -325,19 +310,18 @@ export type StaticDeclarativeElementProperties<
     readonly render: RenderCallback<
         TagName,
         Inputs,
-        StateInit,
+        State,
         EventsInit,
         HostClassKeys,
         CssVarKeys,
         SlotNames
     >;
     readonly events: EventDescriptorMap<TagName, EventsInit>;
-    readonly stateInitStatic: ElementPropertyDescriptorMap<StateInit>;
     readonly slotNames: SlotNameMap<SlotNames>;
     readonly init: DeclarativeElementInit<
         TagName,
         Inputs,
-        StateInit,
+        State,
         EventsInit,
         HostClassKeys,
         CssVarKeys,
@@ -345,8 +329,8 @@ export type StaticDeclarativeElementProperties<
     >;
     readonly elementOptions: DeclarativeElementDefinitionOptions;
     readonly inputsType: Inputs;
-    readonly stateType: Readonly<FlattenElementVirStateSetup<StateInit>>;
-    readonly updateStateType: UpdateStateCallback<StateInit>;
+    readonly stateType: Readonly<State>;
+    readonly updateStateType: UpdateStateCallback<State>;
     readonly hostClasses: HostClassNamesMap<string, HostClassKeys>;
     readonly cssVars: CssVars<TagName, CssVarKeys>;
 

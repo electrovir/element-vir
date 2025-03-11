@@ -31,6 +31,20 @@ export const ViraImage = defineViraElement<{
     _debugLoadDelay?: Duration<DurationUnit.Milliseconds> | undefined;
 }>()({
     tagName: 'vira-image',
+    state() {
+        return {
+            /**
+             * To avoid race conditions between `<img>` element events and potential input changing,
+             * save the loaded state of an URL's image by the image's URL.
+             */
+            loadedUrls: {} as Readonly<{[url: string]: true}>,
+            /**
+             * To avoid race conditions between `<img>` element events and potential input changing,
+             * save the errored state of an URL's image by the image's URL.
+             */
+            erroredUrls: {} as Readonly<{[url: string]: true}>,
+        };
+    },
     hostClasses: {
         'vira-image-height-constrained': ({inputs}) => inputs.dominantDimension === 'height',
     },
@@ -89,18 +103,6 @@ export const ViraImage = defineViraElement<{
             display: none;
         }
     `,
-    stateInitStatic: {
-        /**
-         * To avoid race conditions between `<img>` element events and potential input changing,
-         * save the loaded state of an URL's image by the image's URL.
-         */
-        loadedUrls: {} as Readonly<{[url: string]: true}>,
-        /**
-         * To avoid race conditions between `<img>` element events and potential input changing,
-         * save the errored state of an URL's image by the image's URL.
-         */
-        erroredUrls: {} as Readonly<{[url: string]: true}>,
-    },
     render({inputs, state, updateState, dispatch, events, slotNames}) {
         /**
          * Saved off for use in the image listeners. This is used to eliminate race conditions

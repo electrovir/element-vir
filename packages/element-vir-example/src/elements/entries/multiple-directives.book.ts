@@ -7,7 +7,11 @@ export const multipleDirectivesBookPage = defineBookPage({
     defineExamples({defineExample}) {
         defineExample({
             title: 'with array (does not work)',
-            stateInitStatic: {value: 0},
+            state() {
+                return {
+                    value: 0,
+                };
+            },
             render({state, updateState}) {
                 return html`
                     <div
@@ -27,7 +31,11 @@ export const multipleDirectivesBookPage = defineBookPage({
         });
         defineExample({
             title: 'with extra template',
-            stateInitStatic: {value: 0},
+            state() {
+                return {
+                    value: 0,
+                };
+            },
             render({state, updateState}) {
                 const directives = html`
                     ${listen('click', () => {

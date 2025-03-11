@@ -56,6 +56,12 @@ export const ViraInput = defineViraElement<
     } & SharedTextInputElementInputs
 >()({
     tagName: 'vira-input',
+    state() {
+        return {
+            forcedInputWidth: 0,
+            showPassword: false,
+        };
+    },
     hostClasses: {
         'vira-input-disabled': ({inputs}) => !!inputs.disabled,
         'vira-input-fit-text': ({inputs}) => !!inputs.fitText,
@@ -279,10 +285,6 @@ export const ViraInput = defineViraElement<
                 color: ${cssVars['vira-input-show-password-button-active-color'].value};
             }
         `;
-    },
-    stateInitStatic: {
-        forcedInputWidth: 0,
-        showPassword: false,
     },
     render: ({inputs, dispatch, state, updateState, events}) => {
         const {filtered: filteredValue} = filterTextInputValue({

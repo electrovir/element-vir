@@ -1,5 +1,5 @@
 import {assert} from '@augment-vir/assert';
-import {getObjectTypedKeys, randomString} from '@augment-vir/common';
+import {randomString} from '@augment-vir/common';
 import {describe, it} from '@augment-vir/test';
 import {
     DeclarativeElement,
@@ -30,8 +30,10 @@ describe('test elements', () => {
                     // @ts-expect-error: missing tag name prefix
                     stuff: false,
                 },
-                stateInitStatic: {
-                    color: 'purple',
+                state() {
+                    return {
+                        color: 'purple',
+                    };
                 },
                 cssVars: {
                     'invalid-derp-whatever-css-var': 'blue',
@@ -56,8 +58,10 @@ describe('test elements', () => {
             hostClasses: {
                 'derp-whatever-stuff': false,
             },
-            stateInitStatic: {
-                color: 'purple',
+            state() {
+                return {
+                    color: 'purple',
+                };
             },
             cssVars: {
                 'derp-whatever-css-var': 'blue',
@@ -111,10 +115,6 @@ describe('test elements', () => {
             derp: Record<string, string>;
             myObservable: Observable<number>;
         };
-
-        const stateInitStatic: ReadonlyArray<keyof AppElementProps> = getObjectTypedKeys(
-            VirOldTestApp.stateInitStatic,
-        );
 
         // @ts-expect-error: element constructor should not be able to be assigned to an instance
         const instance: typeof VirTestBookApp.instanceType = VirTestBookApp;
@@ -184,9 +184,11 @@ describe('test elements', () => {
         }>()({
             tagName: 'element-vir-test-element',
             styles: css``,
-            stateInitStatic: {
-                stringProp: 'derp',
-                numberProp: undefined as number | undefined,
+            state() {
+                return {
+                    stringProp: 'derp',
+                    numberProp: undefined as number | undefined,
+                };
             },
             events: {
                 yo: defineElementEvent<Record<string, string>>(),

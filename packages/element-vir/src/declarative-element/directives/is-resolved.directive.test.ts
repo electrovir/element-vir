@@ -1,6 +1,5 @@
 import {assert} from '@augment-vir/assert';
 import {describe, it, itCases} from '@augment-vir/test';
-import {stateSetupKey} from '../properties/element-vir-state-setup.js';
 import {AsyncValue, asyncProp} from './async-prop.js';
 import {isAsyncError, isResolved, resolvedOrUndefined} from './is-resolved.directive.js';
 
@@ -26,7 +25,7 @@ describe(isResolved.name, () => {
     ]);
 
     it('properly type guards', () => {
-        const exampleAsyncProp = asyncProp({defaultValue: Promise.resolve('hi')})[stateSetupKey]();
+        const exampleAsyncProp = asyncProp({defaultValue: Promise.resolve('hi')});
 
         if (isResolved(exampleAsyncProp.value)) {
             assert.tsType(exampleAsyncProp.value).equals<string | Error>();
@@ -34,7 +33,7 @@ describe(isResolved.name, () => {
     });
 
     it("can't accidentally be passed AsyncProp instead of AsyncValue", () => {
-        const exampleAsyncProp = asyncProp({defaultValue: Promise.resolve('hi')})[stateSetupKey]();
+        const exampleAsyncProp = asyncProp({defaultValue: Promise.resolve('hi')});
 
         assert.throws(
             () => {
@@ -61,7 +60,7 @@ describe(isAsyncError.name, () => {
     });
 
     it('fails if passed an AsyncProp', () => {
-        const exampleAsyncProp = asyncProp({defaultValue: Promise.resolve('hi')})[stateSetupKey]();
+        const exampleAsyncProp = asyncProp({defaultValue: Promise.resolve('hi')});
 
         assert.throws(
             () => {

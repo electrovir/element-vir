@@ -5,48 +5,47 @@ import {defineElement} from './define-element.js';
 
 describe(defineElement.name, () => {
     it('does not allow HTMLElement properties in state or inputs', () => {
+        // @ts-expect-error style is a default HTMLElement key
         defineElement<{
             style: string;
             inputKey: string;
-        }>()(
-            // @ts-expect-error style is a default HTMLElement key
-            {
-                tagName: 'blah-blah-blah-1',
-                render() {
-                    return 'hi';
-                },
+        }>()({
+            tagName: 'blah-blah-blah-1',
+            render({inputs}) {
+                inputs.style;
+                return 'hi';
             },
-        );
-        defineElement()(
+        });
+        defineElement()({
+            tagName: 'blah-blah-blah-2',
             // @ts-expect-error classList is a default HTMLElement key
-            {
-                tagName: 'blah-blah-blah-2',
-                stateInitStatic: {
+            init() {
+                return {
                     classList: ['hi'],
-                },
-                render() {
-                    return 'hi';
-                },
+                };
             },
-        );
+            render() {
+                return 'hi';
+            },
+        });
     });
 
     it('does not allow keys duplicated between inputs and state', () => {
         defineElement<{
             inputKey: string;
-        }>()(
+        }>()({
+            tagName: 'blah-blah-blah-3',
             // @ts-expect-error inputKey clashes between inputs and state
-            {
-                tagName: 'blah-blah-blah-3',
-                stateInitStatic: {
+            init() {
+                return {
                     inputKey: 0,
                     otherKey: 'hi',
-                },
-                render() {
-                    return 'hi';
-                },
+                };
             },
-        );
+            render() {
+                return 'hi';
+            },
+        });
     });
 
     it('blocks render callbacks without a return type', () => {
@@ -165,6 +164,28 @@ describe(defineElement.name, () => {
             },
         });
 
+        function acceptHost(host: (typeof MyElement)['instanceType']) {
+            return {};
+        }
+    });
+    it('can include updateState in init', () => {
+        const MyElement = defineElement()({
+            tagName: `some-tag-${randomString()}`,
+            state() {
+                return {
+                    prop1: 'hi',
+                };
+            },
+            init({host, state}) {
+                assert.tsType(state).equals<Readonly<{prop1: string}>>();
+                acceptHost(host);
+            },
+            render({state}) {
+                assert.tsType(state).equals<Readonly<{prop1: string}>>();
+
+                return '';
+            },
+        });
         function acceptHost(host: (typeof MyElement)['instanceType']) {
             return {};
         }

@@ -1,6 +1,5 @@
 import {CallbackObservable, CallbackObservableInit} from 'observavir';
 import {Constructor} from 'type-fest';
-import {ElementVirStateSetup, stateSetupKey} from '../properties/element-vir-state-setup.js';
 
 export type {AsyncValue} from 'observavir';
 
@@ -42,10 +41,6 @@ export const AsyncProp: Constructor<
  */
 export function asyncProp<Value, Params = void>(
     init?: CallbackObservableInit<Value, Params>,
-): ElementVirStateSetup<AsyncProp<Value, Params>> {
-    return {
-        [stateSetupKey]() {
-            return new InternalAsyncPropClass(init);
-        },
-    };
+): AsyncProp<Value, Params> {
+    return new InternalAsyncPropClass(init);
 }
