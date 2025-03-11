@@ -28,8 +28,8 @@ export class InternalAsyncPropClass<Value, Params> extends CallbackObservable<Va
      * The current `.value` if it has settled (into either a resolved value or an Error), or
      * `undefined` if it has not.
      */
-    public get resolvedValue(): Exclude<typeof this.value, Promise<any>> | undefined {
-        if (this.isResolved()) {
+    public get settledValue(): Exclude<typeof this.value, Promise<any>> | undefined {
+        if (this.isSettled()) {
             return this.value as Exclude<typeof this.value, Promise<any>>;
         } else {
             return undefined;

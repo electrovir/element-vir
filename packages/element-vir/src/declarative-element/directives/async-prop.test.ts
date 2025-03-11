@@ -150,10 +150,10 @@ describe(asyncProp.name, () => {
                 });
 
                 if (
-                    !(state.myAsyncProp.resolvedValue instanceof Error) &&
-                    state.myAsyncProp.resolvedValue
+                    !(state.myAsyncProp.settledValue instanceof Error) &&
+                    state.myAsyncProp.settledValue
                 ) {
-                    assert.tsType(state.myAsyncProp.resolvedValue).equals<number>();
+                    assert.tsType(state.myAsyncProp.settledValue).equals<number>();
                 }
 
                 renderCount++;
@@ -733,7 +733,7 @@ describe('AsyncProp value type guards', () => {
             assert.tsType(myAsyncProp.value).equals<Error>();
         }
 
-        assert.tsType(myAsyncProp.resolvedValue).equals<string | Error | undefined>();
+        assert.tsType(myAsyncProp.settledValue).equals<string | Error | undefined>();
     });
     function testIsSettled(value: unknown) {
         const myAsyncProp = asyncProp();
@@ -791,14 +791,14 @@ describe('AsyncProp value type guards', () => {
     it('enables a type guard chain', () => {
         const myAsyncProp = asyncProp({defaultValue: {hi: ''}});
 
-        if (myAsyncProp.resolvedValue instanceof Error) {
-            assert.tsType(myAsyncProp.resolvedValue).equals<Error>();
+        if (myAsyncProp.settledValue instanceof Error) {
+            assert.tsType(myAsyncProp.settledValue).equals<Error>();
             return;
-        } else if (!myAsyncProp.resolvedValue) {
-            assert.tsType(myAsyncProp.resolvedValue).equals<undefined>();
+        } else if (!myAsyncProp.settledValue) {
+            assert.tsType(myAsyncProp.settledValue).equals<undefined>();
             return;
         }
 
-        assert.tsType(myAsyncProp.resolvedValue).equals<{hi: string}>;
+        assert.tsType(myAsyncProp.settledValue).equals<{hi: string}>;
     });
 });
