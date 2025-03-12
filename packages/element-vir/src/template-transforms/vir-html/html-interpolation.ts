@@ -1,7 +1,8 @@
-import {type AnyFunction} from '@augment-vir/common';
+import {type AnyFunction, type Overwrite} from '@augment-vir/common';
 import {type CSSResult, type TemplateResult, type nothing} from 'lit';
-import {type EmptyObject} from 'type-fest';
+import {type EmptyObject, type HasRequiredKeys, type IsNever} from 'type-fest';
 import {type DeclarativeElementDefinition} from '../../declarative-element/declarative-element.js';
+import type {Decrement, Increment} from '../../util/increment.js';
 import {
     type MinimalDefinitionWithInputs,
     type MinimalElementDefinition,
@@ -46,3 +47,55 @@ export type HtmlInterpolation =
     | typeof nothing
     | HtmlInterpolation[]
     | ReadonlyArray<HtmlInterpolation>;
+
+/**
+ * This type ensures that interpolated element definitions are not missing their inputs, when inputs
+ * are required.
+ *
+ * @category Internal
+ */
+export type VerifyHtmlValues<
+    Values extends HtmlInterpolation[],
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    WaitingForEndTags extends Record<string, number> = {},
+> = Values extends [
+    infer CurrentDefinition extends DeclarativeElementDefinition,
+    ...infer Rest extends HtmlInterpolation[],
+]
+    ? CurrentDefinition extends DeclarativeElementDefinition<infer TagName, infer Inputs>
+        ? HasRequiredKeys<Inputs> extends true
+            ? IsNever<Decrement<WaitingForEndTags[TagName]>> extends true
+                ? [
+                      `ERROR: This element is missing its inputs.`,
+                      ...VerifyHtmlValues<Rest, WaitingForEndTags>,
+                  ]
+                : [
+                      CurrentDefinition,
+                      ...VerifyHtmlValues<
+                          Rest,
+                          Overwrite<
+                              WaitingForEndTags,
+                              Record<TagName, Decrement<WaitingForEndTags[TagName]>>
+                          >
+                      >,
+                  ]
+            : [CurrentDefinition, ...VerifyHtmlValues<Rest, WaitingForEndTags>]
+        : [CurrentDefinition, ...VerifyHtmlValues<Rest, WaitingForEndTags>]
+    : Values extends [
+            infer CurrentDefinition extends MinimalDefinitionWithInputs,
+            ...infer Rest extends HtmlInterpolation[],
+        ]
+      ? [
+            CurrentDefinition,
+            ...VerifyHtmlValues<
+                Rest,
+                Overwrite<
+                    WaitingForEndTags,
+                    Record<
+                        CurrentDefinition['definition']['tagName'],
+                        Increment<WaitingForEndTags[CurrentDefinition['definition']['tagName']]>
+                    >
+                >
+            >,
+        ]
+      : Values;

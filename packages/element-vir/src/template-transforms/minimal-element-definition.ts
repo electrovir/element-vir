@@ -8,8 +8,8 @@ import {PropertyInitMapBase} from '../declarative-element/properties/element-pro
  *
  * @category Internal
  */
-export type MinimalElementDefinition = {
-    tagName: string;
+export type MinimalElementDefinition<TagName extends string = string> = {
+    tagName: TagName;
     elementOptions?: DeclarativeElementDefinitionOptions | undefined;
     /** This is used when wrapping interpolated raw tag name strings. */
     tagInterpolationKey?: {tagName: string} | undefined;
@@ -21,14 +21,14 @@ export type MinimalElementDefinition = {
  *
  * @category Internal
  */
-export type MinimalDefinitionWithInputs = {
+export type MinimalDefinitionWithInputs<TagName extends string = string> = {
     /**
      * This is what marks instance of this type as such. This does not use a symbol so it's
      * compatible with multiple `element-vir` versions being installed at once (like if a dependency
      * uses a different version).
      */
     _elementVirIsMinimalDefinitionWithInputs: true;
-    definition: MinimalElementDefinition;
+    definition: MinimalElementDefinition<TagName>;
     inputs: PropertyInitMapBase;
 };
 

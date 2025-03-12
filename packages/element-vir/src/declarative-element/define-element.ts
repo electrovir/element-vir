@@ -97,7 +97,6 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>(
         return defineElementNoInputs({
             ...init,
             options: {
-                ignoreUnsetInputs: false,
                 ...init.options,
             },
         });

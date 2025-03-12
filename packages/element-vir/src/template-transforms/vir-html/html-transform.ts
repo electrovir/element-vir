@@ -99,15 +99,6 @@ function transformHtml(
         return undefined;
     }
 
-    if (
-        isOpeningTag &&
-        currentValue.elementOptions &&
-        !currentValue.elementOptions.ignoreUnsetInputs &&
-        !isMinimalDefinitionWithInputs(rawCurrentValue)
-    ) {
-        throw new Error(`Missing inputs for '${currentValue.tagName}'`);
-    }
-
     const replacement = currentValue.tagName;
 
     return {

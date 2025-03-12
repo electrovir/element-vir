@@ -21,7 +21,6 @@ import {
     DeclarativeElementDefinitionOptions,
     defaultDeclarativeElementDefinitionOptions,
 } from './definition-options.js';
-import {hasDeclarativeElementParent} from './has-declarative-element-parent.js';
 import {assignInputs} from './properties/assign-inputs.js';
 import {BaseCssPropertyName, assertValidCssProperties} from './properties/css-properties.js';
 import {CssVars} from './properties/css-vars.js';
@@ -211,7 +210,7 @@ export function defineElementNoInputs<
             SlotNames
         >['events'] = eventsMap;
         public static override readonly render: ThisElementStaticClass['render'] =
-            typedRenderCallback as ThisElementStaticClass['render'];
+            typedRenderCallback as any as ThisElementStaticClass['render'];
         public static override readonly hostClasses: StaticDeclarativeElementProperties<
             TagName,
             Inputs,
@@ -266,23 +265,9 @@ export function defineElementNoInputs<
         public _hasRendered = false;
         public _lastRenderedProps: ThisElementInstance['_lastRenderedProps'] = undefined as any;
 
-        public _haveInputsBeenSet = false;
-
         public render() {
             this._internalRenderCount++;
             try {
-                if (
-                    // This ignores elements at the root of a page, as they can't receive inputs from
-                    // other elements (cause they have no custom element ancestors).
-                    hasDeclarativeElementParent(this) &&
-                    !this._haveInputsBeenSet &&
-                    !elementOptions.ignoreUnsetInputs
-                ) {
-                    console.warn(
-                        this,
-                        `${init.tagName} got rendered before its input object was set. This was most likely caused by forgetting to use '.assign()' on its opening tag. If no inputs are intended, use '${defineElementNoInputs.name}' to define ${init.tagName}.`,
-                    );
-                }
                 this._hasRendered = true;
 
                 const renderParams = this.createRenderParams();
@@ -379,10 +364,10 @@ export function defineElementNoInputs<
             {};
 
         public readonly instanceInputs: ThisElementInstance['instanceInputs'] =
-            createElementPropertyProxy<Readonly<Inputs>>(this, false);
+            createElementPropertyProxy<Readonly<Inputs>>(this as any, false);
 
         public readonly instanceState: ThisElementInstance['instanceState'] =
-            createElementPropertyProxy<State>(this, !elementOptions.allowPolymorphicState);
+            createElementPropertyProxy<State>(this as any, !elementOptions.allowPolymorphicState);
 
         constructor() {
             super();

@@ -1,7 +1,7 @@
 import {check} from '@augment-vir/assert';
-import {getEnumValues, getObjectTypedEntries} from '@augment-vir/common';
+import {getEnumValues, getObjectTypedKeys} from '@augment-vir/common';
 import {defineBookPage, type BookPage} from 'element-book';
-import {html} from 'element-vir';
+import {DeclarativeElementDefinition, html} from 'element-vir';
 import {HeadingLevel} from '../create-theme/theme-options.js';
 import {Theme} from '../create-theme/theme.js';
 
@@ -13,32 +13,28 @@ export function createThemeBookPages<TagName extends string>(
         parent: undefined,
     });
 
-    const fontEntries = getObjectTypedEntries(theme.elements)
-        .map(
-            ([
-                elementName,
-                themeElement,
-            ]) => {
-                if (themeElement.tagName === theme.elements.heading.tagName) {
-                    return undefined;
-                }
+    const fontEntries = getObjectTypedKeys(theme.elements)
+        .map((elementKey) => {
+            if (elementKey === 'heading') {
+                return undefined;
+            }
+            const themeElement: DeclarativeElementDefinition = theme.elements[elementKey];
 
-                return defineBookPage({
-                    title: themeElement.tagName,
-                    parent: elementsBookPage,
-                    defineExamples({defineExample}) {
-                        defineExample({
-                            title: 'bold',
-                            render() {
-                                return html`
-                                    <${themeElement}>This is ${elementName}</${themeElement}>
-                                `;
-                            },
-                        });
-                    },
-                });
-            },
-        )
+            return defineBookPage({
+                title: themeElement.tagName,
+                parent: elementsBookPage,
+                defineExamples({defineExample}) {
+                    defineExample({
+                        title: 'bold',
+                        render() {
+                            return html`
+                                <${themeElement}>This is ${elementKey}</${themeElement}>
+                            `;
+                        },
+                    });
+                },
+            });
+        })
         .filter(check.isTruthy);
 
     return [

@@ -1,7 +1,7 @@
 import {html as litHtml} from 'lit';
 import {HTMLTemplateResult} from '../../lit-exports/all-lit-exports.js';
 import {getTransformedTemplate} from '../transform-template.js';
-import {HtmlInterpolation} from './html-interpolation.js';
+import {HtmlInterpolation, VerifyHtmlValues} from './html-interpolation.js';
 import {mapHtmlValues, transformHtmlTemplate} from './html-transform.js';
 
 /**
@@ -12,9 +12,9 @@ import {mapHtmlValues, transformHtmlTemplate} from './html-transform.js';
  *
  * @category Element Definition
  */
-export function html(
+export function html<const Values extends HtmlInterpolation[]>(
     inputTemplateStrings: TemplateStringsArray,
-    ...inputValues: HtmlInterpolation[]
+    ...inputValues: VerifyHtmlValues<Values>
 ): HTMLTemplateResult {
     const mappedValues = mapHtmlValues(inputTemplateStrings, inputValues);
 

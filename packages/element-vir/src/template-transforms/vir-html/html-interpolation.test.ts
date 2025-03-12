@@ -2,6 +2,8 @@
 
 import {assert} from '@augment-vir/assert';
 import {describe, it} from '@augment-vir/test';
+import {defineElementNoInputs} from '../../declarative-element/define-element-no-inputs.js';
+import {defineElement} from '../../declarative-element/define-element.js';
 import {renderIf} from '../../declarative-element/directives/render-if.directive.js';
 import {RenderCallback} from '../../declarative-element/render-callback.js';
 import {classMap, ifDefined} from '../../lit-exports/all-lit-exports.js';
@@ -49,6 +51,38 @@ describe('HtmlInterpolation', () => {
             hello there ${classMap({disabled: true})}
         `;
         assert.tsType(classMap({disabled: true})).matches<DirectiveOutput>();
+    });
+
+    it('prevents missing input assignment', () => {
+        const NoInputs = defineElementNoInputs({
+            tagName: 'html-interpolation-test-no-inputs',
+            render() {
+                return '';
+            },
+        });
+        const WithInputs = defineElement<{param1: string}>()({
+            tagName: 'html-interpolation-test-with-inputs',
+            render() {
+                return '';
+            },
+        });
+        const MaybeWithInputs = defineElement<{param1?: string}>()({
+            tagName: 'html-interpolation-test-with-inputs',
+            render() {
+                return '';
+            },
+        });
+
+        html`
+            <${NoInputs}></${NoInputs}>
+            <${WithInputs.assign({param1: 'hi'})}></${WithInputs}>
+            <${WithInputs.assign({param1: 'hi'})}></${WithInputs}>
+            <${MaybeWithInputs}></${MaybeWithInputs}>
+            <${
+                // @ts-expect-error: this is missing its inputs
+                WithInputs
+            }></${WithInputs}>
+        `;
     });
 
     it('allows function interpolation', () => {

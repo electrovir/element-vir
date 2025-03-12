@@ -36,5 +36,6 @@ export * from './template-transforms/vir-css/vir-css.js';
 export * from './template-transforms/vir-html/html-interpolation.js';
 export * from './template-transforms/vir-html/vir-html.js';
 export * from './typed-event/typed-event.js';
+export * from './util/increment.js';
 export * from './util/lit-template.js';
 export * from './util/type.js';

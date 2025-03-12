@@ -261,7 +261,6 @@ export abstract class DeclarativeElement<
     public abstract assignInputs(
         inputs: EmptyObject extends Required<Inputs> ? never : Partial<Inputs>,
     ): void;
-    public abstract _haveInputsBeenSet: boolean;
     /** The element definition for this element instance. */
     public abstract readonly definition: DeclarativeElementDefinition<
         TagName,
@@ -279,14 +278,14 @@ export abstract class DeclarativeElement<
  *
  * @category Internal
  */
-export type AssignMethod<Inputs extends PropertyInitMapBase> =
+export type AssignMethod<TagName extends CustomElementTagName, Inputs extends PropertyInitMapBase> =
     IsAny<Inputs> extends true
         ? any
         : IsEmptyObject<Required<Inputs>> extends true
           ? (inputsObject: never) => never
           : (
                 inputsObject: IsEmptyObject<Required<Inputs>> extends true ? never : Inputs,
-            ) => MinimalDefinitionWithInputs;
+            ) => MinimalDefinitionWithInputs<TagName>;
 
 /**
  * All static properties on a declarative element. These all come from the element's definition.
@@ -303,7 +302,7 @@ export type StaticDeclarativeElementProperties<
     SlotNames extends ReadonlyArray<string>,
 > = {
     /** Assign inputs to an element directly on its interpolated tag. */
-    readonly assign: AssignMethod<Inputs>;
+    readonly assign: AssignMethod<TagName, Inputs>;
     assignedInputs: Inputs | undefined;
 
     /** Pass through the render callback for direct unit testability */
@@ -334,6 +333,6 @@ export type StaticDeclarativeElementProperties<
     readonly hostClasses: HostClassNamesMap<string, HostClassKeys>;
     readonly cssVars: CssVars<TagName, CssVarKeys>;
 
-    readonly tagName: string;
+    readonly tagName: TagName;
     readonly styles: CSSResult;
 };
