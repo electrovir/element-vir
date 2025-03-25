@@ -1,4 +1,5 @@
-import {css, html, listen} from 'element-vir';
+import type {PartialWithUndefined} from '@augment-vir/common';
+import {css, html, ifDefined, listen} from 'element-vir';
 import {SpaRoute, SpaRouter} from 'spa-router-vir';
 import {RequireExactlyOne} from 'type-fest';
 import {defineViraElement} from './define-vira-element.js';
@@ -30,7 +31,16 @@ export const ViraLink = defineViraElement<
             router: Pick<SpaRouter<any, any, any>, 'createRouteUrl' | 'setRouteOnDirectNavigation'>;
             scrollToTop?: boolean;
         };
-    }>
+    }> &
+        PartialWithUndefined<{
+            aria?: {
+                /**
+                 * This label will be attached to the inner `<a>` element's `aria-label` attribute.
+                 * If none is provided, no `aria-label` attribute will be generated.
+                 */
+                label: string;
+            };
+        }>
 >()({
     tagName: 'vira-link',
     cssVars: {
@@ -82,7 +92,12 @@ export const ViraLink = defineViraElement<
         if (inputs.link?.newTab) {
             /** Noopener and noreferrer are needed for security reasons, do not remove! */
             return html`
-                <a href=${inputs.link.url} target="_blank" rel="noopener noreferrer">
+                <a
+                    href=${inputs.link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label=${ifDefined(inputs.aria?.label || undefined)}
+                >
                     <slot></slot>
                 </a>
             `;
@@ -93,7 +108,12 @@ export const ViraLink = defineViraElement<
 
             /** Noopener and noreferrer are needed for security reasons, do not remove! */
             return html`
-                <a href=${linkUrl} rel="noopener noreferrer" ${listen('click', clickCallback)}>
+                <a
+                    href=${linkUrl}
+                    rel="noopener noreferrer"
+                    aria-label=${ifDefined(inputs.aria?.label || undefined)}
+                    ${listen('click', clickCallback)}
+                >
                     <slot></slot>
                 </a>
             `;
