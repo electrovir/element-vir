@@ -84,6 +84,14 @@ export class InternalAsyncPropClass<Value, Params> extends CallbackObservable<Va
     public isError(): this is Overwrite<this, {value: Extract<AsyncValue<Value>, Error>}> {
         return this.value instanceof Error;
     }
+
+    /**
+     * Checks if the current `.value` is resolved (and not an error) or still waiting. This type
+     * guards the current instance's `.value` property.
+     */
+    public isNotError(): this is Overwrite<this, {value: Exclude<AsyncValue<Value>, Error>}> {
+        return !(this.value instanceof Error);
+    }
 }
 
 /**
