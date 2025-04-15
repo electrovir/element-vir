@@ -727,7 +727,13 @@ describe('AsyncProp value type guards', () => {
 
         assert.tsType(myAsyncProp.value).equals<AsyncValue<string>>();
 
-        if (myAsyncProp.isSettled()) {
+        if (myAsyncProp.isNotError()) {
+            assert.tsType(myAsyncProp.value).equals<Promise<string> | string>();
+        } else if (myAsyncProp.isResolved()) {
+            assert.tsType(myAsyncProp.value).equals<string>();
+        } else if (myAsyncProp.isWaiting()) {
+            assert.tsType(myAsyncProp.value).equals<Promise<string>>();
+        } else if (myAsyncProp.isSettled()) {
             assert.tsType(myAsyncProp.value).equals<string | Error>();
         } else if (myAsyncProp.isError()) {
             assert.tsType(myAsyncProp.value).equals<Error>();

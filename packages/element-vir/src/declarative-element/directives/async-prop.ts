@@ -70,10 +70,7 @@ export class InternalAsyncPropClass<Value, Params> extends CallbackObservable<Va
      * Checks if the current `.value` has not settled yet settled (meaning it is still an unsettled
      * Promise). This type guards the current instance's `.value` property.
      */
-    public isWaiting(): this is Overwrite<
-        this,
-        {value: Extract<AsyncValue<Value>, Promise<any> | Error>}
-    > {
+    public isWaiting(): this is Overwrite<this, {value: Extract<AsyncValue<Value>, Promise<any>>}> {
         return this.value instanceof Promise;
     }
 
