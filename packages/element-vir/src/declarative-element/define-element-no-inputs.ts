@@ -350,6 +350,7 @@ export function defineElementNoInputs<
             }
             this.destroy();
             this._initCalled = false;
+            this._stateCalled = false;
         }
 
         // this is set below in Object.defineProperties
