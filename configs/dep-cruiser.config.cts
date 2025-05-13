@@ -1,5 +1,5 @@
 import {defineConfig} from '@virmator/deps/configs/dep-cruiser.config.base';
-import type {IConfiguration} from 'dependency-cruiser';
+import {type IConfiguration} from 'dependency-cruiser';
 
 const baseConfig = defineConfig({
     fileExceptions: {

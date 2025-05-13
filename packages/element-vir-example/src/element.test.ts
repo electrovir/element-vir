@@ -2,11 +2,11 @@ import {assert} from '@augment-vir/assert';
 import {randomString} from '@augment-vir/common';
 import {describe, it} from '@augment-vir/test';
 import {
-    DeclarativeElement,
-    DeclarativeElementDefinition,
-    EventDetail,
-    Observable,
-    TemplateResult,
+    type DeclarativeElement,
+    type DeclarativeElementDefinition,
+    type EventDetail,
+    type Observable,
+    type TemplateResult,
     TypedEvent,
     css,
     defineElement,

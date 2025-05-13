@@ -1,6 +1,6 @@
 import {assert} from '@augment-vir/assert';
 import {describe, it, testWeb} from '@augment-vir/test';
-import {HtmlSpecTagName, htmlSpecConstructorsByTagName} from 'html-spec-tags';
+import {type HtmlSpecTagName, htmlSpecConstructorsByTagName} from 'html-spec-tags';
 import {html} from '../template-transforms/vir-html/vir-html.js';
 
 describe('rendering', () => {

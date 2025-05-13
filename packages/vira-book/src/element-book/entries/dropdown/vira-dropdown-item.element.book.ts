@@ -1,5 +1,5 @@
 import {BookPageControlType, defineBookPage, definePageControl} from 'element-book';
-import {CSSResult, HTMLTemplateResult, css, html} from 'element-vir';
+import {type CSSResult, type HTMLTemplateResult, css, html} from 'element-vir';
 import {ViraDropdownItem} from 'vira';
 import {dropdownPage} from './vira-dropdown.book.js';
 

@@ -1,5 +1,5 @@
 import {getObjectTypedKeys} from '@augment-vir/common';
-import {TemplateResult, html} from 'element-vir';
+import {type TemplateResult, html} from 'element-vir';
 import {getAssertedValidColor} from '../styles/color.js';
 import {viraIconCssVars} from './icon-css-vars.js';
 

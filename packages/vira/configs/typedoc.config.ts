@@ -1,6 +1,6 @@
 import {baseTypedocConfig} from '@virmator/docs/configs/typedoc.config.base';
 import {join, resolve} from 'node:path';
-import type {TypeDocOptions} from 'typedoc';
+import {type TypeDocOptions} from 'typedoc';
 
 const repoRoot = resolve(import.meta.dirname, '..');
 const indexTsFile = join(repoRoot, 'src', 'index.ts');

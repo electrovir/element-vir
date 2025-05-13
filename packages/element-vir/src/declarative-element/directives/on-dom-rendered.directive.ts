@@ -1,5 +1,5 @@
-import {MaybePromise} from '@augment-vir/common';
-import {directive, Directive, PartInfo} from '../../lit-exports/all-lit-exports.js';
+import {type MaybePromise} from '@augment-vir/common';
+import {directive, Directive, type PartInfo} from '../../lit-exports/all-lit-exports.js';
 import {assertIsElementPartInfo} from './directive-helpers.js';
 
 /**
@@ -45,7 +45,7 @@ export const onDomRendered = directive(
             assertIsElementPartInfo(partInfo, directiveName);
         }
 
-        override update(partInfo: PartInfo, [callback]: [OnDomRenderedCallback]) {
+        public override update(partInfo: PartInfo, [callback]: [OnDomRenderedCallback]) {
             assertIsElementPartInfo(partInfo, directiveName);
             const element = partInfo.element;
             // use `requestAnimationFrame` here so it can fire property changes outside of a render loop
@@ -54,7 +54,7 @@ export const onDomRendered = directive(
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        render(callback: OnDomRenderedCallback) {
+        public render(callback: OnDomRenderedCallback) {
             return undefined;
         }
     },

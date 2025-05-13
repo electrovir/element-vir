@@ -1,8 +1,8 @@
-import {PartialWithUndefined} from '@augment-vir/common';
-import {RequireExactlyOne} from 'type-fest';
-import type {BookPage} from '../../../data/book-entry/book-page/book-page.js';
-import {ValidBookPaths} from '../../../routing/book-routing.js';
-import {GlobalValues} from './global-values.js';
+import {type PartialWithUndefined} from '@augment-vir/common';
+import {type RequireExactlyOne} from 'type-fest';
+import {type BookPage} from '../../../data/book-entry/book-page/book-page.js';
+import {type ValidBookPaths} from '../../../routing/book-routing.js';
+import {type GlobalValues} from './global-values.js';
 
 /**
  * Full configuration for an element-book app.

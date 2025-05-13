@@ -5,8 +5,8 @@ import {viraSrcDir} from '../repo-paths.js';
 import {generateExportsFromFilePaths, getExportableTsFilePaths} from './common/file-paths.js';
 import {
     NotUpToDateError,
-    UpdateExportsArgs,
-    UpdateExportsConfig,
+    type UpdateExportsArgs,
+    type UpdateExportsConfig,
     updateExportsMain,
     writeOrCheckGeneratedFile,
 } from './common/update-exports.js';

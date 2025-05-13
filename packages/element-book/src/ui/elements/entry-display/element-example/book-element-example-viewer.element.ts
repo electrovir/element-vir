@@ -1,8 +1,8 @@
 import {combineErrors, extractErrorMessage} from '@augment-vir/common';
 import {html, renderIf} from 'element-vir';
-import {BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
-import {BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls.js';
-import {BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
+import {type BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
+import {type BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls.js';
+import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
 import {unsetInternalState} from '../../../../data/unset.js';
 import {BookError} from '../../common/book-error.element.js';
 import {defineBookElement} from '../../define-book-element.js';

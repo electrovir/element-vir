@@ -1,6 +1,6 @@
 import {check} from '@augment-vir/assert';
 import {SpaRouter} from 'spa-router-vir';
-import {BookMainRoute, defaultBookFullRoute, ValidBookPaths} from './book-routing.js';
+import {BookMainRoute, defaultBookFullRoute, type ValidBookPaths} from './book-routing.js';
 
 export function createBookRouter(basePath: string | undefined) {
     return new SpaRouter<ValidBookPaths, undefined, undefined>({

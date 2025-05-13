@@ -1,4 +1,4 @@
-import {format as prettierFormat, Options as PrettierOptions} from 'prettier';
+import {format as prettierFormat, type Options as PrettierOptions} from 'prettier';
 // @ts-expect-error: ignore this import cause it's not typed. We're typing it here!
 // eslint-disable-next-line monorepo-cop/no-relative-import-outside-package
 import * as importedRepoConfig from '../../../../../prettier.config.mjs';

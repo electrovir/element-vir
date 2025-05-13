@@ -1,5 +1,5 @@
 import {assert} from '@augment-vir/assert';
-import {PartialWithUndefined} from '@augment-vir/common';
+import {type PartialWithUndefined} from '@augment-vir/common';
 import {NavController} from 'device-navigation';
 import {
     classMap,
@@ -11,7 +11,7 @@ import {
     renderIf,
     testId,
 } from 'element-vir';
-import {ViraIconSvg} from '../../icons/icon-svg.js';
+import {type ViraIconSvg} from '../../icons/icon-svg.js';
 import {ChevronUp24Icon} from '../../icons/index.js';
 import {viraBorders} from '../../styles/border.js';
 import {createFocusStyles, viraFocusCssVars} from '../../styles/focus.js';
@@ -27,7 +27,7 @@ import {
     HidePopUpEvent,
     NavSelectEvent,
     PopUpManager,
-    ShowPopUpResult,
+    type ShowPopUpResult,
 } from '../../util/pop-up-manager.js';
 import {defineViraElement} from '../define-vira-element.js';
 import {ViraIcon} from '../vira-icon.element.js';
@@ -37,7 +37,7 @@ import {
     filterToSelectedOptions,
     triggerPopUpState,
 } from './dropdown-helpers.js';
-import {ViraDropdownOption} from './vira-dropdown-item.element.js';
+import {type ViraDropdownOption} from './vira-dropdown-item.element.js';
 import {ViraDropdownOptions} from './vira-dropdown-options.element.js';
 
 /**

@@ -1,5 +1,5 @@
 import {css} from 'element-vir';
-import {ViraIconSvg} from '../icons/icon-svg.js';
+import {type ViraIconSvg} from '../icons/icon-svg.js';
 import {defineViraElement} from './define-vira-element.js';
 
 /**

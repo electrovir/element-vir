@@ -3,29 +3,33 @@ import {extractErrorMessage, makeWritable} from '@augment-vir/common';
 import {waitForAnimationFrame} from '@augment-vir/web';
 import {css, defineElement, defineElementEvent, html, listen} from 'element-vir';
 import {
-    ControlsWrapper,
+    type ControlsWrapper,
     createNewControls,
     updateTreeControls,
 } from '../../../data/book-entry/book-page/controls-wrapper.js';
 import {createBookTreeFromEntries} from '../../../data/book-tree/book-tree.js';
 import {searchFlattenedNodes} from '../../../data/book-tree/search-nodes.js';
-import {BookRouter, createBookRouter} from '../../../routing/book-router.js';
+import {type BookRouter, createBookRouter} from '../../../routing/book-router.js';
 import {
-    BookFullRoute,
+    type BookFullRoute,
     defaultBookFullRoute,
     extractSearchQuery,
 } from '../../../routing/book-routing.js';
-import {ColorTheme, colorThemeCssVars, setThemeCssVars} from '../../color-theme/color-theme.js';
-import {ThemeConfig, createTheme} from '../../color-theme/create-color-theme.js';
+import {
+    type ColorTheme,
+    colorThemeCssVars,
+    setThemeCssVars,
+} from '../../color-theme/color-theme.js';
+import {type ThemeConfig, createTheme} from '../../color-theme/create-color-theme.js';
 import {ChangeRouteEvent} from '../../events/change-route.event.js';
 import {BookNav, scrollSelectedNavElementIntoView} from '../book-nav/book-nav.element.js';
 import {BookError} from '../common/book-error.element.js';
 import {BookPageControls} from '../entry-display/book-page/book-page-controls.element.js';
 import {BookEntryDisplay} from '../entry-display/entry-display/book-entry-display.element.js';
 import {ElementBookSlotName} from './element-book-app-slots.js';
-import {ElementBookConfig} from './element-book-config.js';
+import {type ElementBookConfig} from './element-book-config.js';
 import {getCurrentNodes} from './get-current-nodes.js';
-import {GlobalValues} from './global-values.js';
+import {type GlobalValues} from './global-values.js';
 
 /**
  * Current color theme state used inside of {@link ElementBookApp}.

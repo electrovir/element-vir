@@ -1,14 +1,14 @@
 import {assert} from '@augment-vir/assert';
-import {MaybePromise, mapObjectValues} from '@augment-vir/common';
+import {type MaybePromise, mapObjectValues} from '@augment-vir/common';
 import {findOverflowAncestor} from '@augment-vir/web';
-import {Coords, NavController, NavDirection} from 'device-navigation';
+import {type Coords, type NavController, NavDirection} from 'device-navigation';
 import {listenToPageActivation} from 'page-active';
 import {
-    ExtractEventByType,
-    ExtractEventTypes,
-    ListenOptions,
+    type ExtractEventByType,
+    type ExtractEventTypes,
+    type ListenOptions,
     ListenTarget,
-    RemoveListenerCallback,
+    type RemoveListenerCallback,
     defineTypedCustomEvent,
     defineTypedEvent,
     listenToGlobal,

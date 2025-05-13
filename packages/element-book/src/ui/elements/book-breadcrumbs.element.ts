@@ -1,6 +1,6 @@
 import {css, html} from 'element-vir';
-import {BookRouter} from '../../routing/book-router.js';
-import {BookFullRoute, BookMainRoute} from '../../routing/book-routing.js';
+import {type BookRouter} from '../../routing/book-router.js';
+import {type BookFullRoute, BookMainRoute} from '../../routing/book-routing.js';
 import {BookRouteLink} from './common/book-route-link.element.js';
 import {defineBookElement} from './define-book-element.js';
 

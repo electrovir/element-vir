@@ -1,16 +1,16 @@
 import {check} from '@augment-vir/assert';
-import {Values} from '@augment-vir/common';
+import {type Values} from '@augment-vir/common';
 import {extractEventTarget} from '@augment-vir/web';
 import {css, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {Options24Icon, ViraIcon, ViraInput} from 'vira';
 import {
-    BookPageControl,
-    BookPageControlInit,
+    type BookPageControl,
+    type BookPageControlInit,
     BookPageControlType,
-    BookPageControlsValues,
+    type BookPageControlsValues,
     isControlInitType,
 } from '../../../../data/book-entry/book-page/book-page-controls.js';
-import {BookPage} from '../../../../data/book-entry/book-page/book-page.js';
+import {type BookPage} from '../../../../data/book-entry/book-page/book-page.js';
 import {colorThemeCssVars} from '../../../color-theme/color-theme.js';
 import {defineBookElement} from '../../define-book-element.js';
 

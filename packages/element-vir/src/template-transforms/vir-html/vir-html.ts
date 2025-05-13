@@ -1,7 +1,7 @@
 import {html as litHtml} from 'lit';
-import {HTMLTemplateResult} from '../../lit-exports/all-lit-exports.js';
+import {type HTMLTemplateResult} from '../../lit-exports/all-lit-exports.js';
 import {getTransformedTemplate} from '../transform-template.js';
-import {HtmlInterpolation, VerifyHtmlValues} from './html-interpolation.js';
+import {type HtmlInterpolation, type VerifyHtmlValues} from './html-interpolation.js';
 import {mapHtmlValues, transformHtmlTemplate} from './html-transform.js';
 
 /**

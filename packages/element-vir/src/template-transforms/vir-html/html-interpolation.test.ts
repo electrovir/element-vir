@@ -5,9 +5,9 @@ import {describe, it} from '@augment-vir/test';
 import {defineElementNoInputs} from '../../declarative-element/define-element-no-inputs.js';
 import {defineElement} from '../../declarative-element/define-element.js';
 import {renderIf} from '../../declarative-element/directives/render-if.directive.js';
-import {RenderCallback} from '../../declarative-element/render-callback.js';
+import {type RenderCallback} from '../../declarative-element/render-callback.js';
 import {classMap, ifDefined} from '../../lit-exports/all-lit-exports.js';
-import {DirectiveOutput, HtmlInterpolation} from './html-interpolation.js';
+import {type DirectiveOutput, type HtmlInterpolation} from './html-interpolation.js';
 import {html} from './vir-html.js';
 
 describe('HtmlInterpolation', () => {

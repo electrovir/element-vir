@@ -1,6 +1,6 @@
-import {BookEntryType} from '../data/book-entry/book-entry-type.js';
+import {type BookEntryType} from '../data/book-entry/book-entry-type.js';
 import {defineBookPage} from '../data/book-entry/book-page/define-book-page.js';
-import {BookTreeNode} from '../data/book-tree/book-tree-node.js';
+import {type BookTreeNode} from '../data/book-tree/book-tree-node.js';
 import {createBookTreeFromEntries} from '../data/book-tree/book-tree.js';
 
 const page1 = defineBookPage({

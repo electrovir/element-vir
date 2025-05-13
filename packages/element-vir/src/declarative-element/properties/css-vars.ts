@@ -1,7 +1,7 @@
-import {Values} from '@augment-vir/common';
-import {CssVarDefinitions, CssVarsSetup} from 'lit-css-vars';
-import {CustomElementTagName} from '../custom-tag-name.js';
-import {BaseCssPropertyName} from './css-properties.js';
+import {type Values} from '@augment-vir/common';
+import {type CssVarDefinitions, type CssVarsSetup} from 'lit-css-vars';
+import {type CustomElementTagName} from '../custom-tag-name.js';
+import {type BaseCssPropertyName} from './css-properties.js';
 
 /**
  * Base type for a declarative element definition's CSS vars.

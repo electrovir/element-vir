@@ -3,7 +3,7 @@ import {basename} from 'node:path';
 import {
     NotUpToDateError,
     parseUpdateExportsArgs,
-    UpdateExportsConfig,
+    type UpdateExportsConfig,
 } from './common/update-exports.js';
 import {updateIconExports} from './update-icon-exports.js';
 import {updateIndexExports} from './update-index-exports.js';

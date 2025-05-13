@@ -1,9 +1,9 @@
 import {check} from '@augment-vir/assert';
 import {getEnumValues, getObjectTypedKeys} from '@augment-vir/common';
 import {defineBookPage, type BookPage} from 'element-book';
-import {DeclarativeElementDefinition, html} from 'element-vir';
+import {html, type DeclarativeElementDefinition} from 'element-vir';
 import {HeadingLevel} from '../create-theme/theme-options.js';
-import {Theme} from '../create-theme/theme.js';
+import {type Theme} from '../create-theme/theme.js';
 
 export function createThemeBookPages<TagName extends string>(
     theme: Readonly<Theme<TagName>>,

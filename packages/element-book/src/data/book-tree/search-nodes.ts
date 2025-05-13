@@ -1,7 +1,7 @@
 import {check} from '@augment-vir/assert';
 import {randomString} from '@augment-vir/common';
 import {fuzzySearch} from '../../util/fuzzy-search.js';
-import {BookTreeNode} from './book-tree-node.js';
+import {type BookTreeNode} from './book-tree-node.js';
 
 const searchJoin = randomString(32);
 

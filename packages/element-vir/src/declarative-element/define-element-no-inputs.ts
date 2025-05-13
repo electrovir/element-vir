@@ -8,32 +8,32 @@ import {
     kebabCaseToCamelCase,
 } from '@augment-vir/common';
 import {defineCssVars} from 'lit-css-vars';
-import {MinimalDefinitionWithInputs} from '../template-transforms/minimal-element-definition.js';
+import {type MinimalDefinitionWithInputs} from '../template-transforms/minimal-element-definition.js';
 import {css} from '../template-transforms/vir-css/vir-css.js';
-import {CustomElementTagName} from './custom-tag-name.js';
-import {DeclarativeElementInit} from './declarative-element-init.js';
+import {type CustomElementTagName} from './custom-tag-name.js';
+import {type DeclarativeElementInit} from './declarative-element-init.js';
 import {
     DeclarativeElement,
-    DeclarativeElementDefinition,
-    StaticDeclarativeElementProperties,
+    type DeclarativeElementDefinition,
+    type StaticDeclarativeElementProperties,
 } from './declarative-element.js';
 import {
-    DeclarativeElementDefinitionOptions,
+    type DeclarativeElementDefinitionOptions,
     defaultDeclarativeElementDefinitionOptions,
 } from './definition-options.js';
 import {assignInputs} from './properties/assign-inputs.js';
-import {BaseCssPropertyName, assertValidCssProperties} from './properties/css-properties.js';
-import {CssVars} from './properties/css-vars.js';
+import {type BaseCssPropertyName, assertValidCssProperties} from './properties/css-properties.js';
+import {type CssVars} from './properties/css-vars.js';
 import {
-    EventDescriptorMap,
-    EventsInitMap,
+    type EventDescriptorMap,
+    type EventsInitMap,
     createEventDescriptorMap,
 } from './properties/element-events.js';
-import {PropertyInitMapBase} from './properties/element-properties.js';
-import {HostClassNamesMap, createHostClassNamesMap} from './properties/host-classes.js';
+import {type PropertyInitMapBase} from './properties/element-properties.js';
+import {type HostClassNamesMap, createHostClassNamesMap} from './properties/host-classes.js';
 import {bindReactiveProperty, createElementPropertyProxy} from './properties/property-proxy.js';
 import {applyHostClasses, createStylesCallbackInput} from './properties/styles.js';
-import {RenderParams, createRenderParams} from './render-callback.js';
+import {type RenderParams, createRenderParams} from './render-callback.js';
 import {createSlotNamesMap} from './slot-names.js';
 
 /**

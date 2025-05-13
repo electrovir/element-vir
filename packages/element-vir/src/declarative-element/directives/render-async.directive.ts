@@ -1,6 +1,6 @@
 import {check} from '@augment-vir/assert';
 import {extractErrorMessage} from '@augment-vir/common';
-import {AsyncProp} from './async-prop.js';
+import {type AsyncProp} from './async-prop.js';
 
 /**
  * Given a {@link AsyncProp} instance, call and return the output of the `resolutionRender` parameter

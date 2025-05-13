@@ -1,8 +1,8 @@
 import {AssertionError, check} from '@augment-vir/assert';
 import {getObjectTypedKeys, wrapInTry} from '@augment-vir/common';
 import {
-    DeclarativeElementDefinition,
-    StaticDeclarativeElementProperties,
+    type DeclarativeElementDefinition,
+    type StaticDeclarativeElementProperties,
 } from './declarative-element.js';
 
 const expectedStaticProperties = getObjectTypedKeys({

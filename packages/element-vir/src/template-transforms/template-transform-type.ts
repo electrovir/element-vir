@@ -1,4 +1,4 @@
-import {ArrayInsertion} from '../util/array.js';
+import {type ArrayInsertion} from '../util/array.js';
 
 export type AllValueTransforms = {
     valueIndexDeletions: number[];

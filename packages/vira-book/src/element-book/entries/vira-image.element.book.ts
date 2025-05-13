@@ -1,6 +1,6 @@
 import {randomString} from '@augment-vir/common';
 import {defineBookPage} from 'element-book';
-import {CSSResult, TemplateResult, css, html, listen} from 'element-vir';
+import {type CSSResult, type TemplateResult, css, html, listen} from 'element-vir';
 import {LoaderAnimated24Icon, StatusFailure24Icon, ViraIcon, ViraImage} from 'vira';
 import {elementsBookPage} from '../elements.book.js';
 

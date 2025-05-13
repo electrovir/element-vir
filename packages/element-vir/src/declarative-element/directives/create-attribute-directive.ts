@@ -1,4 +1,4 @@
-import {directive, Directive, noChange, PartInfo} from '../../lit-exports/all-lit-exports.js';
+import {directive, Directive, noChange, type PartInfo} from '../../lit-exports/all-lit-exports.js';
 import {extractElement} from './directive-helpers.js';
 
 /**
@@ -18,7 +18,7 @@ export function createAttributeDirective(attributeName: string) {
                 this.element = extractElement(partInfo, attributeName);
             }
 
-            render(attributeValue: string) {
+            public render(attributeValue: string) {
                 this.element.setAttribute(attributeName, attributeValue);
                 return noChange;
             }

@@ -1,6 +1,6 @@
-import {ArrayInsertion, insertAndRemoveValues} from '../util/array.js';
+import {type ArrayInsertion, insertAndRemoveValues} from '../util/array.js';
 import {getAlreadyMappedTemplate, setMappedTemplate} from './nested-mapped-templates.js';
-import {AllValueTransforms, TemplateTransform} from './template-transform-type.js';
+import {type AllValueTransforms, type TemplateTransform} from './template-transform-type.js';
 
 export type ValueInsertion = {
     index: number;

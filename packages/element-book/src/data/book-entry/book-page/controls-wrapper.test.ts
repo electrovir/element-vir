@@ -1,5 +1,5 @@
 import {describe, itCases} from '@augment-vir/test';
-import {ControlsWrapper, createNewControls, traverseControls} from './controls-wrapper.js';
+import {type ControlsWrapper, createNewControls, traverseControls} from './controls-wrapper.js';
 
 const exampleControls = {
     children: {

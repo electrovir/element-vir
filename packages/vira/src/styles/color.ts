@@ -1,6 +1,6 @@
 import {stringify} from '@augment-vir/common';
-import {Format} from 'colorjs.io/types/src/space';
-import {Color, ColorTypes} from '../re-exports/colorjs-io.js';
+import {type Format} from 'colorjs.io/types/src/space';
+import {Color, type ColorTypes} from '../re-exports/colorjs-io.js';
 
 /**
  * Asserts that the given color type is valid.

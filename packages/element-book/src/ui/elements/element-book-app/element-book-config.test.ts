@@ -1,6 +1,6 @@
 import {describe, it} from '@augment-vir/test';
 import {BookMainRoute} from '../../../routing/book-routing.js';
-import {ElementBookConfig} from './element-book-config.js';
+import {type ElementBookConfig} from './element-book-config.js';
 
 describe('ElementBookConfig', () => {
     function acceptsElementBookConfig(input: ElementBookConfig) {}

@@ -1,5 +1,5 @@
-import type {Overwrite} from '@augment-vir/common';
-import {CallbackObservable, CallbackObservableInit, type AsyncValue} from 'observavir';
+import {type Overwrite} from '@augment-vir/common';
+import {CallbackObservable, type AsyncValue, type CallbackObservableInit} from 'observavir';
 
 export type {AsyncValue} from 'observavir';
 

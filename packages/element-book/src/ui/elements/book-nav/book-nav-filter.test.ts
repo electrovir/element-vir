@@ -1,7 +1,7 @@
 import {ensureType} from '@augment-vir/common';
 import {describe, itCases} from '@augment-vir/test';
-import {BookEntryType} from '../../../data/book-entry/book-entry-type.js';
-import {BookTreeNode} from '../../../data/book-tree/book-tree-node.js';
+import {type BookEntryType} from '../../../data/book-entry/book-entry-type.js';
+import {type BookTreeNode} from '../../../data/book-tree/book-tree-node.js';
 import {treeExample} from '../../../test/example-tree.test-helper.js';
 import {shouldShowTreeNodeInNav} from './book-nav-filter.js';
 

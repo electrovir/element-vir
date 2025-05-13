@@ -1,9 +1,9 @@
 import {omitObjectKeys} from '@augment-vir/common';
 import {css, html} from 'element-vir';
-import {BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
-import {BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls.js';
-import {BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
-import {BookRouter} from '../../../../routing/book-router.js';
+import {type BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
+import {type BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls.js';
+import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
+import {type BookRouter} from '../../../../routing/book-router.js';
 import {colorThemeCssVars} from '../../../color-theme/color-theme.js';
 import {defineBookElement} from '../../define-book-element.js';
 import {BookElementExampleControls} from './book-element-example-controls.element.js';

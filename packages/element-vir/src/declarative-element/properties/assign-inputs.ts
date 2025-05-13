@@ -1,5 +1,5 @@
 import {getObjectTypedKeys} from '@augment-vir/common';
-import {DeclarativeElement} from '../declarative-element.js';
+import {type DeclarativeElement} from '../declarative-element.js';
 
 export function assignInputs(element: Element, inputs: object): void {
     const instanceState = (element as Partial<DeclarativeElement>).instanceState;

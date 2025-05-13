@@ -1,4 +1,4 @@
-import {ThemeOptions} from './theme-options.js';
+import {type ThemeOptions} from './theme-options.js';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type InternalTheme = {};

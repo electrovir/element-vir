@@ -3,7 +3,7 @@ import {DeferredPromise} from '@augment-vir/common';
 import {describe, it, testWeb} from '@augment-vir/test';
 import {extractElementText} from '@augment-vir/web';
 import {
-    AsyncValue,
+    type AsyncValue,
     asyncProp,
     defineElement,
     defineElementEvent,

@@ -1,9 +1,9 @@
-import {PartialWithUndefined, mapObjectValues} from '@augment-vir/common';
+import {type PartialWithUndefined, mapObjectValues} from '@augment-vir/common';
 import Color from 'colorjs.io';
-import {CSSResult, unsafeCSS} from 'element-vir';
-import {RequireExactlyOne} from 'type-fest';
-import {NestedType} from '../../util/type.js';
-import {ColorTheme} from './color-theme.js';
+import {type CSSResult, unsafeCSS} from 'element-vir';
+import {type RequireExactlyOne} from 'type-fest';
+import {type NestedType} from '../../util/type.js';
+import {type ColorTheme} from './color-theme.js';
 
 // as cast because colorjs.io's types for itself are wrong
 type FixedColor = Color & {

@@ -8,8 +8,8 @@ import {readDirRecursive, toPosixPath} from '@augment-vir/node';
 import {basename, dirname, join, relative} from 'node:path';
 import {viraSrcDir} from '../repo-paths.js';
 import {
-    UpdateExportsArgs,
-    UpdateExportsConfig,
+    type UpdateExportsArgs,
+    type UpdateExportsConfig,
     updateExportsMain,
     writeOrCheckGeneratedFile,
 } from './common/update-exports.js';

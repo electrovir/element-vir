@@ -1,4 +1,4 @@
-import {CustomElementTagName} from '../custom-tag-name.js';
+import {type CustomElementTagName} from '../custom-tag-name.js';
 
 /**
  * Base requirement for all CSS property names (like CSS var names).

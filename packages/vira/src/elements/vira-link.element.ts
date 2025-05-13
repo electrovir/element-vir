@@ -1,7 +1,7 @@
-import type {PartialWithUndefined} from '@augment-vir/common';
+import {type PartialWithUndefined} from '@augment-vir/common';
 import {css, html, ifDefined, listen} from 'element-vir';
-import {SpaRoute, SpaRouter} from 'spa-router-vir';
-import {RequireExactlyOne} from 'type-fest';
+import {type SpaRoute, type SpaRouter} from 'spa-router-vir';
+import {type RequireExactlyOne} from 'type-fest';
 import {defineViraElement} from './define-vira-element.js';
 
 /**

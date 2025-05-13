@@ -1,5 +1,11 @@
 import {defineBookPage} from 'element-book';
-import {HTMLTemplateResult, css, defineElement, defineElementNoInputs, html} from 'element-vir';
+import {
+    type HTMLTemplateResult,
+    css,
+    defineElement,
+    defineElementNoInputs,
+    html,
+} from 'element-vir';
 
 const VirTestMultipleSlots = defineElementNoInputs({
     tagName: 'vir-test-multiple-slots',

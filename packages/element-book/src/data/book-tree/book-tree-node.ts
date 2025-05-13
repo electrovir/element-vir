@@ -1,6 +1,6 @@
-import {Values} from '@augment-vir/common';
-import {AnyBookEntryType, BookEntryType} from '../book-entry/book-entry-type.js';
-import {BookEntry} from '../book-entry/book-entry.js';
+import {type Values} from '@augment-vir/common';
+import {type AnyBookEntryType, type BookEntryType} from '../book-entry/book-entry-type.js';
+import {type BookEntry} from '../book-entry/book-entry.js';
 
 /**
  * Property used to mark tree nodes.

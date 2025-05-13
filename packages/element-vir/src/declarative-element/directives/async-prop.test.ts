@@ -7,7 +7,7 @@ import {html} from '../../template-transforms/vir-html/vir-html.js';
 import {defineElementNoInputs} from '../define-element-no-inputs.js';
 import {defineElement} from '../define-element.js';
 import {defineElementEvent} from '../properties/element-events.js';
-import {AsyncProp, AsyncValue, asyncProp} from './async-prop.js';
+import {type AsyncProp, type AsyncValue, asyncProp} from './async-prop.js';
 import {listen} from './listen.directive.js';
 import {renderAsync} from './render-async.directive.js';
 

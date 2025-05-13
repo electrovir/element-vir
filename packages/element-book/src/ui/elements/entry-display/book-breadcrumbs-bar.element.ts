@@ -1,7 +1,11 @@
 import {wait} from '@augment-vir/common';
 import {css, html, listen, renderIf} from 'element-vir';
-import {BookRouter} from '../../../routing/book-router.js';
-import {BookFullRoute, BookMainRoute, defaultBookFullRoute} from '../../../routing/book-routing.js';
+import {type BookRouter} from '../../../routing/book-router.js';
+import {
+    type BookFullRoute,
+    BookMainRoute,
+    defaultBookFullRoute,
+} from '../../../routing/book-routing.js';
 import {colorThemeCssVars} from '../../color-theme/color-theme.js';
 import {ChangeRouteEvent} from '../../events/change-route.event.js';
 import {BookBreadcrumbs} from '../book-breadcrumbs.element.js';

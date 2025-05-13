@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-vir-mono-repo",
-    "version": "25.3.0",
+    "version": "25.3.1",
     "private": true,
     "repository": {
         "type": "git",
@@ -30,6 +30,10 @@
         "test:lint": "virmator lint",
         "test:spelling": "virmator spellcheck",
         "test:update": "mono-vir for-each-async npm run test:update"
+    },
+    "overrides": {
+        "@web/dev-server-rollup": "0.6.1",
+        "playwright": "1.46.1"
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3.3.1",
@@ -65,9 +69,5 @@
     },
     "engines": {
         "node": ">=22"
-    },
-    "overrides": {
-        "playwright": "1.46.1",
-        "@web/dev-server-rollup": "0.6.1"
     }
 }

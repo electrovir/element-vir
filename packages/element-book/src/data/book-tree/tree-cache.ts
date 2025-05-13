@@ -1,6 +1,6 @@
 import {getOrSetFromMap} from '@augment-vir/common';
-import {BookEntry} from '../book-entry/book-entry.js';
-import {BookTree} from './book-tree-node.js';
+import {type BookEntry} from '../book-entry/book-entry.js';
+import {type BookTree} from './book-tree-node.js';
 
 const treeCache = new Map<ReadonlyArray<BookEntry>, BookTree>();
 

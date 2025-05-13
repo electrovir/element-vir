@@ -1,4 +1,4 @@
-import {NonEmptyString} from '../util/type.js';
+import {type NonEmptyString} from '../util/type.js';
 
 /**
  * A custom event with strict types for details and the event's `type` property.

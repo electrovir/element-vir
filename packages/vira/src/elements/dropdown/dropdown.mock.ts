@@ -1,4 +1,4 @@
-import {ViraDropdownOption} from './vira-dropdown-item.element.js';
+import {type ViraDropdownOption} from './vira-dropdown-item.element.js';
 
 export const mockOptions = [
     {

@@ -1,12 +1,16 @@
-import {MaybePromise} from '@augment-vir/common';
+import {type MaybePromise} from '@augment-vir/common';
 import {
     directive,
     Directive,
-    DirectiveResult,
+    type DirectiveResult,
     noChange,
-    PartInfo,
+    type PartInfo,
 } from '../../lit-exports/all-lit-exports.js';
-import {DefinedTypedEvent, defineTypedEvent, TypedEvent} from '../../typed-event/typed-event.js';
+import {
+    type DefinedTypedEvent,
+    defineTypedEvent,
+    type TypedEvent,
+} from '../../typed-event/typed-event.js';
 import {extractElement} from './directive-helpers.js';
 
 /** We don't care at all what this returns, just allow anything! */
@@ -173,7 +177,7 @@ const listenDirective = directive(
             };
         }
 
-        render(
+        public render(
             eventTypeInput: {type: string} | string,
             callback: PossibleListenerCallbacks<any, any, any>,
         ) {

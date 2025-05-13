@@ -1,5 +1,5 @@
 import {
-    BookPage,
+    type BookPage,
     BookPageControlType,
     defineBookPage,
     defineBookPageWithGlobals,

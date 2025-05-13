@@ -1,6 +1,6 @@
 import {joinWithFinalConjunction} from '@augment-vir/common';
-import {PopUpManager, ShowPopUpResult} from '../../util/pop-up-manager.js';
-import {ViraDropdownOption} from './vira-dropdown-item.element.js';
+import {type PopUpManager, type ShowPopUpResult} from '../../util/pop-up-manager.js';
+import {type ViraDropdownOption} from './vira-dropdown-item.element.js';
 
 /**
  * Filters an array of {@link ViraDropdownOption} based on the given selection.

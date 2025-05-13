@@ -1,7 +1,7 @@
 import {css, html, listen} from 'element-vir';
 import {shouldClickEventTriggerRouteChange} from 'spa-router-vir';
-import {BookRouter} from '../../../routing/book-router.js';
-import {BookFullRoute} from '../../../routing/book-routing.js';
+import {type BookRouter} from '../../../routing/book-router.js';
+import {type BookFullRoute} from '../../../routing/book-routing.js';
 import {ChangeRouteEvent} from '../../events/change-route.event.js';
 import {defineBookElement} from '../define-book-element.js';
 

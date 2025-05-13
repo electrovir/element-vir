@@ -18,16 +18,16 @@ declare class RepeatDirective extends Directive {
     constructor(partInfo: PartInfo);
     private _getValuesAndKeys;
     /** Renders the repeated templates. */
-    render<T>(items: Iterable<T>, template: ItemTemplate<T>): Array<HtmlInterpolation>;
+    public render<T>(items: Iterable<T>, template: ItemTemplate<T>): Array<HtmlInterpolation>;
     /** Renders the repeated templates. */
-    render<T>(
+    public render<T>(
         items: Iterable<T>,
         keyFn: KeyFn<T> | ItemTemplate<T>,
         template: ItemTemplate<T>,
     ): Array<HtmlInterpolation>;
 
     /** Updates the repeated templates. */
-    update<T>(
+    public update<T>(
         containerPart: ChildPart,
         [
             items,

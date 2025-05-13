@@ -1,4 +1,4 @@
-import {ArrayElement} from '@augment-vir/common';
+import {type ArrayElement} from '@augment-vir/common';
 
 /**
  * Type safe mapping of slot names to themselves.

@@ -1,13 +1,13 @@
 import {combineErrors} from '@augment-vir/common';
 import {css, html} from 'element-vir';
-import {BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
+import {type BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
 import {
-    ControlsWrapper,
+    type ControlsWrapper,
     traverseControls,
 } from '../../../../data/book-entry/book-page/controls-wrapper.js';
-import {BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
-import {BookRouter} from '../../../../routing/book-router.js';
-import {BookMainRoute, ValidBookPaths} from '../../../../routing/book-routing.js';
+import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
+import {type BookRouter} from '../../../../routing/book-router.js';
+import {BookMainRoute, type ValidBookPaths} from '../../../../routing/book-routing.js';
 import {BookError} from '../../common/book-error.element.js';
 import {BookRouteLink} from '../../common/book-route-link.element.js';
 import {defineBookElement} from '../../define-book-element.js';

@@ -1,6 +1,6 @@
 import {assert, assertWrap, check} from '@augment-vir/assert';
-import type {MaybePromise} from '@augment-vir/common';
-import {directive, Directive, PartInfo} from '../../lit-exports/all-lit-exports.js';
+import {type MaybePromise} from '@augment-vir/common';
+import {directive, Directive, type PartInfo} from '../../lit-exports/all-lit-exports.js';
 import {assertIsElementPartInfo} from './directive-helpers.js';
 
 const directiveName = 'onIntersect';
@@ -59,10 +59,10 @@ export type OnIntersectOptions = IntersectionObserverInit;
  */
 export const onIntersect = directive(
     class extends Directive {
-        element: Element | undefined;
-        options: OnIntersectOptions | undefined;
-        intersectionObserver: undefined | IntersectionObserver;
-        callback: OnIntersectCallback | undefined;
+        public element: Element | undefined;
+        public options: OnIntersectOptions | undefined;
+        public intersectionObserver: undefined | IntersectionObserver;
+        public callback: OnIntersectCallback | undefined;
 
         constructor(partInfo: PartInfo) {
             super(partInfo);
@@ -70,7 +70,7 @@ export const onIntersect = directive(
             assertIsElementPartInfo(partInfo, directiveName);
         }
 
-        fireCallback(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
+        public fireCallback(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
             assert.isLengthAtLeast(entries, 1);
 
             void this.callback?.({
@@ -81,7 +81,7 @@ export const onIntersect = directive(
             });
         }
 
-        override update(
+        public override update(
             partInfo: PartInfo,
             [
                 options,
@@ -132,7 +132,7 @@ export const onIntersect = directive(
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        render(options: OnIntersectOptions, callback: OnIntersectCallback) {
+        public render(options: OnIntersectOptions, callback: OnIntersectCallback) {
             return undefined;
         }
     },

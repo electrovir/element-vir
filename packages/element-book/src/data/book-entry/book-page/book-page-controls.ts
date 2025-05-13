@@ -1,4 +1,4 @@
-import type {EmptyObject} from 'type-fest';
+import {type EmptyObject} from 'type-fest';
 
 /**
  * Adds a control to an element-book page.

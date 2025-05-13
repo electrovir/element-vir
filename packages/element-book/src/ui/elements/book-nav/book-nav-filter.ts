@@ -1,6 +1,6 @@
 import {check} from '@augment-vir/assert';
 import {BookEntryType} from '../../../data/book-entry/book-entry-type.js';
-import {BookTreeNode} from '../../../data/book-tree/book-tree-node.js';
+import {type BookTreeNode} from '../../../data/book-tree/book-tree-node.js';
 
 export function shouldShowTreeNodeInNav(
     currentNode: Readonly<BookTreeNode>,

@@ -1,6 +1,6 @@
 import {assert} from '@augment-vir/assert';
 import {describe, it} from '@augment-vir/test';
-import {Increment, type Decrement} from './increment.js';
+import {type Decrement, type Increment} from './increment.js';
 
 describe('Increment', () => {
     it('increments', () => {

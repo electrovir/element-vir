@@ -1,18 +1,18 @@
 import {check} from '@augment-vir/assert';
 import {mapObjectValues} from '@augment-vir/common';
-import {HTMLTemplateResult, HtmlInterpolation, html, nothing, repeat} from 'element-vir';
+import {type HTMLTemplateResult, type HtmlInterpolation, html, nothing, repeat} from 'element-vir';
 import {BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
 import {
-    BookPageControlsInitBase,
-    BookPageControlsValues,
+    type BookPageControlsInitBase,
+    type BookPageControlsValues,
 } from '../../../../data/book-entry/book-page/book-page-controls.js';
 import {
-    ControlsWrapper,
+    type ControlsWrapper,
     traverseControls,
 } from '../../../../data/book-entry/book-page/controls-wrapper.js';
-import {BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
+import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
 import {isBookTreeNode, traverseToImmediateParent} from '../../../../data/book-tree/book-tree.js';
-import {BookRouter} from '../../../../routing/book-router.js';
+import {type BookRouter} from '../../../../routing/book-router.js';
 import {BookError} from '../../common/book-error.element.js';
 import {BookPageControls} from '../book-page/book-page-controls.element.js';
 import {BookPageWrapper} from '../book-page/book-page-wrapper.element.js';

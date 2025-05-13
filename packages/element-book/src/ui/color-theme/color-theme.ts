@@ -1,7 +1,7 @@
 import {check} from '@augment-vir/assert';
-import {CSSResult} from 'element-vir';
-import {SingleCssVarDefinition, defineCssVars, setCssVarValue} from 'lit-css-vars';
-import {NestedType} from '../../util/type.js';
+import {type CSSResult} from 'element-vir';
+import {type SingleCssVarDefinition, defineCssVars, setCssVarValue} from 'lit-css-vars';
+import {type NestedType} from '../../util/type.js';
 
 /**
  * A single background and foreground color pairing.

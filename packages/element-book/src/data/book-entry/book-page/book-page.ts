@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 
-import {Overwrite, SetOptionalAndNullable} from '@augment-vir/common';
+import {type Overwrite, type SetOptionalAndNullable} from '@augment-vir/common';
 import {
-    CSSResult,
-    HtmlInterpolation,
-    PropertyInitMapBase,
-    RenderParams,
-    TypedEvent,
+    type CSSResult,
+    type HtmlInterpolation,
+    type PropertyInitMapBase,
+    type RenderParams,
+    type TypedEvent,
 } from 'element-vir';
-import {GlobalValues} from '../../../ui/elements/element-book-app/global-values.js';
-import {BaseBookEntry} from '../base-book-entry.js';
-import {BookEntryType} from '../book-entry-type.js';
-import {BookPageControlsInitBase, ControlsToValues} from './book-page-controls.js';
+import {type GlobalValues} from '../../../ui/elements/element-book-app/global-values.js';
+import {type BaseBookEntry} from '../base-book-entry.js';
+import {type BookEntryType} from '../book-entry-type.js';
+import {type BookPageControlsInitBase, type ControlsToValues} from './book-page-controls.js';
 
 /**
  * An individual element-book page.

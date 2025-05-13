@@ -1,5 +1,5 @@
 import {
-    HtmlInterpolation,
+    type HtmlInterpolation,
     css,
     defineElement,
     defineElementNoInputs,

@@ -1,12 +1,12 @@
 import {assert} from '@augment-vir/assert';
 import {describe, it, testWeb} from '@augment-vir/test';
 import {
-    BaseCssPropertyName,
-    CustomElementTagName,
+    type BaseCssPropertyName,
+    type CustomElementTagName,
     DeclarativeElement,
-    EventsInitMap,
-    PropertyInitMapBase,
-    StaticDeclarativeElementProperties,
+    type EventsInitMap,
+    type PropertyInitMapBase,
+    type StaticDeclarativeElementProperties,
     defineElementEvent,
     defineElementNoInputs,
     html,

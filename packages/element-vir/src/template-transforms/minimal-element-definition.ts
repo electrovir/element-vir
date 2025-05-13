@@ -1,6 +1,6 @@
 import {check} from '@augment-vir/assert';
-import {DeclarativeElementDefinitionOptions} from '../declarative-element/definition-options.js';
-import {PropertyInitMapBase} from '../declarative-element/properties/element-properties.js';
+import {type DeclarativeElementDefinitionOptions} from '../declarative-element/definition-options.js';
+import {type PropertyInitMapBase} from '../declarative-element/properties/element-properties.js';
 
 /**
  * A minimal element definition used for interpolating element definitions into HTML templates with

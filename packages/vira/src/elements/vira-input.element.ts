@@ -1,5 +1,5 @@
 import {
-    TemplateResult,
+    type TemplateResult,
     css,
     defineElementEvent,
     html,
@@ -8,7 +8,7 @@ import {
     renderIf,
 } from 'element-vir';
 import {CloseX24Icon} from '../icons/icon-svgs/close-x-24.icon.js';
-import {EyeClosed24Icon, EyeOpen24Icon, ViraIconSvg} from '../icons/index.js';
+import {EyeClosed24Icon, EyeOpen24Icon, type ViraIconSvg} from '../icons/index.js';
 import {createFocusStyles, viraFocusCssVars} from '../styles/focus.js';
 import {
     noUserSelect,
@@ -19,7 +19,7 @@ import {
 import {noNativeFormStyles} from '../styles/native-styles.js';
 import {defineViraElement} from './define-vira-element.js';
 import {
-    SharedTextInputElementInputs,
+    type SharedTextInputElementInputs,
     filterTextInputValue,
     textInputListener,
 } from './shared-text-input-logic.js';

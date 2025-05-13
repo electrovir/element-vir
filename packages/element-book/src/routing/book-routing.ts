@@ -1,4 +1,4 @@
-import {FullSpaRoute} from 'spa-router-vir';
+import {type FullSpaRoute} from 'spa-router-vir';
 
 /**
  * Top level routes supported by the element-book app.

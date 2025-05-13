@@ -1,7 +1,7 @@
 import {check} from '@augment-vir/assert';
 import {BookPageControlType, defineBookPage, definePageControl} from 'element-book';
-import {CSSResult, css, html, listen} from 'element-vir';
-import {Element24Icon, ViraDropdown, ViraDropdownOption, allIconsByName} from 'vira';
+import {type CSSResult, css, html, listen} from 'element-vir';
+import {Element24Icon, ViraDropdown, type ViraDropdownOption, allIconsByName} from 'vira';
 import {dropdownPage} from './vira-dropdown.book.js';
 
 const exampleDropdownOptions: ReadonlyArray<Readonly<ViraDropdownOption>> = [

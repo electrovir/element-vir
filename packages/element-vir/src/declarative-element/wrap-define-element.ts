@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 
-import {PartialWithNullable} from '@augment-vir/common';
-import {CustomElementTagName} from './custom-tag-name.js';
-import {DeclarativeElementInit} from './declarative-element-init.js';
+import {type PartialWithNullable} from '@augment-vir/common';
+import {type CustomElementTagName} from './custom-tag-name.js';
+import {type DeclarativeElementInit} from './declarative-element-init.js';
 import {defineElementNoInputs} from './define-element-no-inputs.js';
-import {DeclarativeElementInputErrorParams, defineElement} from './define-element.js';
-import {BaseCssPropertyName} from './properties/css-properties.js';
-import {EventsInitMap} from './properties/element-events.js';
-import {PropertyInitMapBase} from './properties/element-properties.js';
+import {type DeclarativeElementInputErrorParams, defineElement} from './define-element.js';
+import {type BaseCssPropertyName} from './properties/css-properties.js';
+import {type EventsInitMap} from './properties/element-events.js';
+import {type PropertyInitMapBase} from './properties/element-properties.js';
 
 /**
  * Options for {@link wrapDefineElement}.

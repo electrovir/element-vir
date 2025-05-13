@@ -5,7 +5,7 @@ import {html} from 'element-vir';
 import {defineBookPage} from '../../../data/book-entry/book-page/define-book-page.js';
 import {BookError} from '../common/book-error.element.js';
 import {ElementBookApp} from './element-book-app.element.js';
-import {ElementBookConfig} from './element-book-config.js';
+import {type ElementBookConfig} from './element-book-config.js';
 
 describe(ElementBookApp.tagName, () => {
     async function setupPagesTest(pages: ElementBookConfig['pages']) {

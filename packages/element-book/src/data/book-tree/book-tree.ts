@@ -1,9 +1,9 @@
 import {check} from '@augment-vir/assert';
 import {BookEntryType} from '../book-entry/book-entry-type.js';
-import {BookEntry, isBookEntry} from '../book-entry/book-entry.js';
+import {type BookEntry, isBookEntry} from '../book-entry/book-entry.js';
 import {listUrlBreadcrumbs, titleToUrlBreadcrumb} from '../book-entry/url-breadcrumbs.js';
 import {bookEntryVerifiers} from '../book-entry/verify-book-entry.js';
-import {BookTree, BookTreeNode, isBookTreeNodeMarker} from './book-tree-node.js';
+import {type BookTree, type BookTreeNode, isBookTreeNodeMarker} from './book-tree-node.js';
 import {addTreeToCache, getTreeFromCache} from './tree-cache.js';
 
 export function doesNodeHaveEntryType<const EntryType extends BookEntryType>(

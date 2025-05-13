@@ -1,4 +1,9 @@
-import {ChildPart, ElementPartInfo, PartInfo, PartType} from '../../lit-exports/all-lit-exports.js';
+import {
+    type ChildPart,
+    type ElementPartInfo,
+    type PartInfo,
+    PartType,
+} from '../../lit-exports/all-lit-exports.js';
 
 /**
  * The full type for `ElementPartInfo` because `lit`'s built-in type leaves out of most of its

@@ -1,4 +1,4 @@
-import {BookEntryType} from './book-entry-type.js';
+import {type BookEntryType} from './book-entry-type.js';
 
 /**
  * Base properties for all book entry types.

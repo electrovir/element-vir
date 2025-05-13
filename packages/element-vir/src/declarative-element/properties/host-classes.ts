@@ -1,8 +1,8 @@
 import {mapObjectValues} from '@augment-vir/common';
-import {CustomElementTagName} from '../custom-tag-name.js';
-import {BaseCssPropertyName} from './css-properties.js';
-import {PropertyInitMapBase} from './element-properties.js';
-import {WithTagName} from './tag-name.js';
+import {type CustomElementTagName} from '../custom-tag-name.js';
+import {type BaseCssPropertyName} from './css-properties.js';
+import {type PropertyInitMapBase} from './element-properties.js';
+import {type WithTagName} from './tag-name.js';
 
 /**
  * Base init map for defining host classes in an element definition.

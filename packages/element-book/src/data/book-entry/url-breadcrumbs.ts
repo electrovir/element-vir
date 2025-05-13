@@ -1,5 +1,5 @@
 import {collapseWhiteSpace} from '@augment-vir/common';
-import {BookEntry} from './book-entry.js';
+import {type BookEntry} from './book-entry.js';
 
 /**
  * Create a list of URL breadcrumbs for the given element-book entry.

@@ -1,6 +1,6 @@
 import {mapObjectValues} from '@augment-vir/common';
 import {BookPageControlType, defineBookPage} from 'element-book';
-import {CSSResult, css, html, listen} from 'element-vir';
+import {type CSSResult, css, html, listen} from 'element-vir';
 import {Element24Icon, ViraInput, ViraInputType} from 'vira';
 import {elementsBookPage} from '../elements.book.js';
 

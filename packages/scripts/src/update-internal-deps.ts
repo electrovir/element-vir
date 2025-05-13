@@ -1,4 +1,4 @@
-import {NpmWorkspace, queryNpmWorkspace, readPackageJson} from '@augment-vir/node';
+import {type NpmWorkspace, queryNpmWorkspace, readPackageJson} from '@augment-vir/node';
 import {readFile, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {monoRepoRootDir} from './repo-paths.js';

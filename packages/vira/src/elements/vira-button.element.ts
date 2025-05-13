@@ -1,5 +1,5 @@
 import {css, html} from 'element-vir';
-import {ViraIconSvg} from '../icons/index.js';
+import {type ViraIconSvg} from '../icons/index.js';
 import {viraBorders} from '../styles/border.js';
 import {viraDisabledStyles} from '../styles/disabled.js';
 import {viraAnimationDurations} from '../styles/durations.js';

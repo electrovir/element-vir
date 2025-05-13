@@ -1,5 +1,5 @@
 import {describe, it} from '@augment-vir/test';
-import {NonEmptyString} from './type.js';
+import {type NonEmptyString} from './type.js';
 
 describe('nonEmptyString', () => {
     it('should ensure type safety', () => {

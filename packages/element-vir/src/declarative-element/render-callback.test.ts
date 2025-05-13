@@ -1,11 +1,11 @@
 /* eslint-disable sonarjs/constructor-for-side-effects */
 import {assert} from '@augment-vir/assert';
 import {describe, it} from '@augment-vir/test';
-import {SingleCssVarDefinition} from 'lit-css-vars';
+import {type SingleCssVarDefinition} from 'lit-css-vars';
 import {
-    AsyncProp,
+    type AsyncProp,
     Observable,
-    RenderCallback,
+    type RenderCallback,
     TypedEvent,
     asyncProp,
     createEventDescriptorMap,

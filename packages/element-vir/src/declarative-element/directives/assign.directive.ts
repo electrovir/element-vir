@@ -1,13 +1,13 @@
-import type {EmptyObject} from 'type-fest';
+import {type EmptyObject} from 'type-fest';
 import {
     directive,
     Directive,
-    DirectiveResult,
+    type DirectiveResult,
     noChange,
-    PartInfo,
+    type PartInfo,
 } from '../../lit-exports/all-lit-exports.js';
 import {assignInputs} from '../properties/assign-inputs.js';
-import {PropertyInitMapBase} from '../properties/element-properties.js';
+import {type PropertyInitMapBase} from '../properties/element-properties.js';
 import {extractElement} from './directive-helpers.js';
 
 export type ElementDefinitionWithInputsType<
@@ -78,7 +78,7 @@ const assignDirective = directive(
             this.element = extractElement(partInfo, 'assign');
         }
 
-        render(
+        public render(
             elementDefinition: ElementDefinitionWithInputsType | undefined,
             inputsObject: Record<PropertyKey, unknown>,
         ) {

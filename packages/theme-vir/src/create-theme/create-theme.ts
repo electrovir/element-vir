@@ -1,7 +1,11 @@
 import {mergeDeep} from '@augment-vir/common';
 import {defineThemeElements} from './define-theme-elements.js';
-import {AllThemeOptions, ThemeOptions, createDefaultThemeOptions} from './theme-options.js';
-import {Theme} from './theme.js';
+import {
+    type AllThemeOptions,
+    type ThemeOptions,
+    createDefaultThemeOptions,
+} from './theme-options.js';
+import {type Theme} from './theme.js';
 
 export function createTheme<TagPrefix extends string>(
     options: ThemeOptions<TagPrefix>,

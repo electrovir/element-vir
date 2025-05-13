@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 
 import {assert, check} from '@augment-vir/assert';
-import {CustomElementTagName} from './custom-tag-name.js';
-import {DeclarativeElementInit} from './declarative-element-init.js';
-import {DeclarativeElementDefinition} from './declarative-element.js';
+import {type CustomElementTagName} from './custom-tag-name.js';
+import {type DeclarativeElementInit} from './declarative-element-init.js';
+import {type DeclarativeElementDefinition} from './declarative-element.js';
 import {defineElementNoInputs} from './define-element-no-inputs.js';
-import {BaseCssPropertyName} from './properties/css-properties.js';
-import {EventsInitMap} from './properties/element-events.js';
-import {PropertyInitMapBase} from './properties/element-properties.js';
+import {type BaseCssPropertyName} from './properties/css-properties.js';
+import {type EventsInitMap} from './properties/element-events.js';
+import {type PropertyInitMapBase} from './properties/element-properties.js';
 
 /**
  * Verifies that the given `Inputs` type does not clash with built-in HTMLElement properties. This

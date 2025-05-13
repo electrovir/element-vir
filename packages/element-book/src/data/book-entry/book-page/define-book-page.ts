@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 
 import {check} from '@augment-vir/assert';
-import {SetOptionalAndNullable, Values} from '@augment-vir/common';
-import {PropertyInitMapBase} from 'element-vir';
-import type {EmptyObject} from 'type-fest';
-import {GlobalValues} from '../../../ui/elements/element-book-app/global-values.js';
-import {InfiniteRecursionLimiter} from '../../../util/type.js';
+import {type SetOptionalAndNullable, type Values} from '@augment-vir/common';
+import {type PropertyInitMapBase} from 'element-vir';
+import {type EmptyObject} from 'type-fest';
+import {type GlobalValues} from '../../../ui/elements/element-book-app/global-values.js';
+import {type InfiniteRecursionLimiter} from '../../../util/type.js';
 import {BookEntryType} from '../book-entry-type.js';
 import {titleToUrlBreadcrumb} from '../url-breadcrumbs.js';
-import {BookPageControlsInitBase} from './book-page-controls.js';
-import {BookElementExample, BookElementExampleInit, BookPage} from './book-page.js';
+import {type BookPageControlsInitBase} from './book-page-controls.js';
+import {type BookElementExample, type BookElementExampleInit, type BookPage} from './book-page.js';
 
 /**
  * The callback type for a book page definition's `defineExample` callback.

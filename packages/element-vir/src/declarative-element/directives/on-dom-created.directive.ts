@@ -1,5 +1,5 @@
-import type {MaybePromise} from '@augment-vir/common';
-import {directive, Directive, PartInfo} from '../../lit-exports/all-lit-exports.js';
+import {type MaybePromise} from '@augment-vir/common';
+import {directive, Directive, type PartInfo} from '../../lit-exports/all-lit-exports.js';
 import {assertIsElementPartInfo} from './directive-helpers.js';
 
 /**
@@ -49,7 +49,7 @@ export const onDomCreated = directive(
             assertIsElementPartInfo(partInfo, directiveName);
         }
 
-        override update(partInfo: PartInfo, [callback]: [OnDomCreatedCallback]) {
+        public override update(partInfo: PartInfo, [callback]: [OnDomCreatedCallback]) {
             assertIsElementPartInfo(partInfo, directiveName);
             const newElement = partInfo.element;
             if (newElement !== this.element) {
@@ -61,7 +61,7 @@ export const onDomCreated = directive(
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        render(callback: OnDomCreatedCallback) {
+        public render(callback: OnDomCreatedCallback) {
             return undefined;
         }
     },

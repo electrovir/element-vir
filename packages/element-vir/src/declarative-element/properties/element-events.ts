@@ -1,11 +1,11 @@
 import {
-    DefinedTypedEvent,
-    DefineEvent,
+    type DefinedTypedEvent,
+    type DefineEvent,
     defineTypedEvent,
-    TypedEvent,
+    type TypedEvent,
 } from '../../typed-event/typed-event.js';
-import {NonEmptyString} from '../../util/type.js';
-import {CustomElementTagName} from '../custom-tag-name.js';
+import {type NonEmptyString} from '../../util/type.js';
+import {type CustomElementTagName} from '../custom-tag-name.js';
 
 /**
  * Base type for defining element events inside of an element definition.

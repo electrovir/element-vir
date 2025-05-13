@@ -1,7 +1,7 @@
 import {check} from '@augment-vir/assert';
-import {BookEntryType} from './book-entry-type.js';
-import {BookElementExample, BookPage} from './book-page/book-page.js';
-import {BookRoot} from './book-root.js';
+import {type BookEntryType} from './book-entry-type.js';
+import {type BookElementExample, type BookPage} from './book-page/book-page.js';
+import {type BookRoot} from './book-root.js';
 
 /**
  * All possible book entries.

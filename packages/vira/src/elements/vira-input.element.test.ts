@@ -2,7 +2,7 @@ import {assert} from '@augment-vir/assert';
 import {randomString} from '@augment-vir/common';
 import {describe, it, testWeb} from '@augment-vir/test';
 import {html, listen} from 'element-vir';
-import {ReadonlyDeep} from 'type-fest';
+import {type ReadonlyDeep} from 'type-fest';
 import {ViraInput} from './vira-input.element.js';
 
 describe(ViraInput.tagName, () => {

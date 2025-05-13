@@ -1,5 +1,5 @@
-import type {MaybePromise} from '@augment-vir/common';
-import {directive, Directive, PartInfo} from '../../lit-exports/all-lit-exports.js';
+import {type MaybePromise} from '@augment-vir/common';
+import {directive, Directive, type PartInfo} from '../../lit-exports/all-lit-exports.js';
 import {assertIsElementPartInfo} from './directive-helpers.js';
 
 /**
@@ -49,9 +49,11 @@ const directiveName = 'onResize';
  */
 export const onResize = directive(
     class extends Directive {
-        element: Element | undefined;
-        readonly resizeObserver = new ResizeObserver((entries) => this.fireCallback(entries));
-        callback: OnResizeCallback | undefined;
+        public element: Element | undefined;
+        public readonly resizeObserver = new ResizeObserver((entries) =>
+            this.fireCallback(entries),
+        );
+        public callback: OnResizeCallback | undefined;
 
         constructor(partInfo: PartInfo) {
             super(partInfo);
@@ -59,7 +61,7 @@ export const onResize = directive(
             assertIsElementPartInfo(partInfo, directiveName);
         }
 
-        fireCallback(entries: ResizeObserverEntry[]) {
+        public fireCallback(entries: ResizeObserverEntry[]) {
             const resizeEntry = entries[0];
             if (!resizeEntry) {
                 console.error(entries);
@@ -74,7 +76,7 @@ export const onResize = directive(
             );
         }
 
-        override update(partInfo: PartInfo, [callback]: [OnResizeCallback]) {
+        public override update(partInfo: PartInfo, [callback]: [OnResizeCallback]) {
             assertIsElementPartInfo(partInfo, directiveName);
             this.callback = callback;
             const newElement = partInfo.element;
@@ -91,7 +93,7 @@ export const onResize = directive(
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        render(callback: OnResizeCallback) {
+        public render(callback: OnResizeCallback) {
             return undefined;
         }
     },

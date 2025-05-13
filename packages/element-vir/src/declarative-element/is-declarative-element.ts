@@ -1,5 +1,5 @@
 import {check} from '@augment-vir/assert';
-import {DeclarativeElement} from './declarative-element.js';
+import {type DeclarativeElement} from './declarative-element.js';
 
 /**
  * Checks if the input is an instance of a DeclarativeElement, the super class of all custom

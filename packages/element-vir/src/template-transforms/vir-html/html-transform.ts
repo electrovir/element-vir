@@ -4,16 +4,16 @@
 import {check} from '@augment-vir/assert';
 import {collapseWhiteSpace, getOrSet, safeMatch} from '@augment-vir/common';
 import {assign} from '../../declarative-element/directives/assign.directive.js';
-import {HTMLTemplateResult} from '../../lit-exports/all-lit-exports.js';
+import {type HTMLTemplateResult} from '../../lit-exports/all-lit-exports.js';
 import {declarativeElementRequired} from '../../require-declarative-element.js';
 import {
-    MinimalElementDefinition,
+    type MinimalElementDefinition,
     hasTagName,
     isMinimalDefinitionWithInputs,
 } from '../minimal-element-definition.js';
-import {TemplateTransform} from '../template-transform-type.js';
-import {ValueTransformCallback, transformTemplate} from '../transform-template.js';
-import {HtmlInterpolation} from './html-interpolation.js';
+import {type TemplateTransform} from '../template-transform-type.js';
+import {type ValueTransformCallback, transformTemplate} from '../transform-template.js';
+import {type HtmlInterpolation} from './html-interpolation.js';
 import {tagNameKeys} from './tag-name-keys.js';
 
 export function mapHtmlValues(

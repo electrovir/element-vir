@@ -1,5 +1,5 @@
 import {BookPageControlType, defineBookPage} from 'element-book';
-import {CSSResult, css, html, unsafeCSS} from 'element-vir';
+import {type CSSResult, css, html, unsafeCSS} from 'element-vir';
 import {Options24Icon, ViraButton, ViraButtonStyle} from 'vira';
 import {elementsBookPage} from '../elements.book.js';
 

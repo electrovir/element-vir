@@ -1,5 +1,5 @@
 import {assert, waitUntil} from '@augment-vir/assert';
-import {SetRequiredAndNotNull} from '@augment-vir/common';
+import {type SetRequiredAndNotNull} from '@augment-vir/common';
 import {describe, it, testWeb} from '@augment-vir/test';
 import {html} from 'element-vir';
 import {TestChildElement} from './child.element.js';

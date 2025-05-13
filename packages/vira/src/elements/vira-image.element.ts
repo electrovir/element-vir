@@ -1,5 +1,5 @@
-import {Dimensions, wait} from '@augment-vir/common';
-import {Duration, DurationUnit} from 'date-vir';
+import {type Dimensions, wait} from '@augment-vir/common';
+import {type Duration, type DurationUnit} from 'date-vir';
 import {classMap, css, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {LoaderAnimated24Icon, StatusFailure24Icon} from '../icons/index.js';
 import {defineViraElement} from './define-vira-element.js';

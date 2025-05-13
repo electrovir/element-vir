@@ -1,11 +1,11 @@
-import {nav, navAttribute, NavController, NavValue} from 'device-navigation';
+import {nav, navAttribute, type NavController, NavValue} from 'device-navigation';
 import {classMap, css, defineElementEvent, html, ifDefined, listen, testId} from 'element-vir';
 import {viraBorders} from '../../styles/border.js';
 import {viraFormCssVars} from '../../styles/form-themes.js';
 import {viraDisabledStyles} from '../../styles/index.js';
 import {viraShadows} from '../../styles/shadows.js';
 import {defineViraElement} from '../define-vira-element.js';
-import {ViraDropdownItem, ViraDropdownOption} from './vira-dropdown-item.element.js';
+import {ViraDropdownItem, type ViraDropdownOption} from './vira-dropdown-item.element.js';
 
 /**
  * Test ids for {@link ViraDropdownOptions}.

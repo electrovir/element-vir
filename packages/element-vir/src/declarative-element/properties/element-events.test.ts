@@ -2,8 +2,8 @@ import {assert} from '@augment-vir/assert';
 import {describe, it} from '@augment-vir/test';
 import {defineElementNoInputs, html} from '../../index.js';
 import {
-    EventInitMapEventDetailExtractor,
-    EventsInitMap,
+    type EventInitMapEventDetailExtractor,
+    type EventsInitMap,
     defineElementEvent,
 } from './element-events.js';
 

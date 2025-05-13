@@ -1,8 +1,8 @@
 import {doBreadcrumbsStartWith} from '../../../data/book-entry/url-breadcrumbs.js';
-import {BookTreeNode} from '../../../data/book-tree/book-tree-node.js';
+import {type BookTreeNode} from '../../../data/book-tree/book-tree-node.js';
 import {
-    BookFullRoute,
-    ValidBookPaths,
+    type BookFullRoute,
+    type ValidBookPaths,
     defaultBookFullRoute,
 } from '../../../routing/book-routing.js';
 

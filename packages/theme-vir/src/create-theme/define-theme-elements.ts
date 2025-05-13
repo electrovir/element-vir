@@ -8,8 +8,8 @@ import {
     type HostClass,
 } from 'element-vir';
 import {createFontStyleCss} from './font-css.js';
-import {AllThemeOptions, HeadingLevel} from './theme-options.js';
-import {Theme} from './theme.js';
+import {HeadingLevel, type AllThemeOptions} from './theme-options.js';
+import {type Theme} from './theme.js';
 
 export function defineThemeElements<TagPrefix extends string>(
     options: Pick<AllThemeOptions<TagPrefix>, 'elementTagPrefix' | 'font'>,

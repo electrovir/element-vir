@@ -1,4 +1,4 @@
-import {CSSResult, css} from 'element-vir';
+import {type CSSResult, css} from 'element-vir';
 
 const shadowColor = css`#e2e2e2`;
 

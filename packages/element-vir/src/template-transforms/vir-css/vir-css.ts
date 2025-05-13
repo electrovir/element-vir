@@ -1,6 +1,6 @@
 import {css as litCss} from 'lit';
-import {CSSResult, CSSResultGroup} from '../../lit-exports/all-lit-exports.js';
-import {MinimalElementDefinition} from '../minimal-element-definition.js';
+import {type CSSResult, type CSSResultGroup} from '../../lit-exports/all-lit-exports.js';
+import {type MinimalElementDefinition} from '../minimal-element-definition.js';
 import {getTransformedTemplate} from '../transform-template.js';
 import {transformCssTemplate} from './css-transform.js';
 
