@@ -17,16 +17,16 @@
         "update:exports": "tsx src/vira-scripts/update-all-exports.ts"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.11.0",
-        "@augment-vir/common": "^31.11.0",
-        "@augment-vir/node": "^31.11.0",
+        "@augment-vir/assert": "^31.18.0",
+        "@augment-vir/common": "^31.18.0",
+        "@augment-vir/node": "^31.18.0",
         "prettier": "^3.4.2",
-        "tsx": "^4.19.3"
+        "tsx": "^4.19.4"
     },
     "devDependencies": {
-        "@types/node": "^22.14.1",
+        "@types/node": "^22.15.17",
         "markdown-code-example-inserter": "^3.0.3",
-        "typedoc": "^0.28.2",
+        "typedoc": "^0.28.4",
         "typescript": "5.8.3"
     },
     "engines": {

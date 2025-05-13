@@ -1,14 +1,5 @@
-import {nav, navSelector} from 'device-navigation';
-import {
-    classMap,
-    css,
-    defineElementEvent,
-    html,
-    ifDefined,
-    listen,
-    nothing,
-    testId,
-} from 'element-vir';
+import {nav, navAttribute, NavController, NavValue} from 'device-navigation';
+import {classMap, css, defineElementEvent, html, ifDefined, listen, testId} from 'element-vir';
 import {viraBorders} from '../../styles/border.js';
 import {viraFormCssVars} from '../../styles/form-themes.js';
 import {viraDisabledStyles} from '../../styles/index.js';
@@ -33,6 +24,7 @@ export const viraDropdownOptionsTestIds = {
  */
 export const ViraDropdownOptions = defineViraElement<
     Readonly<{
+        navController: NavController;
         /** All dropdown options to show to the user. */
         options: ReadonlyArray<Readonly<ViraDropdownOption>>;
         /**
@@ -71,7 +63,10 @@ export const ViraDropdownOptions = defineViraElement<
             outline: none;
         }
 
-        ${navSelector.css.selected('.dropdown-item:not(.disabled)')} {
+        ${navAttribute.css({
+            baseSelector: '.dropdown-item:not(.disabled):not(.selected)',
+            navValue: NavValue.Focused,
+        })} {
             background-color: ${viraFormCssVars['vira-form-selection-hover-background-color']
                 .value};
             outline: none;
@@ -88,12 +83,13 @@ export const ViraDropdownOptions = defineViraElement<
     `,
     render({inputs, dispatch, events}) {
         const optionTemplates = inputs.options.map((option) => {
+            const selected = inputs.selectedOptions.includes(option);
             const innerTemplate =
                 option.template ||
                 html`
                     <${ViraDropdownItem.assign({
                         label: option.label,
-                        selected: inputs.selectedOptions.includes(option),
+                        selected,
                     })}></${ViraDropdownItem}>
                 `;
 
@@ -101,11 +97,12 @@ export const ViraDropdownOptions = defineViraElement<
                 <div
                     class="dropdown-item ${classMap({
                         disabled: !!option.disabled,
+                        selected,
                     })}"
                     ${testId(viraDropdownOptionsTestIds.option)}
                     title=${ifDefined(option.hoverText || undefined)}
                     role="option"
-                    ${option.disabled ? nothing : nav()}
+                    ${nav(inputs.navController, {disabled: option.disabled || selected})}
                     ${listen('mousedown', (event) => {
                         /**
                          * Prevent this mousedown event from propagating to the window, which would

@@ -130,13 +130,14 @@ export class PopUpManager {
     private cleanupCallbacks: (() => void)[] = [];
     private lastRootElement: HTMLElement | undefined;
 
-    constructor(options?: Partial<PopUpManagerOptions> | undefined) {
+    constructor(
+        public readonly navController: NavController,
+        options?: Partial<PopUpManagerOptions> | undefined,
+    ) {
         this.options = {...this.options, ...options};
     }
 
-    private attachGlobalListeners(rootElement: HTMLElement) {
-        const navController = new NavController(rootElement);
-
+    private attachGlobalListeners() {
         this.cleanupCallbacks = [
             listenToPageActivation(false, (isPageActive) => {
                 if (!isPageActive) {
@@ -167,7 +168,7 @@ export class PopUpManager {
                         event.stopImmediatePropagation();
                         event.preventDefault();
 
-                        navController.navigate({
+                        this.navController.navigate({
                             direction: NavDirection.Down,
                             allowWrapping: false,
                         });
@@ -175,7 +176,7 @@ export class PopUpManager {
                         event.stopImmediatePropagation();
                         event.preventDefault();
 
-                        navController.navigate({
+                        this.navController.navigate({
                             direction: NavDirection.Up,
                             allowWrapping: false,
                         });
@@ -183,7 +184,7 @@ export class PopUpManager {
                         event.stopImmediatePropagation();
                         event.preventDefault();
 
-                        navController.navigate({
+                        this.navController.navigate({
                             direction: NavDirection.Left,
                             allowWrapping: false,
                         });
@@ -191,17 +192,14 @@ export class PopUpManager {
                         event.stopImmediatePropagation();
                         event.preventDefault();
 
-                        navController.navigate({
+                        this.navController.navigate({
                             direction: NavDirection.Right,
                             allowWrapping: false,
                         });
                     } else if (keyCode === 'Enter' || keyCode === 'Return') {
-                        const currentlyFocused = navController.getCurrentlyFocused();
-                        if (currentlyFocused) {
-                            navController.enterInto();
-                            this.listenTarget.dispatch(
-                                new NavSelectEvent({detail: currentlyFocused.node.coords}),
-                            );
+                        const result = this.navController.enterInto({fallbackToActivate: true});
+                        if (result.success) {
+                            this.listenTarget.dispatch(new NavSelectEvent({detail: result.coords}));
                             event.stopImmediatePropagation();
                             event.preventDefault();
                         }
@@ -276,7 +274,7 @@ export class PopUpManager {
             diff.top > diff.bottom + currentOptions.verticalDiffThreshold &&
             diff.bottom < currentOptions.minDownSpace;
 
-        this.attachGlobalListeners(rootElement);
+        this.attachGlobalListeners();
 
         return {
             popDown: !useUp,

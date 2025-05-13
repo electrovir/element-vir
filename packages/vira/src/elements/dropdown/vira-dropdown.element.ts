@@ -80,12 +80,11 @@ export const ViraDropdown = defineViraElement<
     }>
 >()({
     tagName: 'vira-dropdown',
-    state() {
+    state({host}) {
         return {
             /** `undefined` means the pop up is not currently showing. */
             showPopUpResult: undefined as ShowPopUpResult | undefined,
-            popUpManager: new PopUpManager(),
-            navController: undefined as NavController | undefined,
+            popUpManager: new PopUpManager(new NavController(host)),
         };
     },
     hostClasses: {
@@ -259,7 +258,6 @@ export const ViraDropdown = defineViraElement<
                 ),
             );
         });
-        updateState({navController: new NavController(host)});
     },
     render({dispatch, events, state, inputs, updateState, host}) {
         assertUniqueIdProps(inputs.options);
@@ -380,6 +378,7 @@ export const ViraDropdown = defineViraElement<
                             <${ViraDropdownOptions.assign({
                                 options: inputs.options,
                                 selectedOptions,
+                                navController: state.popUpManager.navController,
                             })}
                                 ${listen(ViraDropdownOptions.events.selectionChange, (event) => {
                                     /**
