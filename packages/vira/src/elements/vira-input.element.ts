@@ -1,9 +1,11 @@
 import {
     type TemplateResult,
+    attributes,
     css,
     defineElementEvent,
     html,
     listen,
+    nothing,
     onResize,
     renderIf,
 } from 'element-vir';
@@ -352,6 +354,9 @@ export const ViraInput = defineViraElement<
                         });
                     })}
                     placeholder=${inputs.placeholder}
+                    ${inputs.attributePassthrough
+                        ? attributes(inputs.attributePassthrough)
+                        : nothing}
                 />
                 ${renderIf(
                     !!(inputs.showClearButton && inputs.value),

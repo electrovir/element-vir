@@ -2,6 +2,11 @@ import {assertWrap} from '@augment-vir/assert';
 import {directive, Directive, noChange, type PartInfo} from '../../lit-exports/all-lit-exports.js';
 import {extractElement} from './directive-helpers.js';
 
+/**
+ * Parameters for the callback given to the {@link mutate} directive.
+ *
+ * @category Internal
+ */
 export type MutateDirectiveParams<Params extends any[] = []> = {
     directive: Directive;
     element: HTMLElement;

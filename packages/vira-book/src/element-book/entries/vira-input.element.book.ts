@@ -235,6 +235,15 @@ export const viraInputBookPage = defineBookPage({
                     type: ViraInputType.Password,
                 },
             },
+            {
+                title: 'attribute passthrough',
+                inputs: {
+                    value: '',
+                    attributePassthrough: {
+                        type: 'number',
+                    },
+                },
+            },
         ];
 
         examples.forEach(defineInputExample);

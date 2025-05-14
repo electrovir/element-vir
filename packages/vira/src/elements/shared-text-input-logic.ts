@@ -1,5 +1,6 @@
 import {check, checkWrap} from '@augment-vir/assert';
 import {extractEventTarget} from '@augment-vir/web';
+import {type AttributeValues} from 'element-vir';
 
 /**
  * Inputs shared between the multiple input elements.
@@ -26,6 +27,8 @@ export type SharedTextInputElementInputs = {
     disableBrowserHelps?: boolean;
     /** Set this to true to make the whole element size to only fit the input text. */
     fitText?: boolean;
+    /** A set of attributes that will be applied to the inner native text element. */
+    attributePassthrough?: AttributeValues | undefined;
 };
 
 function doesMatch({input, matcher}: {input: string; matcher: string | RegExp}): boolean {
