@@ -1,3 +1,4 @@
+import {assertWrap} from '@augment-vir/assert';
 import {
     attributes,
     css,
@@ -130,7 +131,7 @@ export const ViraInput = defineViraElement<
                 max-height: 100%;
             }
 
-            ${hostClasses['vira-input-clear-button-shown'].selector} label {
+            ${hostClasses['vira-input-clear-button-shown'].selector} .input-wrapper {
                 padding-right: 4px;
             }
 
@@ -157,7 +158,7 @@ export const ViraInput = defineViraElement<
                 pointer-events: none;
             }
 
-            .label-border {
+            .wrapper-border {
                 top: -1px;
                 left: -1px;
                 border: 1px solid ${cssVars['vira-input-border-color'].value};
@@ -165,7 +166,7 @@ export const ViraInput = defineViraElement<
                     ${viraAnimationDurations['vira-interaction-animation-duration'].value};
             }
 
-            label {
+            .input-wrapper {
                 ${noNativeFormStyles};
                 max-width: 100%;
                 flex-grow: 1;
@@ -177,7 +178,7 @@ export const ViraInput = defineViraElement<
                 border-radius: ${viraBorders['vira-form-input-radius'].value};
                 background-color: ${cssVars['vira-input-background-color'].value};
                 /*
-                    Border colors are actually applied via the .label-border class. However, we must
+                    Border colors are actually applied via the .wrapper-border class. However, we must
                     apply a border here still so that it takes up space.
                 */
                 border: 1px solid transparent;
@@ -288,7 +289,7 @@ export const ViraInput = defineViraElement<
         'vira-input-fit-text': ({inputs}) => !!inputs.fitText,
         'vira-input-clear-button-shown': ({inputs}) => !!inputs.showClearButton,
     },
-    render: ({inputs, dispatch, state, updateState, events}) => {
+    render: ({inputs, dispatch, state, updateState, events, host}) => {
         const {filtered: filteredValue} = filterTextInputValue({
             value: inputs.value,
             allowed: inputs.allowedInputs,
@@ -315,8 +316,19 @@ export const ViraInput = defineViraElement<
              */
             inputs.type === ViraInputType.Password;
 
+        /**
+         * Don't use a wrapping `<label>` element here because it will mess with browser and
+         * password manager autocomplete for passwords and usernames.
+         */
         return html`
-            <label>
+            <span
+                class="input-wrapper"
+                ${listen('mouseup', () => {
+                    assertWrap
+                        .instanceOf(host.shadowRoot.querySelector('input'), HTMLInputElement)
+                        .focus();
+                })}
+            >
                 ${iconTemplate}
                 ${renderIf(
                     !!inputs.fitText,
@@ -407,8 +419,8 @@ export const ViraInput = defineViraElement<
                     siblings of the focused <input> element.
                 -->
                 <div class="border-style focus-border"></div>
-                <div class="border-style label-border"></div>
-            </label>
+                <div class="border-style wrapper-border"></div>
+            </span>
         `;
     },
 });

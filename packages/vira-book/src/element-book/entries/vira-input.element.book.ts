@@ -233,6 +233,9 @@ export const viraInputBookPage = defineBookPage({
                 inputs: {
                     value: 'as password',
                     type: ViraInputType.Password,
+                    attributePassthrough: {
+                        autocomplete: 'new-password',
+                    },
                 },
             },
             {
@@ -241,6 +244,16 @@ export const viraInputBookPage = defineBookPage({
                     value: '',
                     attributePassthrough: {
                         type: 'number',
+                    },
+                },
+            },
+            {
+                title: 'email username',
+                inputs: {
+                    value: '',
+                    type: ViraInputType.Email,
+                    attributePassthrough: {
+                        autocomplete: 'username',
                     },
                 },
             },
