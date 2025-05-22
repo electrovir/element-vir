@@ -36,6 +36,17 @@ export class InternalAsyncPropClass<Value, Params> extends CallbackObservable<Va
         }
     }
 
+    /** The current `.value` as a promise or resolved value. If `.value` is an error, it'll throw. */
+    public get promiseValue(): Promise<Value> {
+        if (this.isError()) {
+            return Promise.reject(this.value as Error);
+        } else if (this.isWaiting()) {
+            return this.value;
+        } else {
+            return Promise.resolve(this.value as Value);
+        }
+    }
+
     /** The state of the current `.value`. */
     public get state(): AsyncValueState {
         if (this.isResolved()) {

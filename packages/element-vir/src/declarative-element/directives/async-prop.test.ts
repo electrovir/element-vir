@@ -794,6 +794,19 @@ describe('AsyncProp value type guards', () => {
         }
     });
 
+    it('works with promiseValue', async () => {
+        const myAsyncProp = asyncProp({defaultValue: {hi: ''}});
+        assert.instanceOf(myAsyncProp.promiseValue, Promise);
+        assert.deepEquals(await myAsyncProp.promiseValue, {hi: ''});
+
+        myAsyncProp.setValue(new Error());
+        await assert.throws(() => myAsyncProp.promiseValue);
+
+        myAsyncProp.setValue(Promise.resolve({hi: 'bye'}));
+        assert.instanceOf(myAsyncProp.promiseValue, Promise);
+        assert.deepEquals(await myAsyncProp.promiseValue, {hi: 'bye'});
+    });
+
     it('enables a type guard chain', () => {
         const myAsyncProp = asyncProp({defaultValue: {hi: ''}});
 
