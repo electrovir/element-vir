@@ -353,7 +353,7 @@ export const ViraInput = defineViraElement<
                             },
                         });
                     })}
-                    placeholder=${inputs.placeholder}
+                    placeholder=${ifDefined(inputs.placeholder || undefined)}
                     ${inputs.attributePassthrough
                         ? attributes(inputs.attributePassthrough)
                         : nothing}
