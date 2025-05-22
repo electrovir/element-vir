@@ -73,6 +73,13 @@ export const viraButtonBookPage = defineBookPage({
         defineViraButtonExample({title: 'basic'});
         defineViraButtonExample({title: 'with icon', inputs: {icon: Options24Icon}});
         defineViraButtonExample({
+            title: 'with expanding icon',
+            inputs: {
+                icon: Options24Icon,
+                expandToFitIcon: true,
+            },
+        });
+        defineViraButtonExample({
             title: 'outline',
             inputs: {
                 buttonStyle: ViraButtonStyle.Outline,

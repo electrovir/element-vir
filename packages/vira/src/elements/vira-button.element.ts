@@ -1,3 +1,4 @@
+import {type PartialWithUndefined} from '@augment-vir/common';
 import {css, html, nothing} from 'element-vir';
 import {type ViraIconSvg} from '../icons/index.js';
 import {viraBorders} from '../styles/border.js';
@@ -26,16 +27,27 @@ export enum ViraButtonStyle {
  * @category Elements
  * @see https://electrovir.github.io/element-vir/vira/book/elements/vira-button
  */
-export const ViraButton = defineViraElement<{
-    text?: string;
-    icon?: undefined | Pick<ViraIconSvg, 'svgTemplate'>;
-    disabled?: boolean | undefined;
-    buttonStyle?: ViraButtonStyle | undefined;
-}>()({
+export const ViraButton = defineViraElement<
+    {
+        text: string;
+    } & PartialWithUndefined<{
+        icon: Pick<ViraIconSvg, 'svgTemplate'>;
+        disabled: boolean;
+        buttonStyle: ViraButtonStyle;
+        /**
+         * When set to `true`, the given icon (if any) will take up its full dimensions, potentially
+         * increasing the button's size.
+         *
+         * @default false
+         */
+        expandToFitIcon: boolean;
+    }>
+>()({
     tagName: 'vira-button',
     hostClasses: {
         'vira-button-outline-style': ({inputs}) => inputs.buttonStyle === ViraButtonStyle.Outline,
         'vira-button-disabled': ({inputs}) => !!inputs.disabled,
+        'vira-button-expand-to-fit-icon': ({inputs}) => !!inputs.expandToFitIcon,
     },
     cssVars: {
         /** On the default button style this is the background color. */
@@ -125,6 +137,14 @@ export const ViraButton = defineViraElement<{
 
         button ${ViraIcon} + .text-template {
             margin-left: 8px;
+        }
+
+        :host(:not(.${hostClasses['vira-button-expand-to-fit-icon'].name})) {
+            & ${ViraIcon} {
+                height: 0;
+                display: flex;
+                align-items: center;
+            }
         }
     `,
     render: ({inputs}) => {
