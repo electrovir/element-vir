@@ -1,4 +1,4 @@
-import {css, html} from 'element-vir';
+import {css, html, nothing} from 'element-vir';
 import {type ViraIconSvg} from '../icons/index.js';
 import {viraBorders} from '../styles/border.js';
 import {viraDisabledStyles} from '../styles/disabled.js';
@@ -134,12 +134,12 @@ export const ViraButton = defineViraElement<{
                       icon: inputs.icon,
                   })}></${ViraIcon}>
               `
-            : '';
+            : nothing;
         const textTemplate = inputs.text
             ? html`
                   <span class="text-template">${inputs.text}</span>
               `
-            : '';
+            : nothing;
 
         return html`
             <button ?disabled=${inputs.disabled}>${iconTemplate} ${textTemplate}</button>

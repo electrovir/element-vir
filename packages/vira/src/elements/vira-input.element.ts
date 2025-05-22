@@ -1,9 +1,9 @@
 import {
-    type TemplateResult,
     attributes,
     css,
     defineElementEvent,
     html,
+    ifDefined,
     listen,
     nothing,
     onResize,
@@ -295,17 +295,17 @@ export const ViraInput = defineViraElement<
             blocked: inputs.blockedInputs,
         });
 
-        const iconTemplate: TemplateResult | string = inputs.icon
+        const iconTemplate = inputs.icon
             ? html`
                   <${ViraIcon.assign({icon: inputs.icon})} class="left-side-icon"></${ViraIcon}>
               `
-            : '';
+            : nothing;
 
         const forcedInputWidthStyles = inputs.fitText
             ? css`
                   width: ${state.forcedInputWidth}px;
               `
-            : '';
+            : nothing;
 
         const shouldBlockBrowserHelps =
             inputs.disableBrowserHelps ||
@@ -327,17 +327,17 @@ export const ViraInput = defineViraElement<
                                 updateState({forcedInputWidth: contentRect.width});
                             })}
                         >
-                            <pre>${filteredValue || inputs.placeholder || ''}</pre>
+                            <pre>${filteredValue || inputs.placeholder || nothing}</pre>
                         </span>
                     `,
                 )}
                 <input
                     type=${calculateEffectiveInputType(inputs.type, state.showPassword)}
                     style=${forcedInputWidthStyles}
-                    autocomplete=${shouldBlockBrowserHelps ? 'off' : ''}
-                    autocorrect=${shouldBlockBrowserHelps ? 'off' : ''}
-                    autocapitalize=${shouldBlockBrowserHelps ? 'off' : ''}
-                    spellcheck=${shouldBlockBrowserHelps ? 'false' : ''}
+                    autocomplete=${ifDefined(shouldBlockBrowserHelps ? 'off' : undefined)}
+                    autocorrect=${ifDefined(shouldBlockBrowserHelps ? 'off' : undefined)}
+                    autocapitalize=${ifDefined(shouldBlockBrowserHelps ? 'off' : undefined)}
+                    spellcheck=${ifDefined(shouldBlockBrowserHelps ? 'false' : undefined)}
                     ?disabled=${inputs.disabled}
                     .value=${filteredValue}
                     ${listen('input', (event) => {

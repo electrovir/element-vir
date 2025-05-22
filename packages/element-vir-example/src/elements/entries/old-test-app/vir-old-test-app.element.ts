@@ -3,7 +3,7 @@
 
 import {randomInteger, randomString} from '@augment-vir/common';
 import {defineBookPage} from 'element-book';
-import {Observable, css, defineElementNoInputs, html, listen, onResize} from 'element-vir';
+import {Observable, css, defineElementNoInputs, html, listen, nothing, onResize} from 'element-vir';
 import {assign} from 'element-vir/dist/declarative-element/directives/assign.directive';
 import {AsyncChild} from './async-child.element.js';
 import {TestChildElement} from './child.element.js';
@@ -135,7 +135,7 @@ export const VirOldTestApp = defineElementNoInputs({
                           ></element-vir-test-child>
                           <hr />
                       `
-                    : ''}
+                    : nothing}
                 <${AsyncChild.assign({
                     trigger: state.funnyNumber,
                 })}></${AsyncChild}>

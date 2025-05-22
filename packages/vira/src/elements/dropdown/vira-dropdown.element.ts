@@ -8,6 +8,7 @@ import {
     html,
     ifDefined,
     listen,
+    nothing,
     renderIf,
     testId,
 } from 'element-vir';
@@ -294,7 +295,7 @@ export const ViraDropdown = defineViraElement<
                       ${testId(viraDropdownTestIds.icon)}
                   ></${ViraIcon}>
               `
-            : '';
+            : nothing;
 
         const positionerStyles = state.showPopUpResult
             ? state.showPopUpResult.popDown
@@ -321,7 +322,7 @@ export const ViraDropdown = defineViraElement<
                           ${inputs.selectionPrefix}
                       </span>
                   `
-                : '';
+                : nothing;
 
         const selectionDisplay: string = shouldUsePlaceholder
             ? inputs.placeholder || ''
