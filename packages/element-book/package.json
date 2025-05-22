@@ -1,6 +1,6 @@
 {
     "name": "element-book",
-    "version": "25.4.0",
+    "version": "25.4.1",
     "keywords": [
         "book",
         "design system",
@@ -41,23 +41,23 @@
         "test:docs": "virmator docs check"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.18.0",
-        "@augment-vir/common": "^31.18.0",
-        "@augment-vir/web": "^31.18.0",
+        "@augment-vir/assert": "^31.20.0",
+        "@augment-vir/common": "^31.20.0",
+        "@augment-vir/web": "^31.20.0",
         "colorjs.io": "0.5.2",
         "lit-css-vars": "^3.0.11",
         "spa-router-vir": "^5.3.1",
-        "typed-event-target": "^4.0.4",
-        "vira": "^25.4.0"
+        "typed-event-target": "^4.1.0",
+        "vira": "^25.4.1"
     },
     "devDependencies": {
-        "@augment-vir/test": "^31.18.0",
+        "@augment-vir/test": "^31.20.0",
         "@web/dev-server-esbuild": "^1.0.4",
-        "@web/test-runner": "^0.20.1",
+        "@web/test-runner": "^0.20.2",
         "@web/test-runner-commands": "^0.9.0",
         "@web/test-runner-playwright": "^0.11.0",
         "@web/test-runner-visual-regression": "^0.10.0",
-        "element-vir": "^25.4.0",
+        "element-vir": "^25.4.1",
         "istanbul-smart-text-reporter": "^1.1.5",
         "markdown-code-example-inserter": "^3.0.3",
         "type-fest": "^4.41.0",

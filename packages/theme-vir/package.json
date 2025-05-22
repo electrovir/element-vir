@@ -1,6 +1,6 @@
 {
     "name": "theme-vir",
-    "version": "25.4.0",
+    "version": "25.4.1",
     "private": true,
     "description": "Create an entire web theme.",
     "keywords": [
@@ -39,18 +39,18 @@
         "test:docs": "virmator docs check"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.18.0",
-        "@augment-vir/common": "^31.18.0"
+        "@augment-vir/assert": "^31.20.0",
+        "@augment-vir/common": "^31.20.0"
     },
     "devDependencies": {
-        "@augment-vir/test": "^31.18.0",
+        "@augment-vir/test": "^31.20.0",
         "@web/dev-server-esbuild": "^1.0.4",
-        "@web/test-runner": "^0.20.1",
+        "@web/test-runner": "^0.20.2",
         "@web/test-runner-commands": "^0.9.0",
         "@web/test-runner-playwright": "^0.11.0",
         "@web/test-runner-visual-regression": "^0.10.0",
-        "element-book": "^25.4.0",
-        "element-vir": "^25.4.0",
+        "element-book": "^25.4.1",
+        "element-vir": "^25.4.1",
         "esbuild": "^0.25.4",
         "istanbul-smart-text-reporter": "^1.1.5",
         "markdown-code-example-inserter": "^3.0.3",

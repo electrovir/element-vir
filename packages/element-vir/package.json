@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "25.4.0",
+    "version": "25.4.1",
     "keywords": [
         "custom",
         "web",
@@ -38,21 +38,21 @@
         "test:docs": "virmator docs check"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.18.0",
-        "@augment-vir/common": "^31.18.0",
+        "@augment-vir/assert": "^31.20.0",
+        "@augment-vir/common": "^31.20.0",
         "date-vir": "^7.3.1",
         "lit": "^3.3.0",
         "lit-css-vars": "^3.0.11",
         "lit-html": "^3.3.0",
         "object-shape-tester": "^5.1.5",
         "observavir": "^2.0.5",
-        "typed-event-target": "^4.0.4"
+        "typed-event-target": "^4.1.0"
     },
     "devDependencies": {
-        "@augment-vir/test": "^31.18.0",
-        "@augment-vir/web": "^31.18.0",
+        "@augment-vir/test": "^31.20.0",
+        "@augment-vir/web": "^31.20.0",
         "@web/dev-server-esbuild": "^1.0.4",
-        "@web/test-runner": "^0.20.1",
+        "@web/test-runner": "^0.20.2",
         "@web/test-runner-commands": "^0.9.0",
         "@web/test-runner-playwright": "^0.11.0",
         "@web/test-runner-visual-regression": "^0.10.0",
