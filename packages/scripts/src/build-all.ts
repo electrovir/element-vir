@@ -34,6 +34,11 @@ const buildPackageInfos: ReadonlyArray<Readonly<BuildPackageInfo>> = [
         copyFrom: 'dist-docs',
         copyTo: join('vira', 'docs'),
     },
+    {
+        packagePath: 'theme-vir',
+        copyFrom: 'dist-docs',
+        copyTo: join('theme-vir', 'docs'),
+    },
 ];
 
 async function buildPackagePage(buildInfo: Readonly<BuildPackageInfo>): Promise<void> {

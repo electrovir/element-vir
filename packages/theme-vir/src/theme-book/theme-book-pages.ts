@@ -25,7 +25,7 @@ export function createThemeBookPages<TagName extends string>(
                 parent: elementsBookPage,
                 defineExamples({defineExample}) {
                     defineExample({
-                        title: 'bold',
+                        title: 'basic',
                         render() {
                             return html`
                                 <${themeElement}>This is ${elementKey}</${themeElement}>
