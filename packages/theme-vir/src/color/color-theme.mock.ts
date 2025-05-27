@@ -34,3 +34,11 @@ export const mockThemeDarkMode = defineColorThemeOverride(mockColorTheme, 'dark-
         background: 'black',
     },
 });
+
+export const mockOrange = defineColorThemeOverride(mockColorTheme, 'orange', {
+    colorOverrides: {
+        'button-primary': {
+            background: 'orange',
+        },
+    },
+});

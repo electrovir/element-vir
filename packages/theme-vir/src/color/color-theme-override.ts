@@ -1,4 +1,9 @@
-import {getObjectTypedEntries, getObjectTypedKeys, getObjectTypedValues} from '@augment-vir/common';
+import {
+    getObjectTypedEntries,
+    getObjectTypedKeys,
+    getObjectTypedValues,
+    mapObjectValues,
+} from '@augment-vir/common';
 import {setCssVarValue, type CssVarName} from 'lit-css-vars';
 import {type RequireAtLeastOne} from 'type-fest';
 import {
@@ -21,7 +26,7 @@ export type ColorThemeOverrideInit<Theme extends ColorTheme = ColorTheme> = Omit
     Partial<{
         [ColorName in keyof Theme['colors']]: ColorInit;
     }>,
-    'default'
+    typeof themeDefaultKey
 >;
 
 /**
@@ -133,15 +138,28 @@ export function defineColorThemeOverride<const Init extends ColorThemeInit>(
         );
     }
 
+    const asThemeColorInit: ColorThemeInit = mapObjectValues(
+        originalTheme.init.colors as ColorThemeInit,
+        (colorName, colorInit): ColorInit => {
+            const override: ColorInit | undefined = (
+                colorOverrides as ColorThemeOverrideInit | undefined
+            )?.[colorName];
+
+            const newInit: ColorInit = {
+                ...colorInit,
+                ...override,
+            };
+
+            return newInit;
+        },
+    );
+
     const asTheme: ColorTheme<Init> = defineColorTheme(
         {
             ...originalTheme.init.default,
             ...defaultOverride,
         },
-        {
-            ...originalTheme.init.colors,
-            ...colorOverrides,
-        },
+        asThemeColorInit as Init,
     );
 
     return {
