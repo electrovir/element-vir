@@ -3,9 +3,12 @@ import {setCssVarValue, type CssVarName} from 'lit-css-vars';
 import {type RequireAtLeastOne} from 'type-fest';
 import {
     createColorCssVarDefault,
+    defineColorTheme,
+    themeDefaultKey,
     type ColorInit,
     type ColorTheme,
     type ColorThemeColor,
+    type ColorThemeInit,
 } from './color-theme.js';
 
 /**
@@ -15,7 +18,7 @@ import {
  */
 export type ColorThemeOverrideInit<Theme extends ColorTheme = ColorTheme> = Omit<
     Partial<{
-        [ColorName in keyof Theme]: ColorInit;
+        [ColorName in keyof Theme['colors']]: ColorInit;
     }>,
     'default'
 >;
@@ -25,7 +28,12 @@ export type ColorThemeOverrideInit<Theme extends ColorTheme = ColorTheme> = Omit
  *
  * @category Internal
  */
-export type ColorThemeOverrides = Record<CssVarName, string>;
+export type ColorThemeOverride<Init extends ColorThemeInit = ColorThemeInit> = {
+    name: string;
+    overrides: Record<CssVarName, string>;
+    originalTheme: ColorTheme<Init>;
+    asTheme: ColorTheme<Init>;
+};
 
 function applyCssVarOverride({
     originalTheme,
@@ -38,7 +46,7 @@ function applyCssVarOverride({
     layerKey: keyof ColorInit;
     themeColor: Readonly<Pick<ColorThemeColor, keyof ColorInit>>;
     override: ColorInit | undefined;
-    overrideValues: ColorThemeOverrides;
+    overrideValues: ColorThemeOverride['overrides'];
 }) {
     const layerOverride = override?.[layerKey];
 
@@ -57,18 +65,19 @@ function applyCssVarOverride({
  *
  * @category Color Theme
  */
-export function defineColorThemeOverride<const Theme extends ColorTheme>(
-    originalTheme: Theme,
+export function defineColorThemeOverride<const Init extends ColorThemeInit>(
+    originalTheme: ColorTheme<Init>,
+    overrideName: string,
     {
         defaultOverride,
         colorOverrides,
     }: RequireAtLeastOne<{
         /** Override the default foreground and/or background colors. */
         defaultOverride: ColorInit;
-        colorOverrides: ColorThemeOverrideInit<Theme>;
+        colorOverrides: ColorThemeOverrideInit<ColorTheme<Init>>;
     }>,
-): ColorThemeOverrides {
-    const defaultValues: ColorThemeOverrides = {};
+): ColorThemeOverride<Init> {
+    const defaultValues: ColorThemeOverride['overrides'] = {};
 
     if (defaultOverride) {
         getObjectTypedKeys(defaultOverride).forEach((layerKey) => {
@@ -76,13 +85,13 @@ export function defineColorThemeOverride<const Theme extends ColorTheme>(
                 originalTheme,
                 layerKey,
                 override: defaultOverride,
-                themeColor: originalTheme.default,
+                themeColor: originalTheme.colors[themeDefaultKey],
                 overrideValues: defaultValues,
             });
         });
     }
 
-    const colorValues: ColorThemeOverrides = {};
+    const colorValues: ColorThemeOverride['overrides'] = {};
 
     if (colorOverrides) {
         getObjectTypedEntries(colorOverrides as ColorThemeOverrideInit).forEach(
@@ -90,7 +99,7 @@ export function defineColorThemeOverride<const Theme extends ColorTheme>(
                 colorName,
                 override,
             ]) => {
-                const themeColor = originalTheme[colorName];
+                const themeColor = originalTheme.colors[colorName];
 
                 if (!themeColor) {
                     throw new Error(
@@ -116,9 +125,25 @@ export function defineColorThemeOverride<const Theme extends ColorTheme>(
         );
     }
 
+    const asTheme: ColorTheme<Init> = defineColorTheme(
+        {
+            ...originalTheme.colors[themeDefaultKey].init,
+            ...defaultOverride,
+        },
+        {
+            ...originalTheme.init,
+            ...colorOverrides,
+        },
+    );
+
     return {
-        ...defaultValues,
-        ...colorValues,
+        name: overrideName,
+        overrides: {
+            ...defaultValues,
+            ...colorValues,
+        },
+        originalTheme,
+        asTheme,
     };
 }
 
@@ -132,22 +157,24 @@ export function applyColorTheme<const Theme extends ColorTheme>(
     /** This should usually be the top-level `html` element. */
     element: HTMLElement,
     fullTheme: Theme,
-    themeOverride?: ColorThemeOverrides | undefined,
+    themeOverride?: ColorThemeOverride | undefined,
 ) {
-    getObjectTypedValues(fullTheme as Record<CssVarName, ColorThemeColor>).forEach((themeColor) => {
-        applyIndividualThemeColorValue({
-            element,
-            layerKey: 'background',
-            themeColor,
-            themeOverride,
-        });
-        applyIndividualThemeColorValue({
-            element,
-            layerKey: 'foreground',
-            themeColor,
-            themeOverride,
-        });
-    });
+    getObjectTypedValues(fullTheme.colors as Record<CssVarName, ColorThemeColor>).forEach(
+        (themeColor) => {
+            applyIndividualThemeColorValue({
+                element,
+                layerKey: 'background',
+                themeColor,
+                themeOverride,
+            });
+            applyIndividualThemeColorValue({
+                element,
+                layerKey: 'foreground',
+                themeColor,
+                themeOverride,
+            });
+        },
+    );
 }
 
 function applyIndividualThemeColorValue({
@@ -158,10 +185,10 @@ function applyIndividualThemeColorValue({
 }: {
     element: HTMLElement;
     layerKey: keyof ColorInit;
-    themeOverride: ColorThemeOverrides | undefined;
+    themeOverride: ColorThemeOverride | undefined;
     themeColor: ColorThemeColor;
 }) {
-    const override = themeOverride?.[String(themeColor[layerKey].name) as CssVarName];
+    const override = themeOverride?.overrides[String(themeColor[layerKey].name) as CssVarName];
     const value: string | number = override || themeColor[layerKey].default;
 
     setCssVarValue({

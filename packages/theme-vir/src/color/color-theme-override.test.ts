@@ -23,11 +23,11 @@ const mockTheme = defineColorTheme(
 describe(defineColorThemeOverride.name, () => {
     it('creates default overrides', () => {
         assert.deepEquals(
-            defineColorThemeOverride(mockTheme, {
+            defineColorThemeOverride(mockTheme, 'mock', {
                 defaultOverride: {
                     foreground: 'purple',
                 },
-            }),
+            }).overrides,
             {
                 '--default-fg': 'purple',
             },
@@ -35,7 +35,7 @@ describe(defineColorThemeOverride.name, () => {
     });
     it('rejects an override that does not match a theme color', () => {
         assert.throws(() =>
-            defineColorThemeOverride(mockTheme, {
+            defineColorThemeOverride(mockTheme, 'mock', {
                 colorOverrides: {
                     // @ts-expect-error: invalid color name
                     'invalid-color': {
@@ -49,7 +49,7 @@ describe(defineColorThemeOverride.name, () => {
         const fixture = await testWeb.render(html`
             <div
                 style=${css`
-                    ${colorCss(mockTheme['main-color'])}
+                    ${colorCss(mockTheme.colors['main-color'])}
                 `}
             ></div>
         `);
@@ -79,7 +79,7 @@ describe(defineColorThemeOverride.name, () => {
         applyColorTheme(
             fixture,
             mockTheme,
-            defineColorThemeOverride(mockTheme, {
+            defineColorThemeOverride(mockTheme, 'mock', {
                 defaultOverride: {
                     background: 'green',
                 },

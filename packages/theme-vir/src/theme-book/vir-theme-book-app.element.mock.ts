@@ -1,5 +1,7 @@
 import {ElementBookApp} from 'element-book';
 import {css, defineElementNoInputs, html} from 'element-vir';
+import {createColorThemeBookPages} from '../color/color-theme-book-pages.js';
+import {mockColorTheme, mockThemeDarkMode} from '../color/color-theme.mock.js';
 import {createTheme} from '../create-theme/create-theme.js';
 import {createThemeBookPages} from './theme-book-pages.js';
 
@@ -26,9 +28,23 @@ export const VirThemeBookApp = defineElementNoInputs({
         };
     },
     render({state}) {
+        const allThemeVirBookPages = [
+            ...createThemeBookPages(state.theme),
+            ...createColorThemeBookPages({
+                title: 'Colors',
+                theme: mockColorTheme,
+                overrides: [
+                    mockThemeDarkMode,
+                ],
+            }),
+        ];
+
         return html`
             <${ElementBookApp.assign({
-                pages: createThemeBookPages(state.theme),
+                pages: allThemeVirBookPages,
+                internalRouterConfig: {
+                    useInternalRouter: true,
+                },
             })}></${ElementBookApp}>
         `;
     },

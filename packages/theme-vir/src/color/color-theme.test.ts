@@ -1,6 +1,6 @@
 import {assert} from '@augment-vir/assert';
 import {describe, it} from '@augment-vir/test';
-import {defineColorTheme} from './color-theme.js';
+import {defineColorTheme, themeDefaultKey} from './color-theme.js';
 
 describe(defineColorTheme.name, () => {
     it('maps all colors', () => {
@@ -29,20 +29,35 @@ describe(defineColorTheme.name, () => {
             },
         );
 
-        assert.isDefined(theme['logo-color'].foreground.value);
-        assert.strictEquals(theme['brand-primary'].foreground.default, 'dodgerblue');
-        assert.strictEquals(theme['brand-primary'].background.default, 'var(--default-bg, white)');
+        assert.isDefined(theme.colors['logo-color'].foreground.value);
+        assert.strictEquals(theme.colors['brand-primary'].foreground.default, 'dodgerblue');
         assert.strictEquals(
-            theme['brand-secondary'].foreground.default,
+            theme.colors['brand-primary'].background.default,
+            'var(--default-bg, white)',
+        );
+        assert.strictEquals(
+            theme.colors['brand-secondary'].foreground.default,
             'var(--default-fg, black)',
         );
-        assert.strictEquals(theme['brand-secondary'].background.default, 'navy');
-        assert.strictEquals(theme['logo-color'].foreground.default, 'var(--brand-secondary-bg)');
-        assert.strictEquals(theme['logo-color'].background.default, 'var(--default-bg, white)');
-        assert.strictEquals(theme['header-color'].foreground.default, 'var(--brand-secondary-fg)');
-        assert.strictEquals(theme['header-color'].background.default, 'var(--default-bg, white)');
+        assert.strictEquals(theme.colors['brand-secondary'].background.default, 'navy');
+        assert.strictEquals(
+            theme.colors['logo-color'].foreground.default,
+            'var(--brand-secondary-bg)',
+        );
+        assert.strictEquals(
+            theme.colors['logo-color'].background.default,
+            'var(--default-bg, white)',
+        );
+        assert.strictEquals(
+            theme.colors['header-color'].foreground.default,
+            'var(--brand-secondary-fg)',
+        );
+        assert.strictEquals(
+            theme.colors['header-color'].background.default,
+            'var(--default-bg, white)',
+        );
 
-        assert.strictEquals(theme['brand-primary'].name, 'brand-primary');
+        assert.strictEquals(theme.colors['brand-primary'].name, 'brand-primary');
     });
     it('rejects an invalid ref', () => {
         assert.throws(
@@ -107,7 +122,7 @@ describe(defineColorTheme.name, () => {
                         background: 'white',
                     },
                     {
-                        default: {
+                        [themeDefaultKey]: {
                             foreground: 'dodgerblue',
                         },
                     },
