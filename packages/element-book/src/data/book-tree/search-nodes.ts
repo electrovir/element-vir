@@ -1,5 +1,6 @@
 import {check} from '@augment-vir/assert';
 import {randomString} from '@augment-vir/common';
+import {convertTemplateToString} from 'element-vir';
 import {fuzzySearch} from '../../util/fuzzy-search.js';
 import {type BookTreeNode} from './book-tree-node.js';
 
@@ -59,7 +60,13 @@ export function searchFlattenedNodes({
             fuzzySearch({
                 searchIn: [
                     treeNode.entry.title,
-                    ...treeNode.entry.descriptionParagraphs,
+                    ...treeNode.entry.descriptionParagraphs.map((paragraph) => {
+                        if (check.isString(paragraph)) {
+                            return paragraph;
+                        } else {
+                            return convertTemplateToString(paragraph);
+                        }
+                    }),
                 ]
                     .join(' ')
                     .toLowerCase(),

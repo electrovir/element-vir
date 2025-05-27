@@ -1,3 +1,4 @@
+import {type HTMLTemplateResult} from 'element-vir';
 import {type BookEntryType} from './book-entry-type.js';
 
 /**
@@ -21,6 +22,6 @@ export type BaseBookEntry = {
      * A description that will be displayed below the entry title. Each item in the array will be a
      * separate paragraph.
      */
-    descriptionParagraphs: ReadonlyArray<string>;
+    descriptionParagraphs: ReadonlyArray<string | HTMLTemplateResult>;
     errors: Error[];
 };

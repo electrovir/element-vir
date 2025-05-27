@@ -1,9 +1,9 @@
-import {css, html} from 'element-vir';
+import {css, html, type HTMLTemplateResult} from 'element-vir';
 import {colorThemeCssVars} from '../../color-theme/color-theme.js';
 import {defineBookElement} from '../define-book-element.js';
 
 export const BookEntryDescription = defineBookElement<{
-    descriptionParagraphs: ReadonlyArray<string>;
+    descriptionParagraphs: ReadonlyArray<string | HTMLTemplateResult>;
 }>()({
     tagName: 'book-entry-description',
     styles: css`
@@ -25,6 +25,10 @@ export const BookEntryDescription = defineBookElement<{
 
         p:first-child {
             margin-top: 8px;
+        }
+
+        code {
+            font-size: 1.2em;
         }
     `,
     render({inputs}) {
