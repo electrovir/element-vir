@@ -38,6 +38,16 @@ export type ColorInit = RequireAtLeastOne<{
 }>;
 
 /**
+ * Same as {@link ColorInit} but without references.
+ *
+ * @category Internal
+ */
+export type NoRefColorInit = RequireAtLeastOne<{
+    foreground: Exclude<ColorInitValue, ColorInitReference>;
+    background: Exclude<ColorInitValue, ColorInitReference>;
+}>;
+
+/**
  * A defined individual color from a color theme.
  *
  * @category Internal
@@ -72,7 +82,10 @@ export type ColorTheme<Init extends ColorThemeInit = ColorThemeInit> = {
     colors: AllColorThemeColors<Init>;
     inverse: AllColorThemeColors<Init>;
     /** The original init object for this theme. */
-    init: Init;
+    init: {
+        colors: Init;
+        default: RequiredAndNotNull<NoRefColorInit>;
+    };
 };
 
 /**
@@ -89,7 +102,7 @@ export type AllColorThemeColors<Init extends ColorThemeInit = ColorThemeInit> = 
             : never
         : never;
 } & {
-    [themeDefaultKey]: ColorThemeColor<RequiredAndNotNull<ColorInit>, typeof themeDefaultKey>;
+    [themeDefaultKey]: ColorThemeColor<RequiredAndNotNull<NoRefColorInit>, typeof themeDefaultKey>;
 };
 
 /**
@@ -100,25 +113,48 @@ export type AllColorThemeColors<Init extends ColorThemeInit = ColorThemeInit> = 
 export function createColorCssVarDefault(
     fromName: string,
     init: ColorInitValue,
-    fullInit: Record<string, unknown>,
+    defaultInit: RequiredAndNotNull<NoRefColorInit>,
+    colorsInit: ColorThemeInit,
 ): Exclude<ColorInitValue, ColorInitReference> {
-    if (check.hasKey(init, 'refBackground' satisfies keyof ColorInitReference)) {
-        if (!(init.refBackground in fullInit)) {
+    const referenceKey: keyof ColorInitReference | undefined = check.hasKey(
+        init,
+        'refBackground' satisfies keyof ColorInitReference,
+    )
+        ? 'refBackground'
+        : check.hasKey(init, 'refForeground' satisfies keyof ColorInitReference)
+          ? 'refForeground'
+          : undefined;
+    const reference =
+        referenceKey && check.hasKey(init, referenceKey) ? init[referenceKey] : undefined;
+
+    if (reference) {
+        const layerKey = referenceKey === 'refBackground' ? 'background' : 'foreground';
+        const referenced = colorsInit[reference];
+        if (!referenced) {
             throw new Error(
-                `Color theme background reference '${init.refBackground}' does not exist. (Referenced from '${fromName}'.)`,
-            );
-        }
-        return `var(--${init.refBackground}-bg)`;
-    } else if (check.hasKey(init, 'refForeground' satisfies keyof ColorInitReference)) {
-        if (!(init.refForeground in fullInit)) {
-            throw new Error(
-                `Color theme foreground reference '${init.refForeground}' does not exist. (Referenced from '${fromName}'.)`,
+                `Color theme ${referenceKey} reference '${reference}' does not exist. (Referenced from '${fromName}'.)`,
             );
         }
 
-        return `var(--${init.refForeground}-fg)`;
+        const colorValue =
+            referenced[layerKey] ||
+            (layerKey === 'foreground'
+                ? createColorCssVarDefault(
+                      'default-fg',
+                      defaultInit.foreground,
+                      defaultInit,
+                      colorsInit,
+                  )
+                : createColorCssVarDefault(
+                      'default-bg',
+                      defaultInit.background,
+                      defaultInit,
+                      colorsInit,
+                  ));
+
+        return `var(--${reference}-${layerKey === 'foreground' ? 'fg' : 'bg'}, ${createColorCssVarDefault(reference, colorValue, defaultInit, colorsInit)})`;
     } else {
-        return init;
+        return init as Exclude<typeof init, ColorInitReference>;
     }
 }
 
@@ -136,7 +172,7 @@ export const themeDefaultKey = 'theme-default' satisfies CssVarName;
  * @category Color Theme
  */
 export function defineColorTheme<const Init extends ColorThemeInit>(
-    defaultInit: RequiredAndNotNull<ColorInit>,
+    defaultInit: RequiredAndNotNull<NoRefColorInit>,
     allColorsInit: Init,
 ): ColorTheme<Init> {
     if (themeDefaultKey in allColorsInit) {
@@ -146,16 +182,28 @@ export function defineColorTheme<const Init extends ColorThemeInit>(
     }
 
     const defaultColors = defineCssVars({
-        'default-fg': createColorCssVarDefault('default-fg', defaultInit.foreground, allColorsInit),
-        'default-bg': createColorCssVarDefault('default-bg', defaultInit.background, allColorsInit),
+        'default-fg': createColorCssVarDefault(
+            'default-fg',
+            defaultInit.foreground,
+            defaultInit,
+            allColorsInit,
+        ),
+        'default-bg': createColorCssVarDefault(
+            'default-bg',
+            defaultInit.background,
+            defaultInit,
+            allColorsInit,
+        ),
         'default-inverse-fg': createColorCssVarDefault(
             'default-inverse-fg',
             defaultInit.background,
+            defaultInit,
             allColorsInit,
         ),
         'default-inverse-bg': createColorCssVarDefault(
             'default-inverse-bg',
             defaultInit.foreground,
+            defaultInit,
             allColorsInit,
         ),
     });
@@ -179,6 +227,7 @@ export function defineColorTheme<const Init extends ColorThemeInit>(
                           'foreground',
                       ].join(' '),
                       colorInit.foreground,
+                      defaultInit,
                       allColorsInit,
                   )
                 : `var(${defaultColors['default-fg'].name}, ${defaultColors['default-fg'].default})`;
@@ -189,6 +238,7 @@ export function defineColorTheme<const Init extends ColorThemeInit>(
                           'background',
                       ].join(' '),
                       colorInit.background,
+                      defaultInit,
                       allColorsInit,
                   )
                 : `var(${defaultColors['default-bg'].name}, ${defaultColors['default-bg'].default})`;
@@ -272,7 +322,10 @@ export function defineColorTheme<const Init extends ColorThemeInit>(
             [themeDefaultKey]: themeDefaultInverseColors,
             ...inverseColors,
         },
-        init: allColorsInit,
+        init: {
+            colors: allColorsInit,
+            default: defaultInit,
+        },
     } as ColorTheme<Init>;
 }
 

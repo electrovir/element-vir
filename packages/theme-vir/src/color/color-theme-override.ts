@@ -9,6 +9,7 @@ import {
     type ColorTheme,
     type ColorThemeColor,
     type ColorThemeInit,
+    type NoRefColorInit,
 } from './color-theme.js';
 
 /**
@@ -55,7 +56,12 @@ function applyCssVarOverride({
     }
 
     overrideValues[String(themeColor[layerKey].name) as CssVarName] = String(
-        createColorCssVarDefault(layerKey, layerOverride, originalTheme),
+        createColorCssVarDefault(
+            layerKey,
+            layerOverride,
+            originalTheme.init.default,
+            originalTheme.init.colors,
+        ),
     );
 }
 
@@ -71,11 +77,13 @@ export function defineColorThemeOverride<const Init extends ColorThemeInit>(
     {
         defaultOverride,
         colorOverrides,
-    }: RequireAtLeastOne<{
-        /** Override the default foreground and/or background colors. */
-        defaultOverride: ColorInit;
-        colorOverrides: ColorThemeOverrideInit<ColorTheme<Init>>;
-    }>,
+    }: Readonly<
+        RequireAtLeastOne<{
+            /** Override the default foreground and/or background colors. */
+            defaultOverride: Readonly<NoRefColorInit>;
+            colorOverrides: Readonly<ColorThemeOverrideInit<ColorTheme<Init>>>;
+        }>
+    >,
 ): ColorThemeOverride<Init> {
     const defaultValues: ColorThemeOverride['overrides'] = {};
 
@@ -127,11 +135,11 @@ export function defineColorThemeOverride<const Init extends ColorThemeInit>(
 
     const asTheme: ColorTheme<Init> = defineColorTheme(
         {
-            ...originalTheme.colors[themeDefaultKey].init,
+            ...originalTheme.init.default,
             ...defaultOverride,
         },
         {
-            ...originalTheme.init,
+            ...originalTheme.init.colors,
             ...colorOverrides,
         },
     );

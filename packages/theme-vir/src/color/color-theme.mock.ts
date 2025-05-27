@@ -19,6 +19,12 @@ export const mockColorTheme = defineColorTheme(
         'nav-bar': {
             background: '#ccc',
         },
+        'button-primary': {
+            foreground: 'white',
+            background: {
+                refForeground: 'action-primary',
+            },
+        },
     },
 );
 

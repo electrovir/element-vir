@@ -1,6 +1,8 @@
 import {assert} from '@augment-vir/assert';
+import {mapObjectValues} from '@augment-vir/common';
 import {describe, it} from '@augment-vir/test';
 import {defineColorTheme, themeDefaultKey} from './color-theme.js';
+import {mockColorTheme} from './color-theme.mock.js';
 
 describe(defineColorTheme.name, () => {
     it('maps all colors', () => {
@@ -42,7 +44,7 @@ describe(defineColorTheme.name, () => {
         assert.strictEquals(theme.colors['brand-secondary'].background.default, 'navy');
         assert.strictEquals(
             theme.colors['logo-color'].foreground.default,
-            'var(--brand-secondary-bg)',
+            'var(--brand-secondary-bg, navy)',
         );
         assert.strictEquals(
             theme.colors['logo-color'].background.default,
@@ -50,7 +52,7 @@ describe(defineColorTheme.name, () => {
         );
         assert.strictEquals(
             theme.colors['header-color'].foreground.default,
-            'var(--brand-secondary-fg)',
+            'var(--brand-secondary-fg, black)',
         );
         assert.strictEquals(
             theme.colors['header-color'].background.default,
@@ -58,6 +60,42 @@ describe(defineColorTheme.name, () => {
         );
 
         assert.strictEquals(theme.colors['brand-primary'].name, 'brand-primary');
+    });
+    it('has expected colors in mock', () => {
+        assert.deepEquals(
+            mapObjectValues(mockColorTheme.colors, (colorName, color) => {
+                return {
+                    foreground: color.foreground.default,
+                    background: color.background.default,
+                };
+            }),
+            {
+                'theme-default': {
+                    foreground: 'black',
+                    background: 'white',
+                },
+                'action-primary': {
+                    foreground: 'dodgerblue',
+                    background: 'var(--default-bg, white)',
+                },
+                'action-secondary': {
+                    foreground: 'navy',
+                    background: 'var(--default-bg, white)',
+                },
+                'action-danger': {
+                    foreground: 'red',
+                    background: 'var(--default-bg, white)',
+                },
+                'nav-bar': {
+                    foreground: 'var(--default-fg, black)',
+                    background: '#ccc',
+                },
+                'button-primary': {
+                    foreground: 'white',
+                    background: 'var(--action-primary-fg, dodgerblue)',
+                },
+            },
+        );
     });
     it('rejects an invalid ref', () => {
         assert.throws(
@@ -83,7 +121,7 @@ describe(defineColorTheme.name, () => {
                 );
             },
             {
-                matchMessage: 'theme background reference',
+                matchMessage: 'Color theme refBackground reference',
             },
         );
         assert.throws(
@@ -109,7 +147,7 @@ describe(defineColorTheme.name, () => {
                 );
             },
             {
-                matchMessage: 'theme foreground reference',
+                matchMessage: 'Color theme refForeground reference',
             },
         );
     });
