@@ -1,5 +1,5 @@
 import {describe, itCases} from '@augment-vir/test';
-import {filterToSelectedOptions} from './dropdown-helpers.js';
+import {filterToSelectedOptions} from '../pop-up/pop-up-helpers.js';
 import {mockOptions} from './dropdown.mock.js';
 
 describe(filterToSelectedOptions.name, () => {

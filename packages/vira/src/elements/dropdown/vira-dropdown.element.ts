@@ -31,13 +31,13 @@ import {
     type ShowPopUpResult,
 } from '../../util/pop-up-manager.js';
 import {defineViraElement} from '../define-vira-element.js';
-import {ViraIcon} from '../vira-icon.element.js';
 import {
     assertUniqueIdProps,
     createNewSelection,
     filterToSelectedOptions,
     triggerPopUpState,
-} from './dropdown-helpers.js';
+} from '../pop-up/pop-up-helpers.js';
+import {ViraIcon} from '../vira-icon.element.js';
 import {type ViraDropdownOption} from './vira-dropdown-item.element.js';
 import {ViraDropdownOptions} from './vira-dropdown-options.element.js';
 

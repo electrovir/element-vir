@@ -2,19 +2,19 @@ import {assert} from '@augment-vir/assert';
 import {type PartialWithUndefined} from '@augment-vir/common';
 import {NavController, type Coords} from 'device-navigation';
 import {classMap, css, defineElementEvent, html, listen, renderIf} from 'element-vir';
-import {createFocusStyles, viraFocusCssVars} from '../styles/focus.js';
-import {viraFormCssVars} from '../styles/form-themes.js';
-import {noNativeFormStyles, noUserSelect, viraDisabledStyles} from '../styles/index.js';
-import {viraShadows} from '../styles/shadows.js';
+import {createFocusStyles, viraFocusCssVars} from '../../styles/focus.js';
+import {viraFormCssVars} from '../../styles/form-themes.js';
+import {noNativeFormStyles, noUserSelect, viraDisabledStyles} from '../../styles/index.js';
+import {viraShadows} from '../../styles/shadows.js';
 import {
     HidePopUpEvent,
     NavSelectEvent,
     PopUpManager,
     type ShowPopUpResult,
-} from '../util/pop-up-manager.js';
-import {defineViraElement} from './define-vira-element.js';
-import {triggerPopUpState} from './dropdown/dropdown-helpers.js';
-import {ViraDropdownOptions} from './dropdown/vira-dropdown-options.element.js';
+} from '../../util/pop-up-manager.js';
+import {defineViraElement} from '../define-vira-element.js';
+import {ViraDropdownOptions} from '../dropdown/vira-dropdown-options.element.js';
+import {triggerPopUpState} from './pop-up-helpers.js';
 
 /**
  * The main dropdown element that should be use directly.
