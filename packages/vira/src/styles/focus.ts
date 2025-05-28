@@ -37,7 +37,6 @@ export function createFocusStyles({
     elementBorderSize: number;
     outlineGap?: number;
     outlineWidth?: number;
-    borderRadius?: number;
 }) {
     const outlineSpacing = unsafeCSS(addPx(outlineWidth + outlineGap + elementBorderSize));
 
