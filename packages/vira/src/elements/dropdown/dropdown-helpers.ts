@@ -80,7 +80,7 @@ export function createNewSelection(
 }
 
 /**
- * Handles toggles pop up state for `ViraDropdown`.
+ * Handles toggling pop up state for `ViraDropdown`.
  *
  * @category Internal
  */

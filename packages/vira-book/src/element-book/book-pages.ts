@@ -3,6 +3,7 @@ import {ViraDropdownItemPage} from './entries/dropdown/vira-dropdown-item.elemen
 import {dropdownPage} from './entries/dropdown/vira-dropdown.book.js';
 import {viraDropdownPage} from './entries/dropdown/vira-dropdown.element.book.js';
 import {iconsBookPage} from './entries/icons.book.js';
+import {viraPopUpTriggerBookPage} from './entries/vir-pop-up-trigger.element.book.js';
 import {viraBoldTextPage} from './entries/vira-bold-text.element.book.js';
 import {viraButtonBookPage} from './entries/vira-button.element.book.js';
 import {viraCollapsibleBookPage} from './entries/vira-collapsible-wrapper.element.book.js';
@@ -25,4 +26,5 @@ export const viraBookPages = [
     viraImageBookPage,
     viraInputBookPage,
     viraLinkBookPage,
+    viraPopUpTriggerBookPage,
 ].sort((a, b) => a.title.localeCompare(b.title));
