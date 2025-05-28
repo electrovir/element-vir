@@ -196,7 +196,7 @@ export class PopUpManager {
                             direction: NavDirection.Right,
                             allowWrapping: false,
                         });
-                    } else if (keyCode === 'Enter' || keyCode === 'Return') {
+                    } else if (keyCode === 'Enter' || keyCode === 'Return' || keyCode === 'Space') {
                         const result = this.navController.enterInto({fallbackToActivate: true});
                         if (result.success) {
                             this.listenTarget.dispatch(new NavSelectEvent({detail: result.coords}));
