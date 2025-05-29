@@ -30,13 +30,13 @@ Make sure to install this as a normal dependency (not just a dev dependency) bec
 
 # Usage
 
-Most usage of this package is done through the `defineElement` or `defineElementNoInputs` functions. See the [`DeclarativeElementInit`](https://github.com/electrovir/element-vir/blob/dev/packages/src/declarative-element/declarative-element-init.ts) type for that function's full inputs. The inputs are also described below with examples.
+Most usage of this package is done through the `defineElement` functions. See the [`DeclarativeElementInit`](https://github.com/electrovir/element-vir/blob/dev/packages/src/declarative-element/declarative-element-init.ts) type for that function's full inputs. The inputs are also described below with examples.
 
 All of [`lit`](https://lit.dev)'s syntax and functionality is available for use if you wish.
 
 ## Simple element definition
 
-Use `defineElementNoInputs` to define your element if it's not going to accept any inputs (or if you're just getting started). It's only input is an object with at least `tagName` and `render` properties (the types enforce this). Here is a bare-minimum example custom element:
+Use `defineElement` to define your element. Here is a bare-minimum example custom element:
 
 <!-- example-link: src/readme-examples/my-simple.element.ts -->
 
@@ -140,7 +140,7 @@ export const MyWithStylesAndInterpolatedSelector = defineElement()({
 
 ## Defining and using Inputs
 
-Define element inputs by using `defineElement` to define a declarative element. Pass your input type as a generic to the `defineElement` call. Then call _that_ with the normal definition input (like when using `defineElementNoInputs`).
+Define element inputs by using `defineElement` to define a declarative element. Pass your input type, if any, as a generic to the `defineElement` call. Then call _that_ with the normal definition input.
 
 To use an element's inputs for use in its template, grab `inputs` from `render`'s parameters and interpolate it into your HTML template:
 
@@ -490,7 +490,7 @@ export const MyWithCssVars = defineElement()({
 
 ## Custom Type Requirements
 
-Use `wrapDefineElement` to compose `defineElement` and `defineElementNoInputs`. This is particularly useful to adding restrictions on the element `tagName`, but it can be used for restricting any of the type parameters:
+Use `wrapDefineElement` to compose `defineElement`. This is particularly useful to adding restrictions on the element `tagName`, but it can be used for restricting any of the type parameters:
 
 <!-- example-link: src/readme-examples/my-custom-define.ts -->
 
@@ -499,14 +499,10 @@ import {wrapDefineElement} from 'element-vir';
 
 export type VirTagName = `vir-${string}`;
 
-export const {defineElement: defineVirElement, defineElementNoInputs: defineVirElementNoInputs} =
-    wrapDefineElement<VirTagName>();
+export const {defineElement: defineVirElement} = wrapDefineElement<VirTagName>();
 
 // add an optional assert callback
-export const {
-    defineElement: defineVerifiedVirElement,
-    defineElementNoInputs: defineVerifiedVirElementNoInputs,
-} = wrapDefineElement<VirTagName>({
+export const {defineElement: defineVerifiedVirElement} = wrapDefineElement<VirTagName>({
     assertInputs: (inputs) => {
         if (!inputs.tagName.startsWith('vir-')) {
             throw new Error(`all custom elements must start with "vir-"`);
@@ -515,10 +511,7 @@ export const {
 });
 
 // add an optional transform callback
-export const {
-    defineElement: defineTransformedVirElement,
-    defineElementNoInputs: defineTransformedVirElementNoInputs,
-} = wrapDefineElement<VirTagName>({
+export const {defineElement: defineTransformedVirElement} = wrapDefineElement<VirTagName>({
     transformInputs: (inputs) => {
         return {
             ...inputs,

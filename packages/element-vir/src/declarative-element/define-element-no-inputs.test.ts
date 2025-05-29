@@ -5,9 +5,8 @@ import {queryThroughShadow} from '@augment-vir/web';
 import {IntervalObservable} from 'observavir';
 import {defineElement} from '../index.js';
 import {html} from '../template-transforms/vir-html/vir-html.js';
-import {defineElementNoInputs} from './define-element-no-inputs.js';
 
-describe(defineElementNoInputs.name, () => {
+describe(defineElement.name, () => {
     it('blocks render callbacks without a return type', () => {
         defineElement()({
             tagName: `some-tag-3`,

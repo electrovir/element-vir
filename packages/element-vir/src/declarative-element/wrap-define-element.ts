@@ -8,6 +8,9 @@ import {type BaseCssPropertyName} from './properties/css-properties.js';
 import {type EventsInitMap} from './properties/element-events.js';
 import {type PropertyInitMapBase} from './properties/element-properties.js';
 
+// eslint-disable-next-line sonarjs/deprecation
+import {defineElementNoInputs} from './define-element-no-inputs.js';
+
 /**
  * Options for {@link wrapDefineElement}.
  *
@@ -119,6 +122,46 @@ export function wrapDefineElement<
                     >,
                 );
             };
+        },
+        /**
+         * A wrapped function for defining an element without inputs.
+         *
+         * @deprecated Use `defineElement` instead.
+         */
+        defineElementNoInputs: <
+            const TagName extends TagNameRequirement,
+            Inputs extends InputsRequirement,
+            State extends StateRequirement,
+            EventsInit extends EventsInitRequirement,
+            const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
+            const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
+            const SlotNames extends ReadonlyArray<string> = Readonly<[]>,
+        >(
+            inputs: DeclarativeElementInit<
+                TagName,
+                Inputs,
+                State,
+                EventsInit,
+                HostClassKeys,
+                CssVarKeys,
+                SlotNames
+            >,
+        ) => {
+            assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
+            // eslint-disable-next-line sonarjs/deprecation, @typescript-eslint/no-deprecated
+            return defineElementNoInputs(
+                transformInputs(
+                    inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
+                ) as unknown as DeclarativeElementInit<
+                    TagName,
+                    Inputs,
+                    State,
+                    EventsInit,
+                    HostClassKeys,
+                    CssVarKeys,
+                    SlotNames
+                >,
+            );
         },
     };
 }

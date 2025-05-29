@@ -4,10 +4,12 @@ import {assert, check} from '@augment-vir/assert';
 import {type CustomElementTagName} from './custom-tag-name.js';
 import {type DeclarativeElementInit} from './declarative-element-init.js';
 import {type DeclarativeElementDefinition} from './declarative-element.js';
-import {defineElementNoInputs} from './define-element-no-inputs.js';
 import {type BaseCssPropertyName} from './properties/css-properties.js';
 import {type EventsInitMap} from './properties/element-events.js';
 import {type PropertyInitMapBase} from './properties/element-properties.js';
+
+// eslint-disable-next-line sonarjs/deprecation
+import {defineElementNoInputs} from './define-element-no-inputs.js';
 
 /**
  * Verifies that the given `Inputs` type does not clash with built-in HTMLElement properties. This
@@ -23,9 +25,8 @@ export type DeclarativeElementInputErrorParams<Inputs extends PropertyInitMapBas
           ];
 
 /**
- * Defines an element with inputs. If the element actually has no inputs, use
- * {@link defineElementNoInputs} instead. Note that this function must be called twice, due to
- * TypeScript type inference limitations.
+ * Defines an element with inputs. Note that this function must be called twice, due to TypeScript
+ * type inference limitations.
  *
  * @category Element Definition
  * @example
