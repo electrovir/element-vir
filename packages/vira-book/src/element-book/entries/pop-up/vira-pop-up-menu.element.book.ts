@@ -20,5 +20,20 @@ export const viraPopUpMenuBookPage = defineBookPage({
                 `;
             },
         });
+        defineExample({
+            title: 'up',
+            styles: css`
+                .content {
+                    padding: 8px 16px;
+                }
+            `,
+            render() {
+                return html`
+                    <${ViraPopUpMenu.assign({openUpwards: true})}>
+                        <div class="content">Contents</div>
+                    </${ViraPopUpMenu}>
+                `;
+            },
+        });
     },
 });

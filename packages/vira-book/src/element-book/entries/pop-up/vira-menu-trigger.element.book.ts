@@ -1,6 +1,6 @@
 import {defineBookPage} from 'element-book';
 import {css, html} from 'element-vir';
-import {type MenuItem, ViraMenuTrigger, ViraPopUpTrigger} from 'vira';
+import {type MenuItem, ViraMenuTrigger} from 'vira';
 import {elementsBookPage} from '../../elements.book.js';
 
 const mockMenuItems: MenuItem[] = [
@@ -68,7 +68,7 @@ export const viraMenuTriggerBookPage = defineBookPage({
                             items: mockMenuItems,
                             ...example.inputs,
                         })}>
-                            <div class="trigger" slot=${ViraPopUpTrigger.slotNames.trigger}>
+                            <div class="trigger" slot=${ViraMenuTrigger.slotNames.trigger}>
                                 Trigger Menu
                             </div>
                         </${ViraMenuTrigger}>

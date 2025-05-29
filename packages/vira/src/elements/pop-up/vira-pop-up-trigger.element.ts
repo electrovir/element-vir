@@ -15,6 +15,17 @@ import {defineViraElement} from '../define-vira-element.js';
 import {triggerPopUpState} from './pop-up-helpers.js';
 
 /**
+ * Offsets applied to any menu opened by {@link ViraPopUpTrigger}.
+ *
+ * @category Internal
+ */
+export type PopUpOffset = PartialWithUndefined<{
+    vertical: number;
+    right: number;
+    left: number;
+}>;
+
+/**
  * An element with slots for a pop-up trigger and pop-up contents.
  *
  * @category PopUp
@@ -29,11 +40,7 @@ export const ViraPopUpTrigger = defineViraElement<
         /** Set to `true` to keep the pop-up open if it is interacted with. */
         keepOpenAfterInteraction: boolean;
         /** All values in px. */
-        popUpOffset?: PartialWithUndefined<{
-            vertical: number;
-            right: number;
-            left: number;
-        }>;
+        popUpOffset?: PopUpOffset;
     }>
 >()({
     tagName: 'vira-pop-up-trigger',

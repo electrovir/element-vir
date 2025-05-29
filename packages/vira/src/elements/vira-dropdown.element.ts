@@ -1,6 +1,5 @@
 import {check} from '@augment-vir/assert';
 import {filterMap, type PartialWithUndefined} from '@augment-vir/common';
-import {type NavController} from 'device-navigation';
 import {
     classMap,
     css,
@@ -17,14 +16,10 @@ import {viraBorders} from '../styles/border.js';
 import {viraFocusCssVars} from '../styles/focus.js';
 import {viraFormCssVars} from '../styles/form-themes.js';
 import {noUserSelect, viraAnimationDurations} from '../styles/index.js';
-import {viraShadows} from '../styles/shadows.js';
-import {type PopUpManager, type ShowPopUpResult} from '../util/pop-up-manager.js';
+import {type ShowPopUpResult} from '../util/pop-up-manager.js';
 import {defineViraElement} from './define-vira-element.js';
-import {updateSelectedItems} from './pop-up/pop-up-helpers.js';
 import {type MenuItem} from './pop-up/pop-up-menu-item.js';
-import {ViraMenu} from './pop-up/vira-menu.element.js';
-import {ViraPopUpMenu} from './pop-up/vira-pop-up-menu.element.js';
-import {ViraPopUpTrigger} from './pop-up/vira-pop-up-trigger.element.js';
+import {ViraMenuTrigger} from './pop-up/vira-menu-trigger.element.js';
 import {ViraIcon} from './vira-icon.element.js';
 
 /**
@@ -36,7 +31,6 @@ export const viraDropdownTestIds = {
     trigger: 'dropdown-trigger',
     icon: 'dropdown-icon',
     prefix: 'dropdown-prefix',
-    options: 'dropdown-options',
 };
 
 /**
@@ -84,7 +78,7 @@ export const ViraDropdown = defineViraElement<
             max-width: 100%;
         }
 
-        ${ViraPopUpTrigger} {
+        ${ViraMenuTrigger} {
             width: 100%;
         }
 
@@ -95,10 +89,11 @@ export const ViraDropdown = defineViraElement<
         }
 
         .trigger-icon {
-            transform: rotate(180deg);
-            transition: ${viraAnimationDurations['vira-interaction-animation-duration'].value}
-                linear transform;
             align-self: flex-start;
+            will-change: transform;
+            transform: rotate(180deg);
+            transition: transform
+                ${viraAnimationDurations['vira-interaction-animation-duration'].value} linear;
         }
 
         .trigger-icon-wrapper {
@@ -107,16 +102,18 @@ export const ViraDropdown = defineViraElement<
             justify-content: flex-end;
         }
 
-        .open .dropdown-trigger .trigger-icon {
-            transform: rotate(0);
-        }
+        .open {
+            & .trigger-icon {
+                transform: rotate(0);
+            }
 
-        .open:not(.open-upwards) .dropdown-trigger {
-            border-bottom-left-radius: 0;
-        }
+            &:not(.open-upwards).dropdown-trigger {
+                border-bottom-left-radius: 0;
+            }
 
-        .open-upwards.open .dropdown-trigger {
-            border-top-left-radius: 0;
+            &.open-upwards.dropdown-trigger {
+                border-top-left-radius: 0;
+            }
         }
 
         .dropdown-trigger {
@@ -136,26 +133,16 @@ export const ViraDropdown = defineViraElement<
             color: ${viraFormCssVars['vira-form-foreground-color'].value};
         }
 
-        .open-upwards ${ViraPopUpMenu} {
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-            border-top-left-radius: ${viraBorders['vira-form-input-radius'].value};
-            border-top-right-radius: ${viraBorders['vira-form-input-radius'].value};
-            ${viraShadows.menuShadowReversed}
-        }
-
         .using-placeholder {
             opacity: 0.4;
         }
     `,
     events: {
         selectedChange: defineElementEvent<PropertyKey[]>(),
-        openChange: defineElementEvent<boolean>(),
+        openChange: defineElementEvent<ShowPopUpResult | undefined>(),
     },
     state() {
         return {
-            navController: undefined as undefined | NavController,
-            popUpManager: undefined as undefined | PopUpManager,
             /** `undefined` means the pop up is not currently showing. */
             showPopUpResult: undefined as ShowPopUpResult | undefined,
         };
@@ -197,53 +184,31 @@ export const ViraDropdown = defineViraElement<
                 : selectedOptions[0]?.label || '';
 
         return html`
-            <${ViraPopUpTrigger.assign({
+            <${ViraMenuTrigger.assign({
+                items: inputs.options,
+                selected: inputs.selected,
                 isDisabled: inputs.isDisabled,
-                keepOpenAfterInteraction: true,
+                isMultiSelect: inputs.isMultiSelect,
                 z_debug_forceOpenState: inputs.z_debug_forceOpenState,
                 popUpOffset: {
                     vertical: -1,
                     right: 24,
                 },
             })}
-                class=${classMap({
-                    open: !!state.showPopUpResult,
-                    'open-upwards': !state.showPopUpResult?.popDown,
+                ${listen(ViraMenuTrigger.events.openChange, (event) => {
+                    updateState({showPopUpResult: event.detail});
+                    dispatch(new events.openChange(event.detail));
                 })}
-                ${listen(ViraPopUpTrigger.events.init, (event) => {
-                    updateState({
-                        navController: event.detail.navController,
-                        popUpManager: event.detail.popUpManager,
-                    });
-                })}
-                ${listen(ViraPopUpTrigger.events.openChange, (event) => {
-                    if (!!state.showPopUpResult !== !!event.detail) {
-                        dispatch(new events.openChange(!!event.detail));
-                    }
-                    updateState({
-                        showPopUpResult: event.detail,
-                    });
-                })}
-                ${listen(ViraPopUpTrigger.events.navSelect, (event) => {
-                    const optionIndex = event.detail.x;
-                    const option = inputs.options[optionIndex];
-                    if (!option) {
-                        throw new Error(`Found no dropdown option at index '${optionIndex}'`);
-                    }
-
-                    dispatch(
-                        new events.selectedChange(
-                            updateSelectedItems(option, inputs.selected, !!inputs.isMultiSelect),
-                        ),
-                    );
-                    if (!inputs.isMultiSelect) {
-                        state.popUpManager?.removePopUp();
-                    }
+                ${listen(ViraMenuTrigger.events.itemActivate, (event) => {
+                    dispatch(new events.selectedChange(event.detail));
                 })}
             >
                 <div
-                    slot=${ViraPopUpTrigger.slotNames.trigger}
-                    class="dropdown-trigger"
+                    slot=${ViraMenuTrigger.slotNames.trigger}
+                    class="dropdown-trigger ${classMap({
+                        open: !!state.showPopUpResult,
+                        'open-upwards': !state.showPopUpResult?.popDown,
+                    })}"
                     ${testId(viraDropdownTestIds.trigger)}
                 >
                     ${leadingIconTemplate}
@@ -266,26 +231,7 @@ export const ViraDropdown = defineViraElement<
                         ></${ViraIcon}>
                     </span>
                 </div>
-                ${state.navController && state.showPopUpResult
-                    ? html`
-                          <${ViraPopUpMenu}
-                              class=${classMap({
-                                  'open-upwards': !state.showPopUpResult.popDown,
-                              })}
-                              slot=${ViraPopUpTrigger.slotNames.popUp}
-                          >
-                              <${ViraMenu.assign({
-                                  items: inputs.options,
-                                  selected: selectedOptions.map((option) => option.id),
-                                  navController: state.navController,
-                                  isMultiSelect: !!inputs.isMultiSelect,
-                              })}
-                                  ${testId(viraDropdownTestIds.options)}
-                              ></${ViraMenu}>
-                          </${ViraPopUpMenu}>
-                      `
-                    : nothing}
-            </${ViraPopUpTrigger}>
+            </${ViraMenuTrigger}>
         `;
     },
 });

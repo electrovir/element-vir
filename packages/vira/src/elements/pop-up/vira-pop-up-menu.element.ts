@@ -10,9 +10,15 @@ import {defineViraElement} from '../define-vira-element.js';
  * @category PopUp
  * @category Elements
  */
-export const ViraPopUpMenu = defineViraElement()({
+export const ViraPopUpMenu = defineViraElement<{
+    /** If true, indicates that the menu is opening upwards and should be styled accordingly. */
+    openUpwards?: boolean;
+}>()({
     tagName: 'vira-pop-up-menu',
-    styles: css`
+    hostClasses: {
+        'vira-pop-up-menu-open-upwards': ({inputs}) => !!inputs.openUpwards,
+    },
+    styles: ({hostClasses}) => css`
         :host {
             display: flex;
 
@@ -28,6 +34,14 @@ export const ViraPopUpMenu = defineViraElement()({
             border: 1px solid ${viraFormCssVars['vira-form-border-color'].value};
             color: ${viraFormCssVars['vira-form-foreground-color'].value};
             ${viraShadows.menuShadow}
+        }
+
+        ${hostClasses['vira-pop-up-menu-open-upwards'].selector} {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border-top-left-radius: ${viraBorders['vira-form-input-radius'].value};
+            border-top-right-radius: ${viraBorders['vira-form-input-radius'].value};
+            ${viraShadows.menuShadowReversed}
         }
     `,
     render() {

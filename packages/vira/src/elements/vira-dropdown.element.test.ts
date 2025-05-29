@@ -5,15 +5,15 @@ import {extractElementText, queryThroughShadow, waitForAnimationFrame} from '@au
 import {html, listen, testIdSelector} from 'element-vir';
 import {Element24Icon} from '../icons/index.js';
 import {mockMenuItems} from './pop-up/pop-up-menu-item.mock.js';
+import {viraMenuTriggerTestIds} from './pop-up/vira-menu-trigger.element.js';
 import {viraMenuTestIds} from './pop-up/vira-menu.element.js';
 import {ViraDropdown, viraDropdownTestIds} from './vira-dropdown.element.js';
 
 async function setupDropdownTest(inputs?: Partial<(typeof ViraDropdown)['InputsType']>) {
-    const events: {
-        [EventKey in keyof typeof ViraDropdown.events]: InstanceType<
-            (typeof ViraDropdown.events)[EventKey]
-        >['detail'][];
-    } = mapObjectValues(ViraDropdown.events, () => []);
+    const events: {openChange: boolean[]; selectedChange: PropertyKey[][]} = {
+        openChange: [],
+        selectedChange: [],
+    };
     const instance = await testWeb.render(html`
         <${ViraDropdown.assign({
             options: mockMenuItems,
@@ -21,13 +21,17 @@ async function setupDropdownTest(inputs?: Partial<(typeof ViraDropdown)['InputsT
             ...inputs,
         })}
             ${listen(ViraDropdown.events.openChange, (event) => {
-                events.openChange.push(event.detail);
+                events.openChange.push(!!event.detail);
             })}
             ${listen(ViraDropdown.events.selectedChange, (event) => {
                 events.selectedChange.push(event.detail);
             })}
         ></${ViraDropdown}>
     `);
+
+    function findMenu() {
+        return queryThroughShadow(instance, testIdSelector(viraMenuTriggerTestIds.menu));
+    }
 
     assert.instanceOf(instance, ViraDropdown);
 
@@ -36,7 +40,7 @@ async function setupDropdownTest(inputs?: Partial<(typeof ViraDropdown)['InputsT
     );
     assert.instanceOf(triggerElement, HTMLElement);
 
-    assert.isNull(instance.shadowRoot.querySelector(testIdSelector(viraDropdownTestIds.options)));
+    assert.isNullish(findMenu());
     assert.isEmpty(events.openChange);
     assert.isEmpty(events.selectedChange);
 
@@ -44,25 +48,22 @@ async function setupDropdownTest(inputs?: Partial<(typeof ViraDropdown)['InputsT
         events,
         instance,
         triggerElement,
+        findMenu,
         queryByTestId: mapObjectValues(viraDropdownTestIds, (testIdKey, testId) => {
             return () => {
                 return instance.shadowRoot.querySelector(testIdSelector(testId));
             };
         }),
         async toggle(this: void) {
-            const optionsExisted: boolean = !!instance.shadowRoot.querySelector(
-                testIdSelector(viraDropdownTestIds.options),
-            );
+            const menuExisted: boolean = !!findMenu();
 
             await testWeb.click(triggerElement);
 
             await waitUntil.isTruthy(
                 () => {
-                    const optionsExistNow = !!instance.shadowRoot.querySelector(
-                        testIdSelector(viraDropdownTestIds.options),
-                    );
+                    const menuExistsNow = !!findMenu();
 
-                    return optionsExisted !== optionsExistNow;
+                    return menuExisted !== menuExistsNow;
                 },
                 {timeout: {seconds: 1}},
                 'the options never popped up',
@@ -80,7 +81,7 @@ describe(ViraDropdown.tagName, () => {
     });
 
     it('closes on a click', async () => {
-        const {toggle, events, queryByTestId} = await setupDropdownTest();
+        const {toggle, events, findMenu} = await setupDropdownTest();
 
         await toggle();
         assert.deepEquals(events.openChange, [true]);
@@ -90,12 +91,12 @@ describe(ViraDropdown.tagName, () => {
             false,
         ]);
         await waitUntil(() => {
-            return !queryByTestId.options();
+            return !findMenu();
         });
     });
 
     it('selects an option on click', async () => {
-        const {instance, toggle, events, queryByTestId} = await setupDropdownTest();
+        const {instance, toggle, events, findMenu} = await setupDropdownTest();
 
         await toggle();
         const options = queryThroughShadow(instance, testIdSelector(viraMenuTestIds.item), {
@@ -107,7 +108,7 @@ describe(ViraDropdown.tagName, () => {
         await testWeb.click(options[1]);
 
         await waitUntil(() => {
-            return !queryByTestId.options();
+            return !findMenu();
         });
         assert.deepEquals(events.openChange, [
             true,

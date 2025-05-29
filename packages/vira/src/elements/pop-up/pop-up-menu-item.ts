@@ -1,6 +1,5 @@
 import {type PartialWithUndefined} from '@augment-vir/common';
 import {type HTMLTemplateResult} from 'element-vir';
-import {ViraMenuItem} from './vira-menu-item.element.js';
 
 /**
  * An individual menu item consumed partially by `ViraMenuItem` and used by `ViraMenu`.
@@ -19,7 +18,7 @@ export type MenuItem = {
     /**
      * An optional custom template for this menu item. This will replace the menu item text and icon
      * content, but will still be styled correctly if used within `ViraMenu`. Feel free to use
-     * {@link ViraMenuItem} as the template with a custom `<slot>` to keep the selected checkmark
+     * `ViraMenuItem` as the template with a custom `<slot>` to keep the selected checkmark
      * functionality.
      */
     template: HTMLTemplateResult;
