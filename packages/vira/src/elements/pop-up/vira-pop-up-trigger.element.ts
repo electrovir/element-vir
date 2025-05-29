@@ -5,7 +5,6 @@ import {classMap, css, defineElementEvent, html, listen, renderIf} from 'element
 import {createFocusStyles, viraFocusCssVars} from '../../styles/focus.js';
 import {viraFormCssVars} from '../../styles/form-themes.js';
 import {noNativeFormStyles, noUserSelect, viraDisabledStyles} from '../../styles/index.js';
-import {viraShadows} from '../../styles/shadows.js';
 import {
     HidePopUpEvent,
     NavSelectEvent,
@@ -13,7 +12,6 @@ import {
     type ShowPopUpResult,
 } from '../../util/pop-up-manager.js';
 import {defineViraElement} from '../define-vira-element.js';
-import {ViraDropdownOptions} from '../dropdown/vira-dropdown-options.element.js';
 import {triggerPopUpState} from './pop-up-helpers.js';
 
 /**
@@ -83,10 +81,6 @@ export const ViraPopUpTrigger = defineViraElement<
         .dropdown-trigger {
             box-sizing: border-box;
             ${noUserSelect};
-        }
-
-        .open-upwards ${ViraDropdownOptions} {
-            ${viraShadows.menuShadowReversed}
         }
 
         ${hostClasses['vira-pop-up-trigger-disabled'].selector} {
@@ -212,6 +206,12 @@ export const ViraPopUpTrigger = defineViraElement<
             }
         }
 
+        /**
+         * These styles do _not_ account for window resizing while the menu is open. I decided this
+         * was not a major enough problem to tackle. If it becomes major enough in the future,
+         * you'll need to hook into a window _or_ container resize listener inside `PopUpManager`
+         * and emit a new `ShowPopUpResult` instance when it changes.
+         */
         const positionerStyles = state.showPopUpResult
             ? state.showPopUpResult.popDown
                 ? /** Dropdown going down position. */

@@ -1,4 +1,4 @@
-import {type ViraDropdownOption} from './vira-dropdown-item.element.js';
+import {type MenuItem} from './vira-menu-item.element.js';
 
 export const mockOptions = [
     {
@@ -17,4 +17,4 @@ export const mockOptions = [
         label: 'Option 3',
         id: 3,
     },
-] as const satisfies ReadonlyArray<Readonly<ViraDropdownOption>>;
+] as const satisfies ReadonlyArray<Readonly<MenuItem>>;

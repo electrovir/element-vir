@@ -1,11 +1,11 @@
 import {BookPageControlType, defineBookPage, definePageControl} from 'element-book';
 import {type CSSResult, type HTMLTemplateResult, css, html} from 'element-vir';
-import {ViraDropdownItem} from 'vira';
-import {dropdownPage} from './vira-dropdown.book.js';
+import {ViraMenuItem} from 'vira';
+import {elementsBookPage} from '../../elements.book.js';
 
 const examples: ReadonlyArray<{
     title: string;
-    inputs: typeof ViraDropdownItem.InputsType;
+    inputs: typeof ViraMenuItem.InputsType;
     customStyle?: CSSResult;
     customTemplate?: HTMLTemplateResult;
 }> = [
@@ -48,7 +48,7 @@ const examples: ReadonlyArray<{
     {
         title: 'stretched width',
         customStyle: css`
-            ${ViraDropdownItem} {
+            ${ViraMenuItem} {
                 width: 400px;
             }
         `,
@@ -59,9 +59,9 @@ const examples: ReadonlyArray<{
     },
 ];
 
-export const ViraDropdownItemPage = defineBookPage({
-    title: ViraDropdownItem.tagName,
-    parent: dropdownPage,
+export const viraMenuItemBookPage = defineBookPage({
+    title: ViraMenuItem.tagName,
+    parent: elementsBookPage,
     controls: {
         Selected: definePageControl({
             controlType: BookPageControlType.Dropdown,
@@ -88,7 +88,7 @@ export const ViraDropdownItemPage = defineBookPage({
                 },
                 styles: example.customStyle,
                 render({controls}) {
-                    const finalInputs: typeof ViraDropdownItem.InputsType = {
+                    const finalInputs: typeof ViraMenuItem.InputsType = {
                         label: controls.Label || example.inputs.label,
                         selected: controls.Selected
                             ? controls.Selected === 'all'
@@ -97,13 +97,13 @@ export const ViraDropdownItemPage = defineBookPage({
 
                     if (example.customTemplate) {
                         return html`
-                            <${ViraDropdownItem.assign(finalInputs)}>
+                            <${ViraMenuItem.assign(finalInputs)}>
                                 ${example.customTemplate}
-                            </${ViraDropdownItem}>
+                            </${ViraMenuItem}>
                         `;
                     } else {
                         return html`
-                            <${ViraDropdownItem.assign(finalInputs)}></${ViraDropdownItem}>
+                            <${ViraMenuItem.assign(finalInputs)}></${ViraMenuItem}>
                         `;
                     }
                 },

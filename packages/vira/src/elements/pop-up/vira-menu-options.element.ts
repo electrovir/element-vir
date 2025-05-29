@@ -1,139 +1,153 @@
-import {nav, navAttribute, type NavController, NavValue} from 'device-navigation';
+import {nav, navAttribute, NavController, NavValue} from 'device-navigation';
 import {classMap, css, html, ifDefined, testId} from 'element-vir';
-import {viraBorders} from '../../styles/border.js';
 import {viraFormCssVars} from '../../styles/form-themes.js';
-import {viraDisabledStyles} from '../../styles/index.js';
-import {viraShadows} from '../../styles/shadows.js';
+import {noNativeFormStyles, viraDisabledStyles} from '../../styles/index.js';
 import {defineViraElement} from '../define-vira-element.js';
-import {ViraDropdownItem, type ViraDropdownOption} from './vira-dropdown-item.element.js';
+import {assertUniqueIdProps} from './pop-up-helpers.js';
+import {ViraMenuItem, type MenuItem} from './vira-menu-item.element.js';
 
 /**
- * Test ids for {@link ViraDropdownOptions}.
+ * Test ids for {@link ViraMenuOptions}.
  *
  * @category Internal
  */
-export const viraDropdownOptionsTestIds = {
+export const viraMenuOptionsTestIds = {
     option: 'dropdown-option',
 };
 
 /**
- * The dropdown menu portion of `ViraDropdown`.
+ * A wrapper for menu options. This can be used for dropdown items or menu bar dropdowns. To detect
+ * when items are selected or unselected, pass in a `NavController` instance and hook into its
+ * events.
  *
- * @category Dropdown
+ * @category PopUp
  * @category Elements
  */
-export const ViraDropdownOptions = defineViraElement<
+export const ViraMenuOptions = defineViraElement<
     Readonly<{
-        navController: NavController;
+        /**
+         * The parent nav controller for this menu. If none is provided, an internal nav controller
+         * is created (which means it can't be hooked into by external elements).
+         */
+        navController: NavController | undefined;
         isMultiSelect: boolean;
         /** All dropdown options to show to the user. */
-        options: ReadonlyArray<Readonly<ViraDropdownOption>>;
+        options: ReadonlyArray<Readonly<MenuItem>>;
         /**
          * The currently selected dropdown options. Note that this must be a reference subset of the
          * options input. Meaning, entries in this array must be the exact same objects (by
          * reference) as entries in the `options` input array for them to be marked as selected.
          */
-        selectedOptions: ReadonlyArray<Readonly<ViraDropdownOption>>;
+        selectedOptions: ReadonlyArray<Readonly<MenuItem>>;
     }>
 >()({
-    tagName: 'vira-dropdown-options',
+    tagName: 'vira-menu-options',
+    state({inputs, host}) {
+        return {
+            internalNavController: inputs.navController || new NavController(host),
+        };
+    },
     hostClasses: {
-        'vira-dropdown-options-multiselect': ({inputs}) => inputs.isMultiSelect,
+        'vira-menu-options-multiselect': ({inputs}) => inputs.isMultiSelect,
     },
     styles: ({hostClasses}) => css`
         :host {
             display: flex;
             flex-direction: column;
 
-            pointer-events: auto;
             width: 100%;
             max-height: 100%;
             overflow-y: auto;
-            z-index: 99;
+            z-index: 100;
             box-sizing: border-box;
-            border-radius: ${viraBorders['vira-form-input-radius'].value};
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
             background-color: ${viraFormCssVars['vira-form-background-color'].value};
-            border: 1px solid ${viraFormCssVars['vira-form-border-color'].value};
             color: ${viraFormCssVars['vira-form-foreground-color'].value};
-            ${viraShadows.menuShadow}
         }
 
-        .dropdown-item {
+        .menu-item {
+            ${noNativeFormStyles};
             background-color: white;
             outline: none;
+            cursor: pointer;
         }
 
         ${navAttribute.css({
-            baseSelector: '.dropdown-item:not(.disabled):not(.selected)',
+            baseSelector: '.menu-item:not(.disabled):not(.selected)',
             navValue: NavValue.Focused,
         })}, ${navAttribute.css({
-            baseSelector: '.dropdown-item:not(.disabled):not(.selected)',
+            baseSelector: '.menu-item:not(.disabled):not(.selected)',
             navValue: NavValue.Active,
-        })} {
+        })}, .menu-item:not(.disabled):not(.selected):hover {
             background-color: ${viraFormCssVars['vira-form-selection-hover-background-color']
                 .value};
             outline: none;
         }
 
-        ${hostClasses['vira-dropdown-options-multiselect'].selector} {
+        ${hostClasses['vira-menu-options-multiselect'].selector} {
             &
                 ${navAttribute.css({
-                    baseSelector: '.dropdown-item:not(.disabled)',
+                    baseSelector: '.menu-item:not(.disabled)',
                     navValue: NavValue.Focused,
                 })},
                 ${navAttribute.css({
-                    baseSelector: '.dropdown-item:not(.disabled)',
+                    baseSelector: '.menu-item:not(.disabled)',
                     navValue: NavValue.Active,
-                })} {
+                })},
+                .menu-item:not(.disabled):hover {
                 background-color: ${viraFormCssVars['vira-form-selection-hover-background-color']
                     .value};
                 outline: none;
             }
         }
 
-        ${ViraDropdownItem} {
+        ${ViraMenuItem} {
             pointer-events: none;
         }
 
-        .dropdown-item.disabled {
+        .menu-item.disabled {
             ${viraDisabledStyles};
             pointer-events: auto;
         }
     `,
-    render({inputs}) {
+    cleanup({inputs, state}) {
+        if (!inputs.navController) {
+            state.internalNavController.destroy();
+        }
+    },
+    render({inputs, state}) {
+        assertUniqueIdProps(inputs.options);
+
         const optionTemplates = inputs.options.map((option) => {
             const selected = inputs.selectedOptions.includes(option);
             const innerTemplate =
                 option.template ||
                 html`
-                    <${ViraDropdownItem.assign({
+                    <${ViraMenuItem.assign({
                         label: option.label,
                         selected,
-                    })}></${ViraDropdownItem}>
+                    })}></${ViraMenuItem}>
                 `;
 
             const disabled = option.disabled || (!inputs.isMultiSelect && selected);
 
             return html`
-                <div
-                    class="dropdown-item ${classMap({
+                <button
+                    class="menu-item ${classMap({
                         disabled: !!option.disabled,
                         selected,
                     })}"
-                    ${testId(viraDropdownOptionsTestIds.option)}
-                    title=${ifDefined(option.hoverText || undefined)}
+                    ${testId(viraMenuOptionsTestIds.option)}
+                    title=${ifDefined(option.titleText || undefined)}
                     role="option"
-                    ${nav(inputs.navController, {disabled})}
+                    ${nav(state.internalNavController, {disabled})}
                 >
                     ${innerTemplate}
-                </div>
+                </button>
             `;
         });
 
         return html`
-            <slot>${optionTemplates}</slot>
+            ${optionTemplates}
         `;
     },
 });

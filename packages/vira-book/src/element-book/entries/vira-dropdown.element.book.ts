@@ -1,10 +1,10 @@
 import {check} from '@augment-vir/assert';
 import {BookPageControlType, defineBookPage, definePageControl} from 'element-book';
 import {type CSSResult, css, html, listen} from 'element-vir';
-import {Element24Icon, ViraDropdown, type ViraDropdownOption, allIconsByName} from 'vira';
-import {dropdownPage} from './vira-dropdown.book.js';
+import {Element24Icon, type MenuItem, ViraDropdown, allIconsByName} from 'vira';
+import {elementsBookPage} from '../elements.book.js';
 
-const exampleDropdownOptions: ReadonlyArray<Readonly<ViraDropdownOption>> = [
+const exampleDropdownOptions: ReadonlyArray<Readonly<MenuItem>> = [
     {
         label: 'Option 1',
         id: 1,
@@ -160,7 +160,7 @@ const examples: ReadonlyArray<{
 
 export const viraDropdownPage = defineBookPage({
     title: ViraDropdown.tagName,
-    parent: dropdownPage,
+    parent: elementsBookPage,
     controls: {
         Selected: definePageControl({
             controlType: BookPageControlType.Dropdown,

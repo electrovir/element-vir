@@ -1,6 +1,6 @@
 import {joinWithFinalConjunction} from '@augment-vir/common';
 import {type PopUpManager, type ShowPopUpResult} from '../../util/pop-up-manager.js';
-import {type ViraDropdownOption} from '../dropdown/vira-dropdown-item.element.js';
+import {type MenuItem} from './vira-menu-item.element.js';
 
 /**
  * Filters an array of {@link ViraDropdownOption} based on the given selection.
@@ -14,8 +14,8 @@ export function filterToSelectedOptions({
 }: Readonly<{
     selected: ReadonlyArray<PropertyKey>;
     isMultiSelect?: boolean | undefined;
-    options: ReadonlyArray<Readonly<ViraDropdownOption>>;
-}>): ViraDropdownOption[] {
+    options: ReadonlyArray<Readonly<MenuItem>>;
+}>): MenuItem[] {
     if (selected.length && options.length) {
         const selectedOptions = options.filter((option) => selected.includes(option.id));
 
@@ -50,7 +50,7 @@ export function assertUniqueIdProps(options: ReadonlyArray<Readonly<{id: Propert
 
     if (duplicateIds.length) {
         throw new Error(
-            `Duplicate option ids were given to ViraDropdown: ${joinWithFinalConjunction(duplicateIds)}`,
+            `Duplicate option ids were given: ${joinWithFinalConjunction(duplicateIds)}`,
         );
     }
 }

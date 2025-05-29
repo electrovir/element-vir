@@ -10,24 +10,25 @@ import {
     nothing,
     testId,
 } from 'element-vir';
-import {type ViraIconSvg} from '../../icons/icon-svg.js';
-import {ChevronUp24Icon} from '../../icons/index.js';
-import {viraBorders} from '../../styles/border.js';
-import {viraFocusCssVars} from '../../styles/focus.js';
-import {viraFormCssVars} from '../../styles/form-themes.js';
-import {noUserSelect, viraAnimationDurations} from '../../styles/index.js';
-import {viraShadows} from '../../styles/shadows.js';
-import {type PopUpManager, type ShowPopUpResult} from '../../util/pop-up-manager.js';
-import {defineViraElement} from '../define-vira-element.js';
+import {type ViraIconSvg} from '../icons/icon-svg.js';
+import {ChevronUp24Icon} from '../icons/index.js';
+import {viraBorders} from '../styles/border.js';
+import {viraFocusCssVars} from '../styles/focus.js';
+import {viraFormCssVars} from '../styles/form-themes.js';
+import {noUserSelect, viraAnimationDurations} from '../styles/index.js';
+import {viraShadows} from '../styles/shadows.js';
+import {type PopUpManager, type ShowPopUpResult} from '../util/pop-up-manager.js';
+import {defineViraElement} from './define-vira-element.js';
 import {
     assertUniqueIdProps,
     createNewSelection,
     filterToSelectedOptions,
-} from '../pop-up/pop-up-helpers.js';
-import {ViraPopUpTrigger} from '../pop-up/vira-pop-up-trigger.element.js';
-import {ViraIcon} from '../vira-icon.element.js';
-import {type ViraDropdownOption} from './vira-dropdown-item.element.js';
-import {ViraDropdownOptions} from './vira-dropdown-options.element.js';
+} from './pop-up/pop-up-helpers.js';
+import {type MenuItem} from './pop-up/vira-menu-item.element.js';
+import {ViraMenuOptions} from './pop-up/vira-menu-options.element.js';
+import {ViraPopUpMenu} from './pop-up/vira-pop-up-menu.element.js';
+import {ViraPopUpTrigger} from './pop-up/vira-pop-up-trigger.element.js';
+import {ViraIcon} from './vira-icon.element.js';
 
 /**
  * Test ids for {@link ViraDropdown}.
@@ -50,7 +51,7 @@ export const viraDropdownTestIds = {
  */
 export const ViraDropdown = defineViraElement<
     {
-        options: ReadonlyArray<Readonly<ViraDropdownOption>>;
+        options: ReadonlyArray<Readonly<MenuItem>>;
         /** The selected id from the given options. */
         selected: ReadonlyArray<PropertyKey>;
     } & PartialWithUndefined<{
@@ -146,9 +147,11 @@ export const ViraDropdown = defineViraElement<
             color: ${viraFormCssVars['vira-form-foreground-color'].value};
         }
 
-        .open-upwards ${ViraDropdownOptions} {
+        .open-upwards ${ViraPopUpMenu} {
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
+            border-top-left-radius: ${viraBorders['vira-form-input-radius'].value};
+            border-top-right-radius: ${viraBorders['vira-form-input-radius'].value};
             ${viraShadows.menuShadowReversed}
         }
 
@@ -163,8 +166,7 @@ export const ViraDropdown = defineViraElement<
     render({state, inputs, dispatch, events, updateState}) {
         assertUniqueIdProps(inputs.options);
 
-        const selectedOptions: ReadonlyArray<Readonly<ViraDropdownOption>> =
-            filterToSelectedOptions(inputs);
+        const selectedOptions: ReadonlyArray<Readonly<MenuItem>> = filterToSelectedOptions(inputs);
 
         const leadingIconTemplate = inputs.icon
             ? html`
@@ -267,18 +269,21 @@ export const ViraDropdown = defineViraElement<
                 </div>
                 ${state.navController && state.showPopUpResult
                     ? html`
-                          <${ViraDropdownOptions.assign({
-                              options: inputs.options,
-                              selectedOptions,
-                              navController: state.navController,
-                              isMultiSelect: !!inputs.isMultiSelect,
-                          })}
+                          <${ViraPopUpMenu}
                               class=${classMap({
                                   'open-upwards': !state.showPopUpResult.popDown,
                               })}
                               slot=${ViraPopUpTrigger.slotNames.popUp}
-                              ${testId(viraDropdownTestIds.options)}
-                          ></${ViraDropdownOptions}>
+                          >
+                              <${ViraMenuOptions.assign({
+                                  options: inputs.options,
+                                  selectedOptions,
+                                  navController: state.navController,
+                                  isMultiSelect: !!inputs.isMultiSelect,
+                              })}
+                                  ${testId(viraDropdownTestIds.options)}
+                              ></${ViraMenuOptions}>
+                          </${ViraPopUpMenu}>
                       `
                     : nothing}
             </${ViraPopUpTrigger}>

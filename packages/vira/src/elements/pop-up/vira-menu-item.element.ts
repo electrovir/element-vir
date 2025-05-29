@@ -1,40 +1,52 @@
 import {type PartialWithUndefined} from '@augment-vir/common';
 import {css, html, type HTMLTemplateResult} from 'element-vir';
 import {Check24Icon} from '../../icons/icon-svgs/check-24.icon.js';
-import {viraBorders} from '../../styles/border.js';
-import {noUserSelect, viraAnimationDurations} from '../../styles/index.js';
+import {noUserSelect} from '../../styles/index.js';
 import {defineViraElement} from '../define-vira-element.js';
 import {ViraIcon} from '../vira-icon.element.js';
 
 /**
- * An individual option for ViraDropdown.
+ * An individual menu item consumed partially by {@link ViraMenuItem} and used by `ViraMenuOptions`.
  *
- * @category Dropdown
+ * @category Internal
  */
-export type ViraDropdownOption = {
+export type MenuItem = {
     /** Each `id` must be unique across all options. */
     id: PropertyKey;
+    /** The user-facing label for this menu item. */
     label: string;
 } & PartialWithUndefined<{
     disabled: boolean;
-    hoverText: string;
-    /** An optional custom template for this option. */
+    /** Text assigned to the `title` HTML attribute that'll show on long hover. */
+    titleText: string;
+    /**
+     * An optional custom template for this menu item. This will replace the menu item text and icon
+     * content, but will still be styled correctly if used within `ViraMenuOptions`. Feel free to
+     * use {@link ViraMenuItem} as the template with a custom `<slot>` to keep the selected checkmark
+     * functionality.
+     */
     template: HTMLTemplateResult;
 }>;
 
 /**
- * An element for an individual item in the ViraDropdown menu.
+ * An element for an individual menu item.
  *
- * @category Dropdown
+ * @category PopUp
  * @category Elements
  */
-export const ViraDropdownItem = defineViraElement<{
-    label: string;
-    selected: boolean;
-}>()({
-    tagName: 'vira-dropdown-item',
+export const ViraMenuItem = defineViraElement<
+    Readonly<{
+        /**
+         * The text to show in the menu item. If this is not provided, it is expected that you will
+         * instead utilize this element's `<slot>`.
+         */
+        label?: MenuItem['label'] | undefined;
+        selected: boolean;
+    }>
+>()({
+    tagName: 'vira-menu-item',
     hostClasses: {
-        'vira-dropdown-item-selected': ({inputs}) => inputs.selected,
+        'vira-menu-item-selected': ({inputs}) => inputs.selected,
     },
     styles: ({hostClasses}) => css`
         :host {
@@ -42,7 +54,7 @@ export const ViraDropdownItem = defineViraElement<{
             ${noUserSelect};
         }
 
-        .option {
+        .item {
             pointer-events: none;
             min-height: 24px;
             display: flex;
@@ -52,7 +64,7 @@ export const ViraDropdownItem = defineViraElement<{
             text-align: left;
         }
 
-        ${hostClasses['vira-dropdown-item-selected'].selector} ${ViraIcon} {
+        ${hostClasses['vira-menu-item-selected'].selector} ${ViraIcon} {
             opacity: 1;
         }
 
@@ -61,27 +73,15 @@ export const ViraDropdownItem = defineViraElement<{
             However, it does not have a border here.
         */
         ${ViraIcon} {
-            transition: opacity
-                ${viraAnimationDurations['vira-interaction-animation-duration'].value};
             opacity: 0;
             margin-top: -4px;
             margin-right: -2px;
             margin-left: 2px;
         }
-
-        .dropdown-wrapper:not(.reverse-direction) .option:last-of-type {
-            border-radius: 0 0 ${viraBorders['vira-form-input-radius'].value}
-                ${viraBorders['vira-form-input-radius'].value};
-        }
-
-        .dropdown-wrapper.reverse-direction .option:first-of-type {
-            border-radius: ${viraBorders['vira-form-input-radius'].value}
-                ${viraBorders['vira-form-input-radius'].value} 0 0;
-        }
     `,
     render({inputs}) {
         return html`
-            <div class="option">
+            <div class="item">
                 <${ViraIcon.assign({icon: Check24Icon})}></${ViraIcon}>
                 <slot>${inputs.label}</slot>
             </div>

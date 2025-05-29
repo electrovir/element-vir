@@ -3,9 +3,9 @@ import {mapObjectValues, randomString} from '@augment-vir/common';
 import {describe, it, testWeb} from '@augment-vir/test';
 import {extractElementText, queryThroughShadow, waitForAnimationFrame} from '@augment-vir/web';
 import {html, listen, testIdSelector} from 'element-vir';
-import {Element24Icon} from '../../icons/index.js';
-import {mockOptions} from './dropdown.mock.js';
-import {viraDropdownOptionsTestIds} from './vira-dropdown-options.element.js';
+import {Element24Icon} from '../icons/index.js';
+import {mockOptions} from './pop-up/pop-up-menu-item.mock.js';
+import {viraMenuOptionsTestIds} from './pop-up/vira-menu-options.element.js';
 import {ViraDropdown, viraDropdownTestIds} from './vira-dropdown.element.js';
 
 async function setupDropdownTest(inputs?: Partial<(typeof ViraDropdown)['InputsType']>) {
@@ -100,7 +100,7 @@ describe(ViraDropdown.tagName, () => {
         await toggle();
         const options = queryThroughShadow(
             instance,
-            testIdSelector(viraDropdownOptionsTestIds.option),
+            testIdSelector(viraMenuOptionsTestIds.option),
             {
                 all: true,
             },

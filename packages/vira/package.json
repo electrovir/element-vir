@@ -43,7 +43,7 @@
         "@augment-vir/web": "^31.21.0",
         "colorjs.io": "^0.5.2",
         "date-vir": "^7.3.1",
-        "device-navigation": "^4.5.4",
+        "device-navigation": "^4.5.5",
         "lit-css-vars": "^3.0.11",
         "observavir": "^2.0.5",
         "page-active": "^1.0.1",
