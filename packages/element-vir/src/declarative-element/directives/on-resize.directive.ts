@@ -29,9 +29,9 @@ const directiveName = 'onResize';
  * @example
  *
  * ```ts
- * import {html, defineElementNoInputs, onResize} from 'element-vir';
+ * import {html, defineElement, onResize} from 'element-vir';
  *
- * const MyElement = defineElementNoInputs({
+ * const MyElement = defineElement()({
  *     tagName: 'my-element',
  *     render() {
  *         return html`

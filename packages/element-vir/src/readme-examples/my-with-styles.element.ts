@@ -1,6 +1,7 @@
-import {css, defineElementNoInputs, html} from '../index.js';
+import {defineElement} from 'element-vir';
+import {css, html} from '../index.js';
 
-export const MyWithStyles = defineElementNoInputs({
+export const MyWithStyles = defineElement()({
     tagName: 'my-with-styles',
     styles: css`
         :host {

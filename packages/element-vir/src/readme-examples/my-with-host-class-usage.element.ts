@@ -1,7 +1,8 @@
-import {defineElementNoInputs, html} from '../index.js';
+import {defineElement} from 'element-vir';
+import {html} from '../index.js';
 import {MyWithHostClassDefinition} from './my-with-host-class-definition.element.js';
 
-export const MyWithHostClassUsage = defineElementNoInputs({
+export const MyWithHostClassUsage = defineElement()({
     tagName: 'my-with-host-class-usage',
     render() {
         return html`

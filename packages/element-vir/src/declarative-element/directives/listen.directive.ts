@@ -34,9 +34,9 @@ type PossibleListenerCallbacks<
  * @example
  *
  * ```ts
- * import {html, defineElementNoInputs, listen} from 'element-vir';
+ * import {html, defineElement, listen} from 'element-vir';
  *
- * const MyElement = defineElementNoInputs({
+ * const MyElement = defineElement()({
  *     tagName: 'my-element',
  *     render() {
  *         return html`
@@ -80,9 +80,9 @@ export function listen<TypedEventTypeNameGeneric extends string, TypedEventDetai
  * @example
  *
  * ```ts
- * import {html, defineElementNoInputs, listen} from 'element-vir';
+ * import {html, defineElement, listen} from 'element-vir';
  *
- * const MyElement = defineElementNoInputs({
+ * const MyElement = defineElement()({
  *     tagName: 'my-element',
  *     render() {
  *         return html`

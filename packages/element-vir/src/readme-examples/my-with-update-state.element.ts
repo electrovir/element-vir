@@ -1,6 +1,7 @@
-import {defineElementNoInputs, html, listen} from '../index.js';
+import {defineElement} from 'element-vir';
+import {html, listen} from '../index.js';
 
-export const MyWithUpdateState = defineElementNoInputs({
+export const MyWithUpdateState = defineElement()({
     tagName: 'my-with-update-state',
     state() {
         return {

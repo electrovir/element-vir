@@ -10,9 +10,9 @@ const {attributeDirective, attributeSelector, attributeName} =
  * @example
  *
  * ```ts
- * import {html, defineElementNoInputs, testId} from 'element-vir';
+ * import {html, defineElement, testId} from 'element-vir';
  *
- * const MyElement = defineElementNoInputs({
+ * const MyElement = defineElement()({
  *     tagName: 'my-element',
  *     render() {
  *         return html`

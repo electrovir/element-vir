@@ -94,6 +94,7 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>(
             throw new TypeError('Cannot define element with non-object init: ${init}');
         }
 
+        // eslint-disable-next-line sonarjs/deprecation, @typescript-eslint/no-deprecated
         return defineElementNoInputs({
             ...init,
             options: {

@@ -1,12 +1,5 @@
 import {getEnumValues, getObjectTypedValues, typedObjectFromEntries} from '@augment-vir/common';
-import {
-    css,
-    defineElement,
-    defineElementNoInputs,
-    html,
-    unsafeCSS,
-    type HostClass,
-} from 'element-vir';
+import {css, defineElement, html, unsafeCSS, type HostClass} from 'element-vir';
 import {createFontStyleCss} from './font-css.js';
 import {HeadingLevel, type AllThemeOptions} from './theme-options.js';
 import {type Theme} from './theme.js';
@@ -15,7 +8,7 @@ export function defineThemeElements<TagPrefix extends string>(
     options: Pick<AllThemeOptions<TagPrefix>, 'elementTagPrefix' | 'font'>,
 ): Theme<TagPrefix>['elements'] {
     const themeElements: Theme<TagPrefix>['elements'] = {
-        bold: defineElementNoInputs({
+        bold: defineElement()({
             tagName: `${options.elementTagPrefix}-b`,
             styles: css`
                 :host {
@@ -33,7 +26,7 @@ export function defineThemeElements<TagPrefix extends string>(
                 `;
             },
         }),
-        monospace: defineElementNoInputs({
+        monospace: defineElement()({
             tagName: `${options.elementTagPrefix}-monospace`,
             styles: css`
                 :host {
@@ -47,7 +40,7 @@ export function defineThemeElements<TagPrefix extends string>(
                 `;
             },
         }),
-        code: defineElementNoInputs({
+        code: defineElement()({
             tagName: `${options.elementTagPrefix}-code`,
             styles: css`
                 :host {
@@ -61,7 +54,7 @@ export function defineThemeElements<TagPrefix extends string>(
                 `;
             },
         }),
-        paragraph: defineElementNoInputs({
+        paragraph: defineElement()({
             tagName: `${options.elementTagPrefix}-p`,
             styles: css`
                 :host {

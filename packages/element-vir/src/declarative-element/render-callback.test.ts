@@ -10,8 +10,8 @@ import {
     asyncProp,
     createEventDescriptorMap,
     createRenderParams,
+    defineElement,
     defineElementEvent,
-    defineElementNoInputs,
     html,
 } from '../index.js';
 
@@ -19,7 +19,7 @@ describe('RenderParams', () => {
     it('should produce proper types', () => {
         type MyAsyncPropTriggerType = {input: string | undefined};
 
-        defineElementNoInputs({
+        defineElement()({
             tagName: 'test-element',
             state() {
                 return {
@@ -114,7 +114,7 @@ describe('UpdateStateCallback', () => {
             doThing: asyncProp({defaultValue: 'string input'}),
         };
 
-        const customElement = defineElementNoInputs({
+        const customElement = defineElement()({
             tagName: 'custom-element-for-testing-update-state-callback-type',
             state() {
                 return stateInit;

@@ -21,9 +21,9 @@ export type EventsInitMap = Record<string, DefineEvent<any>>;
  * @example
  *
  * ```ts
- * import {html, defineElementNoInputs, defineElementEvent, listen} from 'element-vir';
+ * import {html, defineElement, defineElementEvent, listen} from 'element-vir';
  *
- * const MyElement = defineElementNoInputs({
+ * const MyElement = defineElement()({
  *     tagName: 'my-element',
  *     events: {
  *         myOutput: defineElementEvent<number>(),

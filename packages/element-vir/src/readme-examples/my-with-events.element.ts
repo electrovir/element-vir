@@ -1,7 +1,8 @@
 import {randomInteger} from '@augment-vir/common';
-import {defineElementEvent, defineElementNoInputs, html, listen} from '../index.js';
+import {defineElement} from 'element-vir';
+import {defineElementEvent, html, listen} from '../index.js';
 
-export const MyWithEvents = defineElementNoInputs({
+export const MyWithEvents = defineElement()({
     tagName: 'my-with-events',
     events: {
         logoutClick: defineElementEvent<void>(),

@@ -7,8 +7,8 @@ import {
     type EventsInitMap,
     type PropertyInitMapBase,
     type StaticDeclarativeElementProperties,
+    defineElement,
     defineElementEvent,
-    defineElementNoInputs,
     html,
 } from '../index.js';
 
@@ -48,7 +48,7 @@ describe(DeclarativeElement.name, () => {
     });
 
     it('has proper types', async () => {
-        const definedDeclarativeElementWithEvents = defineElementNoInputs({
+        const definedDeclarativeElementWithEvents = defineElement()({
             render() {
                 return html``;
             },
@@ -63,7 +63,7 @@ describe(DeclarativeElement.name, () => {
             tagName: 'defined-declarative-element-123',
         });
 
-        const definedDeclarativeElementWithoutEvents = defineElementNoInputs({
+        const definedDeclarativeElementWithoutEvents = defineElement()({
             render() {
                 return html``;
             },

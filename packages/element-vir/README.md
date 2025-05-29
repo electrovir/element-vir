@@ -41,9 +41,10 @@ Use `defineElementNoInputs` to define your element if it's not going to accept a
 <!-- example-link: src/readme-examples/my-simple.element.ts -->
 
 ```TypeScript
-import {defineElementNoInputs, html} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {html} from 'element-vir';
 
-export const MySimple = defineElementNoInputs({
+export const MySimple = defineElement()({
     tagName: 'my-simple',
     render() {
         return html`
@@ -62,10 +63,11 @@ To use already defined elements (like the example above), they must be interpola
 <!-- example-link: src/readme-examples/my-app.element.ts -->
 
 ```TypeScript
-import {defineElementNoInputs, html} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {html} from 'element-vir';
 import {MySimple} from './my-simple.element.js';
 
-export const MyApp = defineElementNoInputs({
+export const MyApp = defineElement()({
     tagName: 'my-app',
     render() {
         return html`
@@ -85,9 +87,10 @@ Styles are added through the `styles` property when defining a declarative eleme
 <!-- example-link: src/readme-examples/my-with-styles.element.ts -->
 
 ```TypeScript
-import {css, defineElementNoInputs, html} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {css, html} from 'element-vir';
 
-export const MyWithStyles = defineElementNoInputs({
+export const MyWithStyles = defineElement()({
     tagName: 'my-with-styles',
     styles: css`
         :host {
@@ -116,10 +119,11 @@ Declarative element definitions can be used in the `css` tagged template just li
 <!-- example-link: src/readme-examples/my-with-styles-and-interpolated-selector.element.ts -->
 
 ```TypeScript
-import {css, defineElementNoInputs, html} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {css, html} from 'element-vir';
 import {MySimple} from './my-simple.element.js';
 
-export const MyWithStylesAndInterpolatedSelector = defineElementNoInputs({
+export const MyWithStylesAndInterpolatedSelector = defineElement()({
     tagName: 'my-with-styles-and-interpolated-selector',
     styles: css`
         ${MySimple} {
@@ -165,9 +169,10 @@ Define initial internal state values and types with the `stateInit` property whe
 <!-- example-link: src/readme-examples/my-with-update-state.element.ts -->
 
 ```TypeScript
-import {defineElementNoInputs, html, listen} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {html, listen} from 'element-vir';
 
-export const MyWithUpdateState = defineElementNoInputs({
+export const MyWithUpdateState = defineElement()({
     tagName: 'my-with-update-state',
     state() {
         return {
@@ -200,10 +205,11 @@ Use the `assign` directive to assign values to child custom elements inputs:
 <!-- example-link: src/readme-examples/my-with-assignment.element.ts -->
 
 ```TypeScript
-import {defineElementNoInputs, html} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {html} from 'element-vir';
 import {MyWithInputs} from './my-with-inputs.element.js';
 
-export const MyWithAssignment = defineElementNoInputs({
+export const MyWithAssignment = defineElement()({
     tagName: 'my-with-assignment',
     render() {
         return html`
@@ -227,9 +233,10 @@ There are two other callbacks you can define that are sort of similar to lifecyc
 <!-- example-link: src/readme-examples/my-with-cleanup-callback.element.ts -->
 
 ```TypeScript
-import {defineElementNoInputs, html} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {html} from 'element-vir';
 
-export const MyWithAssignmentCleanupCallback = defineElementNoInputs({
+export const MyWithAssignmentCleanupCallback = defineElement()({
     tagName: 'my-with-cleanup-callback',
     state() {
         return {
@@ -257,9 +264,10 @@ To dispatch an event, grab `dispatch` and `events` from `render`'s parameters.
 
 ```TypeScript
 import {randomInteger} from '@augment-vir/common';
-import {defineElementEvent, defineElementNoInputs, html, listen} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {defineElementEvent, html, listen} from 'element-vir';
 
-export const MyWithEvents = defineElementNoInputs({
+export const MyWithEvents = defineElement()({
     tagName: 'my-with-events',
     events: {
         logoutClick: defineElementEvent<void>(),
@@ -287,10 +295,11 @@ Use the `listen` directive to listen to events emitted by your custom elements:
 <!-- example-link: src/readme-examples/my-with-event-listening.element.ts -->
 
 ```TypeScript
-import {defineElementNoInputs, html, listen} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {html, listen} from 'element-vir';
 import {MyWithEvents} from './my-with-events.element.js';
 
-export const MyWithEventListening = defineElementNoInputs({
+export const MyWithEventListening = defineElement()({
     tagName: 'my-with-event-listening',
     state() {
         return {
@@ -336,10 +345,11 @@ Dispatching a custom event and listening to a custom event is the same as doing 
 
 ```TypeScript
 import {randomInteger} from '@augment-vir/common';
-import {defineElementNoInputs, html, listen} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {html, listen} from 'element-vir';
 import {MyCustomActionEvent} from './my-custom-action.event.js';
 
-export const MyWithCustomEvents = defineElementNoInputs({
+export const MyWithCustomEvents = defineElement()({
     tagName: 'my-with-custom-events',
     render({dispatch}) {
         return html`
@@ -375,9 +385,10 @@ Apply host classes in the element's stylesheet by using a callback for the style
 <!-- example-link: src/readme-examples/my-with-host-class-definition.element.ts -->
 
 ```TypeScript
-import {css, defineElementNoInputs, html} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {css, html} from 'element-vir';
 
-export const MyWithHostClassDefinition = defineElementNoInputs({
+export const MyWithHostClassDefinition = defineElement()({
     tagName: 'my-with-host-class-definition',
     state() {
         return {
@@ -426,10 +437,11 @@ To apply a host class in a consumer, access the child element's `.hostClasses` p
 <!-- example-link: src/readme-examples/my-with-host-class-usage.element.ts -->
 
 ```TypeScript
-import {defineElementNoInputs, html} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {html} from 'element-vir';
 import {MyWithHostClassDefinition} from './my-with-host-class-definition.element.js';
 
-export const MyWithHostClassUsage = defineElementNoInputs({
+export const MyWithHostClassUsage = defineElement()({
     tagName: 'my-with-host-class-usage',
     render() {
         return html`
@@ -448,9 +460,10 @@ Typed CSS variables are created in a similar manner to host classes:
 <!-- example-link: src/readme-examples/my-with-css-vars.element.ts -->
 
 ```TypeScript
-import {css, defineElementNoInputs, html} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {css, html} from 'element-vir';
 
-export const MyWithCssVars = defineElementNoInputs({
+export const MyWithCssVars = defineElement()({
     tagName: 'my-with-css-vars',
     cssVars: {
         /** The value assigned here ('blue') becomes the fallback value for this CSS var. */
@@ -528,9 +541,10 @@ This triggers only once when the element it's attached to has actually been crea
 <!-- example-link: src/readme-examples/my-with-on-dom-created.element.ts -->
 
 ```TypeScript
-import {defineElementNoInputs, html, onDomCreated} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {html, onDomCreated} from 'element-vir';
 
-export const MyWithOnDomCreated = defineElementNoInputs({
+export const MyWithOnDomCreated = defineElement()({
     tagName: 'my-with-on-dom-created',
     render() {
         return html`
@@ -554,9 +568,10 @@ This directive fires its callback whenever the element it's attached to resizes.
 <!-- example-link: src/readme-examples/my-with-on-resize.element.ts -->
 
 ```TypeScript
-import {defineElementNoInputs, html, onResize} from 'element-vir';
+import {defineElement} from 'element-vir';
+import {html, onResize} from 'element-vir';
 
-export const MyWithOnResize = defineElementNoInputs({
+export const MyWithOnResize = defineElement()({
     tagName: 'my-with-on-resize',
     render() {
         return html`

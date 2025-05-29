@@ -1,7 +1,6 @@
 import {AssertionError} from '@augment-vir/assert';
 import {describe, itCases} from '@augment-vir/test';
 import {nothing} from '../lit-exports/all-lit-exports.js';
-import {defineElementNoInputs} from './define-element-no-inputs.js';
 import {defineElement} from './define-element.js';
 import {assertDeclarativeElementDefinition} from './is-declarative-element-definition.js';
 
@@ -22,7 +21,7 @@ describe(assertDeclarativeElementDefinition.name, () => {
         {
             it: 'passes with a definition that has no inputs',
             inputs: [
-                defineElementNoInputs({
+                defineElement()({
                     tagName: 'test-thing-158685',
                     render() {
                         return nothing;

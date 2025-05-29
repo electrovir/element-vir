@@ -2,7 +2,6 @@
 
 import {assert} from '@augment-vir/assert';
 import {describe, it} from '@augment-vir/test';
-import {defineElementNoInputs} from '../../declarative-element/define-element-no-inputs.js';
 import {defineElement} from '../../declarative-element/define-element.js';
 import {renderIf} from '../../declarative-element/directives/render-if.directive.js';
 import {type RenderCallback} from '../../declarative-element/render-callback.js';
@@ -54,7 +53,7 @@ describe('HtmlInterpolation', () => {
     });
 
     it('prevents missing input assignment', () => {
-        const NoInputs = defineElementNoInputs({
+        const NoInputs = defineElement()({
             tagName: 'html-interpolation-test-no-inputs',
             render() {
                 return '';

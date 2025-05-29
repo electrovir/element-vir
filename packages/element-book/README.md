@@ -59,11 +59,11 @@ npm i element-book
     <!-- example-link: ./src/readme-examples/use-app.example.ts -->
 
     ```TypeScript
-    import {defineElementNoInputs, html} from 'element-vir';
+    import {defineElement, html} from 'element-vir';
     import {ElementBookApp} from '../ui/elements/element-book-app/element-book-app.element.js';
     import {myPage} from './define-page.example.js';
 
-    export const MyApp = defineElementNoInputs({
+    export const MyApp = defineElement()({
         tagName: 'my-app',
         render() {
             return html`

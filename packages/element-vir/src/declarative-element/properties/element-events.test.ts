@@ -1,6 +1,7 @@
 import {assert} from '@augment-vir/assert';
 import {describe, it} from '@augment-vir/test';
-import {defineElementNoInputs, html} from '../../index.js';
+import {defineElement} from 'element-vir';
+import {html} from '../../index.js';
 import {
     type EventInitMapEventDetailExtractor,
     type EventsInitMap,
@@ -9,7 +10,7 @@ import {
 
 describe('element events', () => {
     it('has proper types', () => {
-        const customElement = defineElementNoInputs({
+        const customElement = defineElement()({
             tagName: 'test-element',
             events: {
                 'test-event-name': defineElementEvent<number>(),

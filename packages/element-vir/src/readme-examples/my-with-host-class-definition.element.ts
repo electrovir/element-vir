@@ -1,6 +1,7 @@
-import {css, defineElementNoInputs, html} from '../index.js';
+import {defineElement} from 'element-vir';
+import {css, html} from '../index.js';
 
-export const MyWithHostClassDefinition = defineElementNoInputs({
+export const MyWithHostClassDefinition = defineElement()({
     tagName: 'my-with-host-class-definition',
     state() {
         return {

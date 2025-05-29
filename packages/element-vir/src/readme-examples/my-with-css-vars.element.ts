@@ -1,6 +1,7 @@
-import {css, defineElementNoInputs, html} from '../index.js';
+import {defineElement} from 'element-vir';
+import {css, html} from '../index.js';
 
-export const MyWithCssVars = defineElementNoInputs({
+export const MyWithCssVars = defineElement()({
     tagName: 'my-with-css-vars',
     cssVars: {
         /** The value assigned here ('blue') becomes the fallback value for this CSS var. */

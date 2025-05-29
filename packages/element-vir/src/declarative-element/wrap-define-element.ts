@@ -3,7 +3,6 @@
 import {type PartialWithNullable} from '@augment-vir/common';
 import {type CustomElementTagName} from './custom-tag-name.js';
 import {type DeclarativeElementInit} from './declarative-element-init.js';
-import {defineElementNoInputs} from './define-element-no-inputs.js';
 import {type DeclarativeElementInputErrorParams, defineElement} from './define-element.js';
 import {type BaseCssPropertyName} from './properties/css-properties.js';
 import {type EventsInitMap} from './properties/element-events.js';
@@ -61,8 +60,7 @@ export type WrapDefineElementOptions<
 }>;
 
 /**
- * Wraps {@link defineElement} and {@link defineElementNoInputs} in a superset of requirements. For
- * example:
+ * Wraps {@link defineElement} in a superset of requirements. For example:
  *
  * - You could create element definition functions that require all elements to start with a common
  *   prefix, like `vir-`.
@@ -121,41 +119,6 @@ export function wrapDefineElement<
                     >,
                 );
             };
-        },
-        /** A wrapped function for defining an element without inputs. */
-        defineElementNoInputs: <
-            const TagName extends TagNameRequirement,
-            Inputs extends InputsRequirement,
-            State extends StateRequirement,
-            EventsInit extends EventsInitRequirement,
-            const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
-            const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
-            const SlotNames extends ReadonlyArray<string> = Readonly<[]>,
-        >(
-            inputs: DeclarativeElementInit<
-                TagName,
-                Inputs,
-                State,
-                EventsInit,
-                HostClassKeys,
-                CssVarKeys,
-                SlotNames
-            >,
-        ) => {
-            assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
-            return defineElementNoInputs(
-                transformInputs(
-                    inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
-                ) as unknown as DeclarativeElementInit<
-                    TagName,
-                    Inputs,
-                    State,
-                    EventsInit,
-                    HostClassKeys,
-                    CssVarKeys,
-                    SlotNames
-                >,
-            );
         },
     };
 }

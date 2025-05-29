@@ -1,8 +1,8 @@
 import {ElementBookApp, ElementBookSlotName} from 'element-book';
-import {css, defineElementNoInputs, html, listen} from 'element-vir';
+import {css, defineElement, html, listen} from 'element-vir';
 import {pages} from '../../element-book-example/example.book.js';
 
-export const VirApp = defineElementNoInputs({
+export const VirApp = defineElement()({
     tagName: 'vir-app',
     styles: css`
         :host {

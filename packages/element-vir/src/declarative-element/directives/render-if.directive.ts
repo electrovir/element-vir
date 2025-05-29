@@ -9,9 +9,9 @@ import {when} from '../../lit-exports/all-lit-exports.js';
  * @example
  *
  * ```ts
- * import {html, defineElementNoInputs, renderIf} from 'element-vir';
+ * import {html, defineElement, renderIf} from 'element-vir';
  *
- * const MyElement = defineElementNoInputs({
+ * const MyElement = defineElement()({
  *     tagName: 'my-element',
  *     render() {
  *         return html`

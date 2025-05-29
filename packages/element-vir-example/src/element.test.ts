@@ -11,7 +11,6 @@ import {
     css,
     defineElement,
     defineElementEvent,
-    defineElementNoInputs,
     defineTypedEvent,
     html,
     listen,
@@ -23,7 +22,7 @@ import {VirTestBookApp} from './elements/vir-test-book-app.element.js';
 describe('test elements', () => {
     it('has proper types', () => {
         assert.throws(() => {
-            defineElementNoInputs({
+            defineElement()({
                 tagName: 'invalid-derp-whatever',
                 hostClasses: {
                     'invalid-derp-whatever-stuff': false,
@@ -53,7 +52,7 @@ describe('test elements', () => {
         });
 
         // host classes test
-        const WithHostClassesAndCssVars = defineElementNoInputs({
+        const WithHostClassesAndCssVars = defineElement()({
             tagName: 'derp-whatever',
             hostClasses: {
                 'derp-whatever-stuff': false,
@@ -89,7 +88,7 @@ describe('test elements', () => {
 
         assert.throws(() => {
             // @ts-expect-error: missing tagName
-            defineElementNoInputs({
+            defineElement()({
                 render(): TemplateResult {
                     return html`
                         <${WithHostClassesAndCssVars}
@@ -121,7 +120,7 @@ describe('test elements', () => {
         // @ts-expect-error: I don't know why I added this check
         const instance2: DeclarativeElement = VirTestBookApp;
 
-        const TestElementVoidEvent = defineElementNoInputs({
+        const TestElementVoidEvent = defineElement()({
             tagName: 'test-element-void-event',
             events: {
                 thingHappened: defineElementEvent<void>(),
@@ -138,7 +137,7 @@ describe('test elements', () => {
         });
 
         assert.throws(() =>
-            defineElementNoInputs({
+            defineElement()({
                 // @ts-expect-error: tag name must have dashes in it
                 tagName: 'invalidTagNameMissingDash',
                 render() {
@@ -149,7 +148,7 @@ describe('test elements', () => {
 
         const MyElementEvent = defineTypedEvent<string>()('customEvent');
 
-        defineElementNoInputs({
+        defineElement()({
             tagName: 'test-element-no-events-or-state',
             render({state, dispatch, events}): TemplateResult {
                 // @ts-expect-error: this has no events
@@ -172,7 +171,7 @@ describe('test elements', () => {
 
         assert.throws(() =>
             // @ts-expect-error: missing render
-            defineElementNoInputs({
+            defineElement()({
                 tagName: 'element-vir-test-element-no-render',
             }),
         );

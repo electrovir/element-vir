@@ -4,7 +4,6 @@ import {describe, it, itCases, testWeb} from '@augment-vir/test';
 import {isObservableBase, noUpdate} from 'observavir';
 import {nothing} from '../../lit-exports/all-lit-exports.js';
 import {html} from '../../template-transforms/vir-html/vir-html.js';
-import {defineElementNoInputs} from '../define-element-no-inputs.js';
 import {defineElement} from '../define-element.js';
 import {defineElementEvent} from '../properties/element-events.js';
 import {type AsyncProp, type AsyncValue, asyncProp} from './async-prop.js';
@@ -38,7 +37,7 @@ describe(asyncProp.name, () => {
             },
         });
 
-        const elementWithAsyncProp = defineElementNoInputs({
+        const elementWithAsyncProp = defineElement()({
             tagName: `element-with-async-prop-2`,
             state() {
                 return {
@@ -325,7 +324,7 @@ describe(asyncProp.name, () => {
             randomString(),
         ].join(' ');
 
-        const ElementWithAsyncPropError = defineElementNoInputs({
+        const ElementWithAsyncPropError = defineElement()({
             tagName: `element-with-async-prop-error-4`,
             state() {
                 return {
@@ -446,7 +445,7 @@ describe(asyncProp.name, () => {
     });
 
     it('works even if the value is undefined', async () => {
-        const ElementWithUndefinedAsyncProp = defineElementNoInputs({
+        const ElementWithUndefinedAsyncProp = defineElement()({
             tagName: `element-with-undefined-async-prop-1`,
             state() {
                 return {
@@ -642,7 +641,7 @@ describe(asyncProp.name, () => {
         let resolved = false;
         const updateDuration = {milliseconds: 500};
 
-        const RaceConditionElement = defineElementNoInputs({
+        const RaceConditionElement = defineElement()({
             tagName: 'vir-element-race-condition-between-set-value-and-promise-resolution',
             state() {
                 return {
@@ -679,7 +678,7 @@ describe(asyncProp.name, () => {
     });
 
     it('allows noUpdate', async () => {
-        const VirAsyncPropWithNoUpdate = defineElementNoInputs({
+        const VirAsyncPropWithNoUpdate = defineElement()({
             tagName: 'vir-async-prop-with-update',
             state() {
                 return {

@@ -1,8 +1,9 @@
 import {randomInteger} from '@augment-vir/common';
-import {defineElementNoInputs, html, listen} from '../index.js';
+import {defineElement} from 'element-vir';
+import {html, listen} from '../index.js';
 import {MyCustomActionEvent} from './my-custom-action.event.js';
 
-export const MyWithCustomEvents = defineElementNoInputs({
+export const MyWithCustomEvents = defineElement()({
     tagName: 'my-with-custom-events',
     render({dispatch}) {
         return html`

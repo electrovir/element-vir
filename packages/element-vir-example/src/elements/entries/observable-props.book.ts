@@ -1,10 +1,10 @@
 import {randomInteger} from '@augment-vir/common';
 import {defineBookPage} from 'element-book';
-import {Observable, defineElement, defineElementNoInputs, html, listen} from 'element-vir';
+import {Observable, defineElement, html, listen} from 'element-vir';
 
 const myObservable = new Observable({defaultValue: 5});
 
-const VirObservablesTestParent = defineElementNoInputs({
+const VirObservablesTestParent = defineElement()({
     tagName: 'vir-observable-prop-input-test-parent',
     state() {
         return {

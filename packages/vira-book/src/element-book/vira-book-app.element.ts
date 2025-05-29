@@ -1,9 +1,9 @@
 import {ElementBookApp, ElementBookSlotName} from 'element-book';
-import {css, defineElementNoInputs, html} from 'element-vir';
+import {css, defineElement, html} from 'element-vir';
 import {joinUrlPaths} from 'url-vir';
 import {viraBookPages} from './book-pages.js';
 
-export const ViraBookApp = defineElementNoInputs({
+export const ViraBookApp = defineElement()({
     tagName: 'vira-book-app',
     styles: css`
         :host {

@@ -1,6 +1,7 @@
-import {defineElementNoInputs, html, onResize} from '../index.js';
+import {defineElement} from 'element-vir';
+import {html, onResize} from '../index.js';
 
-export const MyWithOnResize = defineElementNoInputs({
+export const MyWithOnResize = defineElement()({
     tagName: 'my-with-on-resize',
     render() {
         return html`

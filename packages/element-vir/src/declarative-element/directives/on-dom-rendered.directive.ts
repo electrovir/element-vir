@@ -19,9 +19,9 @@ const directiveName = 'onDomRendered';
  * @example
  *
  * ```ts
- * import {html, defineElementNoInputs, onDomRendered} from 'element-vir';
+ * import {html, defineElement, onDomRendered} from 'element-vir';
  *
- * const MyElement = defineElementNoInputs({
+ * const MyElement = defineElement()({
  *     tagName: 'my-element',
  *     render() {
  *         return html`

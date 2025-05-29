@@ -1,7 +1,8 @@
-import {defineElementNoInputs, html, listen} from '../index.js';
+import {defineElement} from 'element-vir';
+import {html, listen} from '../index.js';
 import {MyWithEvents} from './my-with-events.element.js';
 
-export const MyWithEventListening = defineElementNoInputs({
+export const MyWithEventListening = defineElement()({
     tagName: 'my-with-event-listening',
     state() {
         return {

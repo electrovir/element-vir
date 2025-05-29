@@ -21,9 +21,9 @@ const directiveName = 'onDomCreated';
  * @example
  *
  * ```ts
- * import {html, defineElementNoInputs, onDomCreated} from 'element-vir';
+ * import {html, defineElement, onDomCreated} from 'element-vir';
  *
- * const MyElement = defineElementNoInputs({
+ * const MyElement = defineElement()({
  *     tagName: 'my-element',
  *     render() {
  *         return html`

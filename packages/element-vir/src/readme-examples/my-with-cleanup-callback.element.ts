@@ -1,6 +1,7 @@
-import {defineElementNoInputs, html} from '../index.js';
+import {defineElement} from 'element-vir';
+import {html} from '../index.js';
 
-export const MyWithAssignmentCleanupCallback = defineElementNoInputs({
+export const MyWithAssignmentCleanupCallback = defineElement()({
     tagName: 'my-with-cleanup-callback',
     state() {
         return {

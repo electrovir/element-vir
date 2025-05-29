@@ -7,7 +7,6 @@ import {
     asyncProp,
     defineElement,
     defineElementEvent,
-    defineElementNoInputs,
     html,
     listen,
     renderAsync,
@@ -68,7 +67,7 @@ describe(asyncProp.name, () => {
     it('should have proper types', () => {
         type SomethingObject = {something: number};
 
-        defineElementNoInputs({
+        defineElement()({
             tagName: 'element-with-async-prop-again',
             state() {
                 return {

@@ -1,6 +1,7 @@
-import {defineElementNoInputs, html, onDomCreated} from '../index.js';
+import {defineElement} from 'element-vir';
+import {html, onDomCreated} from '../index.js';
 
-export const MyWithOnDomCreated = defineElementNoInputs({
+export const MyWithOnDomCreated = defineElement()({
     tagName: 'my-with-on-dom-created',
     render() {
         return html`

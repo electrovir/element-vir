@@ -3,17 +3,18 @@ import {randomString} from '@augment-vir/common';
 import {describe, it, testWeb} from '@augment-vir/test';
 import {queryThroughShadow} from '@augment-vir/web';
 import {IntervalObservable} from 'observavir';
+import {defineElement} from '../index.js';
 import {html} from '../template-transforms/vir-html/vir-html.js';
 import {defineElementNoInputs} from './define-element-no-inputs.js';
 
 describe(defineElementNoInputs.name, () => {
     it('blocks render callbacks without a return type', () => {
-        defineElementNoInputs({
+        defineElement()({
             tagName: `some-tag-3`,
             // @ts-expect-error: render callback must return something
             render() {},
         });
-        defineElementNoInputs({
+        defineElement()({
             tagName: `some-tag-2-2`,
             // returning undefined is cool
             render() {
@@ -23,7 +24,7 @@ describe(defineElementNoInputs.name, () => {
     });
 
     it('blocks init return', () => {
-        defineElementNoInputs({
+        defineElement()({
             tagName: `some-tag-4`,
             // @ts-expect-error: this callback should not return anything
             init() {
@@ -33,7 +34,7 @@ describe(defineElementNoInputs.name, () => {
                 return 'hi';
             },
         });
-        defineElementNoInputs({
+        defineElement()({
             tagName: `some-tag-5`,
             // @ts-expect-error: this callback should not return anything
             cleanup() {
@@ -46,7 +47,7 @@ describe(defineElementNoInputs.name, () => {
     });
 
     it('does not infer render output type from init callback', () => {
-        defineElementNoInputs({
+        defineElement()({
             tagName: `some-tag-6`,
             init() {
                 return undefined;
@@ -57,7 +58,7 @@ describe(defineElementNoInputs.name, () => {
     });
 
     it('persists slot names', () => {
-        const myTestElement = defineElementNoInputs({
+        const myTestElement = defineElement()({
             tagName: 'test-element-no-inputs-with-slot-names',
             slotNames: [
                 'my slot',
@@ -73,7 +74,7 @@ describe(defineElementNoInputs.name, () => {
     });
 
     it('does not allow updating state properties that do not exist in the state', () => {
-        defineElementNoInputs({
+        defineElement()({
             tagName: `some-tag-7`,
             state() {
                 return {
@@ -105,7 +106,7 @@ describe(defineElementNoInputs.name, () => {
     });
 
     it('allows host to be assigned to instance type', () => {
-        const MyElement = defineElementNoInputs({
+        const MyElement = defineElement()({
             tagName: `some-tag-1`,
             // render callback must return something
             init({host}) {
@@ -127,7 +128,7 @@ describe(defineElementNoInputs.name, () => {
     it('destroys all state props', async () => {
         let count = 0;
 
-        const MyElement = defineElementNoInputs({
+        const MyElement = defineElement()({
             tagName: `some-tag-2`,
             state() {
                 return {
@@ -166,7 +167,7 @@ describe(defineElementNoInputs.name, () => {
     });
 
     it('does not reconstruct children', async () => {
-        const Parent = defineElementNoInputs({
+        const Parent = defineElement()({
             tagName: 'parent-that-updates',
             state() {
                 return {
@@ -186,7 +187,7 @@ describe(defineElementNoInputs.name, () => {
             },
         });
 
-        const Child = defineElementNoInputs({
+        const Child = defineElement()({
             tagName: 'child-that-does-not-update',
             render() {
                 return html`

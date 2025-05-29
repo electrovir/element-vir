@@ -1,7 +1,8 @@
-import {css, defineElementNoInputs, html} from '../index.js';
+import {defineElement} from 'element-vir';
+import {css, html} from '../index.js';
 import {MySimple} from './my-simple.element.js';
 
-export const MyWithStylesAndInterpolatedSelector = defineElementNoInputs({
+export const MyWithStylesAndInterpolatedSelector = defineElement()({
     tagName: 'my-with-styles-and-interpolated-selector',
     styles: css`
         ${MySimple} {

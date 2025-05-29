@@ -1,20 +1,11 @@
 import {assert} from '@augment-vir/assert';
 import {describe, it, testWeb} from '@augment-vir/test';
-import {
-    css,
-    defineElement,
-    defineElementEvent,
-    defineElementNoInputs,
-    html,
-    listen,
-    wrapDefineElement,
-} from '../index.js';
+import {css, defineElement, defineElementEvent, html, listen, wrapDefineElement} from '../index.js';
 
 describe(wrapDefineElement.name, () => {
     type MySpecificTagName = `my-${string}`;
     type MySpecificInputs = {noInputsActually: string};
-    const {defineElement: myDefineElement, defineElementNoInputs: myDefineElementNoInputs} =
-        wrapDefineElement<MySpecificTagName>();
+    const {defineElement: myDefineElement} = wrapDefineElement<MySpecificTagName>();
 
     it('should match original define element types', () => {
         assert
@@ -45,7 +36,7 @@ describe(wrapDefineElement.name, () => {
 
         assert
             .tsType(
-                myDefineElementNoInputs({
+                myDefineElement()({
                     tagName: 'my-tag-abc2' as 'my-tag-abc',
                     render() {
                         return '';
@@ -53,7 +44,7 @@ describe(wrapDefineElement.name, () => {
                 }),
             )
             .equals(
-                defineElementNoInputs({
+                defineElement()({
                     tagName: 'my-tag-abc3' as 'my-tag-abc',
                     render() {
                         return '';
@@ -63,7 +54,7 @@ describe(wrapDefineElement.name, () => {
 
         assert
             .tsType(
-                myDefineElementNoInputs({
+                myDefineElement()({
                     tagName: 'my-tag-abc4',
                     hostClasses: {
                         'my-tag-abc4-do-thing': false,
@@ -89,7 +80,7 @@ describe(wrapDefineElement.name, () => {
                 }),
             )
             .equals(
-                defineElementNoInputs({
+                defineElement()({
                     tagName: 'my-tag-abc5' as 'my-tag-abc4',
                     hostClasses: {
                         ['my-tag-abc5-do-thing' as 'my-tag-abc4-do-thing']: false,
@@ -106,7 +97,7 @@ describe(wrapDefineElement.name, () => {
                 }),
             );
 
-        myDefineElementNoInputs({
+        myDefineElement()({
             // @ts-expect-error: this tag does not match the requirements
             tagName: 'bad-tag-2',
             render() {
@@ -116,12 +107,12 @@ describe(wrapDefineElement.name, () => {
     });
 
     it('requires non-void returning render', () => {
-        myDefineElementNoInputs({
+        myDefineElement()({
             tagName: 'my-thing-abc6',
             // @ts-expect-error: render missing a return is not allowed
             render() {},
         });
-        myDefineElementNoInputs({
+        myDefineElement()({
             tagName: 'my-thing-abc7',
             // returning undefined is chill
             render() {
@@ -131,7 +122,7 @@ describe(wrapDefineElement.name, () => {
     });
 
     it('allows defining sub states', () => {
-        myDefineElementNoInputs({
+        myDefineElement()({
             tagName: 'my-thing-abc6',
             state() {
                 return {

@@ -35,9 +35,9 @@ export type OnIntersectOptions = IntersectionObserverInit;
  * @example
  *
  * ```ts
- * import {html, defineElementNoInputs, onIntersect} from 'element-vir';
+ * import {html, defineElement, onIntersect} from 'element-vir';
  *
- * const MyElement = defineElementNoInputs({
+ * const MyElement = defineElement()({
  *     tagName: 'my-element',
  *     render() {
  *         return html`

@@ -19,11 +19,12 @@ export const typeDocConfig: Partial<TypeDocOptions> = {
         /** Default tags in use. */
         '@category',
         '@default',
+        '@deprecated',
         '@example',
         '@param',
         '@returns',
-        '@throws',
         '@see',
+        '@throws',
 
         /** Used by lit, and despite my attempts to exclude lit, this is still needed. */
         // cspell:ignore nocollapse

@@ -3,14 +3,14 @@
 
 import {randomInteger, randomString} from '@augment-vir/common';
 import {defineBookPage} from 'element-book';
-import {Observable, css, defineElementNoInputs, html, listen, nothing, onResize} from 'element-vir';
+import {Observable, css, defineElement, html, listen, nothing, onResize} from 'element-vir';
 import {assign} from 'element-vir/dist/declarative-element/directives/assign.directive';
 import {AsyncChild} from './async-child.element.js';
 import {TestChildElement} from './child.element.js';
 import {MyCustomEvent} from './customEvent.js';
 import {allTestArrayElements} from './elements-array.element.js';
 
-export const VirOldTestApp = defineElementNoInputs({
+export const VirOldTestApp = defineElement()({
     tagName: 'vir-old-test-app',
     styles: css`
         :host {
@@ -175,7 +175,7 @@ export const VirOldTestApp = defineElementNoInputs({
     },
 });
 
-const ChildThatShouldNotReRender = defineElementNoInputs({
+const ChildThatShouldNotReRender = defineElement()({
     tagName: 'child-that-should-no-re-render',
     render() {
         return html`

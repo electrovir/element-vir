@@ -1,12 +1,4 @@
-import {
-    type HtmlInterpolation,
-    css,
-    defineElement,
-    defineElementNoInputs,
-    html,
-    onResize,
-    unsafeCSS,
-} from 'element-vir';
+import {type HtmlInterpolation, css, defineElement, html, onResize, unsafeCSS} from 'element-vir';
 import {ViraIcon, defineIcon, hideScrollbars} from 'vira';
 
 const templatesContainerClassName = 'templates-container';
@@ -29,7 +21,7 @@ const ArrowRight24Icon = defineIcon({
     `,
 });
 
-export const TestCarouselWrapper = defineElementNoInputs({
+export const TestCarouselWrapper = defineElement()({
     tagName: 'test-carousel-wrapper',
     styles: css`
         :host {

@@ -1,6 +1,7 @@
-import {defineElementNoInputs, html} from '../index.js';
+import {defineElement} from 'element-vir';
+import {html} from '../index.js';
 
-export const MySimple = defineElementNoInputs({
+export const MySimple = defineElement()({
     tagName: 'my-simple',
     render() {
         return html`

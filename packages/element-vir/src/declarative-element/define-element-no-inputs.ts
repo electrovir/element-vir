@@ -39,21 +39,8 @@ import {createSlotNamesMap} from './slot-names.js';
 /**
  * Defines an element without any inputs.
  *
- * @category Element Definition
- * @example
- *
- * ```ts
- * import {defineElementNoInputs, html} from 'element-vir';
- *
- * const MyElement = defineElementNoInputs({
- *     tagName: 'my-element',
- *     render() {
- *         return html`
- *             <p>hi</p>
- *         `;
- *     },
- * });
- * ```
+ * @deprecated Use plain `defineElement` instead.
+ * @category Internal
  */
 export function defineElementNoInputs<
     const TagName extends CustomElementTagName = '-',

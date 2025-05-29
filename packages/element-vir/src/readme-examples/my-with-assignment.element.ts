@@ -1,7 +1,8 @@
-import {defineElementNoInputs, html} from '../index.js';
+import {defineElement} from 'element-vir';
+import {html} from '../index.js';
 import {MyWithInputs} from './my-with-inputs.element.js';
 
-export const MyWithAssignment = defineElementNoInputs({
+export const MyWithAssignment = defineElement()({
     tagName: 'my-with-assignment',
     render() {
         return html`
