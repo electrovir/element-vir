@@ -17,11 +17,11 @@ import {ViraDropdownOptions} from '../dropdown/vira-dropdown-options.element.js'
 import {triggerPopUpState} from './pop-up-helpers.js';
 
 /**
- * The main dropdown element that should be use directly.
+ * An element with slots for a pop-up trigger and pop-up contents.
  *
- * @category Dropdown
+ * @category PopUp
  * @category Elements
- * @see https://electrovir.github.io/element-vir/vira/book/elements/dropdown/vira-dropdown
+ * @see https://electrovir.github.io/element-vir/vira/book/elements/vira-pop-up-trigger
  */
 export const ViraPopUpTrigger = defineViraElement<
     PartialWithUndefined<{

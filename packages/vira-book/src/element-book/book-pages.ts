@@ -11,6 +11,7 @@ import {viraIconBookPage} from './entries/vira-icon.element.book.js';
 import {viraImageBookPage} from './entries/vira-image.element.book.js';
 import {viraInputBookPage} from './entries/vira-input.element.book.js';
 import {viraLinkBookPage} from './entries/vira-link.element.book.js';
+import {viraPopUpMenuBookPage} from './entries/vira-pop-up-menu.element.book.js';
 
 export const viraBookPages = [
     elementsBookPage,
@@ -26,5 +27,6 @@ export const viraBookPages = [
     viraImageBookPage,
     viraInputBookPage,
     viraLinkBookPage,
+    viraPopUpMenuBookPage,
     viraPopUpTriggerBookPage,
 ].sort((a, b) => a.title.localeCompare(b.title));

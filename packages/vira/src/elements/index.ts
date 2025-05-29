@@ -3,6 +3,7 @@ export * from './dropdown/vira-dropdown-item.element.js';
 export * from './dropdown/vira-dropdown-options.element.js';
 export * from './dropdown/vira-dropdown.element.js';
 export * from './pop-up/pop-up-helpers.js';
+export * from './pop-up/vira-pop-up-menu.element.js';
 export * from './pop-up/vira-pop-up-trigger.element.js';
 export * from './vira-bold-text.element.js';
 export * from './vira-button.element.js';
