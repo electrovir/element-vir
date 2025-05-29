@@ -84,27 +84,22 @@ export function createNewSelection(
  *
  * @category Internal
  */
-export function triggerPopUpState(
-    {open, emitEvent}: {open: boolean; emitEvent: boolean},
-    {
-        updateState,
-        popUpManager,
-        dispatch,
-        host,
-    }: {
-        updateState: (params: {showPopUpResult: ShowPopUpResult | undefined}) => void;
-        popUpManager: PopUpManager;
-        dispatch: (open: boolean) => void;
-        host: HTMLElement;
-    },
-) {
+export function triggerPopUpState({
+    open,
+    callback,
+    popUpManager,
+    host,
+}: {
+    open: boolean;
+    popUpManager: PopUpManager;
+    host: HTMLElement;
+    callback?: ((showPopUpResult: ShowPopUpResult | undefined) => void) | undefined;
+}) {
     if (open) {
-        updateState({showPopUpResult: popUpManager.showPopUp(host)});
+        const showPopUpResult = popUpManager.showPopUp(host);
+        callback?.(showPopUpResult);
     } else {
         popUpManager.removePopUp();
-    }
-
-    if (emitEvent) {
-        dispatch(open);
+        callback?.(undefined);
     }
 }

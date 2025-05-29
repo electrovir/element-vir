@@ -75,6 +75,13 @@ const examples: ReadonlyArray<{
         },
     },
     {
+        title: 'multi select count',
+        inputs: {
+            isMultiSelect: true,
+            showSelectionCount: true,
+        },
+    },
+    {
         title: 'long selection',
         inputs: {
             selected: [8],
@@ -219,6 +226,7 @@ export const viraDropdownPage = defineBookPage({
                 styles: example.customStyle,
                 render({state, updateState, controls}) {
                     const finalInputs: typeof ViraDropdown.InputsType = {
+                        ...example.inputs,
                         placeholder:
                             example.inputs && 'placeholder' in example.inputs
                                 ? example.inputs.placeholder

@@ -1,5 +1,5 @@
 import {nav, navAttribute, type NavController, NavValue} from 'device-navigation';
-import {classMap, css, defineElementEvent, html, ifDefined, listen, testId} from 'element-vir';
+import {classMap, css, html, ifDefined, testId} from 'element-vir';
 import {viraBorders} from '../../styles/border.js';
 import {viraFormCssVars} from '../../styles/form-themes.js';
 import {viraDisabledStyles} from '../../styles/index.js';
@@ -25,6 +25,7 @@ export const viraDropdownOptionsTestIds = {
 export const ViraDropdownOptions = defineViraElement<
     Readonly<{
         navController: NavController;
+        isMultiSelect: boolean;
         /** All dropdown options to show to the user. */
         options: ReadonlyArray<Readonly<ViraDropdownOption>>;
         /**
@@ -36,10 +37,10 @@ export const ViraDropdownOptions = defineViraElement<
     }>
 >()({
     tagName: 'vira-dropdown-options',
-    events: {
-        selectionChange: defineElementEvent<Readonly<ViraDropdownOption>>(),
+    hostClasses: {
+        'vira-dropdown-options-multiselect': ({inputs}) => inputs.isMultiSelect,
     },
-    styles: css`
+    styles: ({hostClasses}) => css`
         :host {
             display: flex;
             flex-direction: column;
@@ -49,6 +50,7 @@ export const ViraDropdownOptions = defineViraElement<
             max-height: 100%;
             overflow-y: auto;
             z-index: 99;
+            box-sizing: border-box;
             border-radius: ${viraBorders['vira-form-input-radius'].value};
             border-top-left-radius: 0;
             border-top-right-radius: 0;
@@ -66,10 +68,29 @@ export const ViraDropdownOptions = defineViraElement<
         ${navAttribute.css({
             baseSelector: '.dropdown-item:not(.disabled):not(.selected)',
             navValue: NavValue.Focused,
+        })}, ${navAttribute.css({
+            baseSelector: '.dropdown-item:not(.disabled):not(.selected)',
+            navValue: NavValue.Active,
         })} {
             background-color: ${viraFormCssVars['vira-form-selection-hover-background-color']
                 .value};
             outline: none;
+        }
+
+        ${hostClasses['vira-dropdown-options-multiselect'].selector} {
+            &
+                ${navAttribute.css({
+                    baseSelector: '.dropdown-item:not(.disabled)',
+                    navValue: NavValue.Focused,
+                })},
+                ${navAttribute.css({
+                    baseSelector: '.dropdown-item:not(.disabled)',
+                    navValue: NavValue.Active,
+                })} {
+                background-color: ${viraFormCssVars['vira-form-selection-hover-background-color']
+                    .value};
+                outline: none;
+            }
         }
 
         ${ViraDropdownItem} {
@@ -81,7 +102,7 @@ export const ViraDropdownOptions = defineViraElement<
             pointer-events: auto;
         }
     `,
-    render({inputs, dispatch, events}) {
+    render({inputs}) {
         const optionTemplates = inputs.options.map((option) => {
             const selected = inputs.selectedOptions.includes(option);
             const innerTemplate =
@@ -93,6 +114,8 @@ export const ViraDropdownOptions = defineViraElement<
                     })}></${ViraDropdownItem}>
                 `;
 
+            const disabled = option.disabled || (!inputs.isMultiSelect && selected);
+
             return html`
                 <div
                     class="dropdown-item ${classMap({
@@ -102,25 +125,7 @@ export const ViraDropdownOptions = defineViraElement<
                     ${testId(viraDropdownOptionsTestIds.option)}
                     title=${ifDefined(option.hoverText || undefined)}
                     role="option"
-                    ${nav(inputs.navController, {disabled: option.disabled || selected})}
-                    ${listen('mousedown', (event) => {
-                        /**
-                         * Prevent this mousedown event from propagating to the window, which would
-                         * then trigger the dropdown to close.
-                         */
-                        event.stopPropagation();
-                    })}
-                    ${listen('mouseup', (event) => {
-                        /**
-                         * Prevent this event from propagating to the window, which would then
-                         * trigger the dropdown to close.
-                         */
-                        event.stopPropagation();
-
-                        if (!option.disabled) {
-                            dispatch(new events.selectionChange(option));
-                        }
-                    })}
+                    ${nav(inputs.navController, {disabled})}
                 >
                     ${innerTemplate}
                 </div>

@@ -28,11 +28,14 @@ export const ViraPopUpTrigger = defineViraElement<
         isDisabled: boolean;
         /** For debugging purposes only. Very bad for actual production code use. */
         z_debug_forceOpenState: boolean;
-        /**
-         * Set to `true` to keep the menu open if a nav selection is triggered. Only relevant to
-         * pop-ups with internal nav items.
-         */
-        keepOpenAfterNav: boolean;
+        /** Set to `true` to keep the pop-up open if it is interacted with. */
+        keepOpenAfterInteraction: boolean;
+        /** All values in px. */
+        popUpOffset?: PartialWithUndefined<{
+            vertical: number;
+            right: number;
+            left: number;
+        }>;
     }>
 >()({
     tagName: 'vira-pop-up-trigger',
@@ -40,7 +43,7 @@ export const ViraPopUpTrigger = defineViraElement<
         return {
             /** `undefined` means the pop up is not currently showing. */
             showPopUpResult: undefined as ShowPopUpResult | undefined,
-            popUpManager: new PopUpManager(new NavController(host)),
+            popUpManager: new PopUpManager(new NavController(host, {activateOnMouseUp: true})),
         };
     },
     slotNames: [
@@ -52,7 +55,8 @@ export const ViraPopUpTrigger = defineViraElement<
     },
     styles: ({hostClasses}) => css`
         :host {
-            display: inline-block;
+            display: inline-flex;
+            box-sizing: border-box;
             vertical-align: middle;
             ${viraFocusCssVars['vira-focus-outline-color'].name}: ${viraFormCssVars[
                 'vira-form-focus-color'
@@ -67,6 +71,8 @@ export const ViraPopUpTrigger = defineViraElement<
             max-width: 100%;
             position: relative;
             outline: none;
+            flex-grow: 1;
+            box-sizing: border-box;
         }
 
         ${createFocusStyles({
@@ -102,7 +108,10 @@ export const ViraPopUpTrigger = defineViraElement<
             z-index: 2147483647;
             left: 0;
             right: 0;
-            top: 100%;
+
+            & > * {
+                pointer-events: auto;
+            }
         }
 
         .open-upwards .pop-up-positioner {
@@ -111,7 +120,15 @@ export const ViraPopUpTrigger = defineViraElement<
     `,
     events: {
         navSelect: defineElementEvent<Coords>(),
-        openChange: defineElementEvent<boolean>(),
+        /**
+         * - `undefined` indicates that the pop-up just closed.
+         * - {@link ShowPopUpResult} indicates that the pop-up just opened.
+         */
+        openChange: defineElementEvent<ShowPopUpResult | undefined>(),
+        init: defineElementEvent<{
+            navController: NavController;
+            popUpManager: PopUpManager;
+        }>(),
     },
     cleanup({state, updateState}) {
         updateState({showPopUpResult: undefined});
@@ -121,6 +138,7 @@ export const ViraPopUpTrigger = defineViraElement<
         /** Refocus the trigger and set the result to `undefined` when the pop up closes. */
         state.popUpManager.listen(HidePopUpEvent, () => {
             updateState({showPopUpResult: undefined});
+            dispatch(new events.openChange(undefined));
             if (!inputs.isDisabled) {
                 const dropdownWrapper = host.shadowRoot.querySelector('.dropdown-wrapper');
 
@@ -134,41 +152,63 @@ export const ViraPopUpTrigger = defineViraElement<
             }
         });
         state.popUpManager.listen(NavSelectEvent, (event) => {
-            if (!inputs.keepOpenAfterNav) {
-                triggerPopUpState(
-                    {emitEvent: true, open: false},
-                    {
-                        dispatch: (openState) => {
-                            dispatch(new events.openChange(openState));
-                        },
-                        host,
-                        popUpManager: state.popUpManager,
-                        updateState,
+            if (!inputs.keepOpenAfterInteraction) {
+                triggerPopUpState({
+                    open: false,
+                    callback(showPopUpResult) {
+                        updateState({
+                            showPopUpResult,
+                        });
                     },
-                );
+                    host,
+                    popUpManager: state.popUpManager,
+                });
             }
             dispatch(new events.navSelect(event.detail));
         });
+
+        dispatch(
+            new events.init({
+                navController: state.popUpManager.navController,
+                popUpManager: state.popUpManager,
+            }),
+        );
     },
     render({dispatch, events, state, inputs, updateState, host, slotNames}) {
-        function triggerPopUp(param: Parameters<typeof triggerPopUpState>[0]) {
-            triggerPopUpState(param, {
-                dispatch: (openState) => {
-                    dispatch(new events.openChange(openState));
+        function triggerPopUp(
+            {emitEvent, open}: {emitEvent: boolean; open: boolean},
+            event: Event | undefined,
+        ) {
+            if (state.showPopUpResult && inputs.keepOpenAfterInteraction && event) {
+                const dropdownTrigger = host.shadowRoot.querySelector('.dropdown-trigger');
+                if (dropdownTrigger && !event.composedPath().includes(dropdownTrigger)) {
+                    /**
+                     * Prevent closing the pop-up when `keepOpenAfterInteraction` is turned on and
+                     * the pop-up was interacted with.
+                     */
+                    return;
+                }
+            }
+            triggerPopUpState({
+                open,
+                callback(showPopUpResult) {
+                    updateState({showPopUpResult});
+                    if (emitEvent) {
+                        dispatch(new events.openChange(showPopUpResult));
+                    }
                 },
                 host,
                 popUpManager: state.popUpManager,
-                updateState,
             });
         }
 
         if (inputs.isDisabled) {
-            triggerPopUp({open: false, emitEvent: false});
+            triggerPopUp({open: false, emitEvent: false}, undefined);
         } else if (inputs.z_debug_forceOpenState != undefined) {
             if (!inputs.z_debug_forceOpenState && state.showPopUpResult) {
-                triggerPopUp({emitEvent: false, open: false});
+                triggerPopUp({emitEvent: false, open: false}, undefined);
             } else if (inputs.z_debug_forceOpenState && !state.showPopUpResult) {
-                triggerPopUp({emitEvent: false, open: true});
+                triggerPopUp({emitEvent: false, open: true}, undefined);
             }
         }
 
@@ -177,15 +217,21 @@ export const ViraPopUpTrigger = defineViraElement<
                 ? /** Dropdown going down position. */
                   css`
                       bottom: -${state.showPopUpResult.positions.diff.bottom}px;
+                      top: calc(100% + ${inputs.popUpOffset?.vertical || 0}px);
+                      left: ${inputs.popUpOffset?.left || 0}px;
+                      right: ${inputs.popUpOffset?.right || 0}px;
                   `
                 : /** Dropdown going up position. */
                   css`
                       top: -${state.showPopUpResult.positions.diff.top}px;
+                      bottom: calc(100% + ${inputs.popUpOffset?.vertical || 0}px);
+                      left: ${inputs.popUpOffset?.left || 0}px;
+                      right: ${inputs.popUpOffset?.right || 0}px;
                   `
             : undefined;
 
-        function respondToClick() {
-            triggerPopUp({emitEvent: true, open: !state.showPopUpResult});
+        function respondToClick(event: Event) {
+            triggerPopUp({emitEvent: true, open: !state.showPopUpResult}, event);
         }
 
         return html`
@@ -199,19 +245,19 @@ export const ViraPopUpTrigger = defineViraElement<
                 aria-expanded=${!!state.showPopUpResult}
                 ${listen('keydown', (event) => {
                     if (!state.showPopUpResult && event.code.startsWith('Arrow')) {
-                        triggerPopUp({emitEvent: true, open: true});
+                        triggerPopUp({emitEvent: true, open: true}, event);
                     }
                 })}
                 ${listen('click', (event) => {
                     /** Detail is 0 if it was a keyboard key (like Enter) that triggered this click. */
                     if (event.detail === 0) {
-                        respondToClick();
+                        respondToClick(event);
                     }
                 })}
                 ${listen('mousedown', (event) => {
                     /** Ignore any clicks that aren't the main button. */
                     if (event.button === 0) {
-                        respondToClick();
+                        respondToClick(event);
                     }
                 })}
             >

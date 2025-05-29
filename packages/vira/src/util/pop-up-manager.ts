@@ -1,7 +1,7 @@
 import {assert} from '@augment-vir/assert';
 import {type MaybePromise, mapObjectValues} from '@augment-vir/common';
 import {findOverflowAncestor} from '@augment-vir/web';
-import {type Coords, type NavController, NavDirection} from 'device-navigation';
+import {type Coords, NavActivateEvent, type NavController, NavDirection} from 'device-navigation';
 import {listenToPageActivation} from 'page-active';
 import {
     type ExtractEventByType,
@@ -144,6 +144,14 @@ export class PopUpManager {
                     this.removePopUp();
                 }
             }),
+            this.navController.listen(NavActivateEvent, (event) => {
+                if (event.detail.success) {
+                    this.listenTarget.dispatch(new NavSelectEvent({detail: event.detail.coords}));
+                    this.navController.currentNavEntry?.entry.focus(true);
+                    event.stopImmediatePropagation();
+                    event.preventDefault();
+                }
+            }),
             listenToGlobal(
                 'mousedown',
                 (event) => {
@@ -196,13 +204,12 @@ export class PopUpManager {
                             direction: NavDirection.Right,
                             allowWrapping: false,
                         });
-                    } else if (keyCode === 'Enter' || keyCode === 'Return' || keyCode === 'Space') {
-                        const result = this.navController.enterInto({fallbackToActivate: true});
-                        if (result.success) {
-                            this.listenTarget.dispatch(new NavSelectEvent({detail: result.coords}));
-                            event.stopImmediatePropagation();
-                            event.preventDefault();
-                        }
+                    } else if (
+                        (keyCode === 'Enter' || keyCode === 'Return' || keyCode === 'Space') &&
+                        this.navController.enterInto({fallbackToActivate: true}).success
+                    ) {
+                        event.stopImmediatePropagation();
+                        event.preventDefault();
                     }
                 }
             }),

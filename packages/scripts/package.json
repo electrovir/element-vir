@@ -7,6 +7,7 @@
         "name": "electrovir",
         "url": "https://github.com/electrovir"
     },
+    "sideEffects": false,
     "type": "module",
     "scripts": {
         "build": "tsx src/build-all.ts && cp ../../dist/vira/404.html ../../dist/404.html",
@@ -17,16 +18,16 @@
         "update:exports": "tsx src/vira-scripts/update-all-exports.ts"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.20.0",
-        "@augment-vir/common": "^31.20.0",
-        "@augment-vir/node": "^31.20.0",
+        "@augment-vir/assert": "^31.21.0",
+        "@augment-vir/common": "^31.21.0",
+        "@augment-vir/node": "^31.21.0",
         "prettier": "^3.4.2",
         "tsx": "^4.19.4"
     },
     "devDependencies": {
-        "@types/node": "^22.15.21",
+        "@types/node": "^22.15.24",
         "markdown-code-example-inserter": "^3.0.3",
-        "typedoc": "^0.28.4",
+        "typedoc": "^0.28.5",
         "typescript": "5.8.3"
     },
     "engines": {

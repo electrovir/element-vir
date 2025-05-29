@@ -26,6 +26,7 @@ export * from './declarative-element/properties/css-vars.js';
 export * from './declarative-element/properties/element-events.js';
 export * from './declarative-element/properties/element-properties.js';
 export * from './declarative-element/properties/host-classes.js';
+export * from './declarative-element/properties/property-proxy.js';
 export * from './declarative-element/properties/styles.js';
 export * from './declarative-element/properties/tag-name.js';
 export * from './declarative-element/render-callback.js';
