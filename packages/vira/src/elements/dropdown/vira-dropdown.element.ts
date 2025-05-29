@@ -15,7 +15,7 @@ import {ChevronUp24Icon} from '../../icons/index.js';
 import {viraBorders} from '../../styles/border.js';
 import {viraFocusCssVars} from '../../styles/focus.js';
 import {viraFormCssVars} from '../../styles/form-themes.js';
-import {noUserSelect, viraAnimationDurations, viraDisabledStyles} from '../../styles/index.js';
+import {noUserSelect, viraAnimationDurations} from '../../styles/index.js';
 import {viraShadows} from '../../styles/shadows.js';
 import {type PopUpManager, type ShowPopUpResult} from '../../util/pop-up-manager.js';
 import {defineViraElement} from '../define-vira-element.js';
@@ -82,10 +82,7 @@ export const ViraDropdown = defineViraElement<
             showPopUpResult: undefined as ShowPopUpResult | undefined,
         };
     },
-    hostClasses: {
-        'vira-dropdown-disabled': ({inputs}) => !!inputs.isDisabled,
-    },
-    styles: ({hostClasses}) => css`
+    styles: css`
         :host {
             display: inline-flex;
             vertical-align: middle;
@@ -153,15 +150,6 @@ export const ViraDropdown = defineViraElement<
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
             ${viraShadows.menuShadowReversed}
-        }
-
-        ${hostClasses['vira-dropdown-disabled'].selector} {
-            ${viraDisabledStyles}
-            pointer-events: auto;
-        }
-
-        ${hostClasses['vira-dropdown-disabled'].selector} .dropdown-wrapper {
-            pointer-events: none;
         }
 
         .using-placeholder {
