@@ -1,7 +1,8 @@
 import {elementsBookPage} from './elements.book.js';
 import {iconsBookPage} from './entries/icons.book.js';
 import {viraMenuItemBookPage} from './entries/pop-up/vira-menu-item.element.book.js';
-import {viraMenuOptionsBookPage} from './entries/pop-up/vira-menu-options.element.book.js';
+import {viraMenuTriggerBookPage} from './entries/pop-up/vira-menu-trigger.element.book.js';
+import {viraMenuOptionsBookPage} from './entries/pop-up/vira-menu.element.book.js';
 import {viraPopUpMenuBookPage} from './entries/pop-up/vira-pop-up-menu.element.book.js';
 import {viraPopUpTriggerBookPage} from './entries/pop-up/vira-pop-up-trigger.element.book.js';
 import {viraBoldTextPage} from './entries/vira-bold-text.element.book.js';
@@ -27,6 +28,7 @@ export const viraBookPages = [
     viraLinkBookPage,
     viraMenuItemBookPage,
     viraMenuOptionsBookPage,
+    viraMenuTriggerBookPage,
     viraPopUpMenuBookPage,
     viraPopUpTriggerBookPage,
 ].sort((a, b) => a.title.localeCompare(b.title));

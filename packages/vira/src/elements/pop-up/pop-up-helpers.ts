@@ -1,46 +1,16 @@
 import {joinWithFinalConjunction} from '@augment-vir/common';
 import {type PopUpManager, type ShowPopUpResult} from '../../util/pop-up-manager.js';
-import {type MenuItem} from './vira-menu-item.element.js';
+import {type MenuItem} from './pop-up-menu-item.js';
 
 /**
- * Filters an array of {@link ViraDropdownOption} based on the given selection.
+ * Verifies that all items have unique ids.
  *
  * @category Internal
  */
-export function filterToSelectedOptions({
-    selected,
-    options,
-    isMultiSelect,
-}: Readonly<{
-    selected: ReadonlyArray<PropertyKey>;
-    isMultiSelect?: boolean | undefined;
-    options: ReadonlyArray<Readonly<MenuItem>>;
-}>): MenuItem[] {
-    if (selected.length && options.length) {
-        const selectedOptions = options.filter((option) => selected.includes(option.id));
-
-        if (selectedOptions.length > 1 && !isMultiSelect) {
-            console.error(
-                `vira-dropdown has multiple selections but \`isMultiSelect\` is not \`true\`. Truncating to the first selection.`,
-            );
-            return selectedOptions.slice(0, 1);
-        } else {
-            return selectedOptions;
-        }
-    } else {
-        return [];
-    }
-}
-
-/**
- * Verifies that all options have unique ids.
- *
- * @category Internal
- */
-export function assertUniqueIdProps(options: ReadonlyArray<Readonly<{id: PropertyKey}>>) {
+export function assertUniqueIdProps(items: ReadonlyArray<Readonly<{id: PropertyKey}>>) {
     const usedIds = new Set<PropertyKey>();
     const duplicateIds: PropertyKey[] = [];
-    options.forEach((option) => {
+    items.forEach((option) => {
         if (usedIds.has(option.id)) {
             duplicateIds.push(option.id);
         } else {
@@ -61,21 +31,22 @@ export function assertUniqueIdProps(options: ReadonlyArray<Readonly<{id: Propert
  *
  * @category Internal
  */
-export function createNewSelection(
-    /** The id of the option that should be newly selected. */
-    id: PropertyKey,
-    currentSelection: ReadonlyArray<PropertyKey>,
-    isMultiSelect: boolean,
+export function updateSelectedItems(
+    /** The item that should be newly toggled. */
+    newItem: Readonly<MenuItem>,
+    currentSelection: ReadonlyArray<PropertyKey> = [],
+    isMultiSelect: boolean = false,
 ): PropertyKey[] {
     if (isMultiSelect) {
-        return currentSelection.includes(id)
-            ? currentSelection.filter((entry) => entry !== id)
+        return currentSelection.includes(newItem.id)
+            ? currentSelection.filter((entry) => entry !== newItem.id)
             : [
                   ...currentSelection,
-                  id,
+                  newItem.id,
               ];
     } else {
-        return [id];
+        /** In single select, only the toggled item is allowed. */
+        return [newItem.id];
     }
 }
 

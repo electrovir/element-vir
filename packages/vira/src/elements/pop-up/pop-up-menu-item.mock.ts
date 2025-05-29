@@ -1,6 +1,6 @@
-import {type MenuItem} from './vira-menu-item.element.js';
+import {type MenuItem} from './pop-up-menu-item.js';
 
-export const mockOptions = [
+export const mockMenuItems = [
     {
         label: 'Option 0',
         id: 0,

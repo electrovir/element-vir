@@ -4,8 +4,8 @@ import {describe, it, testWeb} from '@augment-vir/test';
 import {extractElementText, queryThroughShadow, waitForAnimationFrame} from '@augment-vir/web';
 import {html, listen, testIdSelector} from 'element-vir';
 import {Element24Icon} from '../icons/index.js';
-import {mockOptions} from './pop-up/pop-up-menu-item.mock.js';
-import {viraMenuOptionsTestIds} from './pop-up/vira-menu-options.element.js';
+import {mockMenuItems} from './pop-up/pop-up-menu-item.mock.js';
+import {viraMenuTestIds} from './pop-up/vira-menu.element.js';
 import {ViraDropdown, viraDropdownTestIds} from './vira-dropdown.element.js';
 
 async function setupDropdownTest(inputs?: Partial<(typeof ViraDropdown)['InputsType']>) {
@@ -16,7 +16,7 @@ async function setupDropdownTest(inputs?: Partial<(typeof ViraDropdown)['InputsT
     } = mapObjectValues(ViraDropdown.events, () => []);
     const instance = await testWeb.render(html`
         <${ViraDropdown.assign({
-            options: mockOptions,
+            options: mockMenuItems,
             selected: [],
             ...inputs,
         })}
@@ -98,15 +98,11 @@ describe(ViraDropdown.tagName, () => {
         const {instance, toggle, events, queryByTestId} = await setupDropdownTest();
 
         await toggle();
-        const options = queryThroughShadow(
-            instance,
-            testIdSelector(viraMenuOptionsTestIds.option),
-            {
-                all: true,
-            },
-        );
+        const options = queryThroughShadow(instance, testIdSelector(viraMenuTestIds.item), {
+            all: true,
+        });
 
-        assert.isLengthExactly(options, mockOptions.length);
+        assert.isLengthExactly(options, mockMenuItems.length);
         assert.isDefined(options[1]);
         await testWeb.click(options[1]);
 

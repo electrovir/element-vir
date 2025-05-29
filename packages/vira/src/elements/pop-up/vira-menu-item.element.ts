@@ -1,32 +1,9 @@
-import {type PartialWithUndefined} from '@augment-vir/common';
-import {css, html, type HTMLTemplateResult} from 'element-vir';
+import {css, html} from 'element-vir';
 import {Check24Icon} from '../../icons/icon-svgs/check-24.icon.js';
 import {noUserSelect} from '../../styles/index.js';
 import {defineViraElement} from '../define-vira-element.js';
 import {ViraIcon} from '../vira-icon.element.js';
-
-/**
- * An individual menu item consumed partially by {@link ViraMenuItem} and used by `ViraMenuOptions`.
- *
- * @category Internal
- */
-export type MenuItem = {
-    /** Each `id` must be unique across all options. */
-    id: PropertyKey;
-    /** The user-facing label for this menu item. */
-    label: string;
-} & PartialWithUndefined<{
-    disabled: boolean;
-    /** Text assigned to the `title` HTML attribute that'll show on long hover. */
-    titleText: string;
-    /**
-     * An optional custom template for this menu item. This will replace the menu item text and icon
-     * content, but will still be styled correctly if used within `ViraMenuOptions`. Feel free to
-     * use {@link ViraMenuItem} as the template with a custom `<slot>` to keep the selected checkmark
-     * functionality.
-     */
-    template: HTMLTemplateResult;
-}>;
+import {type MenuItem} from './pop-up-menu-item.js';
 
 /**
  * An element for an individual menu item.

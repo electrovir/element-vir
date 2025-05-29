@@ -1,4 +1,5 @@
-import {type PartialWithUndefined} from '@augment-vir/common';
+import {check} from '@augment-vir/assert';
+import {filterMap, type PartialWithUndefined} from '@augment-vir/common';
 import {type NavController} from 'device-navigation';
 import {
     classMap,
@@ -19,13 +20,9 @@ import {noUserSelect, viraAnimationDurations} from '../styles/index.js';
 import {viraShadows} from '../styles/shadows.js';
 import {type PopUpManager, type ShowPopUpResult} from '../util/pop-up-manager.js';
 import {defineViraElement} from './define-vira-element.js';
-import {
-    assertUniqueIdProps,
-    createNewSelection,
-    filterToSelectedOptions,
-} from './pop-up/pop-up-helpers.js';
-import {type MenuItem} from './pop-up/vira-menu-item.element.js';
-import {ViraMenuOptions} from './pop-up/vira-menu-options.element.js';
+import {updateSelectedItems} from './pop-up/pop-up-helpers.js';
+import {type MenuItem} from './pop-up/pop-up-menu-item.js';
+import {ViraMenu} from './pop-up/vira-menu.element.js';
 import {ViraPopUpMenu} from './pop-up/vira-pop-up-menu.element.js';
 import {ViraPopUpTrigger} from './pop-up/vira-pop-up-trigger.element.js';
 import {ViraIcon} from './vira-icon.element.js';
@@ -43,7 +40,7 @@ export const viraDropdownTestIds = {
 };
 
 /**
- * The main dropdown element that should be use directly.
+ * A dropdown element that uses pop-up menus.
  *
  * @category Dropdown
  * @category Elements
@@ -75,14 +72,6 @@ export const ViraDropdown = defineViraElement<
     }>
 >()({
     tagName: 'vira-dropdown',
-    state() {
-        return {
-            navController: undefined as undefined | NavController,
-            popUpManager: undefined as undefined | PopUpManager,
-            /** `undefined` means the pop up is not currently showing. */
-            showPopUpResult: undefined as ShowPopUpResult | undefined,
-        };
-    },
     styles: css`
         :host {
             display: inline-flex;
@@ -163,10 +152,20 @@ export const ViraDropdown = defineViraElement<
         selectedChange: defineElementEvent<PropertyKey[]>(),
         openChange: defineElementEvent<boolean>(),
     },
+    state() {
+        return {
+            navController: undefined as undefined | NavController,
+            popUpManager: undefined as undefined | PopUpManager,
+            /** `undefined` means the pop up is not currently showing. */
+            showPopUpResult: undefined as ShowPopUpResult | undefined,
+        };
+    },
     render({state, inputs, dispatch, events, updateState}) {
-        assertUniqueIdProps(inputs.options);
-
-        const selectedOptions: ReadonlyArray<Readonly<MenuItem>> = filterToSelectedOptions(inputs);
+        const selectedOptions = filterMap(
+            inputs.selected,
+            (selectedId) => inputs.options.find((option) => option.id === selectedId),
+            check.isTruthy,
+        );
 
         const leadingIconTemplate = inputs.icon
             ? html`
@@ -234,7 +233,7 @@ export const ViraDropdown = defineViraElement<
 
                     dispatch(
                         new events.selectedChange(
-                            createNewSelection(option.id, inputs.selected, !!inputs.isMultiSelect),
+                            updateSelectedItems(option, inputs.selected, !!inputs.isMultiSelect),
                         ),
                     );
                     if (!inputs.isMultiSelect) {
@@ -275,14 +274,14 @@ export const ViraDropdown = defineViraElement<
                               })}
                               slot=${ViraPopUpTrigger.slotNames.popUp}
                           >
-                              <${ViraMenuOptions.assign({
-                                  options: inputs.options,
-                                  selectedOptions,
+                              <${ViraMenu.assign({
+                                  items: inputs.options,
+                                  selected: selectedOptions.map((option) => option.id),
                                   navController: state.navController,
                                   isMultiSelect: !!inputs.isMultiSelect,
                               })}
                                   ${testId(viraDropdownTestIds.options)}
-                              ></${ViraMenuOptions}>
+                              ></${ViraMenu}>
                           </${ViraPopUpMenu}>
                       `
                     : nothing}

@@ -1,54 +1,57 @@
+import {type PartialWithUndefined} from '@augment-vir/common';
 import {nav, navAttribute, NavController, NavValue} from 'device-navigation';
 import {classMap, css, html, ifDefined, testId} from 'element-vir';
 import {viraFormCssVars} from '../../styles/form-themes.js';
 import {noNativeFormStyles, viraDisabledStyles} from '../../styles/index.js';
 import {defineViraElement} from '../define-vira-element.js';
 import {assertUniqueIdProps} from './pop-up-helpers.js';
-import {ViraMenuItem, type MenuItem} from './vira-menu-item.element.js';
+import {type MenuItem} from './pop-up-menu-item.js';
+import {ViraMenuItem} from './vira-menu-item.element.js';
 
 /**
- * Test ids for {@link ViraMenuOptions}.
+ * Test ids for {@link ViraMenu}.
  *
  * @category Internal
  */
-export const viraMenuOptionsTestIds = {
-    option: 'dropdown-option',
+export const viraMenuTestIds = {
+    item: 'menu-item',
 };
 
 /**
- * A wrapper for menu options. This can be used for dropdown items or menu bar dropdowns. To detect
+ * A wrapper for menu items. This can be used for dropdown items or menu bar dropdowns. To detect
  * when items are selected or unselected, pass in a `NavController` instance and hook into its
  * events.
  *
  * @category PopUp
  * @category Elements
  */
-export const ViraMenuOptions = defineViraElement<
-    Readonly<{
-        /**
-         * The parent nav controller for this menu. If none is provided, an internal nav controller
-         * is created (which means it can't be hooked into by external elements).
-         */
-        navController: NavController | undefined;
-        isMultiSelect: boolean;
-        /** All dropdown options to show to the user. */
-        options: ReadonlyArray<Readonly<MenuItem>>;
-        /**
-         * The currently selected dropdown options. Note that this must be a reference subset of the
-         * options input. Meaning, entries in this array must be the exact same objects (by
-         * reference) as entries in the `options` input array for them to be marked as selected.
-         */
-        selectedOptions: ReadonlyArray<Readonly<MenuItem>>;
-    }>
+export const ViraMenu = defineViraElement<
+    Readonly<
+        {
+            /**
+             * The parent nav controller for this menu. If none is provided, an internal nav
+             * controller is created (which means it can't be hooked into by external elements).
+             *
+             * It is recommended to not leave this `undefined`.
+             */
+            navController: NavController | undefined;
+            /** All menu items to show to the user. */
+            items: ReadonlyArray<Readonly<MenuItem>>;
+        } & PartialWithUndefined<{
+            /** The ids of the currently selected menu items. */
+            selected: ReadonlyArray<PropertyKey>;
+            isMultiSelect: boolean;
+        }>
+    >
 >()({
-    tagName: 'vira-menu-options',
+    tagName: 'vira-menu',
     state({inputs, host}) {
         return {
             internalNavController: inputs.navController || new NavController(host),
         };
     },
     hostClasses: {
-        'vira-menu-options-multiselect': ({inputs}) => inputs.isMultiSelect,
+        'vira-menu-multiselect': ({inputs}) => !!inputs.isMultiSelect,
     },
     styles: ({hostClasses}) => css`
         :host {
@@ -83,7 +86,7 @@ export const ViraMenuOptions = defineViraElement<
             outline: none;
         }
 
-        ${hostClasses['vira-menu-options-multiselect'].selector} {
+        ${hostClasses['vira-menu-multiselect'].selector} {
             &
                 ${navAttribute.css({
                     baseSelector: '.menu-item:not(.disabled)',
@@ -115,29 +118,29 @@ export const ViraMenuOptions = defineViraElement<
         }
     },
     render({inputs, state}) {
-        assertUniqueIdProps(inputs.options);
+        assertUniqueIdProps(inputs.items);
 
-        const optionTemplates = inputs.options.map((option) => {
-            const selected = inputs.selectedOptions.includes(option);
+        const itemTemplates = inputs.items.map((item) => {
+            const selected = !!inputs.selected?.includes(item.id);
             const innerTemplate =
-                option.template ||
+                item.template ||
                 html`
                     <${ViraMenuItem.assign({
-                        label: option.label,
+                        label: item.label,
                         selected,
                     })}></${ViraMenuItem}>
                 `;
 
-            const disabled = option.disabled || (!inputs.isMultiSelect && selected);
+            const disabled = item.disabled || (!inputs.isMultiSelect && selected);
 
             return html`
                 <button
                     class="menu-item ${classMap({
-                        disabled: !!option.disabled,
+                        disabled: !!item.disabled,
                         selected,
                     })}"
-                    ${testId(viraMenuOptionsTestIds.option)}
-                    title=${ifDefined(option.titleText || undefined)}
+                    ${testId(viraMenuTestIds.item)}
+                    title=${ifDefined(item.titleText || undefined)}
                     role="option"
                     ${nav(state.internalNavController, {disabled})}
                 >
@@ -147,7 +150,7 @@ export const ViraMenuOptions = defineViraElement<
         });
 
         return html`
-            ${optionTemplates}
+            ${itemTemplates}
         `;
     },
 });

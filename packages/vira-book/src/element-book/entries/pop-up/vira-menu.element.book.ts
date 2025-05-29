@@ -1,9 +1,9 @@
 import {defineBookPage} from 'element-book';
 import {html} from 'element-vir';
-import {ViraMenuOptions} from 'vira';
+import {ViraMenu} from 'vira';
 import {elementsBookPage} from '../../elements.book.js';
 
-const options = [
+const items = [
     {
         id: 1,
         label: 'one',
@@ -18,37 +18,36 @@ const options = [
     },
 ] as const;
 
-const examples: {title: string; inputs?: Partial<typeof ViraMenuOptions.InputsType> | undefined}[] =
-    [
-        {
-            title: 'basic',
+const examples: {title: string; inputs?: Partial<typeof ViraMenu.InputsType> | undefined}[] = [
+    {
+        title: 'basic',
+    },
+    {
+        title: 'with selection',
+        inputs: {
+            selected: [
+                2,
+            ],
         },
-        {
-            title: 'with selection',
-            inputs: {
-                selectedOptions: [
-                    options[1],
-                ],
-            },
-        },
-    ];
+    },
+];
 
 export const viraMenuOptionsBookPage = defineBookPage({
     parent: elementsBookPage,
-    title: ViraMenuOptions.tagName,
+    title: ViraMenu.tagName,
     defineExamples({defineExample}) {
         examples.forEach((example) => {
             defineExample({
                 title: example.title,
                 render() {
                     return html`
-                        <${ViraMenuOptions.assign({
+                        <${ViraMenu.assign({
                             isMultiSelect: false,
                             navController: undefined,
-                            options,
-                            selectedOptions: [],
+                            items,
+                            selected: [],
                             ...example.inputs,
-                        })}></${ViraMenuOptions}>
+                        })}></${ViraMenu}>
                     `;
                 },
             });
