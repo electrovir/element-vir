@@ -47,6 +47,12 @@ const examples: {title: string; inputs?: Partial<typeof ViraMenuTrigger.InputsTy
         },
     },
     {
+        title: 'no checks',
+        inputs: {
+            hideCheckIcons: true,
+        },
+    },
+    {
         title: 'disabled',
         inputs: {
             isDisabled: true,
@@ -72,6 +78,9 @@ export const viraMenuTriggerBookPage = defineBookPage({
                     return html`
                         <${ViraMenuTrigger.assign({
                             items: mockMenuItems,
+                            popUpOffset: {
+                                vertical: -1,
+                            },
                             ...example.inputs,
                         })}>
                             <div class="trigger" slot=${ViraMenuTrigger.slotNames.trigger}>

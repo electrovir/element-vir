@@ -1,5 +1,5 @@
 import {type PartialWithUndefined} from '@augment-vir/common';
-import {css, html, renderIf} from 'element-vir';
+import {classMap, css, html, renderIf} from 'element-vir';
 import {Check24Icon} from '../../icons/icon-svgs/check-24.icon.js';
 import {noUserSelect} from '../../styles/index.js';
 import {defineViraElement} from '../define-vira-element.js';
@@ -61,10 +61,14 @@ export const ViraMenuItem = defineViraElement<
             margin-right: -2px;
             margin-left: 2px;
         }
+
+        .include-left-spacing {
+            padding-left: 12px;
+        }
     `,
     render({inputs}) {
         return html`
-            <div class="item">
+            <div class="item ${classMap({'include-left-spacing': !!inputs.hideCheckIcon})}">
                 ${renderIf(
                     !inputs.hideCheckIcon,
                     html`
