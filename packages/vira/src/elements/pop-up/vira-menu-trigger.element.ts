@@ -34,6 +34,8 @@ export const ViraMenuTrigger = defineViraElement<
         isMultiSelect: boolean;
         z_debug_forceOpenState: boolean;
         popUpOffset: PopUpOffset;
+        /** Hide menu item check mark icons. */
+        hideCheckIcons: boolean;
     }>
 >()({
     tagName: 'vira-menu-trigger',
@@ -117,6 +119,7 @@ export const ViraMenuTrigger = defineViraElement<
                                   selected: inputs.selected,
                                   navController: state.navController,
                                   isMultiSelect: !!inputs.isMultiSelect,
+                                  hideCheckIcons: inputs.hideCheckIcons,
                               })}
                                   ${testId(viraMenuTriggerTestIds.menu)}
                               ></${ViraMenu}>

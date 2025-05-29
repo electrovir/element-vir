@@ -41,6 +41,8 @@ export const ViraMenu = defineViraElement<
             /** The ids of the currently selected menu items. */
             selected: ReadonlyArray<PropertyKey>;
             isMultiSelect: boolean;
+            /** Hide menu item check mark icons. */
+            hideCheckIcons: boolean;
         }>
     >
 >()({
@@ -128,6 +130,7 @@ export const ViraMenu = defineViraElement<
                     <${ViraMenuItem.assign({
                         label: item.label,
                         selected,
+                        hideCheckIcon: inputs.hideCheckIcons,
                     })}></${ViraMenuItem}>
                 `;
 

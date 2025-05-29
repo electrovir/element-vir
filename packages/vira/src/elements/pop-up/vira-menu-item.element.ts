@@ -1,4 +1,5 @@
-import {css, html} from 'element-vir';
+import {type PartialWithUndefined} from '@augment-vir/common';
+import {css, html, renderIf} from 'element-vir';
 import {Check24Icon} from '../../icons/icon-svgs/check-24.icon.js';
 import {noUserSelect} from '../../styles/index.js';
 import {defineViraElement} from '../define-vira-element.js';
@@ -12,14 +13,19 @@ import {type MenuItem} from './pop-up-menu-item.js';
  * @category Elements
  */
 export const ViraMenuItem = defineViraElement<
-    Readonly<{
-        /**
-         * The text to show in the menu item. If this is not provided, it is expected that you will
-         * instead utilize this element's `<slot>`.
-         */
-        label?: MenuItem['label'] | undefined;
-        selected: boolean;
-    }>
+    Readonly<
+        {
+            selected: boolean;
+        } & PartialWithUndefined<{
+            /**
+             * The text to show in the menu item. If this is not provided, it is expected that you
+             * will instead utilize this element's `<slot>`.
+             */
+            label: MenuItem['label'];
+            /** If `true`, does not render the selected check icon. */
+            hideCheckIcon: boolean;
+        }>
+    >
 >()({
     tagName: 'vira-menu-item',
     hostClasses: {
@@ -59,7 +65,12 @@ export const ViraMenuItem = defineViraElement<
     render({inputs}) {
         return html`
             <div class="item">
-                <${ViraIcon.assign({icon: Check24Icon})}></${ViraIcon}>
+                ${renderIf(
+                    !inputs.hideCheckIcon,
+                    html`
+                        <${ViraIcon.assign({icon: Check24Icon})}></${ViraIcon}>
+                    `,
+                )}
                 <slot>${inputs.label}</slot>
             </div>
         `;
