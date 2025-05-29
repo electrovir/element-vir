@@ -1,7 +1,11 @@
 import {css, html} from 'element-vir';
 import {defineViraElement} from './define-vira-element.js';
 
-/** Use this element to reserve space for bolded text, even if it isn't bold yet. */
+/**
+ * Use this element to reserve space for bolded text, even if it isn't bold yet.
+ *
+ * @category Elements
+ */
 export const ViraBoldText = defineViraElement<{bold: boolean; text: string}>()({
     tagName: 'vira-bold',
     cssVars: {

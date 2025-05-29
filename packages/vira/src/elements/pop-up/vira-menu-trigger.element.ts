@@ -6,7 +6,11 @@ import {defineViraElement} from '../define-vira-element.js';
 import {updateSelectedItems} from './pop-up-helpers.js';
 import {type MenuItem} from './pop-up-menu-item.js';
 import {ViraMenu} from './vira-menu.element.js';
-import {ViraPopUpMenu} from './vira-pop-up-menu.element.js';
+import {
+    PopUpMenuDirection,
+    ViraPopUpMenu,
+    type PopUpMenuCornerStyle,
+} from './vira-pop-up-menu.element.js';
 import {ViraPopUpTrigger, type PopUpOffset} from './vira-pop-up-trigger.element.js';
 
 /**
@@ -36,6 +40,7 @@ export const ViraMenuTrigger = defineViraElement<
         popUpOffset: PopUpOffset;
         /** Hide menu item check mark icons. */
         hideCheckIcons: boolean;
+        menuCornerStyle: PopUpMenuCornerStyle;
     }>
 >()({
     tagName: 'vira-menu-trigger',
@@ -110,7 +115,10 @@ export const ViraMenuTrigger = defineViraElement<
                 ${state.navController && state.showPopUpResult
                     ? html`
                           <${ViraPopUpMenu.assign({
-                              openUpwards: !state.showPopUpResult.popDown,
+                              direction: state.showPopUpResult.popDown
+                                  ? PopUpMenuDirection.Downwards
+                                  : PopUpMenuDirection.Upwards,
+                              cornerStyle: inputs.menuCornerStyle,
                           })}
                               slot=${ViraPopUpTrigger.slotNames.popUp}
                           >

@@ -1,6 +1,6 @@
 import {defineBookPage} from 'element-book';
 import {css, html} from 'element-vir';
-import {type MenuItem, ViraMenuTrigger} from 'vira';
+import {type MenuItem, PopUpMenuCornerStyle, ViraMenuTrigger} from 'vira';
 import {elementsBookPage} from '../../elements.book.js';
 
 const mockMenuItems: MenuItem[] = [
@@ -38,6 +38,12 @@ const examples: {title: string; inputs?: Partial<typeof ViraMenuTrigger.InputsTy
         title: 'multi',
         inputs: {
             isMultiSelect: true,
+        },
+    },
+    {
+        title: 'rounded',
+        inputs: {
+            menuCornerStyle: PopUpMenuCornerStyle.AllRounded,
         },
     },
     {

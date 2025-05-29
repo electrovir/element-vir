@@ -41,7 +41,7 @@ export const emptyPositionRect: PositionRect = {
 /**
  * Options for {@link PopUpManager}.
  *
- * @category Pop Up
+ * @category PopUp
  */
 export type PopUpManagerOptions = {
     /**
@@ -82,7 +82,7 @@ export type PopUpManagerOptions = {
 /**
  * Output type from {@link PopUpManager.showPopUp}
  *
- * @category Pop Up
+ * @category PopUp
  */
 export type ShowPopUpResult = {
     /**
@@ -97,14 +97,14 @@ export type ShowPopUpResult = {
 /**
  * An event fired from {@link PopUpManager} when the pop up should be hidden.
  *
- * @category Pop Up
+ * @category PopUp
  */
 export class HidePopUpEvent extends defineTypedEvent('hide-pop-up') {}
 /**
  * An event fired from {@link PopUpManager} when an individual item in the pop up has been selected
  * by the user.
  *
- * @category Pop Up
+ * @category PopUp
  */
 export class NavSelectEvent extends defineTypedCustomEvent<Coords>()('nav-select') {}
 
@@ -118,7 +118,7 @@ export type PopUpManagerEvents = HidePopUpEvent | NavSelectEvent;
 /**
  * A "pop up" manager for items that pop up from the HTML page, like dropdowns or menus.
  *
- * @category Pop Up
+ * @category PopUp
  */
 export class PopUpManager {
     private listenTarget = new ListenTarget<PopUpManagerEvents>();
