@@ -1,6 +1,6 @@
 import {type AnyFunction, createArray} from '@augment-vir/common';
 import {defineBookPage} from 'element-book';
-import {css, html} from 'element-vir';
+import {css, html, listen} from 'element-vir';
 import {createTable, ViraTable} from 'vira';
 import {elementsBookPage} from '../../elements.book.js';
 
@@ -42,7 +42,7 @@ export const viraTableBookPage = defineBookPage({
                             ],
                             (createArray as AnyFunction)(100, () => {
                                 return {
-                                    value: {
+                                    cells: {
                                         a: 1,
                                         b: html`
                                             <div
@@ -58,7 +58,11 @@ export const viraTableBookPage = defineBookPage({
                                 };
                             }),
                         ),
-                    })}></${ViraTable}>
+                    })}
+                        ${listen(ViraTable.events.rowClick, (event) => {
+                            console.info(event.detail);
+                        })}
+                    ></${ViraTable}>
                 `;
             },
         });
@@ -97,7 +101,7 @@ export const viraTableBookPage = defineBookPage({
                             ],
                             (createArray as AnyFunction)(100, () => {
                                 return {
-                                    value: {
+                                    cells: {
                                         a: 1,
                                         b: html`
                                             <div
@@ -168,7 +172,7 @@ export const viraTableBookPage = defineBookPage({
                             ],
                             (createArray as AnyFunction)(100, () => {
                                 return {
-                                    value: {
+                                    cells: {
                                         a: 1,
                                         b: html`
                                             <div

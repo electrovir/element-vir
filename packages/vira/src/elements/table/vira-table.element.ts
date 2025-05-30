@@ -1,15 +1,18 @@
 import {type PartialWithUndefined} from '@augment-vir/common';
 import {
     attributes,
+    classMap,
     css,
+    defineElementEvent,
     html,
     ifDefined,
+    listen,
     nothing,
     type AttributeValues,
     type CSSResult,
 } from 'element-vir';
 import {defineViraElement} from '../define-vira-element.js';
-import {type ViraTableSetup, type createTable} from './define-table.js';
+import {type ViraTableRow, type ViraTableSetup, type createTable} from './define-table.js';
 
 /**
  * Element tagnames that have passthroughs setup for them in {@link ViraTable}.
@@ -34,6 +37,12 @@ export const ViraTable = defineViraElement<
              */
             table: ViraTableSetup;
         } & PartialWithUndefined<{
+            /**
+             * Block all rows from being clickable.
+             *
+             * @default false
+             */
+            preventRowClicks: boolean;
             /**
              * Block the sticky table header.
              *
@@ -64,16 +73,21 @@ export const ViraTable = defineViraElement<
     >
 >()({
     tagName: 'vira-table',
-    styles: css`
+    cssVars: {
+        'vira-table-row-hover': '#cfe9ff',
+        'vira-table-row-active': '#cfe9ff',
+        'vira-table-background': 'white',
+    },
+    styles: ({cssVars}) => css`
         :host {
-            background-color: white;
+            background: ${cssVars['vira-table-background'].value};
             display: block;
             position: relative;
         }
 
         table,
         thead {
-            background-color: inherit;
+            background: inherit;
         }
 
         th,
@@ -87,10 +101,24 @@ export const ViraTable = defineViraElement<
 
         thead {
             z-index: 10;
-            /* Note that important thead styles are also directly attached to the element. */
+            /* Other important thead styles are directly attached to the HTML element. */
+        }
+
+        .clickable {
+            cursor: pointer;
+
+            &:hover {
+                background-color: ${cssVars['vira-table-row-hover'].value};
+            }
+            &:active {
+                background-color: ${cssVars['vira-table-row-active'].value};
+            }
         }
     `,
-    render({inputs}) {
+    events: {
+        rowClick: defineElementEvent<{row: ViraTableRow; originalEvent: MouseEvent}>(),
+    },
+    render({inputs, events, dispatch}) {
         const rows = inputs.table.rows.map((row) => {
             const cells = inputs.table.columns.map((column) => {
                 if (column.hide) {
@@ -103,17 +131,27 @@ export const ViraTable = defineViraElement<
                             : nothing}
                         style=${ifDefined(inputs.stylePassthrough?.td)}
                     >
-                        ${row.value[column.key]}
+                        ${row.cells[column.key]}
                     </td>
                 `;
             });
 
+            const isClickable = !inputs.preventRowClicks && !row.disabled;
+
             return html`
                 <tr
+                    class=${classMap({
+                        clickable: isClickable,
+                    })}
                     ${inputs.attributePassthrough?.tr
                         ? attributes(inputs.attributePassthrough.tr)
                         : nothing}
                     style=${ifDefined(inputs.stylePassthrough?.tr)}
+                    ${listen('click', (event) => {
+                        if (isClickable) {
+                            dispatch(new events.rowClick({originalEvent: event, row}));
+                        }
+                    })}
                 >
                     ${cells}
                 </tr>

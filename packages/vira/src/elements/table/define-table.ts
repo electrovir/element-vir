@@ -36,8 +36,18 @@ export type ViraTableColumns = ReadonlyArray<
  * @category Internal
  */
 export type ViraTableRow<Columns extends ViraTableColumns | undefined = undefined> = {
-    value: ViraTableCell<Columns>;
-};
+    cells: ViraTableCell<Columns>;
+} & PartialWithUndefined<{
+    /**
+     * If `true`, no actions will be fired from this row (like row clicks). No disable styles are
+     * applied.
+     *
+     * @default false
+     */
+    disabled: boolean;
+    /** Optional: keep track of which row is which by attaching an id to it. */
+    id: PropertyKey;
+}>;
 
 /**
  * Table information input for `ViraTable`.
