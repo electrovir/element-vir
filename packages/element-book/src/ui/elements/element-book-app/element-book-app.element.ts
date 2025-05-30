@@ -92,8 +92,6 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
 
         ${BookEntryDisplay} {
             flex-grow: 1;
-            overflow-x: hidden;
-            overflow-y: auto;
             max-height: 100%;
         }
 
