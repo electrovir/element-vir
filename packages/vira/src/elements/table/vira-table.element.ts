@@ -76,6 +76,11 @@ export const ViraTable = defineViraElement<
             background-color: inherit;
         }
 
+        th,
+        td {
+            padding: 0;
+        }
+
         table {
             border-collapse: collapse;
         }

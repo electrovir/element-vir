@@ -131,10 +131,8 @@ export const viraTableBookPage = defineBookPage({
                                     label: html`
                                         <div
                                             style=${css`
-                                                padding: 16px;
-                                                padding-left: 0;
-                                                font-weight: normal;
-                                                color: red;
+                                                border-bottom: 1px solid black;
+                                                padding: 3px;
                                             `}
                                         >
                                             Template Header
@@ -143,11 +141,29 @@ export const viraTableBookPage = defineBookPage({
                                 },
                                 {
                                     key: 'b',
-                                    label: 'Header B',
+                                    label: html`
+                                        <div
+                                            style=${css`
+                                                border-bottom: 1px solid black;
+                                                padding: 3px;
+                                            `}
+                                        >
+                                            Header B
+                                        </div>
+                                    `,
                                 },
                                 {
                                     key: 'c',
-                                    label: 'Header C',
+                                    label: html`
+                                        <div
+                                            style=${css`
+                                                border-bottom: 1px solid black;
+                                                padding: 3px;
+                                            `}
+                                        >
+                                            Header C
+                                        </div>
+                                    `,
                                 },
                             ],
                             (createArray as AnyFunction)(100, () => {
