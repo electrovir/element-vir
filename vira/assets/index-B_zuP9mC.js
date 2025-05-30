@@ -2070,7 +2070,6 @@ does not match RegExp
         }
 
         ${No} {
-            position: sticky;
             top: 0;
         }
 
@@ -2148,7 +2147,6 @@ does not match RegExp
 
         ${It} {
             flex-shrink: 0;
-            position: sticky;
             overflow-x: hidden;
             overflow-y: auto;
             max-height: 100%;
