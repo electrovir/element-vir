@@ -55,7 +55,6 @@ export const BookEntryDisplay = defineBookElement<{
         }
 
         ${BookBreadcrumbsBar} {
-            position: sticky;
             top: 0;
         }
 
