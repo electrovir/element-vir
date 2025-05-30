@@ -11,6 +11,7 @@ import {
     type AttributeValues,
     type CSSResult,
 } from 'element-vir';
+import {viraFormCssVars} from '../../styles/form-themes.js';
 import {defineViraElement} from '../define-vira-element.js';
 import {type ViraTableRow, type ViraTableSetup, type createTable} from './define-table.js';
 
@@ -73,14 +74,9 @@ export const ViraTable = defineViraElement<
     >
 >()({
     tagName: 'vira-table',
-    cssVars: {
-        'vira-table-row-hover': '#cfe9ff',
-        'vira-table-row-active': '#cfe9ff',
-        'vira-table-background': 'white',
-    },
-    styles: ({cssVars}) => css`
+    styles: css`
         :host {
-            background: ${cssVars['vira-table-background'].value};
+            background: ${viraFormCssVars['vira-form-background-color'].value};
             display: block;
             position: relative;
         }
@@ -108,10 +104,14 @@ export const ViraTable = defineViraElement<
             cursor: pointer;
 
             &:hover {
-                background-color: ${cssVars['vira-table-row-hover'].value};
+                color: ${viraFormCssVars['vira-form-selection-hover-foreground-color'].value};
+                background-color: ${viraFormCssVars['vira-form-selection-hover-background-color']
+                    .value};
             }
             &:active {
-                background-color: ${cssVars['vira-table-row-active'].value};
+                color: ${viraFormCssVars['vira-form-selection-active-foreground-color'].value};
+                background-color: ${viraFormCssVars['vira-form-selection-active-background-color']
+                    .value};
             }
         }
     `,
