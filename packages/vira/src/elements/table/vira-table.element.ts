@@ -88,6 +88,9 @@ export const ViraTable = defineViraElement<
     render({inputs}) {
         const rows = inputs.table.rows.map((row) => {
             const cells = inputs.table.columns.map((column) => {
+                if (column.hide) {
+                    return nothing;
+                }
                 return html`
                     <td
                         ${inputs.attributePassthrough?.td
@@ -115,6 +118,10 @@ export const ViraTable = defineViraElement<
         const headerCells = inputs.hideHeaderRow
             ? undefined
             : inputs.table.columns.map((column) => {
+                  if (column.hide) {
+                      return nothing;
+                  }
+
                   return html`
                       <th
                           ${inputs.attributePassthrough?.th
