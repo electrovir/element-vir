@@ -60,7 +60,6 @@ export const ViraMenuTrigger = defineViraElement<
         itemActivate: defineElementEvent<PropertyKey[]>(),
         openChange: defineElementEvent<ShowPopUpResult | undefined>(),
     },
-    slotNames: ['trigger'],
     state() {
         return {
             navController: undefined as undefined | NavController,
@@ -69,7 +68,7 @@ export const ViraMenuTrigger = defineViraElement<
             showPopUpResult: undefined as ShowPopUpResult | undefined,
         };
     },
-    render({inputs, state, updateState, dispatch, events, slotNames}) {
+    render({inputs, state, updateState, dispatch, events}) {
         return html`
             <${ViraPopUpTrigger.assign({
                 isDisabled: inputs.isDisabled,
@@ -111,7 +110,7 @@ export const ViraMenuTrigger = defineViraElement<
                     }
                 })}
             >
-                <slot slot=${slotNames.trigger} name=${ViraPopUpTrigger.slotNames.trigger}></slot>
+                <slot slot=${ViraPopUpTrigger.slotNames.trigger}></slot>
                 ${state.navController && state.showPopUpResult
                     ? html`
                           <${ViraPopUpMenu.assign({

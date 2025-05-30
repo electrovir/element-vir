@@ -83,9 +83,7 @@ export const viraMenuTriggerBookPage = defineBookPage({
                             },
                             ...example.inputs,
                         })}>
-                            <div class="trigger" slot=${ViraMenuTrigger.slotNames.trigger}>
-                                Trigger Menu
-                            </div>
+                            <div class="trigger">Trigger Menu</div>
                         </${ViraMenuTrigger}>
                     `;
                 },

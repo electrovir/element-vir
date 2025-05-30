@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-vir-example",
-    "version": "25.12.2",
+    "version": "25.12.3",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "author": {
@@ -17,9 +17,9 @@
     "dependencies": {
         "@augment-vir/assert": "^31.21.1",
         "@augment-vir/common": "^31.21.1",
-        "element-book": "^25.12.2",
-        "element-vir": "^25.12.2",
-        "vira": "^25.12.2"
+        "element-book": "^25.12.3",
+        "element-vir": "^25.12.3",
+        "vira": "^25.12.3"
     },
     "devDependencies": {
         "@augment-vir/test": "^31.21.1",

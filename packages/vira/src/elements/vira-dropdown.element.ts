@@ -204,7 +204,6 @@ export const ViraDropdown = defineViraElement<
                 })}
             >
                 <div
-                    slot=${ViraMenuTrigger.slotNames.trigger}
                     class="dropdown-trigger ${classMap({
                         open: !!state.showPopUpResult,
                         'open-upwards': !state.showPopUpResult?.popDown,
