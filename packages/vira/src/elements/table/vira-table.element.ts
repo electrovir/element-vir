@@ -13,7 +13,7 @@ import {
 } from 'element-vir';
 import {viraFormCssVars} from '../../styles/form-themes.js';
 import {defineViraElement} from '../define-vira-element.js';
-import {type ViraTableRow, type ViraTableSetup, type createTable} from './define-table.js';
+import {type ViraTableRow, type ViraTableSetup, type createTable} from './create-table.js';
 
 /**
  * Element tagnames that have passthroughs setup for them in {@link ViraTable}.

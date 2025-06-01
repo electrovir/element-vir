@@ -21,9 +21,12 @@ export type ViraTableColumns = ReadonlyArray<
         {
             /** The key that cells must use to set a value for this column. */
             key: PropertyKey;
-            /** This will be displayed in the header for this column. */
-            label: HtmlInterpolation;
         } & PartialWithUndefined<{
+            /**
+             * This will be displayed in the header for this column. If no `label` is provided, the
+             * `key` will be used.
+             */
+            label: HtmlInterpolation;
             /** If set to `true`, this column will not be rendered. */
             hide: boolean;
         }>

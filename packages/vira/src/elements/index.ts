@@ -6,7 +6,7 @@ export * from './pop-up/vira-menu-trigger.element.js';
 export * from './pop-up/vira-menu.element.js';
 export * from './pop-up/vira-pop-up-menu.element.js';
 export * from './pop-up/vira-pop-up-trigger.element.js';
-export * from './table/define-table.js';
+export * from './table/create-table.js';
 export * from './table/vira-table.element.js';
 export * from './vira-bold-text.element.js';
 export * from './vira-button.element.js';
