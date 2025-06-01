@@ -129,10 +129,16 @@ export const ViraTable = defineViraElement<
 
                 return html`
                     <${cellElement}
-                        ${inputs.attributePassthrough?.td
-                            ? attributes(inputs.attributePassthrough.td)
-                            : nothing}
-                        style=${ifDefined(inputs.stylePassthrough?.td)}
+                        ${column.isHeader
+                            ? inputs.attributePassthrough?.th
+                                ? attributes(inputs.attributePassthrough.th)
+                                : nothing
+                            : inputs.attributePassthrough?.td
+                              ? attributes(inputs.attributePassthrough.td)
+                              : nothing}
+                        style=${column.isHeader
+                            ? ifDefined(inputs.stylePassthrough?.th)
+                            : ifDefined(inputs.stylePassthrough?.td)}
                     >
                         ${row.cells[column.key]}
                     </${cellElement}>
