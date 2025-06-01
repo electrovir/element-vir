@@ -28,6 +28,8 @@ export type ViraTableColumn = Readonly<
         label: HtmlInterpolation;
         /** If set to `true`, this column will not be rendered. */
         hide: boolean;
+        /** If true, this column is a header column, so all cells in it will be rendered as headers. */
+        isHeader: boolean;
     }>
 >;
 

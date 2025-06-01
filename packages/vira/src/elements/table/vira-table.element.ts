@@ -124,15 +124,18 @@ export const ViraTable = defineViraElement<
                 if (column.hide) {
                     return nothing;
                 }
+
+                const cellElement = column.isHeader ? 'th' : 'td';
+
                 return html`
-                    <td
+                    <${cellElement}
                         ${inputs.attributePassthrough?.td
                             ? attributes(inputs.attributePassthrough.td)
                             : nothing}
                         style=${ifDefined(inputs.stylePassthrough?.td)}
                     >
                         ${row.cells[column.key]}
-                    </td>
+                    </${cellElement}>
                 `;
             });
 
