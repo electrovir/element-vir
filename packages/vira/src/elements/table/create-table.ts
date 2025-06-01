@@ -12,26 +12,31 @@ export type ViraTableCell<Columns extends ViraTableColumns | undefined = undefin
         : Record<ArrayElement<Exclude<Columns, undefined>>['key'], HtmlInterpolation>;
 
 /**
+ * An individual column definition in {@link ViraTableColumns}.
+ *
+ * @category Internal
+ */
+export type ViraTableColumn = Readonly<
+    {
+        /** The key that cells must use to set a value for this column. */
+        key: PropertyKey;
+    } & PartialWithUndefined<{
+        /**
+         * This will be displayed in the header for this column. If no `label` is provided, the
+         * `key` will be used.
+         */
+        label: HtmlInterpolation;
+        /** If set to `true`, this column will not be rendered. */
+        hide: boolean;
+    }>
+>;
+
+/**
  * A column definition for {@link ViraTableSetup}.
  *
  * @category Internal
  */
-export type ViraTableColumns = ReadonlyArray<
-    Readonly<
-        {
-            /** The key that cells must use to set a value for this column. */
-            key: PropertyKey;
-        } & PartialWithUndefined<{
-            /**
-             * This will be displayed in the header for this column. If no `label` is provided, the
-             * `key` will be used.
-             */
-            label: HtmlInterpolation;
-            /** If set to `true`, this column will not be rendered. */
-            hide: boolean;
-        }>
-    >
->;
+export type ViraTableColumns = ReadonlyArray<ViraTableColumn>;
 
 /**
  * An individual row in {@link ViraTableSetup}.
