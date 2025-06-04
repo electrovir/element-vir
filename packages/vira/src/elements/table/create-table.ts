@@ -6,47 +6,49 @@ import {type HtmlInterpolation} from 'element-vir';
  *
  * @category Internal
  */
-export type ViraTableCell<Columns extends ViraTableColumns | undefined = undefined> =
-    undefined extends Columns
+export type ViraTableCells<Keys extends ViraTableKeys | undefined = undefined> =
+    undefined extends Keys
         ? Record<PropertyKey, HtmlInterpolation>
-        : Record<ArrayElement<Exclude<Columns, undefined>>['key'], HtmlInterpolation>;
+        : Record<ArrayElement<Exclude<Keys, undefined>>['key'], HtmlInterpolation>;
 
 /**
- * An individual column definition in {@link ViraTableColumns}.
+ * An individual key definition in {@link ViraTableKeys}. In normal table orientation, this will
+ * define each column.
  *
  * @category Internal
  */
-export type ViraTableColumn = Readonly<
+export type ViraTableKey = Readonly<
     {
-        /** The key that cells must use to set a value for this column. */
+        /** The key that cells must set a value to. */
         key: PropertyKey;
     } & PartialWithUndefined<{
         /**
-         * This will be displayed in the header for this column. If no `label` is provided, the
-         * `key` will be used.
+         * This will be displayed in the header for this key. If no `label` is provided, the `key`
+         * will be used.
          */
         label: HtmlInterpolation;
-        /** If set to `true`, this column will not be rendered. */
+        /** If set to `true`, all cells for this key will not be rendered. */
         hide: boolean;
-        /** If true, this column is a header column, so all cells in it will be rendered as headers. */
+        /** If true, will be rendered as headers. */
         isHeader: boolean;
     }>
 >;
 
 /**
- * A column definition for {@link ViraTableSetup}.
+ * All key definitions for a {@link ViraTableSetup} instance. In normal table orientation, these will
+ * define each column.
  *
  * @category Internal
  */
-export type ViraTableColumns = ReadonlyArray<ViraTableColumn>;
+export type ViraTableKeys = ReadonlyArray<ViraTableKey>;
 
 /**
  * An individual row in {@link ViraTableSetup}.
  *
  * @category Internal
  */
-export type ViraTableRow<Columns extends ViraTableColumns | undefined = undefined> = {
-    cells: ViraTableCell<Columns>;
+export type ViraTableRow<Keys extends ViraTableKeys | undefined = undefined> = {
+    cells: ViraTableCells<Keys>;
 } & PartialWithUndefined<{
     /**
      * If `true`, no actions will be fired from this row (like row clicks). No disable styles are
@@ -65,8 +67,8 @@ export type ViraTableRow<Columns extends ViraTableColumns | undefined = undefine
  * @category Internal
  */
 export type ViraTableSetup = Readonly<{
-    /** The order of these columns determines the order that they render in. */
-    columns: ViraTableColumns;
+    /** The order of these keys determines the order that they render in. */
+    keys: ViraTableKeys;
     rows: ReadonlyArray<Readonly<ViraTableRow>>;
 }>;
 
@@ -75,13 +77,13 @@ export type ViraTableSetup = Readonly<{
  *
  * @category Internal
  */
-export function createTable<const Columns extends ViraTableColumns>(
-    /** The order of these columns determines the order that they render in. */
-    columns: Readonly<Columns>,
-    rows: ReadonlyArray<Readonly<ViraTableRow<Columns>>>,
+export function createTable<const Keys extends ViraTableKeys>(
+    /** The order of these keys determines the order that they render in. */
+    keys: Readonly<Keys>,
+    rows: ReadonlyArray<Readonly<ViraTableRow<Keys>>>,
 ): ViraTableSetup {
     return {
-        columns,
+        keys,
         rows,
     };
 }

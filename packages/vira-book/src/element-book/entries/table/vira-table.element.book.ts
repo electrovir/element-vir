@@ -13,6 +13,7 @@ export const viraTableBookPage = defineBookPage({
             render() {
                 return html`
                     <${ViraTable.assign({
+                        allowRowClicks: true,
                         table: createTable(
                             [
                                 {
@@ -71,6 +72,7 @@ export const viraTableBookPage = defineBookPage({
                 return html`
                     <${ViraTable.assign({
                         preventStickyHeader: true,
+                        allowRowClicks: true,
                         table: createTable(
                             [
                                 {
@@ -140,7 +142,8 @@ export const viraTableBookPage = defineBookPage({
             render() {
                 return html`
                     <${ViraTable.assign({
-                        hideHeaderRow: true,
+                        hideKeyHeaders: true,
+                        allowRowClicks: true,
                         table: createTable(
                             [
                                 {
@@ -194,7 +197,8 @@ export const viraTableBookPage = defineBookPage({
             render() {
                 return html`
                     <${ViraTable.assign({
-                        hideHeaderRow: true,
+                        hideKeyHeaders: true,
+                        allowRowClicks: true,
                         table: createTable(
                             [
                                 {

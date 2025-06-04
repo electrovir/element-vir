@@ -39,11 +39,11 @@ export const ViraTable = defineViraElement<
             table: ViraTableSetup;
         } & PartialWithUndefined<{
             /**
-             * Block all rows from being clickable.
+             * Allow all rows to be clickable.
              *
              * @default false
              */
-            preventRowClicks: boolean;
+            allowRowClicks: boolean;
             /**
              * Block the sticky table header.
              *
@@ -51,11 +51,11 @@ export const ViraTable = defineViraElement<
              */
             preventStickyHeader: boolean;
             /**
-             * Hide header row entirely.
+             * Hide header row or column entirely.
              *
              * @default false
              */
-            hideHeaderRow: boolean;
+            hideKeyHeaders: boolean;
             /**
              * Pixel value of the header row sticky offset.
              *
@@ -120,7 +120,7 @@ export const ViraTable = defineViraElement<
     },
     render({inputs, events, dispatch}) {
         const rows = inputs.table.rows.map((row) => {
-            const cells = inputs.table.columns.map((column) => {
+            const cells = inputs.table.keys.map((column) => {
                 if (column.hide) {
                     return nothing;
                 }
@@ -145,7 +145,7 @@ export const ViraTable = defineViraElement<
                 `;
             });
 
-            const isClickable = !inputs.preventRowClicks && !row.disabled;
+            const isClickable = !!inputs.allowRowClicks && !row.disabled;
 
             return html`
                 <tr
@@ -167,9 +167,9 @@ export const ViraTable = defineViraElement<
             `;
         });
 
-        const headerCells = inputs.hideHeaderRow
+        const headerCells = inputs.hideKeyHeaders
             ? undefined
-            : inputs.table.columns.map((column) => {
+            : inputs.table.keys.map((column) => {
                   if (column.hide) {
                       return nothing;
                   }
@@ -202,7 +202,7 @@ export const ViraTable = defineViraElement<
         const theadStyles = css`
             ${inputs.stylePassthrough?.thead || css``}
             top: ${inputs.stickyOffset || 0}px;
-            ${inputs.preventStickyHeader || inputs.hideHeaderRow
+            ${inputs.preventStickyHeader || inputs.hideKeyHeaders
                 ? css``
                 : css`
                       position: sticky;
