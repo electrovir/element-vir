@@ -12,8 +12,8 @@ export type ViraTableCells<Keys extends ViraTableKeys | undefined = undefined> =
         : Record<ArrayElement<Exclude<Keys, undefined>>['key'], HtmlInterpolation>;
 
 /**
- * An individual key definition in {@link ViraTableKeys}. In normal table orientation, this will
- * define each column.
+ * An individual key definition in {@link ViraTableKeys}. In default table orientation, this will
+ * define each column's key. In horizontal orientation, this will define each row's key.
  *
  * @category Internal
  */
@@ -29,35 +29,38 @@ export type ViraTableKey = Readonly<
         label: HtmlInterpolation;
         /** If set to `true`, all cells for this key will not be rendered. */
         hide: boolean;
+        /** In horizontal table orientation, this prevents this key's row from being clicked. */
+        disabled: boolean;
         /** If true, will be rendered as headers. */
         isHeader: boolean;
     }>
 >;
 
 /**
- * All key definitions for a {@link ViraTableSetup} instance. In normal table orientation, these will
- * define each column.
+ * All key definitions for a {@link ViraTableSetup} instance. In default table orientation, these
+ * will define each column. In horizontal orientation, this will define each row header.
  *
  * @category Internal
  */
 export type ViraTableKeys = ReadonlyArray<ViraTableKey>;
 
 /**
- * An individual row in {@link ViraTableSetup}.
+ * An individual entry in {@link ViraTableSetup}. In default table orientation, this will be a row.
+ * In horizontal orientation, this will be a column.
  *
  * @category Internal
  */
-export type ViraTableRow<Keys extends ViraTableKeys | undefined = undefined> = {
+export type ViraTableEntry<Keys extends ViraTableKeys | undefined = undefined> = {
     cells: ViraTableCells<Keys>;
 } & PartialWithUndefined<{
     /**
-     * If `true`, no actions will be fired from this row (like row clicks). No disable styles are
+     * If `true`, no actions will be fired from this entry (like clicks). No disable styles are
      * applied.
      *
      * @default false
      */
     disabled: boolean;
-    /** Optional: keep track of which row is which by attaching an id to it. */
+    /** Optional: keep track of which entry is which by attaching an id to it. */
     id: PropertyKey;
 }>;
 
@@ -69,7 +72,7 @@ export type ViraTableRow<Keys extends ViraTableKeys | undefined = undefined> = {
 export type ViraTableSetup = Readonly<{
     /** The order of these keys determines the order that they render in. */
     keys: ViraTableKeys;
-    rows: ReadonlyArray<Readonly<ViraTableRow>>;
+    entries: ReadonlyArray<Readonly<ViraTableEntry>>;
 }>;
 
 /**
@@ -80,10 +83,10 @@ export type ViraTableSetup = Readonly<{
 export function createTable<const Keys extends ViraTableKeys>(
     /** The order of these keys determines the order that they render in. */
     keys: Readonly<Keys>,
-    rows: ReadonlyArray<Readonly<ViraTableRow<Keys>>>,
+    entries: ReadonlyArray<Readonly<ViraTableEntry<Keys>>>,
 ): ViraTableSetup {
     return {
         keys,
-        rows,
+        entries,
     };
 }

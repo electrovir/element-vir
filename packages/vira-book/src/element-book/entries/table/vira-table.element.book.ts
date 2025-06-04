@@ -193,29 +193,17 @@ export const viraTableBookPage = defineBookPage({
             },
         });
         defineExample({
-            title: 'header column',
+            title: 'horizontal table',
             render() {
                 return html`
                     <${ViraTable.assign({
-                        hideKeyHeaders: true,
+                        horizontalOrientation: true,
                         allowRowClicks: true,
                         table: createTable(
                             [
                                 {
                                     key: 'a',
-                                    label: html`
-                                        <div
-                                            style=${css`
-                                                padding: 16px;
-                                                padding-left: 0;
-                                                font-weight: normal;
-                                                color: red;
-                                            `}
-                                        >
-                                            Template Header
-                                        </div>
-                                    `,
-                                    isHeader: true,
+                                    label: 'Header A',
                                 },
                                 {
                                     key: 'b',
@@ -229,7 +217,7 @@ export const viraTableBookPage = defineBookPage({
                             (createArray as AnyFunction)(5, () => {
                                 return {
                                     cells: {
-                                        a: 'header',
+                                        a: 1,
                                         b: 2,
                                         c: 3,
                                     },

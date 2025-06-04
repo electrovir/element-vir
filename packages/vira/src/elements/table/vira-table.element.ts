@@ -13,7 +13,7 @@ import {
 } from 'element-vir';
 import {viraFormCssVars} from '../../styles/form-themes.js';
 import {defineViraElement} from '../define-vira-element.js';
-import {type ViraTableRow, type ViraTableSetup, type createTable} from './create-table.js';
+import {type ViraTableEntry, type ViraTableSetup, type createTable} from './create-table.js';
 
 /**
  * Element tagnames that have passthroughs setup for them in {@link ViraTable}.
@@ -39,7 +39,13 @@ export const ViraTable = defineViraElement<
             table: ViraTableSetup;
         } & PartialWithUndefined<{
             /**
-             * Allow all rows to be clickable.
+             * Key headers are rendered on the left, rows become columns.
+             *
+             * @default false
+             */
+            horizontalOrientation: boolean;
+            /**
+             * Allow all rows to be clickable. Each row can override this for itself.
              *
              * @default false
              */
@@ -51,13 +57,14 @@ export const ViraTable = defineViraElement<
              */
             preventStickyHeader: boolean;
             /**
-             * Hide header row or column entirely.
+             * Hide header row (in default orientation) or column (in horizontal orientation)
+             * entirely.
              *
              * @default false
              */
             hideKeyHeaders: boolean;
             /**
-             * Pixel value of the header row sticky offset.
+             * Pixel value of the header's sticky offset.
              *
              * @default 0
              */
@@ -116,75 +123,136 @@ export const ViraTable = defineViraElement<
         }
     `,
     events: {
-        rowClick: defineElementEvent<{row: ViraTableRow; originalEvent: MouseEvent}>(),
+        rowClick: defineElementEvent<{entry: ViraTableEntry; originalEvent: MouseEvent}>(),
     },
     render({inputs, events, dispatch}) {
-        const rows = inputs.table.rows.map((row) => {
-            const cells = inputs.table.keys.map((column) => {
-                if (column.hide) {
-                    return nothing;
-                }
-
-                const cellElement = column.isHeader ? 'th' : 'td';
-
-                return html`
-                    <${cellElement}
-                        ${column.isHeader
-                            ? inputs.attributePassthrough?.th
-                                ? attributes(inputs.attributePassthrough.th)
-                                : nothing
-                            : inputs.attributePassthrough?.td
-                              ? attributes(inputs.attributePassthrough.td)
-                              : nothing}
-                        style=${column.isHeader
-                            ? ifDefined(inputs.stylePassthrough?.th)
-                            : ifDefined(inputs.stylePassthrough?.td)}
-                    >
-                        ${row.cells[column.key]}
-                    </${cellElement}>
-                `;
-            });
-
-            const isClickable = !!inputs.allowRowClicks && !row.disabled;
-
-            return html`
-                <tr
-                    class=${classMap({
-                        clickable: isClickable,
-                    })}
-                    ${inputs.attributePassthrough?.tr
-                        ? attributes(inputs.attributePassthrough.tr)
-                        : nothing}
-                    style=${ifDefined(inputs.stylePassthrough?.tr)}
-                    ${listen('click', (event) => {
-                        if (isClickable) {
-                            dispatch(new events.rowClick({originalEvent: event, row}));
-                        }
-                    })}
-                >
-                    ${cells}
-                </tr>
-            `;
-        });
-
-        const headerCells = inputs.hideKeyHeaders
-            ? undefined
-            : inputs.table.keys.map((column) => {
-                  if (column.hide) {
+        const rowTemplates = inputs.horizontalOrientation
+            ? inputs.table.keys.map((key) => {
+                  if (key.hide) {
                       return nothing;
                   }
 
+                  const cells = inputs.table.entries.map((entry) => {
+                      const cellElement = key.isHeader ? 'th' : 'td';
+
+                      return html`
+                          <${cellElement}
+                              ${listen('click', (event) => {
+                                  if (isClickable) {
+                                      dispatch(
+                                          new events.rowClick({originalEvent: event, entry: entry}),
+                                      );
+                                  }
+                              })}
+                              ${key.isHeader
+                                  ? inputs.attributePassthrough?.th
+                                      ? attributes(inputs.attributePassthrough.th)
+                                      : nothing
+                                  : inputs.attributePassthrough?.td
+                                    ? attributes(inputs.attributePassthrough.td)
+                                    : nothing}
+                              style=${key.isHeader
+                                  ? ifDefined(inputs.stylePassthrough?.th)
+                                  : ifDefined(inputs.stylePassthrough?.td)}
+                          >
+                              ${entry.cells[key.key]}
+                          </${cellElement}>
+                      `;
+                  });
+
+                  const isClickable = !!inputs.allowRowClicks && !key.disabled;
+
                   return html`
-                      <th
-                          ${inputs.attributePassthrough?.th
-                              ? attributes(inputs.attributePassthrough.th)
+                      <tr
+                          class=${classMap({
+                              clickable: isClickable,
+                          })}
+                          ${inputs.attributePassthrough?.tr
+                              ? attributes(inputs.attributePassthrough.tr)
                               : nothing}
-                          style=${ifDefined(inputs.stylePassthrough?.th)}
+                          style=${ifDefined(inputs.stylePassthrough?.tr)}
                       >
-                          ${column.label}
-                      </th>
+                          <th
+                              ${inputs.attributePassthrough?.th
+                                  ? attributes(inputs.attributePassthrough.th)
+                                  : nothing}
+                              style=${ifDefined(inputs.stylePassthrough?.th)}
+                          >
+                              ${key.label}
+                          </th>
+                          ${cells}
+                      </tr>
+                  `;
+              })
+            : inputs.table.entries.map((entry) => {
+                  const cells = inputs.table.keys.map((key) => {
+                      if (key.hide) {
+                          return nothing;
+                      }
+
+                      const cellElement = key.isHeader ? 'th' : 'td';
+
+                      return html`
+                          <${cellElement}
+                              ${key.isHeader
+                                  ? inputs.attributePassthrough?.th
+                                      ? attributes(inputs.attributePassthrough.th)
+                                      : nothing
+                                  : inputs.attributePassthrough?.td
+                                    ? attributes(inputs.attributePassthrough.td)
+                                    : nothing}
+                              style=${key.isHeader
+                                  ? ifDefined(inputs.stylePassthrough?.th)
+                                  : ifDefined(inputs.stylePassthrough?.td)}
+                          >
+                              ${entry.cells[key.key]}
+                          </${cellElement}>
+                      `;
+                  });
+
+                  const isClickable = !!inputs.allowRowClicks && !entry.disabled;
+
+                  return html`
+                      <tr
+                          class=${classMap({
+                              clickable: isClickable,
+                          })}
+                          ${inputs.attributePassthrough?.tr
+                              ? attributes(inputs.attributePassthrough.tr)
+                              : nothing}
+                          style=${ifDefined(inputs.stylePassthrough?.tr)}
+                          ${listen('click', (event) => {
+                              if (isClickable) {
+                                  dispatch(
+                                      new events.rowClick({originalEvent: event, entry: entry}),
+                                  );
+                              }
+                          })}
+                      >
+                          ${cells}
+                      </tr>
                   `;
               });
+
+        const headerCells =
+            inputs.hideKeyHeaders || inputs.horizontalOrientation
+                ? undefined
+                : inputs.table.keys.map((key) => {
+                      if (key.hide) {
+                          return nothing;
+                      }
+
+                      return html`
+                          <th
+                              ${inputs.attributePassthrough?.th
+                                  ? attributes(inputs.attributePassthrough.th)
+                                  : nothing}
+                              style=${ifDefined(inputs.stylePassthrough?.th)}
+                          >
+                              ${key.label}
+                          </th>
+                      `;
+                  });
 
         const headerRow = headerCells
             ? html`
@@ -197,7 +265,7 @@ export const ViraTable = defineViraElement<
                       ${headerCells}
                   </tr>
               `
-            : nothing;
+            : undefined;
 
         const theadStyles = css`
             ${inputs.stylePassthrough?.thead || css``}
@@ -216,21 +284,25 @@ export const ViraTable = defineViraElement<
                     : nothing}
                 style=${ifDefined(inputs.stylePassthrough?.table)}
             >
-                <thead
-                    ${inputs.attributePassthrough?.thead
-                        ? attributes(inputs.attributePassthrough.thead)
-                        : nothing}
-                    style=${theadStyles}
-                >
-                    ${headerRow}
-                </thead>
+                ${headerRow
+                    ? html`
+                          <thead
+                              ${inputs.attributePassthrough?.thead
+                                  ? attributes(inputs.attributePassthrough.thead)
+                                  : nothing}
+                              style=${theadStyles}
+                          >
+                              ${headerRow}
+                          </thead>
+                      `
+                    : nothing}
                 <tbody
                     ${inputs.attributePassthrough?.tbody
                         ? attributes(inputs.attributePassthrough.tbody)
                         : nothing}
                     style=${ifDefined(inputs.stylePassthrough?.tbody)}
                 >
-                    ${rows}
+                    ${rowTemplates}
                 </tbody>
             </table>
         `;
