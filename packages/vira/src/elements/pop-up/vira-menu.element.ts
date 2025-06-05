@@ -1,3 +1,4 @@
+import {check} from '@augment-vir/assert';
 import {type PartialWithUndefined} from '@augment-vir/common';
 import {nav, navAttribute, NavController, NavValue} from 'device-navigation';
 import {classMap, css, html, ifDefined, testId} from 'element-vir';
@@ -124,15 +125,15 @@ export const ViraMenu = defineViraElement<
 
         const itemTemplates = inputs.items.map((item) => {
             const selected = !!inputs.selected?.includes(item.id);
-            const innerTemplate =
-                item.template ||
-                html`
-                    <${ViraMenuItem.assign({
-                        label: item.label,
-                        selected,
-                        hideCheckIcon: inputs.hideCheckIcons,
-                    })}></${ViraMenuItem}>
-                `;
+            const innerTemplate = check.isString(item.label)
+                ? html`
+                      <${ViraMenuItem.assign({
+                          label: item.label,
+                          selected,
+                          hideCheckIcon: inputs.hideCheckIcons,
+                      })}></${ViraMenuItem}>
+                  `
+                : item.label;
 
             const disabled = item.disabled || (!inputs.isMultiSelect && selected);
 

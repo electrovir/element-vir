@@ -4,7 +4,7 @@ import {type CSSResult, css, html, listen} from 'element-vir';
 import {Element24Icon, type MenuItem, ViraDropdown, allIconsByName} from 'vira';
 import {elementsBookPage} from '../elements.book.js';
 
-const exampleDropdownOptions: ReadonlyArray<Readonly<MenuItem>> = [
+const exampleDropdownOptions = [
     {
         label: 'Option 1',
         id: 1,
@@ -37,7 +37,7 @@ const exampleDropdownOptions: ReadonlyArray<Readonly<MenuItem>> = [
         label: "Really really super duper long it just keeps going because it's so long option",
         id: 8,
     },
-];
+] satisfies ReadonlyArray<Readonly<MenuItem>>;
 
 const examples: ReadonlyArray<{
     title: string;
@@ -75,13 +75,6 @@ const examples: ReadonlyArray<{
         },
     },
     {
-        title: 'multi select count',
-        inputs: {
-            isMultiSelect: true,
-            showSelectionCount: true,
-        },
-    },
-    {
         title: 'long selection',
         inputs: {
             selected: [8],
@@ -95,8 +88,7 @@ const examples: ReadonlyArray<{
                 ...exampleDropdownOptions,
                 {
                     id: 42,
-                    label: 'custom template',
-                    template: html`
+                    label: html`
                         <select>
                             <option selected>NESTED SELECT!!!</option>
                             <option>this is a terrible idea</option>

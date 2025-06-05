@@ -5,6 +5,7 @@ import {
     css,
     defineElementEvent,
     html,
+    type HTMLTemplateResult,
     ifDefined,
     listen,
     nothing,
@@ -53,11 +54,6 @@ export const ViraDropdown = defineViraElement<
          * multiple.
          */
         isMultiSelect: boolean;
-        /**
-         * Shows the selection quantity rather than a list of selections. Only used when
-         * `isMultiSelect` is `true`.
-         */
-        showSelectionCount: boolean;
         icon: ViraIconSvg;
         selectionPrefix: string;
         isDisabled: boolean;
@@ -175,13 +171,11 @@ export const ViraDropdown = defineViraElement<
                   `
                 : nothing;
 
-        const selectionDisplay: string = shouldUsePlaceholder
+        const selectionDisplay: string | HTMLTemplateResult = shouldUsePlaceholder
             ? inputs.placeholder || ''
-            : inputs.isMultiSelect && inputs.showSelectionCount
+            : inputs.isMultiSelect && selectedOptions.length > 1
               ? `${selectedOptions.length} Selected`
-              : inputs.isMultiSelect
-                ? selectedOptions.map((item) => item.label).join(', ')
-                : selectedOptions[0]?.label || '';
+              : selectedOptions[0]?.label || '';
 
         return html`
             <${ViraMenuTrigger.assign({
@@ -215,12 +209,7 @@ export const ViraDropdown = defineViraElement<
                         class="selection-display ${classMap({
                             'using-placeholder': shouldUsePlaceholder,
                         })}"
-                        title=${ifDefined(
-                            shouldUsePlaceholder ||
-                                (inputs.isMultiSelect && inputs.showSelectionCount)
-                                ? undefined
-                                : selectionDisplay,
-                        )}
+                        title=${ifDefined(shouldUsePlaceholder ? undefined : selectionDisplay)}
                     >
                         ${prefixTemplate} ${selectionDisplay}
                     </span>
