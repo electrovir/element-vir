@@ -1,5 +1,14 @@
 import {type PartialWithUndefined} from '@augment-vir/common';
-import {css, html, ifDefined, listen} from 'element-vir';
+import {
+    attributes,
+    css,
+    html,
+    ifDefined,
+    listen,
+    nothing,
+    type AttributeValues,
+    type CSSResult,
+} from 'element-vir';
 import {type SpaRoute, type SpaRouter} from 'spa-router-vir';
 import {type RequireExactlyOne} from 'type-fest';
 import {defineViraElement} from './define-vira-element.js';
@@ -40,13 +49,10 @@ export const ViraLink = defineViraElement<
         route: ViraLinkRoute;
     }> &
         PartialWithUndefined<{
-            aria?: {
-                /**
-                 * This label will be attached to the inner `<a>` element's `aria-label` attribute.
-                 * If none is provided, no `aria-label` attribute will be generated.
-                 */
-                label: string;
-            };
+            /** Styles that will be applied directly to the inner elements. */
+            stylePassthrough: Readonly<PartialWithUndefined<{a: CSSResult}>>;
+            /** Attributes that will be applied directly to the inner elements. */
+            attributePassthrough: Readonly<PartialWithUndefined<{a: AttributeValues}>>;
         }>
 >()({
     tagName: 'vira-link',
@@ -103,7 +109,10 @@ export const ViraLink = defineViraElement<
                     href=${inputs.link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label=${ifDefined(inputs.aria?.label || undefined)}
+                    ${inputs.attributePassthrough?.a
+                        ? attributes(inputs.attributePassthrough.a)
+                        : nothing}
+                    style=${ifDefined(inputs.stylePassthrough?.a)}
                 >
                     <slot></slot>
                 </a>
@@ -118,7 +127,10 @@ export const ViraLink = defineViraElement<
                 <a
                     href=${linkUrl}
                     rel="noopener noreferrer"
-                    aria-label=${ifDefined(inputs.aria?.label || undefined)}
+                    ${inputs.attributePassthrough?.a
+                        ? attributes(inputs.attributePassthrough.a)
+                        : nothing}
+                    style=${ifDefined(inputs.stylePassthrough?.a)}
                     ${listen('click', clickCallback)}
                 >
                     <slot></slot>
