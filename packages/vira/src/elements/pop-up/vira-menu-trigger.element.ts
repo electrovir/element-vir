@@ -106,7 +106,11 @@ export const ViraMenuTrigger = defineViraElement<
                         ),
                     );
                     if (!inputs.isMultiSelect) {
-                        state.popUpManager?.removePopUp();
+                        /**
+                         * Defer pop up removal to prevent race conditions with element-internal
+                         * click handlers.
+                         */
+                        globalThis.setTimeout(() => state.popUpManager?.removePopUp());
                     }
                 })}
             >

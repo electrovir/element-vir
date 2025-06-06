@@ -1,5 +1,6 @@
 import {defineBookPage} from 'element-book';
 import {html} from 'element-vir';
+import {SpaRouter} from 'spa-router-vir';
 import {ViraMenu} from 'vira';
 import {elementsBookPage} from '../../elements.book.js';
 
@@ -27,6 +28,30 @@ const examples: {title: string; inputs?: Partial<typeof ViraMenu.InputsType> | u
         inputs: {
             selected: [
                 2,
+            ],
+        },
+    },
+    {
+        title: 'with a link',
+        inputs: {
+            items: [
+                ...items,
+                {
+                    id: 4,
+                    label: 'link here',
+                    route: {
+                        route: {
+                            paths: [
+                                'test',
+                            ],
+                        },
+                        router: new SpaRouter({
+                            sanitizeRoute(rawRoute) {
+                                return rawRoute;
+                            },
+                        }),
+                    },
+                },
             ],
         },
     },

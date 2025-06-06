@@ -5,6 +5,7 @@ import {classMap, css, html, ifDefined, testId} from 'element-vir';
 import {viraFormCssVars} from '../../styles/form-themes.js';
 import {noNativeFormStyles, viraDisabledStyles} from '../../styles/index.js';
 import {defineViraElement} from '../define-vira-element.js';
+import {ViraLink} from '../vira-link.element.js';
 import {assertUniqueIdProps} from './pop-up-helpers.js';
 import {type MenuItem} from './pop-up-menu-item.js';
 import {ViraMenuItem} from './vira-menu-item.element.js';
@@ -72,7 +73,8 @@ export const ViraMenu = defineViraElement<
 
         .menu-item {
             ${noNativeFormStyles};
-            background-color: white;
+            will-change: background-color;
+            background-color: inherit;
             outline: none;
             cursor: pointer;
         }
@@ -137,20 +139,39 @@ export const ViraMenu = defineViraElement<
 
             const disabled = item.disabled || (!inputs.isMultiSelect && selected);
 
-            return html`
-                <button
-                    class="menu-item ${classMap({
-                        disabled: !!item.disabled,
-                        selected,
-                    })}"
-                    ${testId(viraMenuTestIds.item)}
-                    title=${ifDefined(item.titleText || undefined)}
-                    role="option"
-                    ${nav(state.internalNavController, {disabled})}
-                >
-                    ${innerTemplate}
-                </button>
-            `;
+            if (item.route) {
+                return html`
+                    <${ViraLink.assign({
+                        route: item.route,
+                    })}
+                        class="menu-item ${classMap({
+                            disabled: !!item.disabled,
+                            selected,
+                        })}"
+                        ${testId(viraMenuTestIds.item)}
+                        title=${ifDefined(item.titleText || undefined)}
+                        role="option"
+                        ${nav(state.internalNavController, {disabled})}
+                    >
+                        ${innerTemplate}
+                    </${ViraLink}>
+                `;
+            } else {
+                return html`
+                    <button
+                        class="menu-item ${classMap({
+                            disabled: !!item.disabled,
+                            selected,
+                        })}"
+                        ${testId(viraMenuTestIds.item)}
+                        title=${ifDefined(item.titleText || undefined)}
+                        role="option"
+                        ${nav(state.internalNavController, {disabled})}
+                    >
+                        ${innerTemplate}
+                    </button>
+                `;
+            }
         });
 
         return html`

@@ -1,5 +1,6 @@
 import {defineBookPage} from 'element-book';
 import {css, html} from 'element-vir';
+import {SpaRouter} from 'spa-router-vir';
 import {type MenuItem, PopUpMenuCornerStyle, ViraMenuTrigger} from 'vira';
 import {elementsBookPage} from '../../elements.book.js';
 
@@ -27,6 +28,22 @@ const mockMenuItems: MenuItem[] = [
     {
         id: 6,
         label: 'six',
+    },
+    {
+        id: 7,
+        label: 'link here',
+        route: {
+            route: {
+                paths: [
+                    'test',
+                ],
+            },
+            router: new SpaRouter({
+                sanitizeRoute(rawRoute) {
+                    return rawRoute;
+                },
+            }),
+        },
     },
 ];
 

@@ -1,5 +1,6 @@
 import {type PartialWithUndefined} from '@augment-vir/common';
 import {type HTMLTemplateResult} from 'element-vir';
+import {type ViraLinkRoute} from '../vira-link.element.js';
 
 /**
  * An individual menu item consumed partially by `ViraMenuItem` and used by `ViraMenu`.
@@ -19,6 +20,7 @@ export type MenuItem = {
      */
     label: string | HTMLTemplateResult;
 } & PartialWithUndefined<{
+    route: ViraLinkRoute;
     disabled: boolean;
     /** Text assigned to the `title` HTML attribute that'll show on long hover. */
     titleText: string;

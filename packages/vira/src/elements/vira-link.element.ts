@@ -5,6 +5,17 @@ import {type RequireExactlyOne} from 'type-fest';
 import {defineViraElement} from './define-vira-element.js';
 
 /**
+ * The route properties required for using {@link ViraLink} with a route.
+ *
+ * @category Internal
+ */
+export type ViraLinkRoute = Readonly<{
+    route: SpaRoute<any, any, any>;
+    router: Pick<SpaRouter<any, any, any>, 'createRouteUrl' | 'setRouteOnDirectNavigation'>;
+    scrollToTop?: boolean;
+}>;
+
+/**
  * A hyperlink wrapper element that can be configured to emit route change events rather than just
  * being a raw link.
  *
@@ -26,11 +37,7 @@ export const ViraLink = defineViraElement<
          * A route that'll change that current page without navigating the window. If this property
          * is provided for the inputs, don't provide a link property.
          */
-        route: {
-            route: SpaRoute<any, any, any>;
-            router: Pick<SpaRouter<any, any, any>, 'createRouteUrl' | 'setRouteOnDirectNavigation'>;
-            scrollToTop?: boolean;
-        };
+        route: ViraLinkRoute;
     }> &
         PartialWithUndefined<{
             aria?: {
