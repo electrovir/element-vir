@@ -13,7 +13,12 @@ export const ViraTagNamePrefix = `vira-`;
  */
 export type ViraTagName = `${typeof ViraTagNamePrefix}${string}`;
 
-const {defineElement} = wrapDefineElement<ViraTagName>({
+/**
+ * Define a vira element with custom requirements (like the `vira-` element tag prefix).
+ *
+ * @category Internal
+ */
+export const defineViraElement = wrapDefineElement<ViraTagName>({
     assertInputs: (inputs) => {
         if (!inputs.tagName.startsWith(ViraTagNamePrefix)) {
             throw new Error(
@@ -22,10 +27,3 @@ const {defineElement} = wrapDefineElement<ViraTagName>({
         }
     },
 });
-
-/**
- * Define a vira element with custom requirements (like the `vira-` element tag prefix).
- *
- * @category Internal
- */
-export const defineViraElement = defineElement;

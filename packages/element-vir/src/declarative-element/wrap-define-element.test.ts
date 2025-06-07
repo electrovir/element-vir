@@ -5,7 +5,7 @@ import {css, defineElement, defineElementEvent, html, listen, wrapDefineElement}
 describe(wrapDefineElement.name, () => {
     type MySpecificTagName = `my-${string}`;
     type MySpecificInputs = {noInputsActually: string};
-    const {defineElement: myDefineElement} = wrapDefineElement<MySpecificTagName>();
+    const myDefineElement = wrapDefineElement<MySpecificTagName>();
 
     it('should match original define element types', () => {
         assert

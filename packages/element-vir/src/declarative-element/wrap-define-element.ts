@@ -8,9 +8,6 @@ import {type BaseCssPropertyName} from './properties/css-properties.js';
 import {type EventsInitMap} from './properties/element-events.js';
 import {type PropertyInitMapBase} from './properties/element-properties.js';
 
-// eslint-disable-next-line sonarjs/deprecation
-import {defineElementNoInputs} from './define-element-no-inputs.js';
-
 /**
  * Options for {@link wrapDefineElement}.
  *
@@ -84,53 +81,11 @@ export function wrapDefineElement<
         transformInputs: options?.transformInputs ?? ((inputs: any) => inputs),
     };
 
-    return {
-        /** A wrapped function for defining an element with inputs. */
-        defineElement: <Inputs extends InputsRequirement>(
-            ...errorParams: DeclarativeElementInputErrorParams<Inputs>
-        ) => {
-            return <
-                const TagName extends TagNameRequirement,
-                State extends StateRequirement,
-                EventsInit extends EventsInitRequirement,
-                const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
-                const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
-                const SlotNames extends ReadonlyArray<string> = Readonly<[]>,
-            >(
-                inputs: DeclarativeElementInit<
-                    TagName,
-                    Inputs,
-                    State,
-                    EventsInit,
-                    HostClassKeys,
-                    CssVarKeys,
-                    SlotNames
-                >,
-            ) => {
-                assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
-                return defineElement<Inputs>(...errorParams)(
-                    transformInputs(
-                        inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
-                    ) as unknown as DeclarativeElementInit<
-                        TagName,
-                        Inputs,
-                        State,
-                        EventsInit,
-                        HostClassKeys,
-                        CssVarKeys,
-                        SlotNames
-                    >,
-                );
-            };
-        },
-        /**
-         * A wrapped function for defining an element without inputs.
-         *
-         * @deprecated Use `defineElement` instead.
-         */
-        defineElementNoInputs: <
+    return <Inputs extends InputsRequirement>(
+        ...errorParams: DeclarativeElementInputErrorParams<Inputs>
+    ) => {
+        return <
             const TagName extends TagNameRequirement,
-            Inputs extends InputsRequirement,
             State extends StateRequirement,
             EventsInit extends EventsInitRequirement,
             const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
@@ -148,8 +103,7 @@ export function wrapDefineElement<
             >,
         ) => {
             assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
-            // eslint-disable-next-line sonarjs/deprecation, @typescript-eslint/no-deprecated
-            return defineElementNoInputs(
+            return defineElement<Inputs>(...errorParams)(
                 transformInputs(
                     inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
                 ) as unknown as DeclarativeElementInit<
@@ -162,6 +116,6 @@ export function wrapDefineElement<
                     SlotNames
                 >,
             );
-        },
+        };
     };
 }

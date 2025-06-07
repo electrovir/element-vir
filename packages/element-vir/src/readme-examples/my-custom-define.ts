@@ -2,10 +2,10 @@ import {wrapDefineElement} from '../index.js';
 
 export type VirTagName = `vir-${string}`;
 
-export const {defineElement: defineVirElement} = wrapDefineElement<VirTagName>();
+export const defineVirElement = wrapDefineElement<VirTagName>();
 
 // add an optional assert callback
-export const {defineElement: defineVerifiedVirElement} = wrapDefineElement<VirTagName>({
+export const defineVerifiedVirElement = wrapDefineElement<VirTagName>({
     assertInputs: (inputs) => {
         if (!inputs.tagName.startsWith('vir-')) {
             throw new Error(`all custom elements must start with "vir-"`);
@@ -14,7 +14,7 @@ export const {defineElement: defineVerifiedVirElement} = wrapDefineElement<VirTa
 });
 
 // add an optional transform callback
-export const {defineElement: defineTransformedVirElement} = wrapDefineElement<VirTagName>({
+export const defineTransformedVirElement = wrapDefineElement<VirTagName>({
     transformInputs: (inputs) => {
         return {
             ...inputs,

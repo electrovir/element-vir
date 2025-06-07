@@ -3,7 +3,6 @@ export * from 'observavir';
 export * from './declarative-element/custom-tag-name.js';
 export * from './declarative-element/declarative-element-init.js';
 export * from './declarative-element/declarative-element.js';
-export * from './declarative-element/define-element-no-inputs.js';
 export * from './declarative-element/define-element.js';
 export * from './declarative-element/definition-options.js';
 export * from './declarative-element/directives/async-prop.js';
