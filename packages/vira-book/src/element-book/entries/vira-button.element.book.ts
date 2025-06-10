@@ -35,7 +35,7 @@ export const viraButtonBookPage = defineBookPage({
         }: {
             title: string;
             styles?: CSSResult;
-            inputs?: Omit<(typeof ViraButton)['InputsType'], 'text'>;
+            inputs?: (typeof ViraButton)['InputsType'];
         }) {
             const styles = inputStyles ?? css``;
 
@@ -83,6 +83,13 @@ export const viraButtonBookPage = defineBookPage({
             title: 'outline',
             inputs: {
                 buttonStyle: ViraButtonStyle.Outline,
+            },
+        });
+        defineViraButtonExample({
+            title: 'only icon',
+            inputs: {
+                icon: Options24Icon,
+                text: '',
             },
         });
         defineViraButtonExample({

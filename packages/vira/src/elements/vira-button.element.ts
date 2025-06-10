@@ -28,9 +28,8 @@ export enum ViraButtonStyle {
  * @see https://electrovir.github.io/element-vir/vira/book/elements/vira-button
  */
 export const ViraButton = defineViraElement<
-    {
+    PartialWithUndefined<{
         text: string;
-    } & PartialWithUndefined<{
         icon: Pick<ViraIconSvg, 'svgTemplate'>;
         disabled: boolean;
         buttonStyle: ViraButtonStyle;
@@ -130,6 +129,10 @@ export const ViraButton = defineViraElement<
                 border-color ${viraAnimationDurations['vira-interaction-animation-duration'].value};
         }
 
+        .empty-text {
+            width: 0;
+        }
+
         ${createFocusStyles({
             selector: 'button:focus:focus-visible:not(:active):not([disabled])',
             elementBorderSize: 2,
@@ -159,7 +162,9 @@ export const ViraButton = defineViraElement<
             ? html`
                   <span class="text-template">${inputs.text}</span>
               `
-            : nothing;
+            : html`
+                  <span class="empty-text">&nbsp;</span>
+              `;
 
         return html`
             <button ?disabled=${inputs.disabled}>${iconTemplate} ${textTemplate}</button>
