@@ -1,5 +1,5 @@
 import {type ArrayElement, type PartialWithUndefined} from '@augment-vir/common';
-import {type HtmlInterpolation} from 'element-vir';
+import {type HTMLTemplateResult, type HtmlInterpolation} from 'element-vir';
 
 /**
  * An individual cell for {@link ViraTableSetup}.
@@ -22,6 +22,11 @@ export type ViraTableKey = Readonly<
         /** The key that cells must set a value to. */
         key: PropertyKey;
     } & PartialWithUndefined<{
+        /**
+         * The `<col>` element for this key. This does not apply in the horizontal table
+         * orientation.
+         */
+        col: HTMLTemplateResult;
         /**
          * This will be displayed in the header for this key. If no `label` is provided, the `key`
          * will be used.
@@ -62,6 +67,8 @@ export type ViraTableEntry<Keys extends ViraTableKeys | undefined = undefined> =
     disabled: boolean;
     /** Optional: keep track of which entry is which by attaching an id to it. */
     id: PropertyKey;
+    /** The `<col>` element for this entry. This only applies in the horizontal table orientation. */
+    col: HTMLTemplateResult;
 }>;
 
 /**

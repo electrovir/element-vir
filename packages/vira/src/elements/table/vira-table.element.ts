@@ -10,6 +10,7 @@ import {
     nothing,
     type AttributeValues,
     type CSSResult,
+    type TemplateResult,
 } from 'element-vir';
 import {viraFormCssVars} from '../../styles/form-themes.js';
 import {defineViraElement} from '../define-vira-element.js';
@@ -126,6 +127,9 @@ export const ViraTable = defineViraElement<
         rowClick: defineElementEvent<{entry: ViraTableEntry; originalEvent: MouseEvent}>(),
     },
     render({inputs, events, dispatch}) {
+        const colTemplates: (undefined | TemplateResult)[] = [];
+        let useColTemplates = false as boolean;
+
         const rowTemplates = inputs.horizontalOrientation
             ? inputs.table.keys.map((key) => {
                   if (key.hide) {
@@ -134,6 +138,10 @@ export const ViraTable = defineViraElement<
 
                   const cells = inputs.table.entries.map((entry) => {
                       const cellElement = key.isHeader ? 'th' : 'td';
+                      colTemplates.push(entry.col);
+                      if (entry.col) {
+                          useColTemplates = true;
+                      }
 
                       return html`
                           <${cellElement}
@@ -188,6 +196,10 @@ export const ViraTable = defineViraElement<
                   const cells = inputs.table.keys.map((key) => {
                       if (key.hide) {
                           return nothing;
+                      }
+                      colTemplates.push(key.col);
+                      if (key.col) {
+                          useColTemplates = true;
                       }
 
                       const cellElement = key.isHeader ? 'th' : 'td';
@@ -277,6 +289,20 @@ export const ViraTable = defineViraElement<
                   `}
         `;
 
+        const colGroupTemplate = useColTemplates
+            ? html`
+                  <colgroup>
+                      ${colTemplates.map((col) => {
+                          if (col) {
+                              return col;
+                          } else {
+                              return html`<col></col>`;
+                          }
+                      })}
+                  </colgroup>
+              `
+            : nothing;
+
         return html`
             <table
                 ${inputs.attributePassthrough?.table
@@ -284,6 +310,7 @@ export const ViraTable = defineViraElement<
                     : nothing}
                 style=${ifDefined(inputs.stylePassthrough?.table)}
             >
+                ${colGroupTemplate}
                 ${headerRow
                     ? html`
                           <thead
