@@ -12,7 +12,7 @@ import {
 } from 'element-vir';
 import {CloseX24Icon} from '../icons/icon-svgs/close-x-24.icon.js';
 import {EyeClosed24Icon, EyeOpen24Icon, type ViraIconSvg} from '../icons/index.js';
-import {createFocusStyles, viraFocusCssVars} from '../styles/focus.js';
+import {createFocusStyles} from '../styles/focus.js';
 import {
     noUserSelect,
     viraAnimationDurations,
@@ -64,7 +64,6 @@ export const ViraInput = defineViraElement<
         'vira-input-placeholder-color': '#cccccc',
         'vira-input-text-color': '#000000',
         'vira-input-border-color': '#cccccc',
-        'vira-input-focus-border-color': viraFocusCssVars['vira-focus-outline-color'].default,
         'vira-input-text-selection-color': '#cfe9ff',
 
         'vira-input-action-button-color': '#aaaaaa',
@@ -87,9 +86,6 @@ export const ViraInput = defineViraElement<
                 display: inline-flex;
                 width: 224px;
                 box-sizing: border-box;
-                ${viraFocusCssVars['vira-focus-outline-color'].name}: ${cssVars[
-                    'vira-input-focus-border-color'
-                ].value};
                 color: ${cssVars['vira-input-text-color'].value};
             }
 

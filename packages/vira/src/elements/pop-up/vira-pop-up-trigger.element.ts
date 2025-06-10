@@ -2,8 +2,7 @@ import {assert} from '@augment-vir/assert';
 import {type PartialWithUndefined} from '@augment-vir/common';
 import {NavController, type Coords} from 'device-navigation';
 import {classMap, css, defineElementEvent, html, listen, renderIf} from 'element-vir';
-import {createFocusStyles, viraFocusCssVars} from '../../styles/focus.js';
-import {viraFormCssVars} from '../../styles/form-themes.js';
+import {createFocusStyles} from '../../styles/focus.js';
 import {noNativeFormStyles, noUserSelect, viraDisabledStyles} from '../../styles/index.js';
 import {
     HidePopUpEvent,
@@ -63,9 +62,6 @@ export const ViraPopUpTrigger = defineViraElement<
             display: inline-flex;
             box-sizing: border-box;
             vertical-align: middle;
-            ${viraFocusCssVars['vira-focus-outline-color'].name}: ${viraFormCssVars[
-                'vira-form-focus-color'
-            ].value};
             position: relative;
             max-width: 100%;
         }
