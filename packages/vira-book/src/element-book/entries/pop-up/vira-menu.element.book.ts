@@ -2,7 +2,7 @@ import {defineBookPage} from 'element-book';
 import {html} from 'element-vir';
 import {SpaRouter} from 'spa-router-vir';
 import {ViraMenu} from 'vira';
-import {elementsBookPage} from '../../elements.book.js';
+import {elementsBookPage} from '../../top-level-pages.js';
 
 const items = [
     {

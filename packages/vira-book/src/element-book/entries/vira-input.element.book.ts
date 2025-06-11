@@ -2,7 +2,7 @@ import {mapObjectValues} from '@augment-vir/common';
 import {BookPageControlType, defineBookPage} from 'element-book';
 import {type CSSResult, css, html, listen} from 'element-vir';
 import {Element24Icon, viraFocusCssVars, ViraInput, ViraInputType} from 'vira';
-import {elementsBookPage} from '../elements.book.js';
+import {elementsBookPage} from '../top-level-pages.js';
 
 export const viraInputBookPage = defineBookPage({
     title: ViraInput.tagName,

@@ -2,7 +2,7 @@ import {defineBookPage} from 'element-book';
 import {css, html} from 'element-vir';
 import {SpaRouter} from 'spa-router-vir';
 import {type MenuItem, PopUpMenuCornerStyle, ViraMenuTrigger} from 'vira';
-import {elementsBookPage} from '../../elements.book.js';
+import {elementsBookPage} from '../../top-level-pages.js';
 
 const mockMenuItems: MenuItem[] = [
     {

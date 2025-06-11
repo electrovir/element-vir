@@ -2,7 +2,7 @@ import {check} from '@augment-vir/assert';
 import {BookPageControlType, defineBookPage, definePageControl} from 'element-book';
 import {type CSSResult, css, html, listen} from 'element-vir';
 import {Element24Icon, type MenuItem, ViraDropdown, allIconsByName} from 'vira';
-import {elementsBookPage} from '../elements.book.js';
+import {elementsBookPage} from '../top-level-pages.js';
 
 const exampleDropdownOptions = [
     {

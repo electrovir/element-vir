@@ -1,7 +1,7 @@
 import {BookPageControlType, defineBookPage, definePageControl} from 'element-book';
 import {css, html, unsafeCSS} from 'element-vir';
 import {ViraLink} from 'vira';
-import {elementsBookPage} from '../elements.book.js';
+import {elementsBookPage} from '../top-level-pages.js';
 
 export const viraLinkBookPage = defineBookPage({
     title: ViraLink.tagName,

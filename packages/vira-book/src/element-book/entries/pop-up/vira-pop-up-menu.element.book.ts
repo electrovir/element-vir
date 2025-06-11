@@ -2,7 +2,7 @@ import {getEnumValues} from '@augment-vir/common';
 import {defineBookPage} from 'element-book';
 import {css, html} from 'element-vir';
 import {PopUpMenuCornerStyle, PopUpMenuDirection, ViraPopUpMenu} from 'vira';
-import {elementsBookPage} from '../../elements.book.js';
+import {elementsBookPage} from '../../top-level-pages.js';
 
 const examples: {title: string; inputs: typeof ViraPopUpMenu.InputsType}[] = [];
 

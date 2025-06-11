@@ -1,7 +1,7 @@
 import {defineBookPage} from 'element-book';
 import {css, html, listen, renderIf} from 'element-vir';
 import {ViraCollapsibleWrapper} from 'vira';
-import {elementsBookPage} from '../elements.book.js';
+import {elementsBookPage} from '../top-level-pages.js';
 
 export const viraCollapsibleBookPage = defineBookPage({
     title: ViraCollapsibleWrapper.tagName,

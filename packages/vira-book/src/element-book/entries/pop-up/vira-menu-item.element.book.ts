@@ -1,7 +1,7 @@
 import {BookPageControlType, defineBookPage, definePageControl} from 'element-book';
 import {type CSSResult, type HTMLTemplateResult, css, html} from 'element-vir';
 import {ViraMenuItem} from 'vira';
-import {elementsBookPage} from '../../elements.book.js';
+import {elementsBookPage} from '../../top-level-pages.js';
 
 const examples: ReadonlyArray<{
     title: string;

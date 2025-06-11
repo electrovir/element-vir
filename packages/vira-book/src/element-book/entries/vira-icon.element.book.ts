@@ -1,7 +1,7 @@
 import {defineBookPage} from 'element-book';
 import {css, html} from 'element-vir';
 import {Element24Icon, ViraIcon, createColoredIcon} from 'vira';
-import {elementsBookPage} from '../elements.book.js';
+import {elementsBookPage} from '../top-level-pages.js';
 
 export const viraIconBookPage = defineBookPage({
     title: ViraIcon.tagName,
