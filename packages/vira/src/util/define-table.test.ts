@@ -1,37 +1,41 @@
 import {assert} from '@augment-vir/assert';
 import {describe, it, itCases} from '@augment-vir/test';
-import {type HtmlInterpolation} from 'element-vir';
-import {defineTable, ViraTableOrientation, type ViraTable} from './define-table.js';
+import {
+    defineTable,
+    ViraTableOrientation,
+    type ViraTable,
+    type ViraTableCell,
+} from './define-table.js';
 
 describe('ViraTable', () => {
     it('defaults to vertical orientation', () => {
         const viraTable = {} as any as ViraTable;
         assert.tsType(viraTable.orientation).equals<ViraTableOrientation.Vertical>();
-        assert.tsType(viraTable.headerRow).equals<HtmlInterpolation[]>();
-        assert.tsType(viraTable.rows).equals<HtmlInterpolation[][]>();
+        assert.tsType(viraTable.headerRow).equals<ViraTableCell[]>();
+        assert.tsType(viraTable.rows).equals<ViraTableCell[][]>();
     });
     it('can use horizontal orientation', () => {
-        const viraTable = {} as any as ViraTable<ViraTableOrientation.Horizontal>;
+        const viraTable = {} as any as ViraTable<undefined, ViraTableOrientation.Horizontal>;
         assert.tsType(viraTable.orientation).equals<ViraTableOrientation.Horizontal>();
         assert.tsType(viraTable.headerRow).equals<undefined>();
-        assert.tsType(viraTable.rows).equals<HtmlInterpolation[][]>();
+        assert.tsType(viraTable.rows).equals<ViraTableCell[][]>();
     });
     it('can be type guarded by orientation', () => {
-        const viraTable = {} as any as ViraTable<ViraTableOrientation>;
+        const viraTable = {} as any as ViraTable<undefined, ViraTableOrientation>;
         assert
             .tsType(viraTable.orientation)
             .equals<ViraTableOrientation.Horizontal | ViraTableOrientation.Vertical>();
-        assert.tsType(viraTable.headerRow).equals<HtmlInterpolation[] | undefined>();
-        assert.tsType(viraTable.rows).equals<HtmlInterpolation[][]>();
+        assert.tsType(viraTable.headerRow).equals<ViraTableCell[] | undefined>();
+        assert.tsType(viraTable.rows).equals<ViraTableCell[][]>();
 
         if (viraTable.orientation === ViraTableOrientation.Horizontal) {
             assert.tsType(viraTable.orientation).equals<ViraTableOrientation.Horizontal>();
             assert.tsType(viraTable.headerRow).equals<undefined>();
-            assert.tsType(viraTable.rows).equals<HtmlInterpolation[][]>();
+            assert.tsType(viraTable.rows).equals<ViraTableCell[][]>();
         } else {
             assert.tsType(viraTable.orientation).equals<ViraTableOrientation.Vertical>();
-            assert.tsType(viraTable.headerRow).equals<HtmlInterpolation[]>();
-            assert.tsType(viraTable.rows).equals<HtmlInterpolation[][]>();
+            assert.tsType(viraTable.headerRow).equals<ViraTableCell[]>();
+            assert.tsType(viraTable.rows).equals<ViraTableCell[][]>();
         }
     });
 });
@@ -93,17 +97,17 @@ describe(defineTable.name, () => {
             expect: {
                 orientation: ViraTableOrientation.Vertical,
                 headerRow: [
-                    'a',
-                    'b-content',
+                    {content: 'a', key: 'a'},
+                    {content: 'b-content', key: 'b'},
                 ],
                 rows: [
                     [
-                        'a1',
-                        'b1',
+                        {content: 'a1', key: 'a'},
+                        {content: 'b1', key: 'b'},
                     ],
                     [
-                        'a2',
-                        'b2',
+                        {content: 'a2', key: 'a'},
+                        {content: 'b2', key: 'b'},
                     ],
                 ],
             },
@@ -139,12 +143,12 @@ describe(defineTable.name, () => {
                 headerRow: [],
                 rows: [
                     [
-                        'a1',
-                        'b1',
+                        {content: 'a1', key: 'a'},
+                        {content: 'b1', key: 'b'},
                     ],
                     [
-                        'a2',
-                        'b2',
+                        {content: 'a2', key: 'a'},
+                        {content: 'b2', key: 'b'},
                     ],
                 ],
             },
@@ -180,14 +184,14 @@ describe(defineTable.name, () => {
                 headerRow: undefined,
                 rows: [
                     [
-                        'a',
-                        'a1',
-                        'a2',
+                        {content: 'a', key: 'a'},
+                        {content: 'a1', key: 'a'},
+                        {content: 'a2', key: 'a'},
                     ],
                     [
-                        'b-content',
-                        'b1',
-                        'b2',
+                        {content: 'b-content', key: 'b'},
+                        {content: 'b1', key: 'b'},
+                        {content: 'b2', key: 'b'},
                     ],
                 ],
             },
@@ -224,12 +228,12 @@ describe(defineTable.name, () => {
                 headerRow: undefined,
                 rows: [
                     [
-                        'a1',
-                        'a2',
+                        {content: 'a1', key: 'a'},
+                        {content: 'a2', key: 'a'},
                     ],
                     [
-                        'b1',
-                        'b2',
+                        {content: 'b1', key: 'b'},
+                        {content: 'b2', key: 'b'},
                     ],
                 ],
             },

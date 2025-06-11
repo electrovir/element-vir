@@ -33,28 +33,48 @@ export type ViraTableHeaders = ReadonlyArray<ViraTableKey>;
  *
  * @category Internal
  */
-export type ViraTableEntry<Keys extends ViraTableHeaders | undefined = undefined> =
-    undefined extends Keys
-        ? Record<string | number, HtmlInterpolation>
-        : Record<ArrayElement<Exclude<Keys, undefined>>['key'], HtmlInterpolation>;
+export type ViraTableEntry<Headers extends ViraTableHeaders | undefined = undefined> = Record<
+    HeaderKey<Headers>,
+    HtmlInterpolation
+>;
+
+/**
+ * An individual cell in {@link ViraTable}.
+ *
+ * @category Internal
+ */
+export type ViraTableCell<Headers extends ViraTableHeaders | undefined = undefined> = {
+    content: HtmlInterpolation;
+    key: HeaderKey<Headers>;
+};
+
+/**
+ * All keys for the given headers.
+ *
+ * @category Internal
+ */
+export type HeaderKey<Headers extends ViraTableHeaders | undefined = undefined> =
+    undefined extends Headers ? string | number : ArrayElement<Exclude<Headers, undefined>>['key'];
 
 /**
  * Table information that can easily be mapped into a `<table>` element.
  *
  * @category Internal
  */
-export type ViraTable<Orientation extends ViraTableOrientation = ViraTableOrientation.Vertical> =
-    (Orientation extends ViraTableOrientation.Horizontal
-        ? {
-              headerRow: undefined;
-              orientation: Orientation;
-          }
-        : {
-              headerRow: HtmlInterpolation[];
-              orientation: Orientation;
-          }) & {
-        rows: HtmlInterpolation[][];
-    };
+export type ViraTable<
+    Headers extends ViraTableHeaders | undefined = undefined,
+    Orientation extends ViraTableOrientation = ViraTableOrientation.Vertical,
+> = (Orientation extends ViraTableOrientation.Horizontal
+    ? {
+          headerRow: undefined;
+          orientation: Orientation;
+      }
+    : {
+          headerRow: ViraTableCell<Headers>[];
+          orientation: Orientation;
+      }) & {
+    rows: ViraTableCell<Headers>[][];
+};
 
 /**
  * Orientation options for {@link ViraTable}.
@@ -100,15 +120,23 @@ export function defineTable<
     headers: Readonly<Headers>,
     entries: ReadonlyArray<Readonly<ViraTableEntry<Headers>>>,
     options: ViraTableOptions<Orientation> = {},
-): ViraTable<Orientation> {
+): ViraTable<Headers, Orientation> {
     if (options.orientation === ViraTableOrientation.Horizontal) {
-        const rows: HtmlInterpolation[][] = headers.map((header): HtmlInterpolation[] => {
-            const headerCellArray: HtmlInterpolation[] = options.hideHeaders
+        const rows: ViraTableCell<Headers>[][] = headers.map((header): ViraTableCell<Headers>[] => {
+            const headerCellArray: ViraTableCell<Headers>[] = options.hideHeaders
                 ? []
-                : [header.content ?? header.key];
+                : [
+                      {
+                          content: header.content ?? header.key,
+                          key: header.key,
+                      },
+                  ];
 
-            const cells: HtmlInterpolation[] = entries.map((entry) => {
-                return (entry as ViraTableEntry)[header.key];
+            const cells: ViraTableCell<Headers>[] = entries.map((entry) => {
+                return {
+                    content: (entry as ViraTableEntry)[header.key],
+                    key: header.key,
+                };
             });
 
             return [
@@ -121,15 +149,26 @@ export function defineTable<
             headerRow: undefined,
             rows,
             orientation: ViraTableOrientation.Horizontal,
-        } satisfies ViraTable<ViraTableOrientation.Horizontal> as UnknownObject as ViraTable<Orientation>;
+        } satisfies ViraTable<
+            Headers,
+            ViraTableOrientation.Horizontal
+        > as UnknownObject as ViraTable<Headers, Orientation>;
     } else {
-        const headerRow: HtmlInterpolation[] = options.hideHeaders
+        const headerRow: ViraTableCell<Headers>[] = options.hideHeaders
             ? []
-            : headers.map((header) => header.content ?? header.key);
+            : headers.map((header): ViraTableCell<Headers> => {
+                  return {
+                      content: header.content ?? header.key,
+                      key: header.key,
+                  };
+              });
 
-        const rows = entries.map((entry) => {
-            return headers.map((header) => {
-                return (entry as ViraTableEntry)[header.key];
+        const rows: ViraTableCell<Headers>[][] = entries.map((entry): ViraTableCell<Headers>[] => {
+            return headers.map((header): ViraTableCell<Headers> => {
+                return {
+                    content: (entry as ViraTableEntry)[header.key],
+                    key: header.key,
+                };
             });
         });
 
@@ -137,6 +176,6 @@ export function defineTable<
             headerRow,
             rows,
             orientation: ViraTableOrientation.Vertical,
-        } satisfies ViraTable as UnknownObject as ViraTable<Orientation>;
+        } satisfies ViraTable<Headers> as UnknownObject as ViraTable<Headers, Orientation>;
     }
 }
