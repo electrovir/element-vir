@@ -1593,7 +1593,7 @@ does not match RegExp
                 <div class="border-style focus-border"></div>
                 <div class="border-style wrapper-border"></div>
             </span>
-        `}});function Wb(e,t){return e==="password"&&t?"text":e||"text"}var ya=(e=>(e.Vertical="vertical",e.Horizontal="horizontal",e))(ya||{});function Yc(e,t,r={}){if(r.orientation==="horizontal")return{headerRow:void 0,rows:e.map(i=>{const s=r.hideHeaders?[]:[i.content??i.key],o=t.map(a=>a[i.key]);return[...s,...o]}),orientation:"horizontal"};{const n=r.hideHeaders?[]:e.map(s=>s.content??s.key),i=t.map(s=>e.map(o=>s[o.key]));return{headerRow:n,rows:i,orientation:"vertical"}}}const dt=h0(),at=dt()({tagName:"book-route-link",cssVars:{"book-route-link-anchor-padding":""},styles:({cssVars:e})=>k`
+        `}});function Wb(e,t){return e==="password"&&t?"text":e||"text"}var ya=(e=>(e.Vertical="vertical",e.Horizontal="horizontal",e))(ya||{});function Yc(e,t,r={}){if(r.orientation==="horizontal")return{headerRow:void 0,rows:e.map(i=>{const s=r.hideHeaders?[]:[{content:i.content??i.key,key:i.key}],o=t.map(a=>({content:a[i.key],key:i.key}));return[...s,...o]}),orientation:"horizontal"};{const n=r.hideHeaders?[]:e.map(s=>({content:s.content??s.key,key:s.key})),i=t.map(s=>e.map(o=>({content:s[o.key],key:o.key})));return{headerRow:n,rows:i,orientation:"vertical"}}}const dt=h0(),at=dt()({tagName:"book-route-link",cssVars:{"book-route-link-anchor-padding":""},styles:({cssVars:e})=>k`
         a {
             box-sizing: border-box;
             display: block;
@@ -2181,12 +2181,12 @@ does not match RegExp
                         <table>
                             <thead>
                                 ${(r.headerRow||[]).map(n=>g`
-                                        <th>${n}</th>
+                                        <th>${n.content}</th>
                                     `)}
                             </thead>
                             <tbody>
                                 ${r.rows.map(n=>{const i=n.map(s=>g`
-                                            <td>${s}</td>
+                                            <td>${s.content}</td>
                                         `);return g`
                                         <tr>${i}</tr>
                                     `})}
