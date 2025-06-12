@@ -20,7 +20,7 @@
         "@augment-vir/common": "^31.23.3",
         "element-book": "^26.1.1",
         "element-vir": "^26.1.1",
-        "spa-router-vir": "^6.0.0",
+        "spa-router-vir": "^6.1.1",
         "url-vir": "^2.1.3",
         "vira": "^26.1.1"
     },
