@@ -5,37 +5,54 @@ import {
     ViraTableOrientation,
     type ViraTable,
     type ViraTableCell,
+    type ViraTableEntry,
+    type ViraTableRow,
 } from './define-table.js';
 
 describe('ViraTable', () => {
     it('defaults to vertical orientation', () => {
         const viraTable = {} as any as ViraTable;
         assert.tsType(viraTable.orientation).equals<ViraTableOrientation.Vertical>();
-        assert.tsType(viraTable.headerRow).equals<ViraTableCell[]>();
-        assert.tsType(viraTable.rows).equals<ViraTableCell[][]>();
+        assert.tsType(viraTable.headerRow).equals<ViraTableCell<undefined, undefined>[]>();
+        assert
+            .tsType(viraTable.rows)
+            .equals<ViraTableRow<undefined, ViraTableEntry, ViraTableEntry>[]>();
     });
     it('can use horizontal orientation', () => {
         const viraTable = {} as any as ViraTable<undefined, ViraTableOrientation.Horizontal>;
         assert.tsType(viraTable.orientation).equals<ViraTableOrientation.Horizontal>();
         assert.tsType(viraTable.headerRow).equals<undefined>();
-        assert.tsType(viraTable.rows).equals<ViraTableCell[][]>();
+        assert
+            .tsType(viraTable.rows)
+            .equals<ViraTableRow<undefined, ViraTableEntry | undefined, undefined>[]>();
     });
     it('can be type guarded by orientation', () => {
         const viraTable = {} as any as ViraTable<undefined, ViraTableOrientation>;
         assert
             .tsType(viraTable.orientation)
             .equals<ViraTableOrientation.Horizontal | ViraTableOrientation.Vertical>();
-        assert.tsType(viraTable.headerRow).equals<ViraTableCell[] | undefined>();
-        assert.tsType(viraTable.rows).equals<ViraTableCell[][]>();
+        assert
+            .tsType(viraTable.headerRow)
+            .equals<ViraTableCell<undefined, undefined>[] | undefined>();
+        assert
+            .tsType(viraTable.rows)
+            .equals<
+                | ViraTableRow<undefined, ViraTableEntry, ViraTableEntry>[]
+                | ViraTableRow<undefined, ViraTableEntry | undefined, undefined>[]
+            >();
 
         if (viraTable.orientation === ViraTableOrientation.Horizontal) {
             assert.tsType(viraTable.orientation).equals<ViraTableOrientation.Horizontal>();
             assert.tsType(viraTable.headerRow).equals<undefined>();
-            assert.tsType(viraTable.rows).equals<ViraTableCell[][]>();
+            assert
+                .tsType(viraTable.rows)
+                .equals<ViraTableRow<undefined, ViraTableEntry | undefined, undefined>[]>();
         } else {
             assert.tsType(viraTable.orientation).equals<ViraTableOrientation.Vertical>();
-            assert.tsType(viraTable.headerRow).equals<ViraTableCell[]>();
-            assert.tsType(viraTable.rows).equals<ViraTableCell[][]>();
+            assert.tsType(viraTable.headerRow).equals<ViraTableCell<undefined, undefined>[]>();
+            assert
+                .tsType(viraTable.rows)
+                .equals<ViraTableRow<undefined, ViraTableEntry, ViraTableEntry>[]>();
         }
     });
 });
@@ -69,6 +86,30 @@ describe(defineTable.name, () => {
             ],
         );
     });
+    it('allows extra keys', () => {
+        defineTable(
+            [
+                {
+                    key: 'a',
+                },
+                {
+                    key: 'b',
+                },
+            ],
+            [
+                {
+                    a: 'a1',
+                    b: 'b1',
+                    c: 'c1',
+                },
+                {
+                    a: 'a1',
+                    b: 'b1',
+                    c: 'c2',
+                },
+            ],
+        );
+    });
 
     itCases(defineTable, [
         {
@@ -97,18 +138,24 @@ describe(defineTable.name, () => {
             expect: {
                 orientation: ViraTableOrientation.Vertical,
                 headerRow: [
-                    {content: 'a', key: 'a'},
-                    {content: 'b-content', key: 'b'},
+                    {content: 'a', key: 'a', entry: undefined},
+                    {content: 'b-content', key: 'b', entry: undefined},
                 ],
                 rows: [
-                    [
-                        {content: 'a1', key: 'a'},
-                        {content: 'b1', key: 'b'},
-                    ],
-                    [
-                        {content: 'a2', key: 'a'},
-                        {content: 'b2', key: 'b'},
-                    ],
+                    {
+                        cells: [
+                            {content: 'a1', key: 'a', entry: {a: 'a1', b: 'b1'}},
+                            {content: 'b1', key: 'b', entry: {a: 'a1', b: 'b1'}},
+                        ],
+                        entry: {a: 'a1', b: 'b1'},
+                    },
+                    {
+                        cells: [
+                            {content: 'a2', key: 'a', entry: {a: 'a2', b: 'b2'}},
+                            {content: 'b2', key: 'b', entry: {a: 'a2', b: 'b2'}},
+                        ],
+                        entry: {a: 'a2', b: 'b2'},
+                    },
                 ],
             },
         },
@@ -142,14 +189,20 @@ describe(defineTable.name, () => {
                 orientation: ViraTableOrientation.Vertical,
                 headerRow: [],
                 rows: [
-                    [
-                        {content: 'a1', key: 'a'},
-                        {content: 'b1', key: 'b'},
-                    ],
-                    [
-                        {content: 'a2', key: 'a'},
-                        {content: 'b2', key: 'b'},
-                    ],
+                    {
+                        cells: [
+                            {content: 'a1', key: 'a', entry: {a: 'a1', b: 'b1'}},
+                            {content: 'b1', key: 'b', entry: {a: 'a1', b: 'b1'}},
+                        ],
+                        entry: {a: 'a1', b: 'b1'},
+                    },
+                    {
+                        cells: [
+                            {content: 'a2', key: 'a', entry: {a: 'a2', b: 'b2'}},
+                            {content: 'b2', key: 'b', entry: {a: 'a2', b: 'b2'}},
+                        ],
+                        entry: {a: 'a2', b: 'b2'},
+                    },
                 ],
             },
         },
@@ -183,16 +236,22 @@ describe(defineTable.name, () => {
                 orientation: ViraTableOrientation.Horizontal,
                 headerRow: undefined,
                 rows: [
-                    [
-                        {content: 'a', key: 'a'},
-                        {content: 'a1', key: 'a'},
-                        {content: 'a2', key: 'a'},
-                    ],
-                    [
-                        {content: 'b-content', key: 'b'},
-                        {content: 'b1', key: 'b'},
-                        {content: 'b2', key: 'b'},
-                    ],
+                    {
+                        cells: [
+                            {content: 'a', key: 'a', entry: undefined},
+                            {content: 'a1', key: 'a', entry: {a: 'a1', b: 'b1'}},
+                            {content: 'a2', key: 'a', entry: {a: 'a2', b: 'b2'}},
+                        ],
+                        entry: undefined,
+                    },
+                    {
+                        cells: [
+                            {content: 'b-content', key: 'b', entry: undefined},
+                            {content: 'b1', key: 'b', entry: {a: 'a1', b: 'b1'}},
+                            {content: 'b2', key: 'b', entry: {a: 'a2', b: 'b2'}},
+                        ],
+                        entry: undefined,
+                    },
                 ],
             },
         },
@@ -227,14 +286,20 @@ describe(defineTable.name, () => {
                 orientation: ViraTableOrientation.Horizontal,
                 headerRow: undefined,
                 rows: [
-                    [
-                        {content: 'a1', key: 'a'},
-                        {content: 'a2', key: 'a'},
-                    ],
-                    [
-                        {content: 'b1', key: 'b'},
-                        {content: 'b2', key: 'b'},
-                    ],
+                    {
+                        cells: [
+                            {content: 'a1', key: 'a', entry: {a: 'a1', b: 'b1'}},
+                            {content: 'a2', key: 'a', entry: {a: 'a2', b: 'b2'}},
+                        ],
+                        entry: undefined,
+                    },
+                    {
+                        cells: [
+                            {content: 'b1', key: 'b', entry: {a: 'a1', b: 'b1'}},
+                            {content: 'b2', key: 'b', entry: {a: 'a2', b: 'b2'}},
+                        ],
+                        entry: undefined,
+                    },
                 ],
             },
         },

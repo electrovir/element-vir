@@ -1,6 +1,6 @@
 {
     "name": "vira",
-    "version": "26.1.1",
+    "version": "26.2.0",
     "description": "A simple and highly versatile design system using element-vir.",
     "keywords": [
         "design",
@@ -67,7 +67,7 @@
         "vite-tsconfig-paths": "^5.1.4"
     },
     "peerDependencies": {
-        "element-vir": "^26.1.1"
+        "element-vir": "^26.2.0"
     },
     "engines": {
         "node": ">=22"

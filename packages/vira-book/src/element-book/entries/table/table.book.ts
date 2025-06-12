@@ -83,7 +83,7 @@ export const defineTableBookPage = defineBookPage({
                             </thead>
                             <tbody>
                                 ${table.rows.map((row) => {
-                                    const cells = row.map((cell) => {
+                                    const cells = row.cells.map((cell) => {
                                         return html`
                                             <td>${cell.content}</td>
                                         `;
