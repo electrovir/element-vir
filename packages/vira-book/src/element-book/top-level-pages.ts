@@ -5,8 +5,6 @@ import {ViraIcon, allIconsByName, viraBorders, viraIconCssVars} from 'vira';
 
 export const elementsBookPage = defineBookPage({title: 'Elements', parent: undefined});
 
-export const utilBookPage = defineBookPage({title: 'Util', parent: undefined});
-
 export const iconsBookPage = defineBookPage({
     title: 'Icons',
     parent: undefined,
