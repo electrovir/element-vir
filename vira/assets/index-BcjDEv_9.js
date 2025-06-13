@@ -1806,7 +1806,6 @@ does not match RegExp
                 ${J["element-book-page-foreground-faint-level-2-color"].value};
             padding: 4px 8px;
             background-color: ${J["element-book-page-background-color"].value};
-            z-index: 9999999999;
             display: flex;
             gap: 16px;
             justify-content: space-between;
