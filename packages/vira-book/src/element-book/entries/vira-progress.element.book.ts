@@ -27,12 +27,36 @@ const examples: ({
         },
     },
     {
-        title: 'custom styles',
+        title: 'tiny progress',
+        inputs: {
+            value: 0.5,
+        },
+    },
+    {
+        title: 'tiny bit more progress',
+        inputs: {
+            value: 2,
+        },
+    },
+    {
+        title: 'no progress',
+        inputs: {
+            value: 0,
+        },
+    },
+    {
+        title: 'full progress',
+        inputs: {
+            value: 100,
+        },
+    },
+    {
+        title: 'custom styles tiny progress',
         styles: css`
             :host {
                 ${ViraProgress.cssVars['vira-progress-background-color'].name}: red;
-                ${ViraProgress.cssVars['vira-progress-foreground-color'].name}: yellow;
-                ${ViraProgress.cssVars['vira-progress-border-radius'].name}: 20px;
+                ${ViraProgress.cssVars['vira-progress-foreground-color'].name}: black;
+                ${ViraProgress.cssVars['vira-progress-border-radius'].name}: 5px;
             }
 
             ${ViraProgress} {
@@ -40,6 +64,42 @@ const examples: ({
                 width: 200px;
             }
         `,
+        inputs: {
+            value: 0.5,
+        },
+    },
+    {
+        title: 'custom styles half',
+        styles: css`
+            :host {
+                ${ViraProgress.cssVars['vira-progress-background-color'].name}: red;
+                ${ViraProgress.cssVars['vira-progress-foreground-color'].name}: yellow;
+                ${ViraProgress.cssVars['vira-progress-border-radius'].name}: 5px;
+            }
+
+            ${ViraProgress} {
+                height: 50px;
+                width: 200px;
+            }
+        `,
+    },
+    {
+        title: 'custom styles full',
+        styles: css`
+            :host {
+                ${ViraProgress.cssVars['vira-progress-background-color'].name}: red;
+                ${ViraProgress.cssVars['vira-progress-foreground-color'].name}: yellow;
+                ${ViraProgress.cssVars['vira-progress-border-radius'].name}: 5px;
+            }
+
+            ${ViraProgress} {
+                height: 50px;
+                width: 200px;
+            }
+        `,
+        inputs: {
+            value: 100,
+        },
     },
 ];
 

@@ -1,11 +1,11 @@
-import {type PartialWithUndefined} from '@augment-vir/common';
+import {clamp, type PartialWithUndefined} from '@augment-vir/common';
 import {css, html} from 'element-vir';
 import {defineViraElement} from './define-vira-element.js';
 
 /**
  * A [`<progress>`](https://developer.mozilla.org/docs/Web/HTML/Reference/Elements/progress)
- * alternative that supports custom styling in _all_ browsers via host styles or CSS variables _and_
- * prevents background bleed-through on curved corners.
+ * alternative that supports custom styling in _all_ browsers via CSS vars _and_ prevents background
+ * bleed.
  *
  * @category Progress
  * @category Elements
@@ -41,18 +41,20 @@ export const ViraProgress = defineViraElement<
             height: 10px;
             display: inline-flex;
             align-items: center;
-            background-color: ${cssVars['vira-progress-background-color'].value};
             border-radius: ${cssVars['vira-progress-border-radius'].value};
             color: ${cssVars['vira-progress-foreground-color'].value};
+            overflow: hidden;
         }
 
         .progress-bar {
             background-color: currentColor;
-            border-radius: calc(${cssVars['vira-progress-border-radius'].value} - 1px);
-            /* Add some extra pixels to prevent the background from bleeding through on the curved corners. */
-            height: calc(100% + 2px);
-            /* Overlap a bin on the left to prevent the background from bleeding through on the curved corners. */
-            margin-left: -1px;
+            height: 100%;
+        }
+
+        .background-bar {
+            background-color: ${cssVars['vira-progress-background-color'].value};
+            height: 100%;
+            flex-grow: 1;
         }
     `,
     render({inputs}) {
@@ -61,15 +63,20 @@ export const ViraProgress = defineViraElement<
         const totalRange = max - min;
         const value = inputs.value - min;
 
-        const percentFull = Math.round((value / totalRange) * 100);
+        const percentFull = clamp(Math.round((value / totalRange) * 100), {min: 0, max: 100});
 
         return html`
             <div
                 class="progress-bar"
-                style=${css`
-                    width: calc(${percentFull}% + 1px);
-                `}
+                style=${percentFull
+                    ? css`
+                          width: ${percentFull}%;
+                      `
+                    : css`
+                          display: none;
+                      `}
             ></div>
+            <div class="background-bar"></div>
         `;
     },
 });
