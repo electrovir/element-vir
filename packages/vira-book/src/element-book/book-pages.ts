@@ -11,6 +11,7 @@ import {viraIconBookPage} from './entries/vira-icon.element.book.js';
 import {viraImageBookPage} from './entries/vira-image.element.book.js';
 import {viraInputBookPage} from './entries/vira-input.element.book.js';
 import {viraLinkBookPage} from './entries/vira-link.element.book.js';
+import {viraProgressBookPage} from './entries/vira-progress.element.book.js';
 import {elementsBookPage, iconsBookPage} from './top-level-pages.js';
 
 const topLevelPages = [
@@ -32,6 +33,7 @@ const subPages = [
     viraMenuTriggerBookPage,
     viraPopUpMenuBookPage,
     viraPopUpTriggerBookPage,
+    viraProgressBookPage,
 ].sort((a, b) => a.title.localeCompare(b.title));
 
 export const viraBookPages = [

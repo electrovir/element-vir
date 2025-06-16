@@ -123,7 +123,7 @@ describe(wrapDefineElement.name, () => {
 
     it('allows defining sub states', () => {
         myDefineElement()({
-            tagName: 'my-thing-abc6',
+            tagName: 'my-thing-abc8',
             state() {
                 return {
                     hello: 'hi',
@@ -135,7 +135,7 @@ describe(wrapDefineElement.name, () => {
             },
         });
         myDefineElement<{something: string}>()({
-            tagName: 'my-thing-abc7',
+            tagName: 'my-thing-abc9',
             state() {
                 return {
                     hello: 'hi',
