@@ -2,3 +2,5 @@
 -   allow arbitrary static data in the element definition
 -   unify event types with the `typed-event-listener` package
 -   allow manually applying host classes (without overwriting them)
+-   strip out repeated `;` and any `};` sequence (it's invalid) in `css` outputs
+-   figure out a way to declaratively apply attributes to an element's host while allowing consumers to still override them

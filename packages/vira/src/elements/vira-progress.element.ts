@@ -1,4 +1,5 @@
 import {clamp, type PartialWithUndefined} from '@augment-vir/common';
+import {applyAttributes} from 'device-navigation';
 import {css, html} from 'element-vir';
 import {defineViraElement} from './define-vira-element.js';
 
@@ -57,13 +58,20 @@ export const ViraProgress = defineViraElement<
             flex-grow: 1;
         }
     `,
-    render({inputs}) {
+    render({inputs, host}) {
         const min = inputs.min || 0;
         const max = inputs.max || 100;
         const totalRange = max - min;
         const value = inputs.value - min;
 
         const percentFull = clamp(Math.round((value / totalRange) * 100), {min: 0, max: 100});
+
+        applyAttributes(host, {
+            'aria-valuemin': inputs.min,
+            'aria-valuemax': inputs.max,
+            'aria-valuenow': inputs.value,
+            'aria-role': 'progressbar',
+        });
 
         return html`
             <div
