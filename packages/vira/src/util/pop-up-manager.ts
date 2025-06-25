@@ -80,7 +80,7 @@ export type PopUpManagerOptions = {
 };
 
 /**
- * Output type from {@link PopUpManager.showPopUp}
+ * Output type from `PopUpManager.showPopUp`
  *
  * @category PopUp
  */

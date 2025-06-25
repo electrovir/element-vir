@@ -12,7 +12,7 @@
         "test:types": "npm run compile"
     },
     "dependencies": {
-        "@augment-vir/web": "^31.23.3",
+        "@augment-vir/web": "^31.26.0",
         "element-book": "^26.4.1",
         "element-vir": "^26.4.1"
     },
@@ -25,7 +25,7 @@
         "markdown-code-example-inserter": "^3.0.3",
         "typedoc": "^0.28.5",
         "typescript": "5.8.3",
-        "vite": "^6.3.5",
+        "vite": "^7.0.0",
         "vite-tsconfig-paths": "^5.1.4"
     }
 }

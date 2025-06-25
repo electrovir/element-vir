@@ -15,19 +15,19 @@
         "test": "exit 0;"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.23.3",
-        "@augment-vir/common": "^31.23.3",
+        "@augment-vir/assert": "^31.26.0",
+        "@augment-vir/common": "^31.26.0",
         "element-book": "^26.4.1",
         "element-vir": "^26.4.1",
         "vira": "^26.4.1"
     },
     "devDependencies": {
-        "@augment-vir/test": "^31.23.3",
+        "@augment-vir/test": "^31.26.0",
         "esbuild": "^0.25.5",
         "markdown-code-example-inserter": "^3.0.3",
         "typedoc": "^0.28.5",
         "typescript": "5.8.3",
-        "vite": "^6.3.5",
+        "vite": "^7.0.0",
         "vite-tsconfig-paths": "^5.1.4"
     },
     "engines": {

@@ -104,6 +104,6 @@ describe(asyncProp.name, () => {
         // wait for the event to propagate
         await waitUntil(() => (allAsyncValues.length as number) > 1);
 
-        assert.strictEquals(extractElementText(instance), `Got ${randomValue.toFixed()}`);
+        assert.strictEquals(extractElementText(instance), `Got\n${randomValue.toFixed()}`);
     });
 });
