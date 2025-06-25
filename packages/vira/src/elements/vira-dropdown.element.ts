@@ -20,6 +20,7 @@ import {type ShowPopUpResult} from '../util/pop-up-manager.js';
 import {defineViraElement} from './define-vira-element.js';
 import {type MenuItem} from './pop-up/pop-up-menu-item.js';
 import {ViraMenuTrigger} from './pop-up/vira-menu-trigger.element.js';
+import {HorizontalAnchor} from './pop-up/vira-pop-up-trigger.element.js';
 import {ViraIcon} from './vira-icon.element.js';
 
 /**
@@ -58,6 +59,17 @@ export const ViraDropdown = defineViraElement<
         isDisabled: boolean;
         /** For debugging purposes only. Very bad for actual production code use. */
         z_debug_forceOpenState: boolean;
+        /**
+         * - `HorizontalAnchor.Left`: dropdown is anchored to the left side of the trigger and the
+         *   dropdown can grow to the right.
+         * - `HorizontalAnchor.Right`: dropdown is anchored to the right side of the trigger and the
+         *   dropdown can grow to the left.
+         * - `HorizontalAnchor.Both`: dropdown is anchored on both sides of the trigger and cannot
+         *   grow beyond it. (This is the default experience.)
+         *
+         * @default HorizontalAnchor.Both
+         */
+        horizontalAnchor: HorizontalAnchor;
     }>
 >()({
     tagName: 'vira-dropdown',
@@ -184,6 +196,7 @@ export const ViraDropdown = defineViraElement<
                     vertical: -1,
                     right: 24,
                 },
+                horizontalAnchor: inputs.horizontalAnchor || HorizontalAnchor.Both,
             })}
                 ${listen(ViraMenuTrigger.events.openChange, (event) => {
                     updateState({showPopUpResult: event.detail});

@@ -25,6 +25,30 @@ export type PopUpOffset = PartialWithUndefined<{
 }>;
 
 /**
+ * Anchor options for pop-ups.
+ *
+ * @category Internal
+ */
+export enum HorizontalAnchor {
+    /**
+     * The left side of the pop-up will be anchored to the left side of the trigger, allowing the
+     * pop-up to grow on the right side of the trigger.
+     */
+    Left = 'left',
+    /**
+     * The Right side of the pop-up will be anchored to the right side of the trigger, allowing the
+     * pop-up to grow on the left side of the trigger.
+     */
+    Right = 'right',
+    /**
+     * Restrict the pop-up on both sides.
+     *
+     * This is the default anchor for {@link ViraPopUpTrigger}.
+     */
+    Both = 'both',
+}
+
+/**
  * An element with slots for a pop-up trigger and pop-up contents.
  *
  * @category PopUp
@@ -40,6 +64,20 @@ export const ViraPopUpTrigger = defineViraElement<
         keepOpenAfterInteraction: boolean;
         /** All values in px. */
         popUpOffset?: PopUpOffset;
+        /**
+         * - `HorizontalAnchor.Left`: pop-up is anchored to the left side of the trigger and the
+         *   pop-up can grow to the right.
+         * - `HorizontalAnchor.Right`: pop-up is anchored to the right side of the trigger and the
+         *   pop-up can grow to the left.
+         * - `HorizontalAnchor.Both`: pop-up is anchored on both sides of the trigger and cannot grow
+         *   beyond it. (This is the default experience.)
+         *
+         * Note that when `HorizontalAnchor.Both` is _not_ used, this anchor will cancel out any
+         * `popUpOffset` for the direction _opposite_ of the chosen anchor.
+         *
+         * @default HorizontalAnchor.Both
+         */
+        horizontalAnchor?: HorizontalAnchor;
     }>
 >()({
     tagName: 'vira-pop-up-trigger',
@@ -103,8 +141,6 @@ export const ViraPopUpTrigger = defineViraElement<
 
             /* highest possible z-index */
             z-index: 2147483647;
-            left: 0;
-            right: 0;
 
             & > * {
                 pointer-events: auto;
@@ -209,6 +245,25 @@ export const ViraPopUpTrigger = defineViraElement<
             }
         }
 
+        const horizontalPositionStyle = state.showPopUpResult
+            ? css`
+                  ${inputs.horizontalAnchor === HorizontalAnchor.Right
+                      ? css`
+                            left: -${state.showPopUpResult.positions.diff.left}px;
+                        `
+                      : css`
+                            left: ${inputs.popUpOffset?.left || 0}px;
+                        `}
+                  ${inputs.horizontalAnchor === HorizontalAnchor.Left
+                      ? css`
+                            right: -${state.showPopUpResult.positions.diff.right}px;
+                        `
+                      : css`
+                            right: ${inputs.popUpOffset?.right || 0}px;
+                        `}
+              `
+            : css``;
+
         /**
          * These styles do _not_ account for window resizing while the menu is open. I decided this
          * was not a major enough problem to tackle. If it becomes major enough in the future,
@@ -221,15 +276,13 @@ export const ViraPopUpTrigger = defineViraElement<
                   css`
                       bottom: -${state.showPopUpResult.positions.diff.bottom}px;
                       top: calc(100% + ${inputs.popUpOffset?.vertical || 0}px);
-                      left: ${inputs.popUpOffset?.left || 0}px;
-                      right: ${inputs.popUpOffset?.right || 0}px;
+                      ${horizontalPositionStyle}
                   `
                 : /** Dropdown going up position. */
                   css`
                       top: -${state.showPopUpResult.positions.diff.top}px;
                       bottom: calc(100% + ${inputs.popUpOffset?.vertical || 0}px);
-                      left: ${inputs.popUpOffset?.left || 0}px;
-                      right: ${inputs.popUpOffset?.right || 0}px;
+                      ${horizontalPositionStyle}
                   `
             : undefined;
 

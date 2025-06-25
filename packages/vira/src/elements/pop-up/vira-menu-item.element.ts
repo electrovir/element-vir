@@ -43,6 +43,7 @@ export const ViraMenuItem = defineViraElement<
             display: flex;
             align-items: center;
             padding: 8px;
+            padding-right: 24px;
             padding-left: 0;
             text-align: left;
         }
@@ -64,6 +65,7 @@ export const ViraMenuItem = defineViraElement<
 
         .include-left-spacing {
             padding-left: 12px;
+            padding-right: 12px;
         }
     `,
     render({inputs}) {

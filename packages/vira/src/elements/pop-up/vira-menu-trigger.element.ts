@@ -11,7 +11,11 @@ import {
     ViraPopUpMenu,
     type PopUpMenuCornerStyle,
 } from './vira-pop-up-menu.element.js';
-import {ViraPopUpTrigger, type PopUpOffset} from './vira-pop-up-trigger.element.js';
+import {
+    HorizontalAnchor,
+    ViraPopUpTrigger,
+    type PopUpOffset,
+} from './vira-pop-up-trigger.element.js';
 
 /**
  * Test ids for {@link ViraMenuTrigger}.
@@ -41,6 +45,20 @@ export const ViraMenuTrigger = defineViraElement<
         /** Hide menu item check mark icons. */
         hideCheckIcons: boolean;
         menuCornerStyle: PopUpMenuCornerStyle;
+        /**
+         * - `HorizontalAnchor.Left`: pop-up is anchored to the left side of the trigger and the
+         *   pop-up can grow to the right.
+         * - `HorizontalAnchor.Right`: pop-up is anchored to the right side of the trigger and the
+         *   pop-up can grow to the left.
+         * - `HorizontalAnchor.Both`: pop-up is anchored on both sides of the trigger and cannot grow
+         *   beyond it.
+         *
+         * Note that when `HorizontalAnchor.Both` is _not_ used, this anchor will cancel out any
+         * `popUpOffset` for the direction _opposite_ of the chosen anchor.
+         *
+         * @default HorizontalAnchor.Left
+         */
+        horizontalAnchor: HorizontalAnchor;
     }>
 >()({
     tagName: 'vira-menu-trigger',
@@ -75,6 +93,7 @@ export const ViraMenuTrigger = defineViraElement<
                 keepOpenAfterInteraction: true,
                 z_debug_forceOpenState: inputs.z_debug_forceOpenState,
                 popUpOffset: inputs.popUpOffset,
+                horizontalAnchor: inputs.horizontalAnchor || HorizontalAnchor.Left,
             })}
                 class=${classMap({
                     open: !!state.showPopUpResult,
