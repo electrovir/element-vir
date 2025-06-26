@@ -597,7 +597,6 @@ does not match RegExp
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            overflow: hidden;
 
             /* highest possible z-index */
             z-index: 2147483647;
