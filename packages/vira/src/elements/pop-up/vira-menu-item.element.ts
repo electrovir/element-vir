@@ -55,7 +55,7 @@ export const ViraMenuItem = defineViraElement<
 
         ${hostClasses['vira-menu-item-selected'].selector} ${ViraIcon} {
             opacity: 1;
-            visibility: hidden;
+            visibility: visible;
         }
 
         /*
@@ -67,6 +67,7 @@ export const ViraMenuItem = defineViraElement<
             margin-top: -4px;
             margin-right: -2px;
             margin-left: 2px;
+            visibility: hidden;
         }
     `,
     render({inputs}) {
