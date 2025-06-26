@@ -391,7 +391,7 @@ does not match RegExp
 
         ${e["vira-menu-item-selected"].selector} ${M} {
             opacity: 1;
-            visibility: hidden;
+            visibility: visible;
         }
 
         /*
@@ -403,6 +403,7 @@ does not match RegExp
             margin-top: -4px;
             margin-right: -2px;
             margin-left: 2px;
+            visibility: hidden;
         }
     `,render({inputs:e}){return g`
             <div class="item">
