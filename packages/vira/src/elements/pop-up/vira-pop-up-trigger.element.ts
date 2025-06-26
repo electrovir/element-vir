@@ -1,5 +1,5 @@
 import {assert} from '@augment-vir/assert';
-import {type PartialWithUndefined} from '@augment-vir/common';
+import {collapseWhiteSpace, type PartialWithUndefined} from '@augment-vir/common';
 import {NavController, type Coords} from 'device-navigation';
 import {classMap, css, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {createFocusStyles} from '../../styles/focus.js';
@@ -137,6 +137,7 @@ export const ViraPopUpTrigger = defineViraElement<
             position: absolute;
             pointer-events: none;
             display: flex;
+            box-sizing: border-box;
             flex-direction: column;
             align-items: flex-start;
 
@@ -299,6 +300,8 @@ export const ViraPopUpTrigger = defineViraElement<
         function respondToClick(event: Event) {
             triggerPopUp({emitEvent: true, open: !state.showPopUpResult}, event);
         }
+
+        console.log(collapseWhiteSpace(positionerStyles?.toString() || '', {keepNewLines: true}));
 
         return html`
             <button

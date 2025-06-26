@@ -271,8 +271,8 @@ export class PopUpManager {
                 ? {
                       top: 0,
                       left: 0,
-                      right: globalThis.innerWidth,
-                      bottom: globalThis.innerHeight,
+                      right: containerRect.width,
+                      bottom: containerRect.height,
                   }
                 : {
                       top: containerRect.top,
@@ -280,20 +280,15 @@ export class PopUpManager {
                       right: containerRect.right - containerScrollbarWidth,
                       bottom: containerRect.bottom - containerScrollbarHeight,
                   };
+
         const rootPosition: PositionRect = mapObjectValues(emptyPositionRect, (key) => {
             return rootRect[key];
         });
         const diff: PositionRect = mapObjectValues(emptyPositionRect, (key) => {
             const containerDimension = containerPosition[key];
             const hostDimension = rootPosition[key];
-            /**
-             * Chrome will trigger a scroll bar sometimes if the PopUp is too close to the bottom,
-             * even if clearly isn't overflowing. The value here was found by experimentation to be
-             * the lowest value that wouldn't trigger that.
-             */
-            const additionalOffset = key === 'bottom' ? -51 : 0;
 
-            return Math.abs(containerDimension - hostDimension + additionalOffset);
+            return Math.abs(containerDimension - hostDimension);
         });
 
         const useUp =
