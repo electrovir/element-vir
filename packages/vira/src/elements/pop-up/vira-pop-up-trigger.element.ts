@@ -248,24 +248,28 @@ export const ViraPopUpTrigger = defineViraElement<
             }
         }
 
-        const horizontalPositionStyle = state.showPopUpResult
-            ? css`
-                  ${inputs.horizontalAnchor === HorizontalAnchor.Right
-                      ? css`
-                            left: -${state.showPopUpResult.positions.diff.left}px;
-                        `
-                      : css`
-                            left: ${inputs.popUpOffset?.left || 0}px;
-                        `}
-                  ${inputs.horizontalAnchor === HorizontalAnchor.Left
-                      ? css`
-                            right: -${state.showPopUpResult.positions.diff.right}px;
-                        `
-                      : css`
-                            right: ${inputs.popUpOffset?.right || 0}px;
-                        `}
-              `
-            : css``;
+        const leftCss =
+            inputs.horizontalAnchor === HorizontalAnchor.Right && state.showPopUpResult
+                ? css`
+                      left: -${state.showPopUpResult.positions.diff.left}px;
+                  `
+                : css`
+                      left: ${inputs.popUpOffset?.left || 0}px;
+                  `;
+
+        const rightCss =
+            state.showPopUpResult && inputs.horizontalAnchor === HorizontalAnchor.Left
+                ? css`
+                      right: -${state.showPopUpResult.positions.diff.right}px;
+                  `
+                : css`
+                      right: ${inputs.popUpOffset?.right || 0}px;
+                  `;
+
+        const horizontalPositionStyle = css`
+            ${leftCss}
+            ${rightCss}
+        `;
 
         /**
          * These styles do _not_ account for window resizing while the menu is open. I decided this
@@ -293,7 +297,6 @@ export const ViraPopUpTrigger = defineViraElement<
             triggerPopUp({emitEvent: true, open: !state.showPopUpResult}, event);
         }
 
-        // todo: still triggering scrollbar on long-left-anchored-content
         return html`
             <button
                 ?disabled=${!!inputs.isDisabled}

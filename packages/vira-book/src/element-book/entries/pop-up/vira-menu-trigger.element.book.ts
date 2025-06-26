@@ -70,12 +70,6 @@ const examples: {title: string; inputs?: Partial<typeof ViraMenuTrigger.InputsTy
         },
     },
     {
-        title: 'no checks',
-        inputs: {
-            hideCheckIcons: true,
-        },
-    },
-    {
         title: 'disabled',
         inputs: {
             isDisabled: true,
@@ -139,6 +133,9 @@ const examples: {title: string; inputs?: Partial<typeof ViraMenuTrigger.InputsTy
 export const viraMenuTriggerBookPage = defineBookPage({
     parent: elementsBookPage,
     title: ViraMenuTrigger.tagName,
+    descriptionParagraphs: [
+        'No selection state logic is included in these examples.',
+    ],
     defineExamples({defineExample}) {
         examples.forEach((example) => {
             defineExample({

@@ -73,6 +73,10 @@ export const ViraMenuTrigger = defineViraElement<
         ${ViraPopUpTrigger} {
             width: 100%;
         }
+
+        .full-width-menu {
+            width: 100%;
+        }
     `,
     events: {
         itemActivate: defineElementEvent<PropertyKey[]>(),
@@ -143,6 +147,10 @@ export const ViraMenuTrigger = defineViraElement<
                               cornerStyle: inputs.menuCornerStyle,
                           })}
                               slot=${ViraPopUpTrigger.slotNames.popUp}
+                              class=${classMap({
+                                  'full-width-menu':
+                                      inputs.horizontalAnchor === HorizontalAnchor.Both,
+                              })}
                           >
                               <${ViraMenu.assign({
                                   items: inputs.items,
