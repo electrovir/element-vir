@@ -1,8 +1,8 @@
-import {assert, waitUntil} from '@augment-vir/assert';
+import {assert, assertWrap, waitUntil} from '@augment-vir/assert';
 import {mapObjectValues, randomString} from '@augment-vir/common';
 import {describe, it, testWeb} from '@augment-vir/test';
 import {extractElementText, queryThroughShadow, waitForAnimationFrame} from '@augment-vir/web';
-import {html, listen, testIdSelector} from 'element-vir';
+import {css, html, listen, testIdSelector} from 'element-vir';
 import {Element24Icon} from '../icons/index.js';
 import {mockMenuItems} from './pop-up/pop-up-menu-item.mock.js';
 import {viraMenuTriggerTestIds} from './pop-up/vira-menu-trigger.element.js';
@@ -14,26 +14,35 @@ async function setupDropdownTest(inputs?: Partial<(typeof ViraDropdown)['InputsT
         openChange: [],
         selectedChange: [],
     };
-    const instance = await testWeb.render(html`
-        <${ViraDropdown.assign({
-            options: mockMenuItems,
-            selected: [],
-            ...inputs,
-        })}
-            ${listen(ViraDropdown.events.openChange, (event) => {
-                events.openChange.push(!!event.detail);
+    const fixture = await testWeb.render(html`
+        <div
+            style=${css`
+                height: 1000px;
+            `}
+        >
+            <${ViraDropdown.assign({
+                options: mockMenuItems,
+                selected: [],
+                ...inputs,
             })}
-            ${listen(ViraDropdown.events.selectedChange, (event) => {
-                events.selectedChange.push(event.detail);
-            })}
-        ></${ViraDropdown}>
+                ${listen(ViraDropdown.events.openChange, (event) => {
+                    events.openChange.push(!!event.detail);
+                })}
+                ${listen(ViraDropdown.events.selectedChange, (event) => {
+                    events.selectedChange.push(event.detail);
+                })}
+            ></${ViraDropdown}>
+        </div>
     `);
+
+    const instance = assertWrap.instanceOf(
+        fixture.querySelector(ViraDropdown.tagName),
+        ViraDropdown,
+    );
 
     function findMenu() {
         return queryThroughShadow(instance, testIdSelector(viraMenuTriggerTestIds.menu));
     }
-
-    assert.instanceOf(instance, ViraDropdown);
 
     const triggerElement = instance.shadowRoot.querySelector(
         testIdSelector(viraDropdownTestIds.trigger),
@@ -46,6 +55,7 @@ async function setupDropdownTest(inputs?: Partial<(typeof ViraDropdown)['InputsT
 
     return {
         events,
+        fixture,
         instance,
         triggerElement,
         findMenu,
@@ -95,8 +105,8 @@ describe(ViraDropdown.tagName, () => {
         });
     });
 
-    it('selects an option on click', async () => {
-        const {instance, toggle, events, findMenu} = await setupDropdownTest();
+    it('selects an option on click', async (testContext) => {
+        const {instance, fixture, toggle, events, findMenu} = await setupDropdownTest();
 
         await toggle();
         const options = queryThroughShadow(instance, testIdSelector(viraMenuTestIds.item), {
