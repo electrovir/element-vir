@@ -148,6 +148,10 @@ export const ViraPopUpTrigger = defineViraElement<
                 pointer-events: auto;
                 max-width: 100%;
             }
+
+            &.right-aligned {
+                align-items: flex-end;
+            }
         }
 
         .open-upwards .pop-up-positioner {
@@ -327,7 +331,12 @@ export const ViraPopUpTrigger = defineViraElement<
                 <div class="dropdown-trigger">
                     <slot name=${slotNames.trigger}></slot>
                 </div>
-                <div class="pop-up-positioner" style=${positionerStyles}>
+                <div
+                    class="pop-up-positioner ${classMap({
+                        'right-aligned': inputs.horizontalAnchor === HorizontalAnchor.Right,
+                    })}"
+                    style=${positionerStyles}
+                >
                     ${renderIf(
                         !!state.showPopUpResult,
                         html`

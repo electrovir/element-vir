@@ -151,5 +151,40 @@ export const viraPopUpTriggerBookPage = defineBookPage({
                 `;
             },
         });
+        defineExample({
+            title: 'short right anchored content',
+            styles: css`
+                .trigger {
+                    cursor: pointer;
+                    border: 4px solid #ccc;
+                    padding: 8px 16px;
+                }
+
+                .pop-up {
+                    box-sizing: border-box;
+                    max-width: 100%;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    border: 4px solid #eee;
+                    border-top: none;
+                    padding: 8px 16px;
+                    white-space: nowrap;
+                    background-color: white;
+                }
+            `,
+            render() {
+                return html`
+                    <${ViraPopUpTrigger.assign({
+                        keepOpenAfterInteraction: true,
+                        horizontalAnchor: HorizontalAnchor.Right,
+                    })}>
+                        <div slot=${ViraPopUpTrigger.slotNames.trigger}>
+                            Trigger Long Left Anchored Pop Up
+                        </div>
+                        <div class="pop-up" slot=${ViraPopUpTrigger.slotNames.popUp}>not long</div>
+                    </${ViraPopUpTrigger}>
+                `;
+            },
+        });
     },
 });
