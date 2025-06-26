@@ -66,6 +66,7 @@ export const ViraMenu = defineViraElement<
             max-width: 100%;
             max-height: 100%;
             overflow-y: auto;
+            overscroll-behavior: contain;
             z-index: 100;
             box-sizing: border-box;
             background-color: ${viraFormCssVars['vira-form-background-color'].value};
