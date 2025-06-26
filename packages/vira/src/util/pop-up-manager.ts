@@ -137,8 +137,21 @@ export class PopUpManager {
         this.options = {...this.options, ...options};
     }
 
-    private attachGlobalListeners() {
+    private attachGlobalListeners(container: Element) {
+        let firstFired = false;
+        const resizeObserver = new ResizeObserver(() => {
+            if (firstFired) {
+                this.removePopUp();
+            } else {
+                firstFired = true;
+            }
+        });
+        resizeObserver.observe(container);
+
         this.cleanupCallbacks = [
+            () => {
+                resizeObserver.disconnect();
+            },
             listenToPageActivation(false, (isPageActive) => {
                 if (!isPageActive) {
                     this.removePopUp();
@@ -287,7 +300,7 @@ export class PopUpManager {
             diff.top > diff.bottom + currentOptions.verticalDiffThreshold &&
             diff.bottom < currentOptions.minDownSpace;
 
-        this.attachGlobalListeners();
+        this.attachGlobalListeners(container);
 
         return {
             popDown: !useUp,
