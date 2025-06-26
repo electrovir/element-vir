@@ -48,6 +48,8 @@ export const viraPopUpTriggerBookPage = defineBookPage({
                 }
 
                 .pop-up {
+                    box-sizing: border-box;
+                    max-width: 100%;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     border: 4px solid #eee;
@@ -83,6 +85,8 @@ export const viraPopUpTriggerBookPage = defineBookPage({
                 }
 
                 .pop-up {
+                    box-sizing: border-box;
+                    max-width: 100%;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     border: 4px solid #eee;
@@ -119,6 +123,8 @@ export const viraPopUpTriggerBookPage = defineBookPage({
                 }
 
                 .pop-up {
+                    box-sizing: border-box;
+                    max-width: 100%;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     border: 4px solid #eee;

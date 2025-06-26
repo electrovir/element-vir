@@ -55,8 +55,7 @@ export const ViraPopUpMenu = defineViraElement<
     styles: ({hostClasses}) => css`
         :host {
             display: flex;
-
-            width: 100%;
+            max-width: 100%;
             max-height: 100%;
             overflow-y: auto;
             z-index: 99;

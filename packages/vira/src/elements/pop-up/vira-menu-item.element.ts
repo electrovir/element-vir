@@ -1,5 +1,5 @@
 import {type PartialWithUndefined} from '@augment-vir/common';
-import {classMap, css, html, renderIf} from 'element-vir';
+import {css, html} from 'element-vir';
 import {Check24Icon} from '../../icons/icon-svgs/check-24.icon.js';
 import {noUserSelect} from '../../styles/index.js';
 import {defineViraElement} from '../define-vira-element.js';
@@ -29,27 +29,33 @@ export const ViraMenuItem = defineViraElement<
 >()({
     tagName: 'vira-menu-item',
     hostClasses: {
-        'vira-menu-item-selected': ({inputs}) => inputs.selected,
+        'vira-menu-item-selected': ({inputs}) => !inputs.hideCheckIcon && inputs.selected,
     },
     styles: ({hostClasses}) => css`
         :host {
             display: flex;
             ${noUserSelect};
+            box-sizing: border-box;
+            max-width: 100%;
+            overflow: hidden;
         }
 
         .item {
             pointer-events: none;
             min-height: 24px;
             display: flex;
+            max-width: 100%;
             align-items: center;
             padding: 8px;
             padding-right: 24px;
             padding-left: 0;
             text-align: left;
+            box-sizing: border-box;
         }
 
         ${hostClasses['vira-menu-item-selected'].selector} ${ViraIcon} {
             opacity: 1;
+            visibility: hidden;
         }
 
         /*
@@ -62,21 +68,11 @@ export const ViraMenuItem = defineViraElement<
             margin-right: -2px;
             margin-left: 2px;
         }
-
-        .include-left-spacing {
-            padding-left: 12px;
-            padding-right: 12px;
-        }
     `,
     render({inputs}) {
         return html`
-            <div class="item ${classMap({'include-left-spacing': !!inputs.hideCheckIcon})}">
-                ${renderIf(
-                    !inputs.hideCheckIcon,
-                    html`
-                        <${ViraIcon.assign({icon: Check24Icon})}></${ViraIcon}>
-                    `,
-                )}
+            <div class="item">
+                <${ViraIcon.assign({icon: Check24Icon})}></${ViraIcon}>
                 <slot>${inputs.label}</slot>
             </div>
         `;

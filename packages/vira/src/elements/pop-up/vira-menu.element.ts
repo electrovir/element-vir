@@ -63,6 +63,7 @@ export const ViraMenu = defineViraElement<
             flex-direction: column;
 
             width: 100%;
+            max-width: 100%;
             max-height: 100%;
             overflow-y: auto;
             z-index: 100;

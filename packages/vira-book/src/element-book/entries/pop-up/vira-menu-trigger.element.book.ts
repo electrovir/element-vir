@@ -95,6 +95,8 @@ const examples: {title: string; inputs?: Partial<typeof ViraMenuTrigger.InputsTy
                             <div
                                 style=${css`
                                     white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
                                 `}
                             >
                                 This menu item is much longer than the others
@@ -120,6 +122,8 @@ const examples: {title: string; inputs?: Partial<typeof ViraMenuTrigger.InputsTy
                             <div
                                 style=${css`
                                     white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
                                 `}
                             >
                                 This menu item is much longer than the others

@@ -138,12 +138,15 @@ export const ViraPopUpTrigger = defineViraElement<
             pointer-events: none;
             display: flex;
             flex-direction: column;
+            align-items: flex-start;
+            overflow: hidden;
 
             /* highest possible z-index */
             z-index: 2147483647;
 
             & > * {
                 pointer-events: auto;
+                max-width: 100%;
             }
         }
 
@@ -290,6 +293,7 @@ export const ViraPopUpTrigger = defineViraElement<
             triggerPopUp({emitEvent: true, open: !state.showPopUpResult}, event);
         }
 
+        // todo: still triggering scrollbar on long-left-anchored-content
         return html`
             <button
                 ?disabled=${!!inputs.isDisabled}
