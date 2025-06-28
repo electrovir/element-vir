@@ -10,6 +10,7 @@ export type {
 } from 'lit';
 export * from 'lit/async-directive.js';
 export * from 'lit/decorators.js';
+export * from 'lit/directive-helpers.js';
 export * from 'lit/directive.js';
 export * from 'lit/directives/async-append.js';
 export * from 'lit/directives/async-replace.js';
