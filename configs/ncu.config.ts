@@ -6,6 +6,8 @@ export const ncuConfig: RunOptions = {
     // exclude these
     reject: [
         ...baseNcuConfig.reject,
+        // v0.28.6 thinks `RepeatDirective` is not documented
+        'typedoc',
     ],
     // include only these
     filter: [],

@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/scripts",
-    "version": "26.5.6",
+    "version": "26.5.7",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "author": {
@@ -25,9 +25,9 @@
         "tsx": "^4.19.4"
     },
     "devDependencies": {
-        "@types/node": "^24.0.4",
+        "@types/node": "^24.0.7",
         "markdown-code-example-inserter": "^3.0.3",
-        "typedoc": "^0.28.5",
+        "typedoc": "0.28.5",
         "typescript": "5.8.3"
     },
     "engines": {
