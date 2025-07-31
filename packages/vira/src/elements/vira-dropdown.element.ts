@@ -14,7 +14,7 @@ import {
 import {type ViraIconSvg} from '../icons/icon-svg.js';
 import {ChevronUp24Icon} from '../icons/index.js';
 import {viraBorders} from '../styles/border.js';
-import {viraFormCssVars} from '../styles/form-themes.js';
+import {viraFormCssVars} from '../styles/form-styles.js';
 import {noUserSelect, viraAnimationDurations} from '../styles/index.js';
 import {type ShowPopUpResult} from '../util/pop-up-manager.js';
 import {defineViraElement} from './define-vira-element.js';

@@ -1,7 +1,7 @@
 import {type PartialWithUndefined} from '@augment-vir/common';
 import {css, html} from 'element-vir';
 import {viraBorders} from '../../styles/border.js';
-import {viraFormCssVars} from '../../styles/form-themes.js';
+import {viraFormCssVars} from '../../styles/form-styles.js';
 import {viraShadows} from '../../styles/shadows.js';
 import {defineViraElement} from '../define-vira-element.js';
 

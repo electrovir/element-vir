@@ -182,11 +182,6 @@ export const ViraInput = defineViraElement<
                 cursor: text;
             }
 
-            ${createFocusStyles({
-                selector: 'input:focus:focus-visible:not(:active):not([disabled]) ~ .focus-border',
-                elementBorderSize: 0,
-            })}
-
             .left-side-icon {
                 margin-right: calc(${cssVars['vira-input-padding-horizontal'].value} - 4px);
             }
@@ -202,6 +197,14 @@ export const ViraInput = defineViraElement<
                 text-overflow: ellipsis;
                 box-sizing: border-box;
                 overflow: hidden;
+                outline: none;
+
+                &:focus:focus-visible:not(:active):not([disabled]) ~ .focus-border {
+                    ${createFocusStyles({
+                        elementBorderSize: 0,
+                        noNesting: true,
+                    })}
+                }
             }
 
             ::selection {
@@ -216,10 +219,6 @@ export const ViraInput = defineViraElement<
             input:placeholder-shown {
                 text-overflow: ellipsis;
                 overflow: hidden;
-            }
-
-            input:focus {
-                outline: none;
             }
 
             input::placeholder {

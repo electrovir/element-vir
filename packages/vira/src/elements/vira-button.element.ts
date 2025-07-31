@@ -112,7 +112,6 @@ export const ViraButton = defineViraElement<
             position: relative;
             width: 100%;
             height: 100%;
-            outline: none;
             border: 2px solid transparent;
             box-sizing: border-box;
             display: inline-flex;
@@ -127,16 +126,15 @@ export const ViraButton = defineViraElement<
                 background-color
                     ${viraAnimationDurations['vira-interaction-animation-duration'].value},
                 border-color ${viraAnimationDurations['vira-interaction-animation-duration'].value};
+
+            ${createFocusStyles({
+                elementBorderSize: 2,
+            })}
         }
 
         .empty-text {
             width: 0;
         }
-
-        ${createFocusStyles({
-            selector: 'button:focus:focus-visible:not(:active):not([disabled])',
-            elementBorderSize: 2,
-        })}
 
         button ${ViraIcon} + .text-template {
             margin-left: 8px;

@@ -6,13 +6,15 @@ import {
     defineElementEvent,
     html,
     ifDefined,
-    listen,
+    listenToActivate,
     type AttributeValues,
     type CSSResult,
 } from 'element-vir';
 import {Check24Icon, viraIconCssVars} from '../icons/index.js';
+import {viraBorders} from '../styles/border.js';
 import {viraDisabledStyles} from '../styles/disabled.js';
-import {viraFormCssVars} from '../styles/form-themes.js';
+import {createFocusStyles} from '../styles/focus.js';
+import {viraFormCssVars} from '../styles/form-styles.js';
 import {defineViraElement} from './define-vira-element.js';
 import {ViraIcon} from './vira-icon.element.js';
 
@@ -56,10 +58,12 @@ export const ViraCheckbox = defineViraElement<Readonly<ViraCheckboxInputs>>()({
         .custom-checkbox {
             border: 1px solid ${viraFormCssVars['vira-form-border-color'].value};
             color: ${viraFormCssVars['vira-form-foreground-color'].value};
-            border-radius: 4px;
+            border-radius: ${viraBorders['vira-form-input-radius'].value};
             display: inline-block;
             position: relative;
             cursor: pointer;
+
+            ${createFocusStyles({elementBorderSize: 1})}
 
             &.checked {
                 & ${ViraIcon} {
@@ -93,19 +97,23 @@ export const ViraCheckbox = defineViraElement<Readonly<ViraCheckboxInputs>>()({
                 })}
                 ${attributes(inputs.attributePassthrough?.label)}
                 style=${ifDefined(inputs.stylePassthrough?.label)}
-                ${listen('click', () => {
-                    if (!inputs.disabled) {
-                        dispatch(new events.valueChange(!inputs.value));
-                    }
-                })}
             >
                 <span
                     class="custom-checkbox ${classMap({
                         checked: inputs.value,
                         disabled: !!inputs.disabled,
                     })}"
+                    role="checkbox"
+                    aria-checked=${inputs.value ? 'true' : 'false'}
+                    aria-disabled=${inputs.disabled ? 'true' : 'false'}
+                    tabindex=${inputs.disabled ? '-1' : '0'}
                     ${attributes(inputs.attributePassthrough?.['custom-checkbox'])}
                     style=${ifDefined(inputs.stylePassthrough?.['custom-checkbox'])}
+                    ${listenToActivate(() => {
+                        if (!inputs.disabled) {
+                            dispatch(new events.valueChange(!inputs.value));
+                        }
+                    })}
                 >
                     <${ViraIcon.assign({
                         icon: Check24Icon,

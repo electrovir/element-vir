@@ -2,7 +2,7 @@ import {check} from '@augment-vir/assert';
 import {type PartialWithUndefined} from '@augment-vir/common';
 import {nav, navAttribute, NavController, NavValue} from 'device-navigation';
 import {classMap, css, html, ifDefined, testId} from 'element-vir';
-import {viraFormCssVars} from '../../styles/form-themes.js';
+import {viraFormCssVars} from '../../styles/form-styles.js';
 import {noNativeFormStyles, viraDisabledStyles} from '../../styles/index.js';
 import {defineViraElement} from '../define-vira-element.js';
 import {ViraLink} from '../vira-link.element.js';

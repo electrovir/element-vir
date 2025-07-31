@@ -109,15 +109,13 @@ export const ViraPopUpTrigger = defineViraElement<
             cursor: pointer;
             max-width: 100%;
             position: relative;
-            outline: none;
             flex-grow: 1;
             box-sizing: border-box;
-        }
 
-        ${createFocusStyles({
-            selector: '.dropdown-wrapper:focus',
-            elementBorderSize: 1,
-        })}
+            ${createFocusStyles({
+                elementBorderSize: 1,
+            })}
+        }
 
         .dropdown-trigger {
             box-sizing: border-box;
