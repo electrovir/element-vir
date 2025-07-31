@@ -5,7 +5,6 @@ import {
     html,
     ifDefined,
     listen,
-    nothing,
     type AttributeValues,
     type CSSResult,
 } from 'element-vir';
@@ -109,9 +108,7 @@ export const ViraLink = defineViraElement<
                     href=${inputs.link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    ${inputs.attributePassthrough?.a
-                        ? attributes(inputs.attributePassthrough.a)
-                        : nothing}
+                    ${attributes(inputs.attributePassthrough?.a)}
                     style=${ifDefined(inputs.stylePassthrough?.a)}
                 >
                     <slot></slot>
@@ -127,9 +124,7 @@ export const ViraLink = defineViraElement<
                 <a
                     href=${linkUrl}
                     rel="noopener noreferrer"
-                    ${inputs.attributePassthrough?.a
-                        ? attributes(inputs.attributePassthrough.a)
-                        : nothing}
+                    ${attributes(inputs.attributePassthrough?.a)}
                     style=${ifDefined(inputs.stylePassthrough?.a)}
                     ${listen('click', clickCallback)}
                 >

@@ -23,9 +23,13 @@ export type AttributeValues = {[LowercaseKey in Lowercase<string>]: AttributeVal
  *
  * @category Directives
  */
-export const attributes = createMutateDirective<[AttributeValues]>(
+export const attributes = createMutateDirective<[AttributeValues | undefined]>(
     'attributes',
     ({element, params: [attributesToApply], directive: rawDirective}) => {
+        if (!attributesToApply) {
+            return;
+        }
+
         type DirectiveWithAttributesList = typeof rawDirective & {
             allAttributesApplied?: Set<Lowercase<string>>;
         };
