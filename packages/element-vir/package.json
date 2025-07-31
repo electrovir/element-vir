@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "26.5.8",
+    "version": "26.6.0",
     "keywords": [
         "custom",
         "web",
@@ -61,7 +61,7 @@
         "istanbul-smart-text-reporter": "^1.1.5",
         "markdown-code-example-inserter": "^3.0.3",
         "type-fest": "^4.41.0",
-        "typedoc": "0.28.5",
+        "typedoc": "^0.28.7",
         "typescript": "5.8.3",
         "vite": "^7.0.6",
         "vite-tsconfig-paths": "^5.1.4"

@@ -33,7 +33,7 @@ export * from './shared-text-input-logic.js';
 /**
  * Input types for {@link ViraInput}.
  *
- * @category Input
+ * @category Internal
  */
 export enum ViraInputType {
     Default = 'text',

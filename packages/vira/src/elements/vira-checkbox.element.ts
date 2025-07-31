@@ -6,6 +6,7 @@ import {
     defineElementEvent,
     html,
     ifDefined,
+    listen,
     listenToActivate,
     type AttributeValues,
     type CSSResult,
@@ -18,8 +19,18 @@ import {viraFormCssVars} from '../styles/form-styles.js';
 import {defineViraElement} from './define-vira-element.js';
 import {ViraIcon} from './vira-icon.element.js';
 
+/**
+ * All inner elements supported by {@link ViraCheckbox}.
+ *
+ * @category Internals
+ */
 export type ViraCheckboxInnerElements = 'label' | 'custom-checkbox' | typeof ViraIcon.tagName;
 
+/**
+ * Inputs for {@link ViraCheckbox}.
+ *
+ * @category Internal
+ */
 export type ViraCheckboxInputs = PartialWithUndefined<{
     stylePassthrough: Record<ViraCheckboxInnerElements, CSSResult>;
     attributePassthrough: Record<ViraCheckboxInnerElements, AttributeValues>;
@@ -28,6 +39,13 @@ export type ViraCheckboxInputs = PartialWithUndefined<{
     value: boolean;
 };
 
+/**
+ * A custom checkbox.
+ *
+ * @category Input
+ * @category Elements
+ * @see https://electrovir.github.io/element-vir/vira/book/elements/vira-checkbox
+ */
 export const ViraCheckbox = defineViraElement<Readonly<ViraCheckboxInputs>>()({
     tagName: 'vira-checkbox',
     styles: css`
@@ -90,6 +108,12 @@ export const ViraCheckbox = defineViraElement<Readonly<ViraCheckboxInputs>>()({
         valueChange: defineElementEvent<boolean>(),
     },
     render({inputs, dispatch, events}) {
+        function updateValue(this: void) {
+            if (!inputs.disabled) {
+                dispatch(new events.valueChange(!inputs.value));
+            }
+        }
+
         return html`
             <label
                 class=${classMap({
@@ -109,11 +133,8 @@ export const ViraCheckbox = defineViraElement<Readonly<ViraCheckboxInputs>>()({
                     tabindex=${inputs.disabled ? '-1' : '0'}
                     ${attributes(inputs.attributePassthrough?.['custom-checkbox'])}
                     style=${ifDefined(inputs.stylePassthrough?.['custom-checkbox'])}
-                    ${listenToActivate(() => {
-                        if (!inputs.disabled) {
-                            dispatch(new events.valueChange(!inputs.value));
-                        }
-                    })}
+                    ${listenToActivate(updateValue)}
+                    ${listen('click', updateValue)}
                 >
                     <${ViraIcon.assign({
                         icon: Check24Icon,
