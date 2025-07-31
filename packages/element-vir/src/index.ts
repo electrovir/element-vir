@@ -9,6 +9,7 @@ export * from './declarative-element/directives/async-prop.js';
 export * from './declarative-element/directives/attributes.directive.js';
 export * from './declarative-element/directives/create-attribute-directive.js';
 export * from './declarative-element/directives/directive-helpers.js';
+export * from './declarative-element/directives/listen-to-activate.js';
 export * from './declarative-element/directives/listen.directive.js';
 export * from './declarative-element/directives/mutate.directive.js';
 export * from './declarative-element/directives/on-dom-created.directive.js';
