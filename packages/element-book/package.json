@@ -42,17 +42,17 @@
         "test:docs": "virmator docs check"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.26.0",
-        "@augment-vir/common": "^31.26.0",
-        "@augment-vir/web": "^31.26.0",
+        "@augment-vir/assert": "^31.28.0",
+        "@augment-vir/common": "^31.28.0",
+        "@augment-vir/web": "^31.28.0",
         "colorjs.io": "0.5.2",
         "lit-css-vars": "^3.0.11",
-        "spa-router-vir": "^6.1.3",
+        "spa-router-vir": "^6.2.0",
         "typed-event-target": "^4.1.0",
         "vira": "^26.5.8"
     },
     "devDependencies": {
-        "@augment-vir/test": "^31.26.0",
+        "@augment-vir/test": "^31.28.0",
         "@web/dev-server-esbuild": "^1.0.4",
         "@web/test-runner": "^0.20.2",
         "@web/test-runner-commands": "^0.9.0",
