@@ -59,6 +59,7 @@ export const ViraCheckbox = defineViraElement<Readonly<ViraCheckboxInputs>>()({
         ${ViraIcon}, .custom-checkbox {
             height: 100%;
             width: 100%;
+            box-sizing: border-box;
         }
 
         label {
