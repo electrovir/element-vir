@@ -171,7 +171,7 @@ function createControlInput(
     } else if (isControlInitType(controlInit, BookPageControlType.Text)) {
         return html`
             <${ViraInput.assign({
-                value: String(value),
+                value,
                 showClearButton: true,
                 disableBrowserHelps: true,
             })}

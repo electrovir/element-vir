@@ -116,7 +116,7 @@ export function defineColorThemeOverride<const Init extends ColorThemeInit>(
 
                 if (!themeColor) {
                     throw new Error(
-                        `Override color name '${String(colorName)}' does not exist in the theme being overridden.`,
+                        `Override color name '${colorName}' does not exist in the theme being overridden.`,
                     );
                 }
 

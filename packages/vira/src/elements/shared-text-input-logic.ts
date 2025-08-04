@@ -36,7 +36,7 @@ function doesMatch({input, matcher}: {input: string; matcher: string | RegExp}):
         return true;
     }
     if (input.length > 1) {
-        return !!input.split('').every((singleInput) => doesMatch({input: singleInput, matcher}));
+        return input.split('').every((singleInput) => doesMatch({input: singleInput, matcher}));
     }
 
     if (matcher instanceof RegExp) {

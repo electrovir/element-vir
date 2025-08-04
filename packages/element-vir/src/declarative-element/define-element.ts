@@ -459,10 +459,18 @@ function internalDefineElement<
         },
     });
 
-    if (window.customElements.get(init.tagName)) {
-        console.warn(`Tried to define custom element '${init.tagName}' but it is already defined.`);
-    } else {
-        window.customElements.define(init.tagName, anonymousClass);
+    /**
+     * `window` will be `undefined` in Node.js and we want to be able to import these files into
+     * Node.js.
+     */
+    if (globalThis.window as typeof window | undefined) {
+        if (globalThis.window.customElements.get(init.tagName)) {
+            console.warn(
+                `Tried to define custom element '${init.tagName}' but it is already defined.`,
+            );
+        } else {
+            globalThis.window.customElements.define(init.tagName, anonymousClass);
+        }
     }
 
     return anonymousClass as unknown as ThisElementDefinition;

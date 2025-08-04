@@ -12,13 +12,13 @@ describe(listen.name, () => {
         });
 
         listen('click', (event) => {
-            assert.tsType(event).equals<MouseEvent>();
+            assert.tsType(event).equals<PointerEvent>();
         });
 
         (({addEventListener() {}}) as unknown as HTMLInputElement).addEventListener(
             'click',
             (event) => {
-                assert.tsType(event).equals<MouseEvent>();
+                assert.tsType(event).equals<PointerEvent>();
             },
         );
     });

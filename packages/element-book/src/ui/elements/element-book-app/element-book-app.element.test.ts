@@ -47,7 +47,7 @@ describe(ElementBookApp.tagName, () => {
         );
 
         return await waitUntil.isTruthy(
-            () => errorWrapper.shadowRoot.textContent?.trim(),
+            () => errorWrapper.shadowRoot.textContent.trim(),
             undefined,
             'never got an error message',
         );

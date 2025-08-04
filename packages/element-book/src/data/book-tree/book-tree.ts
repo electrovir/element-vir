@@ -21,7 +21,7 @@ export function isBookTreeNode<const SpecificType extends BookEntryType>(
     input: unknown,
     entryType: SpecificType,
 ): input is BookTreeNode<SpecificType> {
-    return !!(isAnyBookTreeNode(input) && input.entry.entryType === entryType);
+    return isAnyBookTreeNode(input) && input.entry.entryType === entryType;
 }
 
 export function isAnyBookTreeNode(input: unknown): input is BookTreeNode<BookEntryType> {
