@@ -142,12 +142,15 @@ export function defineTable<
     /** The order of these keys determines the order that they render in. */
     headers: Readonly<Headers>,
     originalData: OriginalData,
-    dataMap: (entry: ArrayElement<OriginalData>) => ViraTableEntry<Headers> | undefined,
+    dataMap: (
+        entry: ArrayElement<OriginalData>,
+        entryIndex: number,
+    ) => ViraTableEntry<Headers> | undefined,
     options: ViraTableOptions<Orientation> = {},
 ): ViraTable<Headers, Orientation, OriginalData> {
-    const mappedData = originalData.map((dataRow) => {
+    const mappedData = originalData.map((dataRow, rowIndex) => {
         return {
-            cells: dataMap(dataRow) as ViraTableEntry | undefined,
+            cells: dataMap(dataRow, rowIndex) as ViraTableEntry | undefined,
             data: dataRow,
         };
     });
