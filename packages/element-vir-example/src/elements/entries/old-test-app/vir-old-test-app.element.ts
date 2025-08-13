@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-deprecated */
-/* eslint-disable sonarjs/deprecation */
 
 import {randomInteger, randomString} from '@augment-vir/common';
 import {defineBookPage} from 'element-book';

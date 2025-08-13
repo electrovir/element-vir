@@ -132,7 +132,7 @@ export function createNodeTemplates({
                     <${BookPageWrapper.assign({
                         isTopLevel,
                         pageNode: currentNode,
-                        controls: controls,
+                        controls,
                         router,
                     })}
                         class="block-entry"

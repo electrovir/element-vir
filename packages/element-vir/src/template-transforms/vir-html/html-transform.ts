@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-deprecated */
-/* eslint-disable sonarjs/deprecation */
 
 import {check} from '@augment-vir/assert';
 import {collapseWhiteSpace, getOrSet, safeMatch} from '@augment-vir/common';

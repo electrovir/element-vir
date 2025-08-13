@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-deprecated */
-/* eslint-disable sonarjs/deprecation */
 
 import {describe, it} from '@augment-vir/test';
 import {defineElement} from '../define-element.js';

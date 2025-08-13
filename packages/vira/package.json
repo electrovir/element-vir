@@ -38,9 +38,9 @@
         "test:docs": "virmator docs check"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.30.1",
-        "@augment-vir/common": "^31.30.1",
-        "@augment-vir/web": "^31.30.1",
+        "@augment-vir/assert": "^31.32.2",
+        "@augment-vir/common": "^31.32.2",
+        "@augment-vir/web": "^31.32.2",
         "colorjs.io": "^0.5.2",
         "date-vir": "^7.4.0",
         "device-navigation": "^4.5.5",
@@ -52,18 +52,18 @@
         "typed-event-target": "^4.1.0"
     },
     "devDependencies": {
-        "@augment-vir/test": "^31.30.1",
+        "@augment-vir/test": "^31.32.2",
         "@web/dev-server-esbuild": "^1.0.4",
         "@web/test-runner": "^0.20.2",
         "@web/test-runner-commands": "^0.9.0",
         "@web/test-runner-playwright": "^0.11.1",
         "@web/test-runner-visual-regression": "^0.10.0",
-        "esbuild": "^0.25.8",
+        "esbuild": "^0.25.9",
         "istanbul-smart-text-reporter": "^1.1.5",
         "markdown-code-example-inserter": "^3.0.3",
-        "typedoc": "^0.28.9",
+        "typedoc": "^0.28.10",
         "typescript": "5.9.2",
-        "vite": "^7.0.6",
+        "vite": "^7.1.2",
         "vite-tsconfig-paths": "^5.1.4"
     },
     "peerDependencies": {

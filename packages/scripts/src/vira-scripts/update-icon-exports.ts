@@ -38,7 +38,7 @@ function generateIconImportsAndExports(iconPaths: ReadonlyArray<string>): string
             const iconName = generateIconNameFromFilePath(iconPath);
 
             return {
-                iconName: iconName,
+                iconName,
                 importString: generateTsImport(iconPath, iconName),
             };
         })

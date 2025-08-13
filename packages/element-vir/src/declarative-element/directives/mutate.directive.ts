@@ -66,7 +66,7 @@ export function createMutateDirective<Params extends any[]>(
 
             public render(...params: Params) {
                 callback({
-                    params: params,
+                    params,
                     directive: this,
                     element: this.element,
                 });

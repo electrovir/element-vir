@@ -4,7 +4,7 @@ import {BookMainRoute, defaultBookFullRoute, type ValidBookPaths} from './book-r
 
 export function createBookRouter(basePath: string | undefined) {
     return new SpaRouter<ValidBookPaths, undefined, undefined>({
-        basePath: basePath,
+        basePath,
         sanitizeRoute(rawRoute) {
             const sanitizedPaths = sanitizePaths(rawRoute.paths);
 
