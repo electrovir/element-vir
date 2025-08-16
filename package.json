@@ -47,7 +47,7 @@
         "esbuild": "^0.25.9",
         "eslint": "^9.33.0",
         "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-jsdoc": "^54.0.0",
+        "eslint-plugin-jsdoc": "^54.1.0",
         "eslint-plugin-monorepo-cop": "^1.0.2",
         "eslint-plugin-playwright": "^2.2.2",
         "eslint-plugin-prettier": "^5.5.4",
