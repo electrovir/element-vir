@@ -1,3 +1,5 @@
+import {type MaybePromise} from '@augment-vir/common';
+
 /**
  * Extra options for defining elements. These should be used very rarely.
  *
@@ -9,6 +11,8 @@ export type DeclarativeElementDefinitionOptions = {
      * will greatly reduce type safety and should be avoided.
      */
     allowPolymorphicState: boolean;
+    /** An error handler that will be called if render errors are encountered. */
+    errorHandler: ((error: Error) => MaybePromise<void>) | undefined;
 };
 
 /**
@@ -18,4 +22,5 @@ export type DeclarativeElementDefinitionOptions = {
  */
 export const defaultDeclarativeElementDefinitionOptions: DeclarativeElementDefinitionOptions = {
     allowPolymorphicState: false,
+    errorHandler: undefined,
 };

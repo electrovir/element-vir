@@ -7,6 +7,46 @@ describe(wrapDefineElement.name, () => {
     type MySpecificInputs = {noInputsActually: string};
     const myDefineElement = wrapDefineElement<MySpecificTagName>();
 
+    it('attaches an error handler', async () => {
+        const errors: Error[] = [];
+
+        const defineElementWithErrorHandler = wrapDefineElement({
+            transformInputs(init) {
+                return {
+                    ...init,
+                    options: {
+                        errorHandler(error) {
+                            errors.push(error);
+                        },
+                    },
+                };
+            },
+        });
+        const TestElement = defineElementWithErrorHandler<{shouldError: boolean}>()({
+            tagName: 'my-test-element-with-an-error-handler',
+            render({inputs}) {
+                if (inputs.shouldError) {
+                    throw new Error('FAILURE');
+                }
+                return 'hi';
+            },
+        });
+
+        await testWeb.render(html`
+            <${TestElement.assign({
+                shouldError: false,
+            })}></${TestElement}>
+        `);
+        assert.isEmpty(errors);
+
+        await testWeb.render(html`
+            <${TestElement.assign({
+                shouldError: true,
+            })}></${TestElement}>
+        `);
+
+        assert.isLengthExactly(errors, 1);
+    });
     it('should match original define element types', () => {
         assert
             .tsType(

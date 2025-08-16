@@ -391,6 +391,7 @@ function internalDefineElement<
                 );
                 console.error(error);
                 this._lastRenderError = error;
+                void elementOptions.errorHandler?.(error);
                 return extractErrorMessage(error);
             }
         }
