@@ -7,8 +7,6 @@ module.exports = {
     ],
     words: [
         ...baseConfig.words,
-        'passthroughs',
-        'tagnames',
         'valuenow',
     ],
 };

@@ -41,13 +41,13 @@
         "@eslint/js": "^9.33.0",
         "@stylistic/eslint-plugin": "^5.2.3",
         "@stylistic/eslint-plugin-ts": "^4.4.1",
-        "@typescript-eslint/eslint-plugin": "^8.39.1",
+        "@typescript-eslint/eslint-plugin": "^8.40.0",
         "cspell": "^9.2.0",
         "dependency-cruiser": "^17.0.1",
         "esbuild": "^0.25.9",
         "eslint": "^9.33.0",
         "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-jsdoc": "^54.1.0",
+        "eslint-plugin-jsdoc": "^54.1.1",
         "eslint-plugin-monorepo-cop": "^1.0.2",
         "eslint-plugin-playwright": "^2.2.2",
         "eslint-plugin-prettier": "^5.5.4",
@@ -55,7 +55,7 @@
         "eslint-plugin-sonarjs": "^3.0.4",
         "eslint-plugin-unicorn": "^57.0.0",
         "markdown-code-example-inserter": "^3.0.3",
-        "mono-vir": "^2.0.6",
+        "mono-vir": "^2.2.2",
         "npm-check-updates": "^18.0.2",
         "prettier": "~3.3.3",
         "prettier-plugin-interpolated-html-tags": "^2.0.1",
@@ -65,8 +65,8 @@
         "prettier-plugin-packagejson": "^2.5.19",
         "prettier-plugin-sort-json": "^4.1.1",
         "prettier-plugin-toml": "^2.0.6",
-        "typescript-eslint": "^8.39.1",
-        "virmator": "^13.16.2"
+        "typescript-eslint": "^8.40.0",
+        "virmator": "^14.0.1"
     },
     "engines": {
         "node": ">=22"

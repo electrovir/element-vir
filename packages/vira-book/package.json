@@ -16,8 +16,8 @@
         "test": "exit 0"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.32.2",
-        "@augment-vir/common": "^31.32.2",
+        "@augment-vir/assert": "^31.33.0",
+        "@augment-vir/common": "^31.33.0",
         "element-book": "^26.8.0",
         "element-vir": "^26.8.0",
         "spa-router-vir": "^6.2.0",
@@ -30,7 +30,7 @@
         "type-fest": "^4.41.0",
         "typedoc": "^0.28.10",
         "typescript": "^5.9.2",
-        "vite": "^7.1.2",
+        "vite": "^7.1.3",
         "vite-tsconfig-paths": "^5.1.4"
     },
     "engines": {
