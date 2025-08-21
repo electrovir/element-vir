@@ -14,6 +14,8 @@ export type ViraTableKey = Readonly<
     } & PartialWithUndefined<{
         /** If this is not provided, `key` will be used directly. */
         content: HtmlInterpolation;
+        /** If set to `true`, this header (and it's column) won't be rendered. */
+        disabled: boolean;
     }>
 >;
 
@@ -157,10 +159,17 @@ export function defineTable<
 
     if (options.orientation === ViraTableOrientation.Horizontal) {
         const rows: ViraTableRow<Headers, ArrayElement<OriginalData> | undefined, undefined>[] =
-            headers.map(
+            filterMap(
+                headers,
                 (
                     header,
-                ): ViraTableRow<Headers, ArrayElement<OriginalData> | undefined, undefined> => {
+                ):
+                    | ViraTableRow<Headers, ArrayElement<OriginalData> | undefined, undefined>
+                    | undefined => {
+                    if (header.disabled) {
+                        return undefined;
+                    }
+
                     const headerCellArray: ViraTableCell<Headers>[] = options.hideHeaders
                         ? []
                         : [
@@ -200,6 +209,7 @@ export function defineTable<
                         data: undefined,
                     };
                 },
+                check.isTruthy,
             );
 
         return {
@@ -213,13 +223,21 @@ export function defineTable<
     } else {
         const headerRow: ViraTableCell<Headers>[] = options.hideHeaders
             ? []
-            : headers.map((header): ViraTableCell<Headers> => {
-                  return {
-                      content: header.content ?? header.key,
-                      key: header.key,
-                      data: undefined,
-                  };
-              });
+            : filterMap(
+                  headers,
+                  (header): ViraTableCell<Headers> | undefined => {
+                      if (header.disabled) {
+                          return undefined;
+                      }
+
+                      return {
+                          content: header.content ?? header.key,
+                          key: header.key,
+                          data: undefined,
+                      };
+                  },
+                  check.isTruthy,
+              );
 
         const rows: ViraTableRow<Headers, ArrayElement<OriginalData>>[] = filterMap(
             mappedData,
@@ -229,14 +247,22 @@ export function defineTable<
                 }
 
                 return {
-                    cells: headers.map(
-                        (header): ViraTableCell<Headers, ArrayElement<OriginalData>> => {
+                    cells: filterMap(
+                        headers,
+                        (
+                            header,
+                        ): ViraTableCell<Headers, ArrayElement<OriginalData>> | undefined => {
+                            if (header.disabled) {
+                                return undefined;
+                            }
+
                             return {
                                 content: cells[header.key],
                                 key: header.key,
                                 data,
                             };
                         },
+                        check.isTruthy,
                     ),
                     data,
                 };
