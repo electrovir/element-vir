@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-vir-mono-repo",
-    "version": "26.8.0",
+    "version": "26.9.0",
     "private": true,
     "repository": {
         "type": "git",
@@ -24,7 +24,7 @@
         "lint": "virmator lint fix",
         "publish": "virmator publish npm run test:all",
         "test": "mono-vir for-each npm run test",
-        "test:all": "npm run compile && concurrently --colors --kill-others-on-fail -c auto --names tests,spelling,format,docs,deps,lint,build \"npm test\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\" \"npm run test:deps\" \"npm run test:lint\" \"npm run build\"",
+        "test:all": "npm run compile && runstorm --names tests,spelling,format,docs,deps,lint,build \"npm test\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\" \"npm run test:deps\" \"npm run test:lint\" \"npm run build\"",
         "test:deps": "virmator deps check",
         "test:docs": "virmator docs check",
         "test:format": "virmator format check",
@@ -65,6 +65,7 @@
         "prettier-plugin-packagejson": "^2.5.19",
         "prettier-plugin-sort-json": "^4.1.1",
         "prettier-plugin-toml": "^2.0.6",
+        "runstorm": "^0.6.1",
         "typescript-eslint": "^8.40.0",
         "virmator": "^14.0.1"
     },
