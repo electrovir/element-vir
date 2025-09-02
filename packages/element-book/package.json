@@ -1,6 +1,6 @@
 {
     "name": "element-book",
-    "version": "26.9.0",
+    "version": "26.9.1",
     "keywords": [
         "book",
         "design system",
@@ -42,27 +42,27 @@
         "test:docs": "virmator docs check"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.33.0",
-        "@augment-vir/common": "^31.33.0",
-        "@augment-vir/web": "^31.33.0",
+        "@augment-vir/assert": "^31.33.1",
+        "@augment-vir/common": "^31.33.1",
+        "@augment-vir/web": "^31.33.1",
         "colorjs.io": "0.5.2",
         "lit-css-vars": "^3.0.11",
-        "spa-router-vir": "^6.2.0",
+        "spa-router-vir": "^6.3.1",
         "typed-event-target": "^4.1.0",
-        "vira": "^26.9.0"
+        "vira": "^26.9.1"
     },
     "devDependencies": {
-        "@augment-vir/test": "^31.33.0",
+        "@augment-vir/test": "^31.33.1",
         "@web/dev-server-esbuild": "^1.0.4",
         "@web/test-runner": "^0.20.2",
         "@web/test-runner-commands": "^0.9.0",
         "@web/test-runner-playwright": "^0.11.1",
         "@web/test-runner-visual-regression": "^0.10.0",
-        "element-vir": "^26.9.0",
+        "element-vir": "^26.9.1",
         "istanbul-smart-text-reporter": "^1.1.5",
         "markdown-code-example-inserter": "^3.0.3",
         "type-fest": "^4.41.0",
-        "typedoc": "^0.28.10",
+        "typedoc": "^0.28.12",
         "typescript": "5.9.2"
     },
     "peerDependencies": {
