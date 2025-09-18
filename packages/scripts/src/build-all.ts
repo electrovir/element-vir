@@ -24,21 +24,6 @@ const buildPackageInfos: ReadonlyArray<Readonly<BuildPackageInfo>> = [
         copyFrom: 'dist-docs',
         copyTo: 'element-vir',
     },
-    {
-        packagePath: 'vira-book',
-        copyFrom: 'dist-book',
-        copyTo: 'vira',
-    },
-    {
-        packagePath: 'vira',
-        copyFrom: 'dist-docs',
-        copyTo: join('vira', 'docs'),
-    },
-    {
-        packagePath: 'theme-vir',
-        copyFrom: 'dist-docs',
-        copyTo: join('theme-vir', 'docs'),
-    },
 ];
 
 async function buildPackagePage(buildInfo: Readonly<BuildPackageInfo>): Promise<void> {
@@ -67,15 +52,18 @@ async function buildPackagePage(buildInfo: Readonly<BuildPackageInfo>): Promise<
 function buildTopLevelIndexFile() {
     return /* HTML */ `
         <!doctype html>
+
         <html>
             <head>
                 <title>Element-Vir Packages</title>
+
                 <style>
                     body {
                         font-family: sans-serif;
                     }
                 </style>
             </head>
+
             <body>
                 <ul>
                     ${buildPackageInfos
