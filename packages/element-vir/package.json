@@ -39,19 +39,19 @@
         "test:docs": "virmator docs check"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.33.1",
-        "@augment-vir/common": "^31.33.1",
+        "@augment-vir/assert": "^31.37.0",
+        "@augment-vir/common": "^31.37.0",
         "date-vir": "^7.4.2",
         "lit": "^3.3.1",
         "lit-css-vars": "^3.0.11",
         "lit-html": "^3.3.1",
-        "object-shape-tester": "^6.2.1",
+        "object-shape-tester": "^6.5.0",
         "observavir": "^2.1.1",
         "typed-event-target": "^4.1.0"
     },
     "devDependencies": {
-        "@augment-vir/test": "^31.33.1",
-        "@augment-vir/web": "^31.33.1",
+        "@augment-vir/test": "^31.37.0",
+        "@augment-vir/web": "^31.37.0",
         "@web/dev-server-esbuild": "^1.0.4",
         "@web/test-runner": "^0.20.2",
         "@web/test-runner-commands": "^0.9.0",
@@ -60,10 +60,10 @@
         "html-spec-tags": "^2.2.3",
         "istanbul-smart-text-reporter": "^1.1.5",
         "markdown-code-example-inserter": "^3.0.3",
-        "type-fest": "^4.41.0",
-        "typedoc": "^0.28.12",
+        "type-fest": "^5.0.0",
+        "typedoc": "^0.28.13",
         "typescript": "5.9.2",
-        "vite": "^7.1.4",
+        "vite": "^7.1.6",
         "vite-tsconfig-paths": "^5.1.4"
     },
     "engines": {
