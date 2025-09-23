@@ -50,30 +50,17 @@ const directiveName = 'onResize';
 export const onResize = directive(
     class extends Directive {
         public element: Element | undefined;
-        public readonly resizeObserver = new ResizeObserver((entries) =>
-            this.fireCallback(entries),
-        );
+        public readonly resizeObserver = new ResizeObserver((entries) => {
+            if (this.element && this.callback) {
+                handleOnResizeCallback(this.element, this.callback, entries);
+            }
+        });
         public callback: OnResizeCallback | undefined;
 
         constructor(partInfo: PartInfo) {
             super(partInfo);
 
             assertIsElementPartInfo(partInfo, directiveName);
-        }
-
-        public fireCallback(entries: ResizeObserverEntry[]) {
-            const resizeEntry = entries[0];
-            if (!resizeEntry) {
-                console.error(entries);
-                throw new Error(
-                    `${directiveName} observation triggered but the first entry was empty.`,
-                );
-            }
-            void this.callback?.(
-                {target: resizeEntry.target, contentRect: resizeEntry.contentRect},
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                this.element!,
-            );
         }
 
         public override update(partInfo: PartInfo, [callback]: [OnResizeCallback]) {
@@ -98,3 +85,58 @@ export const onResize = directive(
         }
     },
 );
+
+function handleOnResizeCallback(
+    element: Element,
+    callback: OnResizeCallback,
+    entries: ResizeObserverEntry[],
+) {
+    const resizeEntry = entries[0];
+    if (!resizeEntry) {
+        console.error(entries);
+        throw new Error(`Resize observation triggered but the first entry was empty.`);
+    }
+    void callback(
+        {
+            target: resizeEntry.target,
+            contentRect: resizeEntry.contentRect,
+        },
+        element,
+    );
+}
+
+/**
+ * A function that attaches a
+ * [`ResizeObserver`](https://developer.mozilla.org/docs/Web/API/ResizeObserver) to any given
+ * element, so it is very efficient.
+ *
+ * @category Directives
+ * @example
+ *
+ * ```ts
+ * import {html, defineElement, attachOnResize} from 'element-vir';
+ *
+ * const MyElement = defineElement()({
+ *     tagName: 'my-element',
+ *     render({host}) {
+ *         attachOnResize(host, (size, element) => {
+ *             console.log('resized!', element, size);
+ *         });
+ *
+ *         return '';
+ *     },
+ * });
+ * ```
+ */
+export function attachOnResize(element: Element, callback: OnResizeCallback) {
+    const resizeObserver = new ResizeObserver((entries) => {
+        handleOnResizeCallback(element, callback, entries);
+    });
+
+    resizeObserver.observe(element);
+
+    return {
+        resizeObserver,
+        element,
+    };
+}
