@@ -18,9 +18,9 @@
         "update:exports": "tsx src/vira-scripts/update-all-exports.ts"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.37.0",
-        "@augment-vir/common": "^31.37.0",
-        "@augment-vir/node": "^31.37.0",
+        "@augment-vir/assert": "^31.38.0",
+        "@augment-vir/common": "^31.38.0",
+        "@augment-vir/node": "^31.38.0",
         "prettier": "^3.4.2",
         "tsx": "^4.20.5"
     },
