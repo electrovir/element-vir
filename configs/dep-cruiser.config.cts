@@ -6,7 +6,7 @@ const baseConfig = defineConfig({
         // enter file exceptions by rule name here
         'no-orphans': {
             from: [
-                'src/index.ts',
+                'src/index\\.ts$',
             ],
         },
         'not-to-unresolvable': {
