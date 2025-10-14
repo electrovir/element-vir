@@ -106,7 +106,8 @@ describe('HtmlInterpolation', () => {
                     {},
                     'vira-icon-fit-container',
                     `vira-icon-${string}`,
-                    string[]
+                    readonly [],
+                    readonly []
                 >
             >()
             .matches<RenderCallback>();

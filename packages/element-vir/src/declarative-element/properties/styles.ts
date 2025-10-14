@@ -1,10 +1,10 @@
 import {getObjectTypedKeys, mapObjectValues} from '@augment-vir/common';
 import {type CSSResult, unsafeCSS} from '../../lit-exports/base-lit-exports.js';
 import {type CustomElementTagName} from '../custom-tag-name.js';
-import {type BaseCssPropertyName} from './css-properties.js';
 import {type CssVars} from './css-vars.js';
 import {type PropertyInitMapBase} from './element-properties.js';
 import {type HostClassNamesMap, type HostClassesInitMap} from './host-classes.js';
+import {type BaseStringName} from './string-names.js';
 
 /**
  * A host class instance to be referenced inside of an element definition's `styles` callback.
@@ -23,8 +23,8 @@ export type HostClass = {
  */
 export type StylesCallbackInput<
     TagName extends CustomElementTagName,
-    HostClassKeys extends BaseCssPropertyName<TagName>,
-    CssVarKeys extends BaseCssPropertyName<TagName>,
+    HostClassKeys extends BaseStringName<TagName>,
+    CssVarKeys extends BaseStringName<TagName>,
 > = {
     hostClasses: Record<HostClassKeys, HostClass>;
     cssVars: Readonly<CssVars<TagName, CssVarKeys>>;
@@ -37,8 +37,8 @@ export type StylesCallbackInput<
  */
 export type StylesCallback<
     TagName extends CustomElementTagName,
-    HostClassKeys extends BaseCssPropertyName<TagName>,
-    CssVarKeys extends BaseCssPropertyName<TagName>,
+    HostClassKeys extends BaseStringName<TagName>,
+    CssVarKeys extends BaseStringName<TagName>,
 > = (input: StylesCallbackInput<TagName, HostClassKeys, CssVarKeys>) => CSSResult;
 
 /**
@@ -48,8 +48,8 @@ export type StylesCallback<
  */
 export function createStylesCallbackInput<
     TagName extends CustomElementTagName,
-    HostClassKeys extends BaseCssPropertyName<TagName>,
-    CssVarKeys extends BaseCssPropertyName<TagName>,
+    HostClassKeys extends BaseStringName<TagName>,
+    CssVarKeys extends BaseStringName<TagName>,
 >({
     hostClassNames,
     cssVars,
@@ -77,7 +77,7 @@ export function applyHostClasses<
     TagName extends CustomElementTagName,
     Inputs extends PropertyInitMapBase,
     State extends PropertyInitMapBase,
-    HostClassKeys extends BaseCssPropertyName<TagName>,
+    HostClassKeys extends BaseStringName<TagName>,
 >({
     host,
     hostClassesInit,

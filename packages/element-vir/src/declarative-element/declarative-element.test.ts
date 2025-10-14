@@ -1,7 +1,7 @@
 import {assert} from '@augment-vir/assert';
 import {describe, it, testWeb} from '@augment-vir/test';
 import {
-    type BaseCssPropertyName,
+    type BaseStringName,
     type CustomElementTagName,
     DeclarativeElement,
     type EventsInitMap,
@@ -23,6 +23,7 @@ describe('StaticDeclarativeElementProperties', () => {
                     any,
                     any,
                     any,
+                    any,
                     any
                 >['InputsType']
             >()
@@ -40,8 +41,9 @@ describe(DeclarativeElement.name, () => {
                     PropertyInitMapBase,
                     PropertyInitMapBase,
                     EventsInitMap,
-                    BaseCssPropertyName<CustomElementTagName>,
-                    BaseCssPropertyName<CustomElementTagName>,
+                    BaseStringName<CustomElementTagName>,
+                    BaseStringName<CustomElementTagName>,
+                    ReadonlyArray<string>,
                     ReadonlyArray<string>
                 >
             >();

@@ -1,11 +1,11 @@
 import {type CSSResult} from '../lit-exports/base-lit-exports.js';
 import {type CustomElementTagName} from './custom-tag-name.js';
 import {type DeclarativeElementDefinitionOptions} from './definition-options.js';
-import {type BaseCssPropertyName} from './properties/css-properties.js';
 import {type CssVarsInitMap} from './properties/css-vars.js';
 import {type EventsInitMap} from './properties/element-events.js';
 import {type PropertyInitMapBase} from './properties/element-properties.js';
 import {type HostClassesInitMap} from './properties/host-classes.js';
+import {type BaseStringName} from './properties/string-names.js';
 import {type StylesCallback} from './properties/styles.js';
 import {type InitCallback, type RenderCallback, type RenderParams} from './render-callback.js';
 
@@ -20,9 +20,10 @@ export type DeclarativeElementInit<
     Inputs extends PropertyInitMapBase,
     State extends PropertyInitMapBase,
     EventsInit extends EventsInitMap,
-    HostClassKeys extends BaseCssPropertyName<TagName>,
-    CssVarKeys extends BaseCssPropertyName<TagName>,
+    HostClassKeys extends BaseStringName<TagName>,
+    CssVarKeys extends BaseStringName<TagName>,
     SlotNames extends ReadonlyArray<string>,
+    TestIds extends ReadonlyArray<string>,
 > = {
     /**
      * HTML tag name. This should not be used directly, as interpolating it with the html tagged
@@ -34,6 +35,7 @@ export type DeclarativeElementInit<
     /** Events that the element can dispatch. (These can be thought of as "outputs".) */
     events?: EventsInit | undefined;
     slotNames?: SlotNames | undefined;
+    testIds?: TestIds | undefined;
     /**
      * HTML host classes. Values can be callbacks to determine when a host class should be defined,
      * based on current instance state or inputs, or just false to indicate that the host class will
@@ -57,7 +59,16 @@ export type DeclarativeElementInit<
      */
     state?: (
         params: Omit<
-            RenderParams<TagName, Inputs, any, EventsInit, HostClassKeys, CssVarKeys, SlotNames>,
+            RenderParams<
+                TagName,
+                Inputs,
+                any,
+                EventsInit,
+                HostClassKeys,
+                CssVarKeys,
+                SlotNames,
+                TestIds
+            >,
             'state' | 'updateState'
         >,
     ) => Extract<keyof State, keyof HTMLElement> extends never
@@ -67,7 +78,16 @@ export type DeclarativeElementInit<
         : `ERROR: Cannot define an element state property that clashes with native HTMLElement properties: ${Extract<keyof State, keyof HTMLElement>}`;
     /** Called as part of the first render call, before the first render call. */
     init?:
-        | InitCallback<TagName, Inputs, State, EventsInit, HostClassKeys, CssVarKeys, SlotNames>
+        | InitCallback<
+              TagName,
+              Inputs,
+              State,
+              EventsInit,
+              HostClassKeys,
+              CssVarKeys,
+              SlotNames,
+              TestIds
+          >
         | undefined;
     render: RenderCallback<
         TagName,
@@ -76,10 +96,20 @@ export type DeclarativeElementInit<
         EventsInit,
         HostClassKeys,
         CssVarKeys,
-        SlotNames
+        SlotNames,
+        TestIds
     >;
     cleanup?:
-        | InitCallback<TagName, Inputs, State, EventsInit, HostClassKeys, CssVarKeys, SlotNames>
+        | InitCallback<
+              TagName,
+              Inputs,
+              State,
+              EventsInit,
+              HostClassKeys,
+              CssVarKeys,
+              SlotNames,
+              TestIds
+          >
         | undefined;
     options?: Partial<DeclarativeElementDefinitionOptions> | undefined;
 };

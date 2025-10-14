@@ -198,11 +198,26 @@ describe(defineElement.name, () => {
         const MyElement = defineElement()({
             tagName: 'just-some-element-with-slot-names',
             slotNames: ['yo'],
-            render() {
+            render({slotNames}) {
+                assert.tsType(slotNames.yo).equals<'just-some-element-with-slot-names-slot-yo'>();
                 return 'hi';
             },
         });
-        assert.tsType(MyElement.slotNames.yo).equals<'yo'>();
+        assert.tsType(MyElement.slotNames.yo).equals<'just-some-element-with-slot-names-slot-yo'>();
+        assert.strictEquals(MyElement.slotNames.yo, 'just-some-element-with-slot-names-slot-yo');
+    });
+
+    it('preserves test ids', () => {
+        const MyElement = defineElement()({
+            tagName: 'just-some-element-with-test-ids',
+            testIds: ['yo'],
+            render({testIds}) {
+                assert.tsType(testIds.yo).equals<'just-some-element-with-test-ids-test-id-yo'>();
+                return 'hi';
+            },
+        });
+        assert.tsType(MyElement.testIds.yo).equals<'just-some-element-with-test-ids-test-id-yo'>();
+        assert.strictEquals(MyElement.testIds.yo, 'just-some-element-with-test-ids-test-id-yo');
     });
 
     it('blocks render callbacks without a return type', () => {
@@ -265,9 +280,14 @@ describe(defineElement.name, () => {
             },
         });
 
-        assert.tsType(myTestElement.slotNames['my slot']).equals<'my slot'>();
+        assert
+            .tsType(myTestElement.slotNames['my slot'])
+            .equals<'test-element-no-inputs-with-slot-names-slot-my slot'>();
         assert.tsType(myTestElement.slotNames['my slot']).matches<string>();
-        assert.strictEquals(myTestElement.slotNames['my slot'], 'my slot');
+        assert.strictEquals(
+            myTestElement.slotNames['my slot'],
+            'test-element-no-inputs-with-slot-names-slot-my slot',
+        );
     });
 
     it('does not allow updating state properties that do not exist in the state', () => {

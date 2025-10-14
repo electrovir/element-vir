@@ -4,9 +4,9 @@ import {type PartialWithNullable} from '@augment-vir/common';
 import {type CustomElementTagName} from './custom-tag-name.js';
 import {type DeclarativeElementInit} from './declarative-element-init.js';
 import {type DeclarativeElementInputErrorParams, defineElement} from './define-element.js';
-import {type BaseCssPropertyName} from './properties/css-properties.js';
 import {type EventsInitMap} from './properties/element-events.js';
 import {type PropertyInitMapBase} from './properties/element-properties.js';
+import {type BaseStringName} from './properties/string-names.js';
 
 /**
  * Options for {@link wrapDefineElement}.
@@ -29,8 +29,9 @@ export type WrapDefineElementOptions<
             InputsRequirement,
             StateRequirement,
             EventsInitRequirement,
-            BaseCssPropertyName<TagNameRequirement>,
-            BaseCssPropertyName<TagNameRequirement>,
+            BaseStringName<TagNameRequirement>,
+            BaseStringName<TagNameRequirement>,
+            ReadonlyArray<string>,
             ReadonlyArray<string>
         >,
     ) => void;
@@ -44,8 +45,9 @@ export type WrapDefineElementOptions<
             InputsRequirement,
             StateRequirement,
             EventsInitRequirement,
-            BaseCssPropertyName<TagNameRequirement>,
-            BaseCssPropertyName<TagNameRequirement>,
+            BaseStringName<TagNameRequirement>,
+            BaseStringName<TagNameRequirement>,
+            ReadonlyArray<string>,
             ReadonlyArray<string>
         >,
     ) => DeclarativeElementInit<
@@ -53,8 +55,9 @@ export type WrapDefineElementOptions<
         InputsRequirement,
         StateRequirement,
         EventsInitRequirement,
-        BaseCssPropertyName<TagNameRequirement>,
-        BaseCssPropertyName<TagNameRequirement>,
+        BaseStringName<TagNameRequirement>,
+        BaseStringName<TagNameRequirement>,
+        ReadonlyArray<string>,
         ReadonlyArray<string>
     >;
 }>;
@@ -88,9 +91,10 @@ export function wrapDefineElement<
             const TagName extends TagNameRequirement,
             State extends StateRequirement,
             EventsInit extends EventsInitRequirement,
-            const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
-            const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
+            const HostClassKeys extends BaseStringName<TagName> = `${TagName}-`,
+            const CssVarKeys extends BaseStringName<TagName> = `${TagName}-`,
             const SlotNames extends ReadonlyArray<string> = Readonly<[]>,
+            const TestIds extends ReadonlyArray<string> = Readonly<[]>,
         >(
             inputs: DeclarativeElementInit<
                 TagName,
@@ -99,13 +103,14 @@ export function wrapDefineElement<
                 EventsInit,
                 HostClassKeys,
                 CssVarKeys,
-                SlotNames
+                SlotNames,
+                TestIds
             >,
         ) => {
-            assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any>);
+            assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any, any>);
             return defineElement<Inputs>(...errorParams)(
                 transformInputs(
-                    inputs as DeclarativeElementInit<any, any, any, any, any, any, any>,
+                    inputs as DeclarativeElementInit<any, any, any, any, any, any, any, any>,
                 ) as unknown as DeclarativeElementInit<
                     TagName,
                     Inputs,
@@ -113,7 +118,8 @@ export function wrapDefineElement<
                     EventsInit,
                     HostClassKeys,
                     CssVarKeys,
-                    SlotNames
+                    SlotNames,
+                    TestIds
                 >,
             );
         };

@@ -52,7 +52,7 @@ export type BookPageExampleRenderParams<
     GlobalValuesType extends GlobalValues,
     ControlsInit extends BookPageControlsInitBase,
     State extends PropertyInitMapBase,
-> = Pick<RenderParams<any, any, State, any, any, any, any>, 'state' | 'updateState'> & {
+> = Pick<RenderParams<any, any, State, any, any, any, any, any>, 'state' | 'updateState'> & {
     controls: ControlsToValues<ControlsInit> & GlobalValuesType;
 };
 

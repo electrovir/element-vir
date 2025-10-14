@@ -22,7 +22,6 @@ import {
     defaultDeclarativeElementDefinitionOptions,
 } from './definition-options.js';
 import {assignInputs} from './properties/assign-inputs.js';
-import {type BaseCssPropertyName, assertValidCssProperties} from './properties/css-properties.js';
 import {type CssVars} from './properties/css-vars.js';
 import {
     type EventDescriptorMap,
@@ -32,9 +31,13 @@ import {
 import {type PropertyInitMapBase} from './properties/element-properties.js';
 import {type HostClassNamesMap, createHostClassNamesMap} from './properties/host-classes.js';
 import {bindReactiveProperty, createElementPropertyProxy} from './properties/property-proxy.js';
+import {
+    type BaseStringName,
+    assertValidStringNames,
+    createStringNameMap,
+} from './properties/string-names.js';
 import {applyHostClasses, createStylesCallbackInput} from './properties/styles.js';
 import {type RenderParams, createRenderParams} from './render-callback.js';
-import {createSlotNamesMap} from './slot-names.js';
 
 /**
  * Verifies that the given `Inputs` type does not clash with built-in HTMLElement properties. This
@@ -82,9 +85,10 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>(
         const TagName extends CustomElementTagName,
         State extends PropertyInitMapBase = {},
         EventsInit extends EventsInitMap = {},
-        const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
-        const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
+        const HostClassKeys extends BaseStringName<TagName> = `${TagName}-`,
+        const CssVarKeys extends BaseStringName<TagName> = `${TagName}-`,
         const SlotNames extends ReadonlyArray<string> = Readonly<[]>,
+        const TestIds extends ReadonlyArray<string> = Readonly<[]>,
     >(
         initInput: DeclarativeElementInit<
             TagName,
@@ -93,7 +97,8 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>(
             EventsInit,
             HostClassKeys,
             CssVarKeys,
-            SlotNames
+            SlotNames,
+            TestIds
         >,
     ): DeclarativeElementDefinition<
         TagName,
@@ -102,7 +107,8 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>(
         EventsInit,
         HostClassKeys,
         CssVarKeys,
-        SlotNames
+        SlotNames,
+        TestIds
     > => {
         const init:
             | string
@@ -113,7 +119,8 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>(
                   EventsInit,
                   HostClassKeys,
                   CssVarKeys,
-                  SlotNames
+                  SlotNames,
+                  TestIds
               > = initInput;
 
         if (!check.isObject(init)) {
@@ -134,9 +141,10 @@ function internalDefineElement<
     Inputs extends PropertyInitMapBase = {},
     State extends PropertyInitMapBase = {},
     EventsInit extends EventsInitMap = {},
-    const HostClassKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
-    const CssVarKeys extends BaseCssPropertyName<TagName> = `${TagName}-`,
+    const HostClassKeys extends BaseStringName<TagName> = `${TagName}-`,
+    const CssVarKeys extends BaseStringName<TagName> = `${TagName}-`,
     const SlotNames extends ReadonlyArray<string> = Readonly<[]>,
+    const TestIds extends ReadonlyArray<string> = Readonly<[]>,
 >(
     init: DeclarativeElementInit<
         TagName,
@@ -145,7 +153,8 @@ function internalDefineElement<
         EventsInit,
         HostClassKeys,
         CssVarKeys,
-        SlotNames
+        SlotNames,
+        TestIds
     >,
 ): DeclarativeElementDefinition<
     TagName,
@@ -154,7 +163,8 @@ function internalDefineElement<
     EventsInit,
     HostClassKeys,
     CssVarKeys,
-    SlotNames
+    SlotNames,
+    TestIds
 > {
     if (!check.isObject(init)) {
         throw new TypeError('Cannot define element with non-object init: ${init}');
@@ -170,7 +180,8 @@ function internalDefineElement<
         EventsInit,
         HostClassKeys,
         CssVarKeys,
-        SlotNames
+        SlotNames,
+        TestIds
     >;
     type ThisElementStaticClass = typeof DeclarativeElement<
         TagName,
@@ -179,7 +190,8 @@ function internalDefineElement<
         EventsInit,
         HostClassKeys,
         CssVarKeys,
-        SlotNames
+        SlotNames,
+        TestIds
     >;
     type ThisElementInstance = InstanceType<ThisElementStaticClass>;
 
@@ -201,10 +213,10 @@ function internalDefineElement<
         init.hostClasses,
     );
     if (init.hostClasses) {
-        assertValidCssProperties(init.tagName, init.hostClasses);
+        assertValidStringNames(init.tagName, init.hostClasses);
     }
     if (init.cssVars) {
-        assertValidCssProperties(init.tagName, init.cssVars);
+        assertValidStringNames(init.tagName, init.cssVars);
     }
     /**
      * As casts here are to prevent defineCssVars from complaining that our CSS var names are too
@@ -217,7 +229,26 @@ function internalDefineElement<
         CssVarKeys
     >;
 
-    const slotNamesMap = createSlotNamesMap(init.slotNames);
+    const slotNamesMap: StaticDeclarativeElementProperties<
+        TagName,
+        Inputs,
+        State,
+        EventsInit,
+        HostClassKeys,
+        CssVarKeys,
+        SlotNames,
+        TestIds
+    >['slotNames'] = createStringNameMap(init.tagName, 'slot', init.slotNames);
+    const testIdsMap: StaticDeclarativeElementProperties<
+        TagName,
+        Inputs,
+        State,
+        EventsInit,
+        HostClassKeys,
+        CssVarKeys,
+        SlotNames,
+        TestIds
+    >['testIds'] = createStringNameMap(init.tagName, 'test-id', init.testIds);
 
     const calculatedStyles =
         typeof init.styles === 'function'
@@ -231,7 +262,8 @@ function internalDefineElement<
         EventsInit,
         HostClassKeys,
         CssVarKeys,
-        SlotNames
+        SlotNames,
+        TestIds
     >['render'] = init.render;
 
     function typedAssignCallback(...[inputs]: Parameters<ThisElementStaticClass['assign']>) {
@@ -251,7 +283,8 @@ function internalDefineElement<
         EventsInit,
         HostClassKeys,
         CssVarKeys,
-        SlotNames
+        SlotNames,
+        TestIds
     > {
         public static override readonly elementOptions = elementOptions;
         public static override readonly tagName = init.tagName;
@@ -267,9 +300,16 @@ function internalDefineElement<
             EventsInit,
             HostClassKeys,
             CssVarKeys,
-            SlotNames
+            SlotNames,
+            TestIds
         > {
-            return createRenderParams({element: this, eventsMap, cssVars, slotNamesMap});
+            return createRenderParams({
+                element: this,
+                eventsMap,
+                cssVars,
+                slotNamesMap,
+                testIdsMap,
+            });
         }
 
         public static override readonly assign = typedAssignCallback as any;
@@ -281,7 +321,8 @@ function internalDefineElement<
             EventsInit,
             HostClassKeys,
             CssVarKeys,
-            SlotNames
+            SlotNames,
+            TestIds
         >['events'] = eventsMap;
         public static override readonly render: ThisElementStaticClass['render'] =
             typedRenderCallback as any as ThisElementStaticClass['render'];
@@ -292,7 +333,8 @@ function internalDefineElement<
             EventsInit,
             HostClassKeys,
             CssVarKeys,
-            SlotNames
+            SlotNames,
+            TestIds
         >['hostClasses'] = hostClassNames;
         public static override readonly cssVars: StaticDeclarativeElementProperties<
             TagName,
@@ -301,18 +343,12 @@ function internalDefineElement<
             EventsInit,
             HostClassKeys,
             CssVarKeys,
-            SlotNames
+            SlotNames,
+            TestIds
         >['cssVars'] = cssVars;
         public static override readonly init = init as any;
-        public static override readonly slotNames: StaticDeclarativeElementProperties<
-            TagName,
-            Inputs,
-            State,
-            EventsInit,
-            HostClassKeys,
-            CssVarKeys,
-            SlotNames
-        >['slotNames'] = slotNamesMap;
+        public static override readonly slotNames = slotNamesMap as any;
+        public static override readonly testIds = testIdsMap as any;
         public get InstanceType() {
             throw new Error(
                 `'InstanceType' was called on ${init.tagName} as a value but it is only a type.`,

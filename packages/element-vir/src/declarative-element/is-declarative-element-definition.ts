@@ -16,12 +16,13 @@ const expectedStaticProperties = getObjectTypedKeys({
     InputsType: '',
     render: '',
     slotNames: '',
+    testIds: '',
     StateType: '',
     styles: '',
     tagName: '',
     UpdateStateType: '',
 } satisfies Readonly<
-    Record<keyof StaticDeclarativeElementProperties<any, any, any, any, any, any, any>, ''>
+    Record<keyof StaticDeclarativeElementProperties<any, any, any, any, any, any, any, any>, ''>
 >);
 
 /**

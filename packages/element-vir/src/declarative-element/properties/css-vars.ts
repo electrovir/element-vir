@@ -1,7 +1,7 @@
 import {type Values} from '@augment-vir/common';
 import {type CssVarDefinitions, type CssVarsSetup} from 'lit-css-vars';
 import {type CustomElementTagName} from '../custom-tag-name.js';
-import {type BaseCssPropertyName} from './css-properties.js';
+import {type BaseStringName} from './string-names.js';
 
 /**
  * Base type for a declarative element definition's CSS vars.
@@ -10,7 +10,7 @@ import {type BaseCssPropertyName} from './css-properties.js';
  */
 export type CssVarsInitMap<
     ElementTagName extends CustomElementTagName,
-    CssVarKeys extends BaseCssPropertyName<ElementTagName>,
+    CssVarKeys extends BaseStringName<ElementTagName>,
 > = Readonly<Record<CssVarKeys, Values<CssVarsSetup>>>;
 
 /**
@@ -20,5 +20,5 @@ export type CssVarsInitMap<
  */
 export type CssVars<
     ElementTagName extends CustomElementTagName,
-    CssVarKeys extends BaseCssPropertyName<ElementTagName>,
+    CssVarKeys extends BaseStringName<ElementTagName>,
 > = CssVarDefinitions<CssVarsInitMap<ElementTagName, CssVarKeys>>;

@@ -1,7 +1,7 @@
 import {mapObjectValues} from '@augment-vir/common';
 import {type CustomElementTagName} from '../custom-tag-name.js';
-import {type BaseCssPropertyName} from './css-properties.js';
 import {type PropertyInitMapBase} from './element-properties.js';
+import {type BaseStringName} from './string-names.js';
 import {type WithTagName} from './tag-name.js';
 
 /**
@@ -11,7 +11,7 @@ import {type WithTagName} from './tag-name.js';
  */
 export type HostClassesInitMap<
     TagName extends CustomElementTagName,
-    HostClassKeys extends BaseCssPropertyName<TagName>,
+    HostClassKeys extends BaseStringName<TagName>,
     Inputs extends PropertyInitMapBase,
     State extends PropertyInitMapBase,
 > = Record<
@@ -41,7 +41,7 @@ export type HostClassNamesMap<TagName extends string, HostClassKeys extends stri
  */
 export function createHostClassNamesMap<
     TagName extends CustomElementTagName,
-    HostClassKeys extends BaseCssPropertyName<TagName>,
+    HostClassKeys extends BaseStringName<TagName>,
     HostClassesInit extends HostClassesInitMap<
         TagName,
         HostClassKeys,
