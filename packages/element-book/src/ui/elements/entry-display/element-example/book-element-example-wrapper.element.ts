@@ -17,9 +17,7 @@ export const BookElementExampleWrapper = defineBookElement<{
     tagName: 'book-element-example-wrapper',
     styles: css`
         :host {
-            display: inline-flex;
-            flex-direction: column;
-            gap: 24px;
+            display: inline-block;
             max-width: 100%;
         }
 
@@ -39,6 +37,7 @@ export const BookElementExampleWrapper = defineBookElement<{
             flex-direction: column;
             gap: 24px;
             max-width: 100%;
+            align-items: flex-start;
         }
 
         ${BookElementExampleControls} {

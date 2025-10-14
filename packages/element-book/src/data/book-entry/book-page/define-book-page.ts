@@ -91,7 +91,7 @@ export type BookPageInit<
         BookPage<any, ParentPage, CurrentControlsInit>,
         'entryType' | 'elementExamples' | 'errors'
     >,
-    'controls' | 'descriptionParagraphs'
+    'controls' | 'descriptionParagraphs' | 'useVerticalExamples'
 > & {
     defineExamples?:
         | ElementExamplesDefiner<
@@ -133,6 +133,7 @@ export function defineBookPage<
     const page: BookPage<GlobalValuesType, ParentPage, ControlsInit> = {
         ...pageInit,
         entryType: BookEntryType.Page,
+        useVerticalExamples: !!pageInit.useVerticalExamples,
         elementExamples: {},
         descriptionParagraphs: pageInit.descriptionParagraphs ?? [],
         controls: pageInit.controls ?? ({} as ControlsInit),
@@ -146,6 +147,7 @@ export function defineBookPage<
             defineExample(elementExampleInit) {
                 const newExample: BookElementExample<any, any, any> = {
                     ...elementExampleInit,
+                    isVertical: page.useVerticalExamples,
                     entryType: BookEntryType.ElementExample,
                     parent: page,
                     descriptionParagraphs: elementExampleInit.descriptionParagraphs ?? [],

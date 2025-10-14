@@ -1,3 +1,4 @@
+import {createArray} from '@augment-vir/common';
 import {
     type BookPage,
     BookPageControlType,
@@ -44,6 +45,30 @@ function createExamplePage(index: number, parent: BookPage) {
 
     return newPage;
 }
+
+const verticalPage = defineBookPage({
+    title: 'vertical examples',
+    parent: parentPage1,
+    useVerticalExamples: true,
+    defineExamples({defineExample}) {
+        createArray(3, (index) => {
+            defineExample({
+                title: `example ${index}`,
+                styles: css`
+                    div {
+                        border: 3px solid dodgerblue;
+                        padding: 4px 24px;
+                    }
+                `,
+                render() {
+                    return html`
+                        <div>Example</div>
+                    `;
+                },
+            });
+        });
+    },
+});
 
 const duplicateErrorPage = defineBookPage({
     title: 'duplicate error page',
@@ -140,6 +165,7 @@ export const pages = [
     ...new Array(100).fill(0).map((_value, index) => createExamplePage(index + 1, subPage)),
     duplicateErrorPage,
     duplicateErrorPage,
+    verticalPage,
     testPage3,
     parentPage2,
 ];

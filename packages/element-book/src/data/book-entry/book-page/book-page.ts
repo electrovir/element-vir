@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 
-import {type Overwrite, type SetOptionalAndNullable} from '@augment-vir/common';
+import {
+    type Overwrite,
+    type PartialWithUndefined,
+    type SetOptionalAndNullable,
+} from '@augment-vir/common';
 import {
     type CSSResult,
     type HtmlInterpolation,
@@ -36,6 +40,7 @@ export type BookPage<
 > & {
     controls: ControlsInit;
     elementExamples: Record<string, BookElementExample>;
+    useVerticalExamples: boolean;
 };
 
 /**
@@ -65,24 +70,25 @@ export type BookElementExample<
     {
         parent: BookPage | undefined;
         entryType: BookEntryType.ElementExample;
-    } & {
-        /**
-         * Initialize the state for this example. This is only called once, before the first render
-         * of the example.
-         */
-        state?: (() => State) | undefined;
-        /** Specify which events this example should intercept (so the user can see them). */
-        showEvents?: ReadonlyArray<string | TypedEvent> | undefined;
-        /**
-         * Style the element example. You can even use the :host selector to style this specific
-         * example's wrapper element!
-         */
-        styles?: CSSResult | undefined;
+        isVertical: boolean;
         /** Render the example. */
         render: (
             renderParams: BookPageExampleRenderParams<GlobalValuesType, ControlsInit, State>,
         ) => HtmlInterpolation;
-    }
+    } & PartialWithUndefined<{
+        /**
+         * Initialize the state for this example. This is only called once, before the first render
+         * of the example.
+         */
+        state: () => State;
+        /** Specify which events this example should intercept (so the user can see them). */
+        showEvents: ReadonlyArray<string | TypedEvent>;
+        /**
+         * Style the element example. You can even use the :host selector to style this specific
+         * example's wrapper element!
+         */
+        styles: CSSResult;
+    }>
 >;
 
 /**
@@ -96,6 +102,9 @@ export type BookElementExampleInit<
     Controls extends BookPageControlsInitBase,
     State extends PropertyInitMapBase,
 > = SetOptionalAndNullable<
-    Omit<BookElementExample<GlobalValuesType, Controls, State>, 'entryType' | 'parent' | 'errors'>,
+    Omit<
+        BookElementExample<GlobalValuesType, Controls, State>,
+        'entryType' | 'parent' | 'errors' | 'isVertical'
+    >,
     'descriptionParagraphs'
 >;

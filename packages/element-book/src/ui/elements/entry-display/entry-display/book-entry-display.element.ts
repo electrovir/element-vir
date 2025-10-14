@@ -37,16 +37,20 @@ export const BookEntryDisplay = defineBookElement<{
             padding: 32px;
         }
 
-        .inline-entry {
-            margin: 8px;
-        }
-
         * + .block-entry {
             margin-top: 32px;
         }
 
         .block-entry + * {
             margin-top: 32px;
+        }
+
+        .inline-entry {
+            margin: 8px;
+
+            &.block-entry {
+                display: block;
+            }
         }
 
         h1 {

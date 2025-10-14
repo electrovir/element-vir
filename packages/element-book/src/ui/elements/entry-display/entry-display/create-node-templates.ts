@@ -1,6 +1,13 @@
 import {check} from '@augment-vir/assert';
 import {mapObjectValues} from '@augment-vir/common';
-import {type HTMLTemplateResult, type HtmlInterpolation, html, nothing, repeat} from 'element-vir';
+import {
+    type HTMLTemplateResult,
+    type HtmlInterpolation,
+    classMap,
+    html,
+    nothing,
+    repeat,
+} from 'element-vir';
 import {BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
 import {
     type BookPageControlsInitBase,
@@ -150,7 +157,9 @@ export function createNodeTemplates({
                         currentPageControls: controlsForElementExample,
                         router,
                     })}
-                        class="inline-entry"
+                        class="inline-entry ${classMap({
+                            'block-entry': currentNode.entry.isVertical,
+                        })}"
                     ></${BookElementExampleWrapper}>
                 `;
             } else if (isBookTreeNode(currentNode, BookEntryType.Root)) {

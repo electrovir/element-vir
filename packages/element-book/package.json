@@ -36,7 +36,6 @@
         "build": "npm run docs",
         "compile": "virmator compile",
         "docs": "virmator docs",
-        "start": "virmator frontend",
         "test": "virmator test web",
         "test:coverage": "npm run test coverage",
         "test:docs": "virmator docs check"
