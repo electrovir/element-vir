@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "26.11.0",
+    "version": "26.11.1",
     "keywords": [
         "custom",
         "web",
@@ -39,8 +39,8 @@
         "test:docs": "virmator docs check"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.40.0",
-        "@augment-vir/common": "^31.40.0",
+        "@augment-vir/assert": "^31.42.0",
+        "@augment-vir/common": "^31.42.0",
         "date-vir": "^8.0.0",
         "lit": "^3.3.1",
         "lit-css-vars": "^3.0.11",
@@ -50,8 +50,8 @@
         "typed-event-target": "^4.1.0"
     },
     "devDependencies": {
-        "@augment-vir/test": "^31.40.0",
-        "@augment-vir/web": "^31.40.0",
+        "@augment-vir/test": "^31.42.0",
+        "@augment-vir/web": "^31.42.0",
         "@web/dev-server-esbuild": "^1.0.4",
         "@web/test-runner": "^0.20.2",
         "@web/test-runner-commands": "^0.9.0",
@@ -63,7 +63,7 @@
         "type-fest": "^5.1.0",
         "typedoc": "^0.28.14",
         "typescript": "5.9.3",
-        "vite": "^7.1.9",
+        "vite": "^7.1.11",
         "vite-tsconfig-paths": "^5.1.4"
     },
     "engines": {
