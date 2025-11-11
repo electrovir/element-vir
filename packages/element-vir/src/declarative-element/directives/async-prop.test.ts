@@ -799,7 +799,7 @@ describe('AsyncProp value type guards', () => {
         assert.deepEquals(await myAsyncProp.promiseValue, {hi: ''});
 
         myAsyncProp.setValue(new Error());
-        await assert.throws(() => myAsyncProp.promiseValue);
+        await assert.throws(async () => await myAsyncProp.promiseValue);
 
         myAsyncProp.setValue(Promise.resolve({hi: 'bye'}));
         assert.instanceOf(myAsyncProp.promiseValue, Promise);
