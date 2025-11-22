@@ -46,7 +46,9 @@ export type HtmlInterpolation =
     | AnyFunction
     | typeof nothing
     | HtmlInterpolation[]
-    | ReadonlyArray<HtmlInterpolation>;
+    | ReadonlyArray<HtmlInterpolation>
+    | Iterable<HtmlInterpolation>
+    | Readonly<Iterable<HtmlInterpolation>>;
 
 /**
  * This type ensures that interpolated element definitions are not missing their inputs, when inputs
