@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/scripts",
-    "version": "26.11.3",
+    "version": "26.12.0",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "author": {
@@ -18,16 +18,16 @@
         "update:exports": "tsx src/vira-scripts/update-all-exports.ts"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.51.1",
-        "@augment-vir/common": "^31.51.1",
-        "@augment-vir/node": "^31.51.1",
+        "@augment-vir/assert": "^31.54.3",
+        "@augment-vir/common": "^31.54.3",
+        "@augment-vir/node": "^31.54.3",
         "prettier": "^3.4.2",
-        "tsx": "^4.20.6"
+        "tsx": "^4.21.0"
     },
     "devDependencies": {
         "@types/node": "^24.10.1",
         "markdown-code-example-inserter": "^3.0.3",
-        "typedoc": "^0.28.14",
+        "typedoc": "^0.28.15",
         "typescript": "5.9.3"
     },
     "engines": {

@@ -3,7 +3,7 @@
     for, exports from, and a big object containing all the icon files located in "svgsDir" defined
     below.
 */
-import {kebabCaseToCamelCase} from '@augment-vir/common';
+import {kebabCaseToCamelCase, StringCase} from '@augment-vir/common';
 import {readDirRecursive, toPosixPath} from '@augment-vir/node';
 import {basename, dirname, join, relative} from 'node:path';
 import {viraSrcDir} from '../repo-paths.js';
@@ -19,7 +19,7 @@ const iconIndexPath = join(viraSrcDir, 'icons', 'index.ts');
 
 function generateIconNameFromFilePath(filePath: string): string {
     return `${kebabCaseToCamelCase(basename(filePath.replace(/\.icon\.ts$/, '')), {
-        capitalizeFirstLetter: true,
+        firstLetterCase: StringCase.Upper,
     })}Icon`;
 }
 

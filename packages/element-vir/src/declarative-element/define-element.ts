@@ -2,6 +2,7 @@
 
 import {assert, check} from '@augment-vir/assert';
 import {
+    StringCase,
     ensureErrorAndPrependMessage,
     extractErrorMessage,
     getObjectTypedKeys,
@@ -490,7 +491,7 @@ function internalDefineElement<
     Object.defineProperties(anonymousClass, {
         name: {
             value: kebabCaseToCamelCase(init.tagName, {
-                capitalizeFirstLetter: true,
+                firstLetterCase: StringCase.Upper,
             }),
             writable: true,
         },
