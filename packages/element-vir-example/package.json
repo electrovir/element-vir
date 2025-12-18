@@ -19,7 +19,7 @@
         "@augment-vir/common": "^31.54.4",
         "element-book": "^26.12.2",
         "element-vir": "^26.12.2",
-        "vira": "^28.12.1"
+        "vira": "^28.12.2"
     },
     "devDependencies": {
         "@augment-vir/test": "^31.54.4",

@@ -6,7 +6,6 @@ export const ncuConfig: RunOptions = {
     // exclude these
     reject: [
         ...baseNcuConfig.reject,
-        'prettier-plugin-multiline-arrays',
     ],
     // include only these
     filter: [],

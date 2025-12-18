@@ -62,7 +62,7 @@
         "type-fest": "^5.3.1",
         "typedoc": "^0.28.15",
         "typescript": "5.9.3",
-        "vira": "^28.12.1"
+        "vira": "^28.12.2"
     },
     "peerDependencies": {
         "element-vir": ">=17",

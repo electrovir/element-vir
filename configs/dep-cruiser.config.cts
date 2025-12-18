@@ -9,7 +9,6 @@ const baseConfig = defineConfig({
                 'src/index\\.ts$',
             ],
         },
-        // enter file exceptions by rule name here
         'no-non-package-json': {
             from: [
                 'prettier\\.config\\.mjs',
