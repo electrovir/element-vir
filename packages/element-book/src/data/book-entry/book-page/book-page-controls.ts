@@ -30,7 +30,7 @@ export type BookPageControlInit<ControlType extends BookPageControlType> = Omit<
 /**
  * Checks and type guards that the input page control init is of the given type.
  *
- * @internal
+ * @category Internal
  */
 export function isControlInitType<const SpecificControlType extends BookPageControlType>(
     controlInit: BookPageControlInit<any>,
@@ -115,7 +115,7 @@ export type BookPageControlValueType = typeof controlValueTypes;
 /**
  * Checks that the given control init object is valid.
  *
- * @internal
+ * @category Internal
  */
 export function checkControls(
     controlsInit: BookPageControlsInitBase | undefined,

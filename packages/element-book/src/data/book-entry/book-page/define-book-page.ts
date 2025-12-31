@@ -8,6 +8,7 @@ import {type GlobalValues} from '../../../ui/elements/element-book-app/global-va
 import {type InfiniteRecursionLimiter} from '../../../util/type.js';
 import {BookEntryType} from '../book-entry-type.js';
 import {titleToUrlBreadcrumb} from '../url-breadcrumbs.js';
+import {getPageTitleError} from '../verify-book-entry.js';
 import {type BookPageControlsInitBase} from './book-page-controls.js';
 import {type BookElementExample, type BookElementExampleInit, type BookPage} from './book-page.js';
 
@@ -156,6 +157,7 @@ export function defineBookPage<
                             new Error(
                                 `Example title '${elementExampleInit.title}' in page '${pageInit.title}' is already taken.`,
                             ),
+                        getPageTitleError(elementExampleInit.title),
                     ].filter(check.isTruthy),
                 };
                 alreadyTakenElementExampleNames.add(elementExampleInit.title);

@@ -18,7 +18,7 @@ export type DeclarativeElementDefinitionOptions = {
 /**
  * Default values for {@link DeclarativeElementDefinitionOptions}.
  *
- * @internal
+ * @category Internal
  */
 export const defaultDeclarativeElementDefinitionOptions: DeclarativeElementDefinitionOptions = {
     allowPolymorphicState: false,
