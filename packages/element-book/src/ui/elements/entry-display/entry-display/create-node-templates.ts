@@ -157,16 +157,16 @@ export function createNodeTemplates({
                         elementExampleNode: currentNode,
                         currentPageControls: controlsForElementExample,
                         router,
-                    })}
-                        class="inline-entry ${classMap({
-                            'block-entry': currentNode.entry.isVertical,
-                        })}"
-                    ></${BookElementExampleWrapper}>
+                    })}></${BookElementExampleWrapper}>
                 `;
                 return html`
                     <${BookLazyEntry.assign({
                         content,
-                    })}></${BookLazyEntry}>
+                    })}
+                        class="inline-entry ${classMap({
+                            'block-entry': currentNode.entry.isVertical,
+                        })}"
+                    ></${BookLazyEntry}>
                 `;
             } else if (isBookTreeNode(currentNode, BookEntryType.Root)) {
                 return nothing;
@@ -174,14 +174,14 @@ export function createNodeTemplates({
                 const content = html`
                     <${BookError.assign({
                         message: `Unknown entry type for rendering: '${currentNode.entry.entryType}'`,
-                    })}
-                        class="block-entry"
-                    ></${BookError}>
+                    })}></${BookError}>
                 `;
                 return html`
                     <${BookLazyEntry.assign({
                         content,
-                    })}></${BookLazyEntry}>
+                    })}
+                        class="block-entry"
+                    ></${BookLazyEntry}>
                 `;
             }
         },

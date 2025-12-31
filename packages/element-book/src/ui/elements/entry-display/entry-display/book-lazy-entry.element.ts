@@ -94,10 +94,6 @@ export const BookLazyEntry = defineBookElement<{
         };
     },
     styles: css`
-        :host {
-            display: contents;
-        }
-
         .placeholder {
             /* Minimum height to ensure the placeholder is observable */
             min-height: 50px;
