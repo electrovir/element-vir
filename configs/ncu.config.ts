@@ -6,6 +6,8 @@ export const ncuConfig: RunOptions = {
     // exclude these
     reject: [
         ...baseNcuConfig.reject,
+        /** 0.6.0 is broken: https://github.com/color-js/color.js/issues/707 */
+        'colorjs.io',
     ],
     // include only these
     filter: [],
