@@ -16,9 +16,6 @@
     "references": [
         {
             "path": "../element-vir"
-        },
-        {
-            "path": "../element-book"
         }
     ]
 }
