@@ -16,7 +16,6 @@ export const VirApp = defineElement()({
 
         ${ElementBookApp} {
             flex-grow: 1;
-            overflow: hidden;
             max-width: 100%;
             box-sizing: border-box;
         }

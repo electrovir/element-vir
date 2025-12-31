@@ -18,6 +18,7 @@ export const BookElementExampleViewer = defineBookElement<{
         } as any;
     },
     render({state, inputs, updateState}) {
+        console.log('render');
         try {
             if (inputs.elementExampleNode.entry.errors.length) {
                 throw combineErrors(inputs.elementExampleNode.entry.errors);

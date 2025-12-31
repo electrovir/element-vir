@@ -45,6 +45,7 @@
         "@augment-vir/common": "^31.57.3",
         "@augment-vir/web": "^31.57.3",
         "colorjs.io": "0.5.2",
+        "date-vir": "^8.1.0",
         "lit-css-vars": "^3.0.11",
         "spa-router-vir": "^6.4.1",
         "typed-event-target": "^4.1.0"

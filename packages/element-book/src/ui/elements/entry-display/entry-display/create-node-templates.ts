@@ -24,6 +24,7 @@ import {BookError} from '../../common/book-error.element.js';
 import {BookPageControls} from '../book-page/book-page-controls.element.js';
 import {BookPageWrapper} from '../book-page/book-page-wrapper.element.js';
 import {BookElementExampleWrapper} from '../element-example/book-element-example-wrapper.element.js';
+import {BookLazyEntry} from './book-lazy-entry.element.js';
 
 type FlattenedControls = {
     config: BookPageControlsInitBase;
@@ -151,7 +152,7 @@ export function createNodeTemplates({
                     currentNode.fullUrlBreadcrumbs.slice(0, -1),
                 );
 
-                return html`
+                const content = html`
                     <${BookElementExampleWrapper.assign({
                         elementExampleNode: currentNode,
                         currentPageControls: controlsForElementExample,
@@ -162,15 +163,25 @@ export function createNodeTemplates({
                         })}"
                     ></${BookElementExampleWrapper}>
                 `;
+                return html`
+                    <${BookLazyEntry.assign({
+                        content,
+                    })}></${BookLazyEntry}>
+                `;
             } else if (isBookTreeNode(currentNode, BookEntryType.Root)) {
                 return nothing;
             } else {
-                return html`
+                const content = html`
                     <${BookError.assign({
                         message: `Unknown entry type for rendering: '${currentNode.entry.entryType}'`,
                     })}
                         class="block-entry"
                     ></${BookError}>
+                `;
+                return html`
+                    <${BookLazyEntry.assign({
+                        content,
+                    })}></${BookLazyEntry}>
                 `;
             }
         },
