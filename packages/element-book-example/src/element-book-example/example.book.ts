@@ -8,6 +8,19 @@ import {
 } from 'element-book';
 import {css, html, unsafeCSS} from 'element-vir';
 
+const customControlPage = defineBookPage({
+    title: 'With custom control',
+    parent: undefined,
+    controls: {
+        Stuff: definePageControl({
+            controlType: BookPageControlType.Custom,
+            content: html`
+                <button>Click!</button>
+            `,
+        }),
+    },
+});
+
 const parentPage1 = defineBookPageWithGlobals<{
     testGlobalControl: 'it worked!';
 }>()({
@@ -159,6 +172,7 @@ const testPage3 = defineBookPage({
 });
 
 export const pages = [
+    customControlPage,
     parentPage1,
     createExamplePage(0, parentPage2),
     subPage,

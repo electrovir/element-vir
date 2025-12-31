@@ -1,4 +1,4 @@
-import {type EmptyObject} from 'type-fest';
+import {type HtmlInterpolation} from 'element-vir';
 
 /**
  * Adds a control to an element-book page.
@@ -7,14 +7,25 @@ import {type EmptyObject} from 'type-fest';
  */
 export type BookPageControl<ControlType extends BookPageControlType = BookPageControlType> = {
     controlType: ControlType;
-    initValue: BookPageControlValueType[ControlType];
     /** The name and label for the control. */
     controlName: string;
-} & (ControlType extends BookPageControlType.Dropdown
+} & (ControlType extends BookPageControlType.Custom
     ? {
-          options: string[];
+          /** Custom HTML template to render for this control. */
+          content: HtmlInterpolation;
+          initValue?: never;
       }
-    : EmptyObject);
+    : {
+          initValue: BookPageControlValueType[ControlType];
+          content?: never;
+      }) &
+    (ControlType extends BookPageControlType.Dropdown
+        ? {
+              options: string[];
+          }
+        : {
+              options?: never;
+          });
 
 /**
  * Initialization options for an element-book page control.
@@ -33,7 +44,7 @@ export type BookPageControlInit<ControlType extends BookPageControlType> = Omit<
  * @category Internal
  */
 export function isControlInitType<const SpecificControlType extends BookPageControlType>(
-    controlInit: BookPageControlInit<any>,
+    controlInit: BookPageControlInit<BookPageControlType>,
     specificType: SpecificControlType,
 ): controlInit is BookPageControlInit<SpecificControlType> {
     return controlInit.controlType === specificType;
@@ -82,6 +93,8 @@ export type BookPageControlsValues = ControlsToValues<BookPageControlsInitBase>;
 export enum BookPageControlType {
     Checkbox = 'checkbox',
     Color = 'color',
+    /** Custom controls render user-provided HTML directly. They have no editable value. */
+    Custom = 'custom',
     Dropdown = 'dropdown',
     /** Hidden controls allow any values but they aren't displayed to the user for editing. */
     Hidden = 'hidden',
@@ -99,6 +112,8 @@ const anySymbol = Symbol('any-type');
 export const controlValueTypes = {
     [BookPageControlType.Checkbox]: false,
     [BookPageControlType.Color]: '',
+    /** Custom controls don't have a user-editable value. */
+    [BookPageControlType.Custom]: undefined,
     [BookPageControlType.Dropdown]: '',
     [BookPageControlType.Hidden]: anySymbol as any,
     [BookPageControlType.Number]: 0,
@@ -132,6 +147,10 @@ export function checkControls(
             controlName,
             controlEntry,
         ]) => {
+            if (controlEntry.controlType === BookPageControlType.Custom) {
+                return;
+            }
+
             const expectedInitDefault = controlValueTypes[controlEntry.controlType];
 
             if (expectedInitDefault === anySymbol) {

@@ -1,5 +1,5 @@
 import {check} from '@augment-vir/assert';
-import {type Values} from '@augment-vir/common';
+import {type AnyObject, type Values} from '@augment-vir/common';
 import {extractEventTarget} from '@augment-vir/web';
 import {css, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {Options24Icon, ViraIcon, ViraInput} from 'vira';
@@ -116,6 +116,7 @@ export const BookPageControls = defineBookElement<{
                         );
                     },
                 );
+
                 return html`
                     <div class="control-wrapper">
                         ${renderIf(
@@ -127,7 +128,13 @@ export const BookPageControls = defineBookElement<{
                             `,
                         )}
                         <label class="control-wrapper">
-                            <span>${controlName}</span>
+                            <span>
+                                ${controlInit.controlType === BookPageControlType.Custom
+                                    ? html`
+                                          &nbsp;
+                                      `
+                                    : controlName}
+                            </span>
                             ${controlInputTemplate}
                         </label>
                     </div>
@@ -211,9 +218,13 @@ function createControlInput(
                 })}
             </select>
         `;
+    } else if (isControlInitType(controlInit, BookPageControlType.Custom)) {
+        return controlInit.content;
     } else {
         return html`
-            <p class="error">${controlInit.controlType} controls are not implemented yet.</p>
+            <p class="error">
+                ${(controlInit as AnyObject).controlType} controls are not implemented yet.
+            </p>
         `;
     }
 }
