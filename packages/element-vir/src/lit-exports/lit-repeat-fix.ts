@@ -1,9 +1,9 @@
 export type {KeyFn} from 'lit/directives/repeat.js';
 export type {RepeatDirective};
 
+import {type ChildPart, type noChange} from 'lit-html';
 import {type Directive, type PartInfo} from 'lit-html/directive.js';
 import {type KeyFn} from 'lit-html/directives/repeat.js';
-import {type ChildPart, type noChange} from 'lit-html/lit-html.js';
 import {repeat as repeatImport} from 'lit/directives/repeat.js';
 import {type HtmlInterpolation} from '../template-transforms/vir-html/html-interpolation.js';
 

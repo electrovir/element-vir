@@ -3,7 +3,7 @@
 import {randomInteger, randomString} from '@augment-vir/common';
 import {defineBookPage} from 'element-book';
 import {Observable, css, defineElement, html, listen, nothing, onResize} from 'element-vir';
-import {assign} from 'element-vir/dist/declarative-element/directives/assign.directive';
+import {assign} from 'element-vir/dist/declarative-element/directives/assign.directive.js';
 import {AsyncChild} from './async-child.element.js';
 import {TestChildElement} from './child.element.js';
 import {MyCustomEvent} from './customEvent.js';
