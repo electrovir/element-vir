@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "26.14.2",
+    "version": "26.14.3",
     "keywords": [
         "custom",
         "web",
@@ -43,7 +43,7 @@
         "@augment-vir/common": "^31.59.0",
         "date-vir": "^8.1.0",
         "lit": "^3.3.2",
-        "lit-css-vars": "^3.1.1",
+        "lit-css-vars": "^3.2.2",
         "lit-html": "^3.3.2",
         "object-shape-tester": "^6.11.0",
         "observavir": "^2.3.1",
