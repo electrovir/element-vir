@@ -15,14 +15,14 @@
         "test": "exit 0;"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.58.0",
-        "@augment-vir/common": "^31.58.0",
+        "@augment-vir/assert": "^31.59.0",
+        "@augment-vir/common": "^31.59.0",
         "element-vir": "^26.14.1",
         "vira": "^28.19.5"
     },
     "devDependencies": {
-        "@augment-vir/test": "^31.58.0",
-        "element-book": "^26.14.2",
+        "@augment-vir/test": "^31.59.0",
+        "element-book": "^26.15.1",
         "esbuild": "^0.27.2",
         "markdown-code-example-inserter": "^3.0.3",
         "typedoc": "^0.28.16",
