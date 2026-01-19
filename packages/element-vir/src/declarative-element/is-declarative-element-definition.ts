@@ -29,8 +29,7 @@ const expectedStaticProperties = getObjectTypedKeys({
  * Asserts that the given input is a declarative element definition.
  *
  * @category Util
- * @see
- * - {@link isDeclarativeElementDefinition}
+ * @see {@link isDeclarativeElementDefinition}
  */
 export function assertDeclarativeElementDefinition(
     input: unknown,
@@ -50,8 +49,7 @@ export function assertDeclarativeElementDefinition(
  * Checks that the given input is a declarative element definition.
  *
  * @category Util
- * @see
- * - {@link assertDeclarativeElementDefinition}
+ * @see {@link assertDeclarativeElementDefinition}
  */
 export function isDeclarativeElementDefinition(
     input: unknown,

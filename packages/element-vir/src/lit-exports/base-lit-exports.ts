@@ -1,6 +1,5 @@
-export {LitElement, noChange, nothing, svg, unsafeCSS} from 'lit';
+export {CSSResult, LitElement, noChange, nothing, svg, unsafeCSS} from 'lit';
 export type {
-    CSSResult,
     CSSResultGroup,
     CompiledTemplate,
     CompiledTemplateResult,
