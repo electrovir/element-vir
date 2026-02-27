@@ -1,4 +1,4 @@
-import {defineConfig} from '@virmator/deps/configs/dep-cruiser.config.base';
+import {defineConfig} from '@virmator/deps/configs/dep-cruiser.config.base.js';
 import {type IConfiguration} from 'dependency-cruiser';
 
 const baseConfig = defineConfig({
@@ -7,11 +7,6 @@ const baseConfig = defineConfig({
         'no-orphans': {
             from: [
                 'src/index\\.ts$',
-            ],
-        },
-        'no-non-package-json': {
-            from: [
-                'prettier\\.config\\.mjs',
             ],
         },
     },

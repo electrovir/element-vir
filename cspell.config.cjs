@@ -7,6 +7,5 @@ module.exports = {
     ],
     words: [
         ...baseConfig.words,
-        'valuenow',
     ],
 };
