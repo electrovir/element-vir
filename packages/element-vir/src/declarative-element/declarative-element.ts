@@ -314,7 +314,9 @@ export type AssignMethod<TagName extends CustomElementTagName, Inputs extends Pr
         : IsEmptyObject<Required<Inputs>> extends true
           ? (inputsObject: never) => never
           : (
-                inputsObject: IsEmptyObject<Required<Inputs>> extends true ? never : Inputs,
+                inputsObject: IsEmptyObject<Required<Inputs>> extends true
+                    ? never
+                    : Readonly<Inputs>,
             ) => MinimalDefinitionWithInputs<TagName>;
 
 /**

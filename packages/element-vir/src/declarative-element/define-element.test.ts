@@ -109,6 +109,29 @@ describe(defineElement.name, () => {
         MyElement.assign({});
     });
 
+    it('allows readonly objects to be assigned to inputs', () => {
+        const MyElement = defineElement<{myInput: string; myOtherInput: number}>()({
+            tagName: 'readonly-input-test-1',
+            render() {
+                return '';
+            },
+        });
+
+        const readonlyInputs: Readonly<{myInput: string; myOtherInput: number}> = {
+            myInput: 'hi',
+            myOtherInput: 5,
+        };
+
+        MyElement.assign(readonlyInputs);
+
+        const asConstInputs = {
+            myInput: 'hello',
+            myOtherInput: 42,
+        } as const;
+
+        MyElement.assign(asConstInputs);
+    });
+
     it('blocks render callbacks that are async', () => {
         defineElement()({
             tagName: 'some-tag-4',
