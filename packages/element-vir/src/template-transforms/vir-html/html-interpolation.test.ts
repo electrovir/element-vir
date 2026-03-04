@@ -14,12 +14,10 @@ describe('HtmlInterpolation', () => {
         assert.tsType<{something: string}>().notMatches<HtmlInterpolation>();
         html`
             hello there
-            ${
+            ${{
                 // @ts-expect-error raw objects are not allowed
-                {
-                    something: 'hi',
-                }
-            }
+                something: 'hi',
+            }}
         `;
         assert.tsType<{something: string}>().notMatches<DirectiveOutput>();
     });

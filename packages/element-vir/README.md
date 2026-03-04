@@ -188,7 +188,9 @@ export const MyWithUpdateState = defineElement()({
         return html`
             <span
                 ${listen('click', () => {
-                    updateState({username: 'new name!'});
+                    updateState({
+                        username: 'new name!',
+                    });
                 })}
             >
                 Hello there ${state.username}!
@@ -278,7 +280,14 @@ export const MyWithEvents = defineElement()({
             <button ${listen('click', () => dispatch(new events.logoutClick()))}>log out</button>
             <button
                 ${listen('click', () =>
-                    dispatch(new events.randomNumber(randomInteger({min: 0, max: 1_000_000}))),
+                    dispatch(
+                        new events.randomNumber(
+                            randomInteger({
+                                min: 0,
+                                max: 1_000_000,
+                            }),
+                        ),
+                    ),
                 )}
             >
                 generate random number
@@ -314,7 +323,9 @@ export const MyWithEventListening = defineElement()({
                     console.info('logout triggered');
                 })}
                 ${listen(MyWithEvents.events.randomNumber, (event) => {
-                    updateState({myNumber: event.detail});
+                    updateState({
+                        myNumber: event.detail,
+                    });
                 })}
             ></${MyWithEvents}>
             <span>${state.myNumber}</span>
@@ -360,7 +371,14 @@ export const MyWithCustomEvents = defineElement()({
             >
                 <div
                     ${listen('click', () => {
-                        dispatch(new MyCustomActionEvent(randomInteger({min: 0, max: 1_000_000})));
+                        dispatch(
+                            new MyCustomActionEvent(
+                                randomInteger({
+                                    min: 0,
+                                    max: 1_000_000,
+                                }),
+                            ),
+                        );
                     })}
                 ></div>
             </div>

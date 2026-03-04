@@ -89,6 +89,7 @@ export type DeclarativeElementInit<
               TestIds
           >
         | undefined;
+    /** Called whenever an element updates. This creates the element's HTML. */
     render: RenderCallback<
         TagName,
         Inputs,
@@ -99,6 +100,7 @@ export type DeclarativeElementInit<
         SlotNames,
         TestIds
     >;
+    /** Called whenever an element is detached from the DOM. */
     cleanup?:
         | InitCallback<
               TagName,
@@ -111,5 +113,6 @@ export type DeclarativeElementInit<
               TestIds
           >
         | undefined;
+    /** Extra element definition options. */
     options?: Partial<DeclarativeElementDefinitionOptions> | undefined;
 };
