@@ -13,7 +13,14 @@ export const MyWithEvents = defineElement()({
             <button ${listen('click', () => dispatch(new events.logoutClick()))}>log out</button>
             <button
                 ${listen('click', () =>
-                    dispatch(new events.randomNumber(randomInteger({min: 0, max: 1_000_000}))),
+                    dispatch(
+                        new events.randomNumber(
+                            randomInteger({
+                                min: 0,
+                                max: 1_000_000,
+                            }),
+                        ),
+                    ),
                 )}
             >
                 generate random number

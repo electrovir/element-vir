@@ -41,7 +41,9 @@ describe(defineTypedEvent.name, () => {
             // @ts-expect-error: input should be an object
             const invalidUndefinedInput = new validCustomEvent(undefined);
 
-            const validCustomEventInstance = new validCustomEvent({propName: 'valueName'});
+            const validCustomEventInstance = new validCustomEvent({
+                propName: 'valueName',
+            });
         }
     });
 });

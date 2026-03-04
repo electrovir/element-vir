@@ -253,7 +253,12 @@ function internalDefineElement<
 
     const calculatedStyles =
         typeof init.styles === 'function'
-            ? init.styles(createStylesCallbackInput({hostClassNames, cssVars}))
+            ? init.styles(
+                  createStylesCallbackInput({
+                      hostClassNames,
+                      cssVars,
+                  }),
+              )
             : init.styles || css``;
 
     const typedRenderCallback: StaticDeclarativeElementProperties<
@@ -417,8 +422,12 @@ function internalDefineElement<
                     inputs: renderParams.inputs,
                 });
                 this._lastRenderedProps = {
-                    inputs: {...renderParams.inputs},
-                    state: {...renderParams.state},
+                    inputs: {
+                        ...renderParams.inputs,
+                    },
+                    state: {
+                        ...renderParams.state,
+                    },
                 };
                 return renderResult;
             } catch (caught) {

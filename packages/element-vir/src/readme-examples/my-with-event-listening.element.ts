@@ -17,7 +17,9 @@ export const MyWithEventListening = defineElement()({
                     console.info('logout triggered');
                 })}
                 ${listen(MyWithEvents.events.randomNumber, (event) => {
-                    updateState({myNumber: event.detail});
+                    updateState({
+                        myNumber: event.detail,
+                    });
                 })}
             ></${MyWithEvents}>
             <span>${state.myNumber}</span>

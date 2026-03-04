@@ -109,7 +109,9 @@ describe(VirOldTestApp.tagName, () => {
 
         assert.instanceOf(childElement, TestChildElement);
         assert('speak' in childElement.definition.events);
-        const currentInputs = {...childElement.instanceInputs};
+        const currentInputs = {
+            ...childElement.instanceInputs,
+        };
         assert.deepEquals(currentInputs, {
             displayNumber: childElement.instanceInputs.displayNumber,
             myProp: 5,

@@ -29,8 +29,12 @@ describe('RenderParams', () => {
                             return 5;
                         },
                     }),
-                    myAsyncProp2: asyncProp({defaultValue: Promise.resolve(3)}),
-                    myAsyncProp3: asyncProp({defaultValue: 3}),
+                    myAsyncProp2: asyncProp({
+                        defaultValue: Promise.resolve(3),
+                    }),
+                    myAsyncProp3: asyncProp({
+                        defaultValue: 3,
+                    }),
                     myNumber: undefined as undefined | Observable<number>,
                 };
             },
@@ -43,7 +47,11 @@ describe('RenderParams', () => {
             },
             render({events, state, updateState, cssVars}) {
                 if (state.myNumber == undefined) {
-                    updateState({myNumber: new Observable({defaultValue: 6})});
+                    updateState({
+                        myNumber: new Observable({
+                            defaultValue: 6,
+                        }),
+                    });
                 }
 
                 assert.tsType(cssVars['test-element-my-thing']).equals<SingleCssVarDefinition>();
@@ -62,13 +70,19 @@ describe('RenderParams', () => {
                     .tsType<NonNullable<Parameters<typeof updateState>[0]['myAsyncProp']>>()
                     .equals<AsyncProp<number, MyAsyncPropTriggerType>>();
 
-                state.myAsyncProp.update({input: 'hi'});
-
-                updateState({
-                    myAsyncProp: asyncProp({defaultValue: 5}),
+                state.myAsyncProp.update({
+                    input: 'hi',
                 });
 
-                state.myAsyncProp.update({input: undefined});
+                updateState({
+                    myAsyncProp: asyncProp({
+                        defaultValue: 5,
+                    }),
+                });
+
+                state.myAsyncProp.update({
+                    input: undefined,
+                });
 
                 new testEventThing(4);
                 // @ts-expect-error: requires a number input
@@ -112,7 +126,9 @@ describe('RenderParams', () => {
 describe('UpdateStateCallback', () => {
     it("can be used for an element's updateState method", () => {
         const stateInit = {
-            doThing: asyncProp({defaultValue: 'string input'}),
+            doThing: asyncProp({
+                defaultValue: 'string input',
+            }),
         };
 
         const customElement = defineElement()({

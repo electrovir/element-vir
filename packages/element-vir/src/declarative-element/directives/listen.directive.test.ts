@@ -15,11 +15,12 @@ describe(listen.name, () => {
             assert.tsType(event).equals<PointerEvent>();
         });
 
-        (({addEventListener() {}}) as unknown as HTMLInputElement).addEventListener(
-            'click',
-            (event) => {
-                assert.tsType(event).equals<PointerEvent>();
-            },
-        );
+        (
+            ({
+                addEventListener() {},
+            }) as unknown as HTMLInputElement
+        ).addEventListener('click', (event) => {
+            assert.tsType(event).equals<PointerEvent>();
+        });
     });
 });

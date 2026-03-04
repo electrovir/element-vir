@@ -74,7 +74,9 @@ describe('attributes directive', () => {
         assert.deepEquals(readAllAttributes(innerDiv), {
             'my-attribute': 'value',
         });
-        fixture.assignInputs({shouldRemoveAttribute: true});
+        fixture.assignInputs({
+            shouldRemoveAttribute: true,
+        });
 
         await waitUntil.deepEquals(
             {

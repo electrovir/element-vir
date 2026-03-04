@@ -76,15 +76,24 @@ function getNestedValues(
 ): {value: undefined | TemplateAndNested; reason: string} {
     const {currentTemplateAndNested, reason} = getCurrentKeyAndValue(map, keys, index);
     if (!currentTemplateAndNested) {
-        return {value: currentTemplateAndNested, reason};
+        return {
+            value: currentTemplateAndNested,
+            reason,
+        };
     }
 
     if (index === keys.length - 1) {
-        return {value: currentTemplateAndNested, reason: `reached end of keys array`};
+        return {
+            value: currentTemplateAndNested,
+            reason: `reached end of keys array`,
+        };
     }
 
     if (!currentTemplateAndNested.nested) {
-        return {value: undefined, reason: `map at key index ${index} did not have nested maps`};
+        return {
+            value: undefined,
+            reason: `map at key index ${index} did not have nested maps`,
+        };
     }
 
     return getNestedValues(currentTemplateAndNested.nested, keys, index + 1);
@@ -123,7 +132,11 @@ function getCurrentKeyAndValue(
         };
     }
 
-    return {currentKey, currentTemplateAndNested, reason: `key and value exists`};
+    return {
+        currentKey,
+        currentTemplateAndNested,
+        reason: `key and value exists`,
+    };
 }
 
 function setNestedValues(
@@ -134,17 +147,26 @@ function setNestedValues(
 ): {result: boolean; reason: string} {
     const {currentTemplateAndNested, currentKey, reason} = getCurrentKeyAndValue(map, keys, index);
     if (!currentKey) {
-        return {result: false, reason};
+        return {
+            result: false,
+            reason,
+        };
     }
 
-    const nestedAndTemplate = currentTemplateAndNested ?? {nested: undefined, template: undefined};
+    const nestedAndTemplate = currentTemplateAndNested ?? {
+        nested: undefined,
+        template: undefined,
+    };
     if (!currentTemplateAndNested) {
         map.set(currentKey as any, nestedAndTemplate);
     }
 
     if (index === keys.length - 1) {
         nestedAndTemplate.template = valueToSet;
-        return {result: true, reason: `set value at end of keys array`};
+        return {
+            result: true,
+            reason: `set value at end of keys array`,
+        };
     }
 
     const nestedWeakMap = nestedAndTemplate.nested ?? new WeakMap();

@@ -58,13 +58,20 @@ export const VirOldTestApp = defineElement()({
     `,
     state() {
         return {
-            funnyNumber: randomInteger({min: 0, max: 10}),
+            funnyNumber: randomInteger({
+                min: 0,
+                max: 10,
+            }),
             eventsReceived: 0,
             lastReceivedMessage: '',
             width: -1,
             showChild: true,
-            derp: {hi: 'yo'} as Record<string, string>,
-            myObservable: new Observable({defaultValue: 5}),
+            derp: {
+                hi: 'yo',
+            } as Record<string, string>,
+            myObservable: new Observable({
+                defaultValue: 5,
+            }),
         };
     },
     render({state, updateState}) {
@@ -73,23 +80,42 @@ export const VirOldTestApp = defineElement()({
         return html`
             <main
                 ${onResize((entry) => {
-                    updateState({width: entry.contentRect.width});
+                    updateState({
+                        width: entry.contentRect.width,
+                    });
                 })}
             >
                 Welcome to the test app.
                 <button
                     ${listen('click', () =>
-                        updateState({funnyNumber: randomInteger({min: 0, max: 10})}),
+                        updateState({
+                            funnyNumber: randomInteger({
+                                min: 0,
+                                max: 10,
+                            }),
+                        }),
                     )}
                 >
                     assign NEW number to child
                 </button>
                 <!-- Verify that the child component does not rerender when we pass it the same value. -->
                 <!-- Check the console logs to verify.-->
-                <button ${listen('click', () => updateState({funnyNumber: 4}))}>
+                <button
+                    ${listen('click', () =>
+                        updateState({
+                            funnyNumber: 4,
+                        }),
+                    )}
+                >
                     assign SAME number to child
                 </button>
-                <button ${listen('click', () => updateState({showChild: !state.showChild}))}>
+                <button
+                    ${listen('click', () =>
+                        updateState({
+                            showChild: !state.showChild,
+                        }),
+                    )}
+                >
                     toggle second child
                 </button>
 
@@ -157,10 +183,14 @@ export const VirOldTestApp = defineElement()({
                 <section class="duplicate-names-test">
                     ${allTestArrayElements.map((element) => {
                         return html`
-                            <${element.assign({value: element.tagName})}
+                            <${element.assign({
+                                value: element.tagName,
+                            })}
                                 data-tag-name=${element.tagName}
                             ></${element}>
-                            <${element.assign({value: randomString(4)})}
+                            <${element.assign({
+                                value: randomString(4),
+                            })}
                                 data-tag-name=${element.tagName}
                             ></${element}>
                         `;

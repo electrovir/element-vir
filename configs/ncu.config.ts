@@ -1,4 +1,4 @@
-import {baseNcuConfig} from '@virmator/deps/configs/ncu.config.base';
+import {baseNcuConfig} from '@virmator/deps/configs/ncu.config.base.js';
 import {RunOptions} from 'npm-check-updates';
 
 export const ncuConfig: RunOptions = {

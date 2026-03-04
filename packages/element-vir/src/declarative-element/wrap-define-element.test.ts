@@ -202,7 +202,9 @@ describe(wrapDefineElement.name, () => {
         const assignedInput = 'hello';
 
         const elementInstance = await testWeb.render(html`
-            <${MySpecificElement.assign({noInputsActually: assignedInput})}
+            <${MySpecificElement.assign({
+                noInputsActually: assignedInput,
+            })}
                 ${listen(MySpecificElement.events.myOutput, (event) => {
                     assert.tsType(event.detail).equals<number>();
                 })}

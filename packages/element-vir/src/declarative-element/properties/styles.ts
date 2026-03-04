@@ -101,7 +101,10 @@ export function applyHostClasses<
         const hostClassName = hostClassNames[hostClassKey];
 
         if (typeof maybeCallback === 'function') {
-            const shouldApplyHostClass = maybeCallback({state, inputs});
+            const shouldApplyHostClass = maybeCallback({
+                state,
+                inputs,
+            });
             if (shouldApplyHostClass) {
                 host.classList.add(hostClassName);
             } else {

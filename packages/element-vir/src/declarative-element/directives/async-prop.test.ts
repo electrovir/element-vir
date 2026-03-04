@@ -25,14 +25,18 @@ describe(asyncProp.name, () => {
 
         asyncProp({
             async updateCallback(trigger: {callback: number}) {
-                await wait({milliseconds: 0});
+                await wait({
+                    milliseconds: 0,
+                });
                 return 'five';
             },
         });
 
         asyncProp({
             async updateCallback(trigger: {callback: () => number}) {
-                await wait({milliseconds: 0});
+                await wait({
+                    milliseconds: 0,
+                });
                 return 'five';
             },
         });
@@ -43,30 +47,49 @@ describe(asyncProp.name, () => {
                 return {
                     myAsyncProp: asyncProp({
                         updateCallback(trigger: TriggerType) {
-                            return Promise.resolve({something: 4});
+                            return Promise.resolve({
+                                something: 4,
+                            });
                         },
                     }),
                     myAsyncPropAgain: asyncProp({
                         updateCallback(trigger: TriggerType & {hello: string; goodbye: number}) {
-                            return Promise.resolve({something: 4});
+                            return Promise.resolve({
+                                something: 4,
+                            });
                         },
                     }),
-                    myProp: asyncProp({defaultValue: waitValue({seconds: 10}, 'value')}),
-                    syncProp: {value: 'hi'},
+                    myProp: asyncProp({
+                        defaultValue: waitValue(
+                            {
+                                seconds: 10,
+                            },
+                            'value',
+                        ),
+                    }),
+                    syncProp: {
+                        value: 'hi',
+                    },
                 };
             },
             render({state, updateState}) {
                 updateState({
                     myAsyncProp: asyncProp({
                         updateCallback(trigger: TriggerType) {
-                            return Promise.resolve({something: 4});
+                            return Promise.resolve({
+                                something: 4,
+                            });
                         },
                     }),
                 });
                 const exampleTrigger = {} as TriggerType;
 
                 state.myAsyncProp.update(exampleTrigger);
-                state.myAsyncPropAgain.update({...exampleTrigger, goodbye: 4, hello: 'hi'});
+                state.myAsyncPropAgain.update({
+                    ...exampleTrigger,
+                    goodbye: 4,
+                    hello: 'hi',
+                });
 
                 updateState({
                     syncProp: {
@@ -81,7 +104,11 @@ describe(asyncProp.name, () => {
                     // @ts-expect-error: invalid extra property
                     hello: 'yo',
                 });
-                state.myAsyncPropAgain.update({...exampleTrigger, goodbye: 4, hello: 'hi'});
+                state.myAsyncPropAgain.update({
+                    ...exampleTrigger,
+                    goodbye: 4,
+                    hello: 'hi',
+                });
 
                 updateState({
                     syncProp: {
@@ -124,7 +151,9 @@ describe(asyncProp.name, () => {
         // render the element
         const deferredPromiseWrappers: DeferredPromise<number>[] = [];
         let renderCount: number = 0;
-        const circularReference = {derp: '' as any};
+        const circularReference = {
+            derp: '' as any,
+        };
         circularReference.derp = circularReference;
 
         const ElementWithAsyncProp = defineElement<{
@@ -330,7 +359,9 @@ describe(asyncProp.name, () => {
                 return {
                     myAsyncProp: asyncProp({
                         async updateCallback() {
-                            await wait({seconds: 1});
+                            await wait({
+                                seconds: 1,
+                            });
                             throw new Error(errorMessage);
                         },
                     }),
@@ -365,7 +396,9 @@ describe(asyncProp.name, () => {
                 return {
                     myRandomNumber: asyncProp({
                         async updateCallback({newNumber}: {newNumber: number | undefined}) {
-                            await wait({milliseconds: 0});
+                            await wait({
+                                milliseconds: 0,
+                            });
                             return randomString();
                         },
                     }),
@@ -449,7 +482,9 @@ describe(asyncProp.name, () => {
             tagName: `element-with-undefined-async-prop-1`,
             state() {
                 return {
-                    myAsyncProp: asyncProp({defaultValue: undefined as number | undefined}),
+                    myAsyncProp: asyncProp({
+                        defaultValue: undefined as number | undefined,
+                    }),
                 };
             },
             events: {
@@ -583,11 +618,26 @@ describe(asyncProp.name, () => {
             },
         });
 
-        instance.update({prop1: 'hi', callback: () => {}});
-        instance.update({prop1: 'hi', callback: () => {}});
-        instance.update({prop1: 'hi', callback: () => {}});
-        instance.update({prop1: 'hi', callback: () => {}});
-        instance.update({prop1: 'bye', callback: () => {}});
+        instance.update({
+            prop1: 'hi',
+            callback: () => {},
+        });
+        instance.update({
+            prop1: 'hi',
+            callback: () => {},
+        });
+        instance.update({
+            prop1: 'hi',
+            callback: () => {},
+        });
+        instance.update({
+            prop1: 'hi',
+            callback: () => {},
+        });
+        instance.update({
+            prop1: 'bye',
+            callback: () => {},
+        });
 
         assert.strictEquals(callCount, 2);
     });
@@ -630,7 +680,9 @@ describe(asyncProp.name, () => {
         assert.instanceOf(rendered, ElementWithProxyAsyncPropInput);
 
         assert.strictEquals(rendered.shadowRoot.textContent, 'hello there');
-        rendered.assignInputs({inputValue: 'new value'});
+        rendered.assignInputs({
+            inputValue: 'new value',
+        });
         assert.strictEquals(rendered.shadowRoot.textContent, 'hello there');
         rendered.instanceState.myProp.forceUpdate();
         assert.strictEquals(rendered.shadowRoot.textContent, 'hello there');
@@ -639,7 +691,9 @@ describe(asyncProp.name, () => {
 
     it('ignores ongoing promises if setValue is called', async () => {
         let resolved = false;
-        const updateDuration = {milliseconds: 500};
+        const updateDuration = {
+            milliseconds: 500,
+        };
 
         const RaceConditionElement = defineElement()({
             tagName: 'vir-element-race-condition-between-set-value-and-promise-resolution',
@@ -673,7 +727,9 @@ describe(asyncProp.name, () => {
 
         assert.isFalse(resolved);
         await waitUntil.isTruthy(() => resolved);
-        await wait({milliseconds: updateDuration.milliseconds * 2});
+        await wait({
+            milliseconds: updateDuration.milliseconds * 2,
+        });
         assert.strictEquals(rendered.instanceState.myProp.value as unknown, 42);
     });
 
@@ -700,7 +756,10 @@ describe(asyncProp.name, () => {
                 };
             },
             render: ({state}) => {
-                state.asyncValues.update({value: 'hello there', shouldBypass: true});
+                state.asyncValues.update({
+                    value: 'hello there',
+                    shouldBypass: true,
+                });
                 return 'hi';
             },
         });
@@ -719,7 +778,9 @@ describe('AsyncProp value type guards', () => {
     it('type guards itself', () => {
         const myAsyncProp = asyncProp({
             async updateCallback(trigger: {callback: number}) {
-                await wait({milliseconds: 0});
+                await wait({
+                    milliseconds: 0,
+                });
                 return 'five';
             },
         });
@@ -769,7 +830,9 @@ describe('AsyncProp value type guards', () => {
     ]);
 
     it('works with isSettled', () => {
-        const exampleAsyncProp = asyncProp({defaultValue: Promise.resolve('hi')});
+        const exampleAsyncProp = asyncProp({
+            defaultValue: Promise.resolve('hi'),
+        });
 
         if (exampleAsyncProp.isSettled()) {
             assert.tsType(exampleAsyncProp.value).equals<string | Error>();
@@ -777,7 +840,11 @@ describe('AsyncProp value type guards', () => {
     });
 
     it('works with isError', () => {
-        const myAsyncProp = asyncProp({defaultValue: {hi: ''}});
+        const myAsyncProp = asyncProp({
+            defaultValue: {
+                hi: '',
+            },
+        });
 
         if (myAsyncProp.isError()) {
             assert.tsType(myAsyncProp.value).equals<Error>();
@@ -794,20 +861,36 @@ describe('AsyncProp value type guards', () => {
     });
 
     it('works with promiseValue', async () => {
-        const myAsyncProp = asyncProp({defaultValue: {hi: ''}});
+        const myAsyncProp = asyncProp({
+            defaultValue: {
+                hi: '',
+            },
+        });
         assert.instanceOf(myAsyncProp.promiseValue, Promise);
-        assert.deepEquals(await myAsyncProp.promiseValue, {hi: ''});
+        assert.deepEquals(await myAsyncProp.promiseValue, {
+            hi: '',
+        });
 
         myAsyncProp.setValue(new Error());
         await assert.throws(async () => await myAsyncProp.promiseValue);
 
-        myAsyncProp.setValue(Promise.resolve({hi: 'bye'}));
+        myAsyncProp.setValue(
+            Promise.resolve({
+                hi: 'bye',
+            }),
+        );
         assert.instanceOf(myAsyncProp.promiseValue, Promise);
-        assert.deepEquals(await myAsyncProp.promiseValue, {hi: 'bye'});
+        assert.deepEquals(await myAsyncProp.promiseValue, {
+            hi: 'bye',
+        });
     });
 
     it('enables a type guard chain', () => {
-        const myAsyncProp = asyncProp({defaultValue: {hi: ''}});
+        const myAsyncProp = asyncProp({
+            defaultValue: {
+                hi: '',
+            },
+        });
 
         if (myAsyncProp.settledValue instanceof Error) {
             assert.tsType(myAsyncProp.settledValue).equals<Error>();

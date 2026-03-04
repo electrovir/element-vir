@@ -16,7 +16,9 @@ describe('HtmlInterpolation', () => {
             hello there
             ${
                 // @ts-expect-error raw objects are not allowed
-                {something: 'hi'}
+                {
+                    something: 'hi',
+                }
             }
         `;
         assert.tsType<{something: string}>().notMatches<DirectiveOutput>();
@@ -47,9 +49,18 @@ describe('HtmlInterpolation', () => {
             )
             .matches<HtmlInterpolation>();
         html`
-            hello there ${classMap({disabled: true})}
+            hello there
+            ${classMap({
+                disabled: true,
+            })}
         `;
-        assert.tsType(classMap({disabled: true})).matches<DirectiveOutput>();
+        assert
+            .tsType(
+                classMap({
+                    disabled: true,
+                }),
+            )
+            .matches<DirectiveOutput>();
     });
 
     it('prevents missing input assignment', () => {
@@ -74,8 +85,12 @@ describe('HtmlInterpolation', () => {
 
         html`
             <${NoInputs}></${NoInputs}>
-            <${WithInputs.assign({param1: 'hi'})}></${WithInputs}>
-            <${WithInputs.assign({param1: 'hi'})}></${WithInputs}>
+            <${WithInputs.assign({
+                param1: 'hi',
+            })}></${WithInputs}>
+            <${WithInputs.assign({
+                param1: 'hi',
+            })}></${WithInputs}>
             <${MaybeWithInputs}></${MaybeWithInputs}>
             <${
                 // @ts-expect-error: this is missing its inputs

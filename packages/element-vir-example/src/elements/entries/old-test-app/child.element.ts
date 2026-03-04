@@ -59,7 +59,9 @@ export const TestChildElement = defineElement<{
             <button
                 ${onDomCreated((element) => {
                     if (element instanceof HTMLButtonElement) {
-                        updateState({button: element});
+                        updateState({
+                            button: element,
+                        });
                     } else {
                         console.error(element);
                         throw new Error(`obtained element is not a button!`);

@@ -90,7 +90,11 @@ describe(defineElement.name, () => {
 
         type Mapped<T> = T extends any ? {[Prop in keyof T]: {value: T[Prop]}} : never;
 
-        const derp: Mapped<MyType> = {derp: {value: 5}};
+        const derp: Mapped<MyType> = {
+            derp: {
+                value: 5,
+            },
+        };
 
         MyElement.assign({
             maybeUndefined: '',
@@ -401,7 +405,9 @@ describe(defineElement.name, () => {
 
         await assert.throws(() =>
             waitUntil.isTruthy(() => count > countAfterDestroy + 10, {
-                timeout: {milliseconds: 3000},
+                timeout: {
+                    milliseconds: 3000,
+                },
             }),
         );
     });
@@ -416,7 +422,9 @@ describe(defineElement.name, () => {
             },
             render({state, updateState}) {
                 setTimeout(() => {
-                    updateState({value: state.value + 1});
+                    updateState({
+                        value: state.value + 1,
+                    });
                 }, 100);
                 return html`
                     value:

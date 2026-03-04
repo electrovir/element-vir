@@ -17,7 +17,9 @@ export const MyWithUpdateState = defineElement()({
         return html`
             <span
                 ${listen('click', () => {
-                    updateState({username: 'new name!'});
+                    updateState({
+                        username: 'new name!',
+                    });
                 })}
             >
                 Hello there ${state.username}!

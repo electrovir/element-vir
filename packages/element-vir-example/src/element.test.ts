@@ -42,7 +42,9 @@ describe('test elements', () => {
                 render({state, updateState}) {
                     // purple
                     console.info(state.color);
-                    updateState({color: 'green'});
+                    updateState({
+                        color: 'green',
+                    });
                     // green
                     console.info(state.color);
 
@@ -68,7 +70,9 @@ describe('test elements', () => {
             render({state, updateState}) {
                 // purple
                 console.info(state.color);
-                updateState({color: 'green'});
+                updateState({
+                    color: 'green',
+                });
                 // green
                 console.info(state.color);
 
@@ -240,7 +244,11 @@ describe('test elements', () => {
                             dispatch(new TypedEvent(TestElement.events.nonExistingEvent, 4));
                             // @ts-expect-error: this event does not exist
                             dispatch(new TypedEvent(TestElement.events.nonExistingEvent));
-                            dispatch(new TypedEvent(TestElement.events.yo, {hello: 'there'}));
+                            dispatch(
+                                new TypedEvent(TestElement.events.yo, {
+                                    hello: 'there',
+                                }),
+                            );
                             // @ts-expect-error: requires a value
                             dispatch(new TypedEvent(TestElement.events.yo));
                         }}

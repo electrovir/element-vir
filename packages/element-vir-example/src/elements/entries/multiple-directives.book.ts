@@ -17,7 +17,9 @@ export const multipleDirectivesBookPage = defineBookPage({
                     <div
                         ${[
                             listen('click', () => {
-                                updateState({value: state.value + 1});
+                                updateState({
+                                    value: state.value + 1,
+                                });
                             }),
                             testId('derp'),
                         ]}
@@ -39,7 +41,9 @@ export const multipleDirectivesBookPage = defineBookPage({
             render({state, updateState}) {
                 const directives = html`
                     ${listen('click', () => {
-                        updateState({value: state.value + 1});
+                        updateState({
+                            value: state.value + 1,
+                        });
                     })}
                     ${testId('derp')}
                 `;

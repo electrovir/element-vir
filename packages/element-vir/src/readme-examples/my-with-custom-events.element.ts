@@ -14,7 +14,14 @@ export const MyWithCustomEvents = defineElement()({
             >
                 <div
                     ${listen('click', () => {
-                        dispatch(new MyCustomActionEvent(randomInteger({min: 0, max: 1_000_000})));
+                        dispatch(
+                            new MyCustomActionEvent(
+                                randomInteger({
+                                    min: 0,
+                                    max: 1_000_000,
+                                }),
+                            ),
+                        );
                     })}
                 ></div>
             </div>

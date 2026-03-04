@@ -30,7 +30,9 @@ export function mapHtmlValues(
                 const replacement: MinimalElementDefinition = {
                     tagName: currentValue,
                     tagInterpolationKey: getOrSet(tagNameKeys, currentValue, () => {
-                        return {tagName: currentValue};
+                        return {
+                            tagName: currentValue,
+                        };
                     }),
                 };
 

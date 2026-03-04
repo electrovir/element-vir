@@ -29,7 +29,9 @@ describe('onDomRendered', () => {
     async function setupTest() {
         const elements: Element[] = [];
         const rendered = await testWeb.render(html`
-            <${TestOnDomRenderedElement.assign({trigger: 1})}
+            <${TestOnDomRenderedElement.assign({
+                trigger: 1,
+            })}
                 ${listen(TestOnDomRenderedElement.events.renderTrigger, (event) => {
                     elements.push(event.detail);
                 })}
@@ -54,7 +56,11 @@ describe('onDomRendered', () => {
             });
         }
 
-        return {instance, elements, updateTrigger};
+        return {
+            instance,
+            elements,
+            updateTrigger,
+        };
     }
 
     it('calls each time a render occurs', async () => {

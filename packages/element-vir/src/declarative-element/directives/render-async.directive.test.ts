@@ -49,7 +49,9 @@ describe(asyncProp.name, () => {
         const deferredPromise = new DeferredPromise<number>();
 
         const instance = await testWeb.render(html`
-            <${elementWithAsyncProp.assign({setAsyncProp: deferredPromise.promise})}
+            <${elementWithAsyncProp.assign({
+                setAsyncProp: deferredPromise.promise,
+            })}
                 ${listen(elementWithAsyncProp.events.previousAsyncProp, (event) => {
                     allAsyncValues.push(event.detail);
                 })}
@@ -61,7 +63,11 @@ describe(asyncProp.name, () => {
 
         assert.isLengthExactly(allAsyncValues, 1);
 
-        return {allAsyncValues, instance, deferredPromise};
+        return {
+            allAsyncValues,
+            instance,
+            deferredPromise,
+        };
     }
 
     it('should have proper types', () => {

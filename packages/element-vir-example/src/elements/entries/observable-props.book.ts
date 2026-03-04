@@ -2,7 +2,9 @@ import {randomInteger} from '@augment-vir/common';
 import {defineBookPage} from 'element-book';
 import {Observable, defineElement, html, listen} from 'element-vir';
 
-const myObservable = new Observable({defaultValue: 5});
+const myObservable = new Observable({
+    defaultValue: 5,
+});
 
 const VirObservablesTestParent = defineElement()({
     tagName: 'vir-observable-prop-input-test-parent',
@@ -12,7 +14,9 @@ const VirObservablesTestParent = defineElement()({
         };
     },
     render({state, updateState}) {
-        updateState({renderCount: state.renderCount + 1});
+        updateState({
+            renderCount: state.renderCount + 1,
+        });
         return html`
             <p>Parent render count (should not change): ${state.renderCount}</p>
             <p>
@@ -23,7 +27,12 @@ const VirObservablesTestParent = defineElement()({
             <p>
                 <button
                     ${listen('click', () => {
-                        myObservable.setValue(randomInteger({min: 1, max: 100}));
+                        myObservable.setValue(
+                            randomInteger({
+                                min: 1,
+                                max: 100,
+                            }),
+                        );
                     })}
                 >
                     trigger update from parent
@@ -40,14 +49,21 @@ const VirObservablesTestChild = defineElement<{observableProp: typeof myObservab
         };
     },
     render({inputs, state, updateState}) {
-        updateState({renderCount: state.renderCount + 1});
+        updateState({
+            renderCount: state.renderCount + 1,
+        });
         return html`
             <p>child render count (should increase): ${state.renderCount}</p>
             <p>observableProp value: ${inputs.observableProp.value}</p>
             <p>
                 <button
                     ${listen('click', () => {
-                        inputs.observableProp.setValue(randomInteger({min: 101, max: 200}));
+                        inputs.observableProp.setValue(
+                            randomInteger({
+                                min: 101,
+                                max: 200,
+                            }),
+                        );
                     })}
                 >
                     trigger update from child
