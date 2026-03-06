@@ -463,7 +463,7 @@ function internalDefineElement<
 
         public override disconnectedCallback(): void {
             super.disconnectedCallback();
-            if (init.cleanup) {
+            if (init.cleanup && this._stateCalled) {
                 const renderParams = this.createRenderParams();
                 if ((init.cleanup(renderParams) as any) instanceof Promise) {
                     throw new TypeError(`cleanup in '${init.tagName}' cannot be asynchronous`);
