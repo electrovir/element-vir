@@ -79,9 +79,7 @@ function transformHtml(
             replacement: currentValue.tagName,
             getExtraValues: undefined,
         };
-    }
-
-    if (shouldHaveTagNameHere && !isTagNameWrapper) {
+    } else if (shouldHaveTagNameHere && !isTagNameWrapper) {
         console.error({
             lastNewString,
             currentTemplateString,
@@ -94,9 +92,7 @@ function transformHtml(
                 (currentValue as any)?.constructor?.name
             }'`,
         );
-    }
-
-    if (!shouldHaveTagNameHere || !isTagNameWrapper) {
+    } else if (!shouldHaveTagNameHere || !isTagNameWrapper) {
         return undefined;
     }
 

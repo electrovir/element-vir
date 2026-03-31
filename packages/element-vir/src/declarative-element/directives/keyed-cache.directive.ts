@@ -13,14 +13,14 @@ import {
 } from '../../lit-exports/all-lit-exports.js';
 
 class KeyedCacheDirective extends AsyncDirective {
-    private readonly cache = new Map<unknown, RootPart>();
-    private currentKey: unknown = nothing;
+    private readonly cache = new Map<PropertyKey, RootPart>();
+    private currentKey: PropertyKey | undefined = undefined;
 
     constructor(partInfo: PartInfo) {
         super(partInfo);
     }
 
-    public render(_key: unknown, value: unknown) {
+    public render(_key: PropertyKey, value: unknown) {
         /**
          * Return an array of the value to induce lit-html to create a ChildPart for the value that
          * we can move into the cache.
@@ -34,13 +34,13 @@ class KeyedCacheDirective extends AsyncDirective {
             key,
             value,
         ]: [
-            unknown,
+            PropertyKey,
             unknown,
         ],
     ) {
         if (key !== this.currentKey) {
             /** Cache the current DOM if we have an active key. */
-            if (this.currentKey !== nothing) {
+            if (this.currentKey != undefined) {
                 const partValue = getCommittedValue(containerPart) as ChildPart[];
                 const childPart = partValue.pop();
                 const existingCachedPart = this.cache.get(this.currentKey);
@@ -133,7 +133,7 @@ class KeyedCacheDirective extends AsyncDirective {
  * ```
  */
 export const keyedCache: (
-    key: unknown,
+    key: PropertyKey,
     value: unknown,
 ) => DirectiveResult<typeof KeyedCacheDirective> = directive(KeyedCacheDirective);
 

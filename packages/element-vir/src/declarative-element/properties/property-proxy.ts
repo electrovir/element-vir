@@ -34,8 +34,7 @@ function assertValidPropertyName<PropertyInitGeneric extends PropertyInitMapBase
                 propKey,
             )}' for '${elementTagName.toLowerCase()}'`,
         );
-    }
-    if (!(propKey in element)) {
+    } else if (!(propKey in element)) {
         throw new Error(
             `Property '${String(propKey)}' does not exist on '${elementTagName.toLowerCase()}'.`,
         );

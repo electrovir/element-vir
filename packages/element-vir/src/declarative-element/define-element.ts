@@ -169,8 +169,7 @@ function internalDefineElement<
 > {
     if (!check.isObject(init)) {
         throw new TypeError('Cannot define element with non-object init: ${init}');
-    }
-    if (!check.isString(init.tagName)) {
+    } else if (!check.isString(init.tagName)) {
         throw new TypeError('Missing valid tagName (expected a string).');
     }
 

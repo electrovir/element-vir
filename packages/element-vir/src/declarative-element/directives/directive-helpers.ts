@@ -59,9 +59,8 @@ export function assertIsElementPartInfo(
         throw new Error(
             `${directiveName} directive can only be attached directly to an element${hostTagMessage}.`,
         );
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!(partInfo as FullElementPartInfo).element) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    } else if (!(partInfo as FullElementPartInfo).element) {
         throw new Error(`${directiveName} directive found no element${hostTagMessage}.`);
     }
 }

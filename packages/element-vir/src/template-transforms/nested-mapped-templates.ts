@@ -20,8 +20,7 @@ function extractElementKeys(values: unknown[]): WeakMapElementKey[] {
         (value): WeakMapElementKey | undefined => {
             if (isMinimalDefinitionWithInputs(value)) {
                 return value.definition;
-            }
-            if (hasTagName(value)) {
+            } else if (hasTagName(value)) {
                 return value.tagInterpolationKey || value;
             }
 
@@ -80,16 +79,12 @@ function getNestedValues(
             value: currentTemplateAndNested,
             reason,
         };
-    }
-
-    if (index === keys.length - 1) {
+    } else if (index === keys.length - 1) {
         return {
             value: currentTemplateAndNested,
             reason: `reached end of keys array`,
         };
-    }
-
-    if (!currentTemplateAndNested.nested) {
+    } else if (!currentTemplateAndNested.nested) {
         return {
             value: undefined,
             reason: `map at key index ${index} did not have nested maps`,
@@ -115,8 +110,7 @@ function getCurrentKeyAndValue(
             currentTemplateAndNested: undefined,
             reason: `key at index ${index} not found`,
         };
-    }
-    if (!map.has(currentKey as any)) {
+    } else if (!map.has(currentKey as any)) {
         return {
             currentKey,
             currentTemplateAndNested: undefined,

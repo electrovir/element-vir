@@ -1,4 +1,4 @@
-import {defineEslintConfig} from '@virmator/lint/configs/eslint.config.base.mjs';
+import {defineEslintConfig} from '@virmator/lint/configs/eslint.config.base.js';
 import {dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
