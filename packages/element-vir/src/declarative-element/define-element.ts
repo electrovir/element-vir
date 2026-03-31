@@ -11,6 +11,7 @@ import {
 import {defineCssVars} from 'lit-css-vars';
 import {type MinimalDefinitionWithInputs} from '../template-transforms/minimal-element-definition.js';
 import {css} from '../template-transforms/vir-css/vir-css.js';
+import {html} from '../template-transforms/vir-html/vir-html.js';
 import {type CustomElementTagName} from './custom-tag-name.js';
 import {type DeclarativeElementInit} from './declarative-element-init.js';
 import {
@@ -22,6 +23,7 @@ import {
     type DeclarativeElementDefinitionOptions,
     defaultDeclarativeElementDefinitionOptions,
 } from './definition-options.js';
+import {keyedCache} from './directives/keyed-cache.directive.js';
 import {assignInputs} from './properties/assign-inputs.js';
 import {type CssVars} from './properties/css-vars.js';
 import {
@@ -409,10 +411,23 @@ function internalDefineElement<
                     }
                 }
 
-                const renderResult = typedRenderCallback(renderParams);
-                if (renderResult instanceof Promise) {
+                const rawRenderResult = typedRenderCallback(renderParams);
+                if (rawRenderResult instanceof Promise) {
                     throw new TypeError('render cannot be asynchronous');
                 }
+
+                const computedCacheKey = init.cacheKey?.({
+                    inputs: renderParams.inputs,
+                    state: renderParams.state,
+                });
+
+                const renderResult =
+                    computedCacheKey == undefined
+                        ? rawRenderResult
+                        : html`
+                              ${keyedCache(computedCacheKey, rawRenderResult)}
+                          `;
+
                 applyHostClasses({
                     host: renderParams.host,
                     hostClassesInit: init.hostClasses,

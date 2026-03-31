@@ -1,6 +1,7 @@
 import {type CSSResult} from '../lit-exports/base-lit-exports.js';
 import {type CustomElementTagName} from './custom-tag-name.js';
 import {type DeclarativeElementDefinitionOptions} from './definition-options.js';
+import {type keyedCache} from './directives/keyed-cache.directive.js';
 import {type CssVarsInitMap} from './properties/css-vars.js';
 import {type EventsInitMap} from './properties/element-events.js';
 import {type PropertyInitMapBase} from './properties/element-properties.js';
@@ -88,6 +89,18 @@ export type DeclarativeElementInit<
               SlotNames,
               TestIds
           >
+        | undefined;
+    /**
+     * Optional callback to create a cache key from the current inputs and state. When provided, and
+     * the callback returns a non-undefined and non-null value, the element's render output is
+     * automatically wrapped in {@link keyedCache}, preserving DOM state (typed input values,
+     * checkbox state, etc.) across key changes. If `undefined` or `null` are returned,
+     * {@link keyedCache} will not be used.
+     */
+    cacheKey?:
+        | ((
+              params: Readonly<{inputs: Readonly<Inputs>; state: Readonly<State>}>,
+          ) => PropertyKey | undefined | null)
         | undefined;
     /** Called whenever an element updates. This creates the element's HTML. */
     render: RenderCallback<

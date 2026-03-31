@@ -20,7 +20,7 @@ export type HostClassesInitMap<
      * Callback to determine when host class should be enabled (based on current inputs and state),
      * or just undefined to mark that this host class name will only be manually applied.
      */
-    ((inputs: {state: Readonly<State>; inputs: Readonly<Inputs>}) => boolean) | false
+    ((inputs: Readonly<{state: Readonly<State>; inputs: Readonly<Inputs>}>) => boolean) | false
 >;
 
 /**

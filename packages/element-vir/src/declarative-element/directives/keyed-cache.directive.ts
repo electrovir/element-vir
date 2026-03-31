@@ -12,6 +12,11 @@ import {
     setCommittedValue,
 } from '../../lit-exports/all-lit-exports.js';
 
+/**
+ * Implementation for {@link keyedCache}.
+ *
+ * @category Internal
+ */
 class KeyedCacheDirective extends AsyncDirective {
     private readonly cache = new Map<PropertyKey, RootPart>();
     private currentKey: PropertyKey | undefined = undefined;
@@ -20,6 +25,7 @@ class KeyedCacheDirective extends AsyncDirective {
         super(partInfo);
     }
 
+    /** Render the value. */
     public render(_key: PropertyKey, value: unknown) {
         /**
          * Return an array of the value to induce lit-html to create a ChildPart for the value that
@@ -28,6 +34,7 @@ class KeyedCacheDirective extends AsyncDirective {
         return [value];
     }
 
+    /** Update the template based on the cache key. */
     public override update(
         containerPart: ChildPart,
         [
@@ -75,10 +82,12 @@ class KeyedCacheDirective extends AsyncDirective {
         return this.render(key, value);
     }
 
+    /** Handle disconnection. */
     public override disconnected() {
         this.clearCache();
     }
 
+    /** Handle reconnection. */
     public override reconnected() {
         /**
          * Nothing to restore — the active key's DOM is still live in the container part. Cached
@@ -86,6 +95,7 @@ class KeyedCacheDirective extends AsyncDirective {
          */
     }
 
+    /** Clear the cache. */
     protected clearCache() {
         for (const cachedPart of this.cache.values()) {
             cachedPart.setConnected(false);

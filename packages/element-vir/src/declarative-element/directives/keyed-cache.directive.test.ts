@@ -527,7 +527,7 @@ describe('cacheKey element init property', () => {
 
     function getKeyLabel(fixture: Element) {
         const shadowRoot = (fixture as HTMLElement & {shadowRoot: ShadowRoot}).shadowRoot;
-        return shadowRoot.querySelector('.key-label')?.textContent?.trim() || '';
+        return shadowRoot.querySelector('.key-label')?.textContent.trim() || '';
     }
 
     function getInput(fixture: Element) {
