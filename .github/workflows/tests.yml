@@ -21,6 +21,10 @@ jobs:
             - uses: actions/setup-node@v4.0.3
               with:
                   node-version-file: '.nvmrc'
+            # npm 11+ is needed for $-reference overrides in npm query
+            - shell: bash
+              run: |
+                  npm i -g npm@11.4.2
             # handle NPM / Node.js repeatedly bricking their npm setup on Windows
             # Note that this won't work if it uses --no-save
             - if: runner.os == 'Windows'
