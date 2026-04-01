@@ -1,7 +1,7 @@
 import {assert, waitUntil} from '@augment-vir/assert';
 import {describe, it, testWeb} from '@augment-vir/test';
 import {waitForAnimationFrame} from '@augment-vir/web';
-import {defineElement, html, keyedCache} from '../../index.js';
+import {defineElement, html, keyedCache, listen} from '../../index.js';
 
 describe('keyedCache', () => {
     const TestKeyedCacheElement = defineElement<{activeKey: string}>()({
@@ -508,5 +508,142 @@ describe('keyedCache', () => {
         /** The event listener should still be attached to the restored DOM node. */
         restoredInput.click();
         assert.strictEquals(clickCount, 2);
+    });
+
+    it('preserves element-vir element state across key switches', async () => {
+        const StatefulChild = defineElement<{label: string}>()({
+            tagName: 'test-keyed-cache-stateful-child',
+            state() {
+                return {
+                    clickCount: 0,
+                    lastMessage: '',
+                };
+            },
+            render({state, updateState, inputs}) {
+                return html`
+                    <span class="child-label">${inputs.label}</span>
+                    <span class="click-count">${state.clickCount}</span>
+                    <span class="last-message">${state.lastMessage}</span>
+                    <button
+                        class="increment-button"
+                        ${listen('click', () => {
+                            updateState({
+                                clickCount: state.clickCount + 1,
+                            });
+                        })}
+                    ></button>
+                    <input
+                        class="message-input"
+                        ${listen('input', (event) => {
+                            updateState({
+                                lastMessage: (event.target as HTMLInputElement).value,
+                            });
+                        })}
+                    />
+                `;
+            },
+        });
+
+        const ParentElement = defineElement<{activeKey: string}>()({
+            tagName: 'test-keyed-cache-stateful-parent',
+            render({inputs}) {
+                return html`
+                    <span class="key-label">${inputs.activeKey}</span>
+                    ${keyedCache(
+                        inputs.activeKey,
+                        html`
+                            <${StatefulChild.assign({
+                                label: inputs.activeKey,
+                            })}></${StatefulChild}>
+                        `,
+                    )}
+                `;
+            },
+        });
+
+        const fixture = await testWeb.render(html`
+            <${ParentElement.assign({
+                activeKey: 'state-a',
+            })}></${ParentElement}>
+        `);
+        assert.instanceOf(fixture, ParentElement);
+
+        const parentShadow = fixture.shadowRoot;
+
+        /** Wait for the child to render. */
+        await waitUntil.isTruthy(() =>
+            parentShadow.querySelector('test-keyed-cache-stateful-child'),
+        );
+
+        const childA = parentShadow.querySelector('test-keyed-cache-stateful-child');
+        assert.instanceOf(childA, StatefulChild);
+
+        /** Mutate the child's internal state by clicking the button and typing in the input. */
+        const buttonA = childA.shadowRoot.querySelector('.increment-button');
+        assert.instanceOf(buttonA, HTMLButtonElement);
+        buttonA.click();
+        buttonA.click();
+        buttonA.click();
+
+        const inputA = childA.shadowRoot.querySelector('.message-input');
+        assert.instanceOf(inputA, HTMLInputElement);
+        inputA.value = 'hello from state-a';
+        inputA.dispatchEvent(new Event('input'));
+
+        await waitUntil.strictEquals(3, () => childA.instanceState.clickCount);
+        await waitUntil.strictEquals('hello from state-a', () => childA.instanceState.lastMessage);
+
+        /** Switch to key 'state-b'. */
+        fixture.assignInputs({
+            activeKey: 'state-b',
+        });
+        await waitUntil.strictEquals('state-b', () => getKeyLabel(fixture));
+        await waitUntil.isTruthy(() =>
+            parentShadow.querySelector('test-keyed-cache-stateful-child'),
+        );
+
+        const childB = parentShadow.querySelector('test-keyed-cache-stateful-child');
+        assert.instanceOf(childB, StatefulChild);
+
+        /** The new child should have fresh default state. */
+        await waitUntil.strictEquals(0, () => childB.instanceState.clickCount);
+        assert.strictEquals(childB.instanceState.lastMessage, '');
+
+        /** Mutate child B's state. */
+        const buttonB = childB.shadowRoot.querySelector('.increment-button');
+        assert.instanceOf(buttonB, HTMLButtonElement);
+        buttonB.click();
+
+        await waitUntil.strictEquals(1, () => childB.instanceState.clickCount);
+
+        /** Switch back to key 'state-a'. */
+        fixture.assignInputs({
+            activeKey: 'state-a',
+        });
+        await waitUntil.strictEquals('state-a', () => getKeyLabel(fixture));
+        await waitForAnimationFrame(2);
+
+        const restoredChildA = parentShadow.querySelector('test-keyed-cache-stateful-child');
+        assert.instanceOf(restoredChildA, StatefulChild);
+
+        /** The restored child should be the exact same element instance. */
+        assert.strictEquals(restoredChildA, childA);
+
+        /** Its internal element state should be fully preserved. */
+        assert.strictEquals(restoredChildA.instanceState.clickCount, 3);
+        assert.strictEquals(restoredChildA.instanceState.lastMessage, 'hello from state-a');
+
+        /** Switch back to 'state-b' and verify its state too. */
+        fixture.assignInputs({
+            activeKey: 'state-b',
+        });
+        await waitUntil.strictEquals('state-b', () => getKeyLabel(fixture));
+        await waitForAnimationFrame(2);
+
+        const restoredChildB = parentShadow.querySelector('test-keyed-cache-stateful-child');
+        assert.instanceOf(restoredChildB, StatefulChild);
+        assert.strictEquals(restoredChildB, childB);
+        assert.strictEquals(restoredChildB.instanceState.clickCount, 1);
+        assert.strictEquals(restoredChildB.instanceState.lastMessage, '');
     });
 });
