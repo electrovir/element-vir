@@ -16,14 +16,14 @@ export type BaseStringName<ElementTagName extends CustomElementTagName> =
  */
 export function assertValidStringNames(
     elementTagName: CustomElementTagName,
-    stringNames: Record<BaseStringName<CustomElementTagName>, any>,
+    stringNames: ReadonlyArray<string>,
 ): void {
     const requiredNameStart = [
         elementTagName,
         '-',
     ].join('');
 
-    Object.keys(stringNames).forEach((stringName) => {
+    stringNames.forEach((stringName) => {
         if (!stringName.startsWith(requiredNameStart)) {
             throw new Error(
                 `Invalid element string name '${stringName}' in '${elementTagName}': element string names must begin with the element's tag name.`,
@@ -80,4 +80,60 @@ export function createStringNameMap<
     );
 
     return stringNameMap as StringNameMap<ElementTagName, NameType, StringNames>;
+}
+
+/**
+ * Identity map of slot names. Slot names are defined with the element's tag name as a prefix, so no
+ * extra string generation is required: each map key maps to itself.
+ *
+ * Note that if a slot name is _incorrectly_ defined without the element's tag name as the prefix,
+ * then the runtime value will actually be `${ElementTagName}-slot-${Name}`.
+ *
+ * @category Internal
+ */
+export type SlotNamesMap<SlotNames extends ReadonlyArray<string>> = Readonly<{
+    [Name in ArrayElement<SlotNames>]: Name;
+}>;
+
+/**
+ * Converts an array of slot names into a {@link SlotNamesMap}.
+ *
+ * Slot names that start with the element's tag name pass through unchanged. Slot names that do not
+ * are transformed into the legacy `${tagName}-slot-${name}` format so existing elements that
+ * pre-date the tag prefix convention keep working.
+ *
+ * @category Internal
+ */
+export function createSlotNamesMap<
+    ElementTagName extends CustomElementTagName,
+    SlotNames extends ReadonlyArray<string>,
+>(elementTagName: ElementTagName, slotNames: SlotNames | undefined): SlotNamesMap<SlotNames> {
+    if (!slotNames) {
+        return {} as SlotNamesMap<SlotNames>;
+    }
+    const requiredNameStart = [
+        elementTagName,
+        '-',
+    ].join('');
+    const slotNamesMap: Record<string, string> = arrayToObject(
+        slotNames,
+        (slotName) => {
+            const value = slotName.startsWith(requiredNameStart)
+                ? slotName
+                : [
+                      elementTagName,
+                      'slot',
+                      slotName,
+                  ].join('-');
+            return {
+                key: slotName,
+                value,
+            };
+        },
+        {
+            useRequired: true,
+        },
+    );
+
+    return slotNamesMap as SlotNamesMap<SlotNames>;
 }

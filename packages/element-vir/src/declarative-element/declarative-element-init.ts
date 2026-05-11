@@ -20,8 +20,8 @@ export type DeclarativeElementInit<
     Inputs extends PropertyInitMapBase,
     State extends PropertyInitMapBase,
     EventsInit extends EventsInitMap,
-    HostClassKeys extends BaseStringName<TagName>,
-    CssVarKeys extends BaseStringName<TagName>,
+    HostClassKeys extends BaseStringName<NoInfer<TagName>>,
+    CssVarKeys extends BaseStringName<NoInfer<TagName>>,
     SlotNames extends ReadonlyArray<string>,
     TestIds extends ReadonlyArray<string>,
 > = {
@@ -31,10 +31,16 @@ export type DeclarativeElementInit<
      */
     tagName: TagName;
     /** Static styles. These should not and cannot change. */
-    styles?: CSSResult | StylesCallback<TagName, HostClassKeys, CssVarKeys> | undefined;
+    styles?: CSSResult | StylesCallback<TagName, HostClassKeys, CssVarKeys, SlotNames> | undefined;
     /** Events that the element can dispatch. (These can be thought of as "outputs".) */
     events?: EventsInit | undefined;
-    slotNames?: SlotNames | undefined;
+    /**
+     * An array of slot names that for type safe usage in rendering HTML, CSS, and in consumers for
+     * assigning slots. Each slot name must be prefixed with the element's tag name. This prefix is
+     * enforced at compile time only: runtimes accept any strings so existing consumers do not
+     * break.
+     */
+    slotNames?: (SlotNames & ReadonlyArray<BaseStringName<TagName>>) | undefined;
     testIds?: TestIds | undefined;
     /**
      * HTML host classes. Values can be callbacks to determine when a host class should be defined,

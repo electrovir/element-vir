@@ -10,7 +10,11 @@ import {
     type EventsInitMap,
 } from './properties/element-events.js';
 import {type PropertyInitMapBase} from './properties/element-properties.js';
-import {type BaseStringName, type StringNameMap} from './properties/string-names.js';
+import {
+    type BaseStringName,
+    type SlotNamesMap,
+    type StringNameMap,
+} from './properties/string-names.js';
 
 /**
  * Type for the `render` element definition method.
@@ -104,7 +108,7 @@ export type RenderParams<
         SlotNames,
         TestIds
     >;
-    slotNames: Readonly<StringNameMap<TagName, 'slot', SlotNames>>;
+    slotNames: SlotNamesMap<SlotNames>;
     testIds: Readonly<StringNameMap<TagName, 'test-id', TestIds>>;
     /** Dispatch an event from the current element. */
     dispatch: <EventTypeName extends keyof EventsInit>(
@@ -152,7 +156,7 @@ export function createRenderParams<
     >;
     eventsMap: EventDescriptorMap<TagName, EventsInit>;
     cssVars: Readonly<CssVars<TagName, CssVarKeys>>;
-    slotNamesMap: Readonly<StringNameMap<TagName, 'slot', SlotNames>>;
+    slotNamesMap: SlotNamesMap<SlotNames>;
     testIdsMap: Readonly<StringNameMap<TagName, 'test-id', TestIds>>;
 }): RenderParams<
     TagName,

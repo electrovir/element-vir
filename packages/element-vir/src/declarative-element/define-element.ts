@@ -35,6 +35,7 @@ import {bindReactiveProperty, createElementPropertyProxy} from './properties/pro
 import {
     type BaseStringName,
     assertValidStringNames,
+    createSlotNamesMap,
     createStringNameMap,
 } from './properties/string-names.js';
 import {applyHostClasses, createStylesCallbackInput} from './properties/styles.js';
@@ -86,8 +87,8 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>(
         const TagName extends CustomElementTagName,
         State extends PropertyInitMapBase = {},
         EventsInit extends EventsInitMap = {},
-        const HostClassKeys extends BaseStringName<TagName> = `${TagName}-`,
-        const CssVarKeys extends BaseStringName<TagName> = `${TagName}-`,
+        const HostClassKeys extends BaseStringName<NoInfer<TagName>> = `${NoInfer<TagName>}-`,
+        const CssVarKeys extends BaseStringName<NoInfer<TagName>> = `${NoInfer<TagName>}-`,
         const SlotNames extends ReadonlyArray<string> = Readonly<[]>,
         const TestIds extends ReadonlyArray<string> = Readonly<[]>,
     >(
@@ -142,8 +143,8 @@ function internalDefineElement<
     Inputs extends PropertyInitMapBase = {},
     State extends PropertyInitMapBase = {},
     EventsInit extends EventsInitMap = {},
-    const HostClassKeys extends BaseStringName<TagName> = `${TagName}-`,
-    const CssVarKeys extends BaseStringName<TagName> = `${TagName}-`,
+    const HostClassKeys extends BaseStringName<NoInfer<TagName>> = `${NoInfer<TagName>}-`,
+    const CssVarKeys extends BaseStringName<NoInfer<TagName>> = `${NoInfer<TagName>}-`,
     const SlotNames extends ReadonlyArray<string> = Readonly<[]>,
     const TestIds extends ReadonlyArray<string> = Readonly<[]>,
 >(
@@ -213,10 +214,10 @@ function internalDefineElement<
         init.hostClasses,
     );
     if (init.hostClasses) {
-        assertValidStringNames(init.tagName, init.hostClasses);
+        assertValidStringNames(init.tagName, Object.keys(init.hostClasses));
     }
     if (init.cssVars) {
-        assertValidStringNames(init.tagName, init.cssVars);
+        assertValidStringNames(init.tagName, Object.keys(init.cssVars));
     }
     /**
      * As casts here are to prevent defineCssVars from complaining that our CSS var names are too
@@ -238,7 +239,7 @@ function internalDefineElement<
         CssVarKeys,
         SlotNames,
         TestIds
-    >['slotNames'] = createStringNameMap(init.tagName, 'slot', init.slotNames);
+    >['slotNames'] = createSlotNamesMap(init.tagName, init.slotNames as SlotNames | undefined);
     const testIdsMap: StaticDeclarativeElementProperties<
         TagName,
         Inputs,
@@ -256,6 +257,7 @@ function internalDefineElement<
                   createStylesCallbackInput({
                       hostClassNames,
                       cssVars,
+                      slotNamesMap,
                   }),
               )
             : init.styles || css``;

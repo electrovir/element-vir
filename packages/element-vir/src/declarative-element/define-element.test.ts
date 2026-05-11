@@ -3,6 +3,8 @@ import {randomBoolean, randomString} from '@augment-vir/common';
 import {describe, it, testWeb} from '@augment-vir/test';
 import {queryThroughShadow} from '@augment-vir/web';
 import {IntervalObservable} from 'observavir';
+import {type CSSResult} from '../lit-exports/base-lit-exports.js';
+import {css} from '../template-transforms/vir-css/vir-css.js';
 import {html} from '../template-transforms/vir-html/vir-html.js';
 import {defineElement} from './define-element.js';
 
@@ -221,17 +223,141 @@ describe(defineElement.name, () => {
         }
     });
 
-    it('preserves slot names', () => {
+    it('preserves slot names as identity values', () => {
         const MyElement = defineElement()({
             tagName: 'just-some-element-with-slot-names',
-            slotNames: ['yo'],
+            slotNames: [
+                'just-some-element-with-slot-names-yo',
+            ],
             render({slotNames}) {
-                assert.tsType(slotNames.yo).equals<'just-some-element-with-slot-names-slot-yo'>();
+                assert
+                    .tsType(slotNames['just-some-element-with-slot-names-yo'])
+                    .equals<'just-some-element-with-slot-names-yo'>();
                 return 'hi';
             },
         });
-        assert.tsType(MyElement.slotNames.yo).equals<'just-some-element-with-slot-names-slot-yo'>();
-        assert.strictEquals(MyElement.slotNames.yo, 'just-some-element-with-slot-names-slot-yo');
+        assert
+            .tsType(MyElement.slotNames['just-some-element-with-slot-names-yo'])
+            .equals<'just-some-element-with-slot-names-yo'>();
+        assert.tsType(MyElement.slotNames).equals<
+            Readonly<{
+                'just-some-element-with-slot-names-yo': 'just-some-element-with-slot-names-yo';
+            }>
+        >();
+        assert.strictEquals(
+            MyElement.slotNames['just-some-element-with-slot-names-yo'],
+            'just-some-element-with-slot-names-yo',
+        );
+    });
+
+    it('falls back to legacy generation for slot names not prefixed with the element tag name', () => {
+        const MyElement = defineElement()({
+            tagName: 'element-rejects-bad-slot-names',
+            // @ts-expect-error: slot names must start with the tag name
+            slotNames: [
+                'header',
+            ],
+            render() {
+                return 'hi';
+            },
+        });
+
+        assert.strictEquals(MyElement.tagName, 'element-rejects-bad-slot-names');
+        assert.strictEquals(
+            MyElement.slotNames.header as string,
+            'element-rejects-bad-slot-names-slot-header',
+        );
+        assert.tsType(MyElement.slotNames).equals<
+            Readonly<{
+                header: 'header';
+            }>
+        >();
+    });
+
+    it('passes slot names to the styles callback as CSSResult values', () => {
+        const MyElement = defineElement()({
+            tagName: 'element-with-slot-names-in-styles',
+            slotNames: [
+                'element-with-slot-names-in-styles-header',
+                'element-with-slot-names-in-styles-footer',
+            ],
+            styles: ({slotNames}) => {
+                assert
+                    .tsType(slotNames['element-with-slot-names-in-styles-header'])
+                    .equals<CSSResult>();
+                assert
+                    .tsType(slotNames['element-with-slot-names-in-styles-footer'])
+                    .equals<CSSResult>();
+                assert.strictEquals(
+                    slotNames['element-with-slot-names-in-styles-header'].cssText,
+                    'element-with-slot-names-in-styles-header',
+                );
+                assert.strictEquals(
+                    slotNames['element-with-slot-names-in-styles-footer'].cssText,
+                    'element-with-slot-names-in-styles-footer',
+                );
+                return css`
+                    ::slotted([slot='${slotNames['element-with-slot-names-in-styles-header']}']) {
+                        color: red;
+                    }
+                `;
+            },
+            render() {
+                return 'hi';
+            },
+        });
+
+        assert.isTrue(
+            MyElement.styles.cssText.includes(
+                "::slotted([slot='element-with-slot-names-in-styles-header'])",
+            ),
+        );
+    });
+
+    it('passes the same slot names to both styles and render callbacks', async () => {
+        const slotNamesFromStyles: Record<string, string> = {};
+        const slotNamesFromRender: Record<string, string> = {};
+
+        const MyElement = defineElement()({
+            tagName: 'element-shared-slot-names',
+            slotNames: [
+                'element-shared-slot-names-a',
+                'element-shared-slot-names-b',
+            ],
+            styles: ({slotNames}) => {
+                slotNamesFromStyles.a = slotNames['element-shared-slot-names-a'].cssText;
+                slotNamesFromStyles.b = slotNames['element-shared-slot-names-b'].cssText;
+                return css``;
+            },
+            render({slotNames}) {
+                slotNamesFromRender.a = slotNames['element-shared-slot-names-a'];
+                slotNamesFromRender.b = slotNames['element-shared-slot-names-b'];
+                return 'hi';
+            },
+        });
+
+        await testWeb.render(html`
+            <${MyElement}></${MyElement}>
+        `);
+
+        assert.deepEquals(slotNamesFromStyles, slotNamesFromRender);
+        assert.deepEquals(slotNamesFromStyles, {
+            a: 'element-shared-slot-names-a',
+            b: 'element-shared-slot-names-b',
+        });
+    });
+
+    it('passes an empty slot names object to styles when no slot names are defined', () => {
+        defineElement()({
+            tagName: 'element-no-slot-names-in-styles',
+            styles: ({slotNames}) => {
+                assert.isEmpty(Object.keys(slotNames));
+                return css``;
+            },
+            render() {
+                return 'hi';
+            },
+        });
     });
 
     it('preserves test ids', () => {
@@ -300,7 +426,7 @@ describe(defineElement.name, () => {
         const myTestElement = defineElement()({
             tagName: 'test-element-no-inputs-with-slot-names',
             slotNames: [
-                'my slot',
+                'test-element-no-inputs-with-slot-names-my-slot',
             ],
             render() {
                 return 'hi';
@@ -308,12 +434,14 @@ describe(defineElement.name, () => {
         });
 
         assert
-            .tsType(myTestElement.slotNames['my slot'])
-            .equals<'test-element-no-inputs-with-slot-names-slot-my slot'>();
-        assert.tsType(myTestElement.slotNames['my slot']).matches<string>();
+            .tsType(myTestElement.slotNames['test-element-no-inputs-with-slot-names-my-slot'])
+            .equals<'test-element-no-inputs-with-slot-names-my-slot'>();
+        assert
+            .tsType(myTestElement.slotNames['test-element-no-inputs-with-slot-names-my-slot'])
+            .matches<string>();
         assert.strictEquals(
-            myTestElement.slotNames['my slot'],
-            'test-element-no-inputs-with-slot-names-slot-my slot',
+            myTestElement.slotNames['test-element-no-inputs-with-slot-names-my-slot'],
+            'test-element-no-inputs-with-slot-names-my-slot',
         );
     });
 

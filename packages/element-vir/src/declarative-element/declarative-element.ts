@@ -10,7 +10,11 @@ import {type EventDescriptorMap, type EventsInitMap} from './properties/element-
 import {type PropertyInitMapBase} from './properties/element-properties.js';
 import {type HostClassNamesMap} from './properties/host-classes.js';
 import {type ObservableListenerMap} from './properties/property-proxy.js';
-import {type BaseStringName, type StringNameMap} from './properties/string-names.js';
+import {
+    type BaseStringName,
+    type SlotNamesMap,
+    type StringNameMap,
+} from './properties/string-names.js';
 import {
     type RenderCallback,
     type RenderParams,
@@ -28,8 +32,8 @@ export type DeclarativeElementHost<
     Inputs extends PropertyInitMapBase = any,
     State extends PropertyInitMapBase = any,
     EventsInit extends EventsInitMap = any,
-    HostClassKeys extends BaseStringName<TagName> = any,
-    CssVarKeys extends BaseStringName<TagName> = any,
+    HostClassKeys extends BaseStringName<NoInfer<TagName>> = any,
+    CssVarKeys extends BaseStringName<NoInfer<TagName>> = any,
     SlotNames extends ReadonlyArray<string> = any,
     TestIds extends ReadonlyArray<string> = any,
 > = SetRequiredAndNotNull<
@@ -62,8 +66,8 @@ export type DeclarativeElementDefinition<
     Inputs extends PropertyInitMapBase = any,
     State extends PropertyInitMapBase = any,
     EventsInit extends EventsInitMap = any,
-    HostClassKeys extends BaseStringName<TagName> = any,
-    CssVarKeys extends BaseStringName<TagName> = any,
+    HostClassKeys extends BaseStringName<NoInfer<TagName>> = any,
+    CssVarKeys extends BaseStringName<NoInfer<TagName>> = any,
     SlotNames extends ReadonlyArray<string> = any,
     TestIds extends ReadonlyArray<string> = any,
 > = (new () => DeclarativeElementHost<
@@ -108,8 +112,8 @@ export abstract class DeclarativeElement<
     Inputs extends PropertyInitMapBase = any,
     State extends PropertyInitMapBase = any,
     EventsInit extends EventsInitMap = any,
-    HostClassKeys extends BaseStringName<TagName> = any,
-    CssVarKeys extends BaseStringName<TagName> = any,
+    HostClassKeys extends BaseStringName<NoInfer<TagName>> = any,
+    CssVarKeys extends BaseStringName<NoInfer<TagName>> = any,
     SlotNames extends ReadonlyArray<string> = any,
     TestIds extends ReadonlyArray<string> = any,
 > extends LitElement {
@@ -329,8 +333,8 @@ export type StaticDeclarativeElementProperties<
     Inputs extends PropertyInitMapBase,
     State extends PropertyInitMapBase,
     EventsInit extends EventsInitMap,
-    HostClassKeys extends BaseStringName<TagName>,
-    CssVarKeys extends BaseStringName<TagName>,
+    HostClassKeys extends BaseStringName<NoInfer<TagName>>,
+    CssVarKeys extends BaseStringName<NoInfer<TagName>>,
     SlotNames extends ReadonlyArray<string>,
     TestIds extends ReadonlyArray<string>,
 > = {
@@ -350,7 +354,7 @@ export type StaticDeclarativeElementProperties<
         TestIds
     >;
     readonly events: EventDescriptorMap<TagName, EventsInit>;
-    readonly slotNames: Readonly<StringNameMap<TagName, 'slot', SlotNames>>;
+    readonly slotNames: SlotNamesMap<SlotNames>;
     readonly testIds: Readonly<StringNameMap<TagName, 'test-id', TestIds>>;
     readonly init: DeclarativeElementInit<
         TagName,
