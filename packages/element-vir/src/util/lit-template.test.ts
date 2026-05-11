@@ -14,7 +14,7 @@ describe(convertTemplateToString.name, () => {
         },
         {
             it: 'should handle unsafe SVG',
-            input: unsafeSVG(`<svg></svg>`),
+            input: unsafeSVG('<svg></svg>'),
             expect: '<svg></svg>',
         },
     ]);

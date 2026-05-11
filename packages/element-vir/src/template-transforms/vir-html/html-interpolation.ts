@@ -68,7 +68,7 @@ export type VerifyHtmlValues<
         ? HasRequiredKeys<Inputs> extends true
             ? IsNever<Decrement<WaitingForEndTags[TagName]>> extends true
                 ? [
-                      `ERROR: This element is missing its inputs.`,
+                      'ERROR: This element is missing its inputs.',
                       ...VerifyHtmlValues<Rest, WaitingForEndTags>,
                   ]
                 : [
@@ -81,8 +81,14 @@ export type VerifyHtmlValues<
                           >
                       >,
                   ]
-            : [CurrentDefinition, ...VerifyHtmlValues<Rest, WaitingForEndTags>]
-        : [CurrentDefinition, ...VerifyHtmlValues<Rest, WaitingForEndTags>]
+            : [
+                  CurrentDefinition,
+                  ...VerifyHtmlValues<Rest, WaitingForEndTags>,
+              ]
+        : [
+              CurrentDefinition,
+              ...VerifyHtmlValues<Rest, WaitingForEndTags>,
+          ]
     : Values extends [
             infer CurrentDefinition extends MinimalDefinitionWithInputs,
             ...infer Rest extends HtmlInterpolation[],

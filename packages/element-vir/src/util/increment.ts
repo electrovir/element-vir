@@ -53,7 +53,10 @@ export type Increment<T> =
         ? IsNever<T> extends true
             ? 1
             : never
-        : Incrementable extends [any, ...infer Rest]
+        : Incrementable extends [
+                any,
+                ...infer Rest,
+            ]
           ? T extends keyof Rest
               ? Rest[T] extends undefined
                   ? never
@@ -70,5 +73,8 @@ export type Decrement<T> =
     IsNever<Extract<ArrayElement<Incrementable>, T>> extends true
         ? never
         : T extends keyof Incrementable
-          ? [never, ...Incrementable][T]
+          ? [
+                never,
+                ...Incrementable,
+            ][T]
           : never;

@@ -64,7 +64,7 @@ export const TestChildElement = defineElement<{
                         });
                     } else {
                         console.error(element);
-                        throw new Error(`obtained element is not a button!`);
+                        throw new Error('obtained element is not a button!');
                     }
                 })}
                 ${listen('click', () => {

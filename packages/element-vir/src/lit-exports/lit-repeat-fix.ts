@@ -35,10 +35,7 @@ declare class RepeatDirective extends Directive {
             template,
         ]: [
             Iterable<T>,
-            (
-                | KeyFn<T>
-                | ItemTemplate<T>
-            ),
+            KeyFn<T> | ItemTemplate<T>,
             ItemTemplate<T>,
         ],
     ): HtmlInterpolation[] | typeof noChange;

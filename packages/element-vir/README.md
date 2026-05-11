@@ -523,7 +523,7 @@ export const defineVirElement = wrapDefineElement<VirTagName>();
 export const defineVerifiedVirElement = wrapDefineElement<VirTagName>({
     assertInputs: (inputs) => {
         if (!inputs.tagName.startsWith('vir-')) {
-            throw new Error(`all custom elements must start with "vir-"`);
+            throw new Error('all custom elements must start with "vir-"');
         }
     },
 });

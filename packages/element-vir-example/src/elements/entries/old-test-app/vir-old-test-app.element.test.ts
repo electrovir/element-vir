@@ -9,7 +9,10 @@ import {VirOldTestApp} from './vir-old-test-app.element.js';
 function queryTree(
     context: Element | undefined,
     // at least one string is required or this function makes no sense
-    selectors: [string, ...string[]],
+    selectors: [
+        string,
+        ...string[],
+    ],
 ): Element | undefined {
     /**
      * The callback is split out here to appears the Type Gods. Without it, finalElement will be the

@@ -94,7 +94,7 @@ function handleOnResizeCallback(
     const resizeEntry = entries[0];
     if (!resizeEntry) {
         console.error(entries);
-        throw new Error(`Resize observation triggered but the first entry was empty.`);
+        throw new Error('Resize observation triggered but the first entry was empty.');
     }
     void callback(
         {

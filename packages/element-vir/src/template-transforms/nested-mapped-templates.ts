@@ -82,7 +82,7 @@ function getNestedValues(
     } else if (index === keys.length - 1) {
         return {
             value: currentTemplateAndNested,
-            reason: `reached end of keys array`,
+            reason: 'reached end of keys array',
         };
     } else if (!currentTemplateAndNested.nested) {
         return {
@@ -129,7 +129,7 @@ function getCurrentKeyAndValue(
     return {
         currentKey,
         currentTemplateAndNested,
-        reason: `key and value exists`,
+        reason: 'key and value exists',
     };
 }
 
@@ -159,7 +159,7 @@ function setNestedValues(
         nestedAndTemplate.template = valueToSet;
         return {
             result: true,
-            reason: `set value at end of keys array`,
+            reason: 'set value at end of keys array',
         };
     }
 

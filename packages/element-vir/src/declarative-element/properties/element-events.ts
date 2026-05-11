@@ -118,7 +118,7 @@ export function createEventDescriptorMap<
                             )}`,
                         );
                     } else if (currentElementEventKey === '') {
-                        throw new Error(`Got empty string for events key.`);
+                        throw new Error('Got empty string for events key.');
                     }
                     return true;
                 },
