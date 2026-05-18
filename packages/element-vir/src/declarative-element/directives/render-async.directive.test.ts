@@ -113,3 +113,85 @@ describe(asyncProp.name, () => {
         assert.strictEquals(extractElementText(instance), `Got\n${randomValue.toFixed()}`);
     });
 });
+
+describe(renderAsync.name, () => {
+    it('returns the error message by default when no errorRender is provided', () => {
+        const result = renderAsync(
+            {
+                value: new Error('boom'),
+                lastResolvedValue: undefined,
+            },
+            'fallback',
+        );
+        assert.strictEquals(result, 'boom');
+    });
+
+    it('invokes errorRender when provided and the value is an Error', () => {
+        const result = renderAsync(
+            {
+                value: new Error('boom'),
+                lastResolvedValue: undefined,
+            },
+            'fallback',
+            undefined,
+            (error) => `caught: ${error.message}`,
+        );
+        assert.strictEquals(result, 'caught: boom');
+    });
+
+    it('returns the raw value when no resolutionRender is provided', () => {
+        const result = renderAsync(
+            {
+                value: 'resolved',
+                lastResolvedValue: undefined,
+            },
+            'fallback',
+        );
+        assert.strictEquals(result, 'resolved');
+    });
+
+    it('returns fallback while pending', () => {
+        const pendingPromise = Promise.resolve('eventual');
+        const result = renderAsync(
+            {
+                value: pendingPromise,
+                lastResolvedValue: undefined,
+            },
+            'fallback',
+        );
+        assert.strictEquals(result, 'fallback');
+    });
+
+    it('with useLastResolvedValue returns fallback when no last value exists', () => {
+        const pendingPromise = Promise.resolve('eventual');
+        const result = renderAsync(
+            {
+                value: pendingPromise,
+                lastResolvedValue: undefined,
+            },
+            'fallback',
+            undefined,
+            undefined,
+            {
+                useLastResolvedValue: true,
+            },
+        );
+        assert.strictEquals(result, 'fallback');
+    });
+
+    it('with useLastResolvedValue returns the last resolved value while a new request is pending', () => {
+        const result = renderAsync<string, string>(
+            {
+                value: Promise.resolve('next'),
+                lastResolvedValue: 'last',
+            },
+            'fallback',
+            undefined,
+            undefined,
+            {
+                useLastResolvedValue: true,
+            },
+        );
+        assert.strictEquals(result, 'last');
+    });
+});

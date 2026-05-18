@@ -646,4 +646,40 @@ describe('keyedCache', () => {
         assert.strictEquals(restoredChildB.instanceState.clickCount, 1);
         assert.strictEquals(restoredChildB.instanceState.lastMessage, '');
     });
+
+    it('clears its cache on disconnect and rebuilds on reconnect', async () => {
+        const fixture = await testWeb.render(html`
+            <${TestKeyedCacheElement.assign({
+                activeKey: 'first',
+            })}></${TestKeyedCacheElement}>
+        `);
+        assert.instanceOf(fixture, TestKeyedCacheElement);
+
+        const input = getInput(fixture);
+        assert.instanceOf(input, HTMLInputElement);
+        input.value = 'typed';
+
+        /** Switch keys to push the first key into the cache. */
+        fixture.assignInputs({
+            activeKey: 'second',
+        });
+        await waitUntil.strictEquals('second', () => getKeyLabel(fixture));
+
+        /** Disconnect → reconnect to exercise the directive's lifecycle hooks. */
+        const parent = fixture.parentNode;
+        assert.isTruthy(parent);
+        fixture.remove();
+        parent.append(fixture);
+        await waitForAnimationFrame(2);
+
+        /** Re-rendering with the first key should produce a fresh input (cache was cleared). */
+        fixture.assignInputs({
+            activeKey: 'first',
+        });
+        await waitUntil.strictEquals('first', () => getKeyLabel(fixture));
+
+        const inputAfter = getInput(fixture);
+        assert.instanceOf(inputAfter, HTMLInputElement);
+        assert.strictEquals(inputAfter.value, '');
+    });
 });

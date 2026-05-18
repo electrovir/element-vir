@@ -85,4 +85,23 @@ describe('attributes directive', () => {
             () => readAllAttributes(innerDiv),
         );
     });
+
+    it('does nothing when the attributes argument is undefined', async () => {
+        const TestElement = defineElement()({
+            tagName: 'attributes-directive-undefined-test',
+            render() {
+                return html`
+                    <div ${attributes(undefined)}>just a div</div>
+                `;
+            },
+        });
+
+        const fixture = await testWeb.render(html`
+            <${TestElement}></${TestElement}>
+        `);
+        assert.instanceOf(fixture, TestElement);
+        const innerDiv = fixture.shadowRoot.querySelector('div');
+        assert.instanceOf(innerDiv, HTMLDivElement);
+        assert.deepEquals(readAllAttributes(innerDiv), {});
+    });
 });

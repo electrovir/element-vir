@@ -1,6 +1,6 @@
 import {defineElement} from 'element-vir';
 import {html, listen} from '../index.js';
-import {MyWithEvents} from './my-with-events.element.js';
+import {MyWithEvents} from './my-with-events.example.js';
 
 export const MyWithEventListening = defineElement()({
     tagName: 'my-with-event-listening',

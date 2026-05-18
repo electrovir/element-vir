@@ -1,6 +1,6 @@
 import {defineElement} from 'element-vir';
 import {html} from '../index.js';
-import {MyWithHostClassDefinition} from './my-with-host-class-definition.element.js';
+import {MyWithHostClassDefinition} from './my-with-host-class-definition.example.js';
 
 export const MyWithHostClassUsage = defineElement()({
     tagName: 'my-with-host-class-usage',

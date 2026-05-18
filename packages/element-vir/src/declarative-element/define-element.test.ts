@@ -540,6 +540,198 @@ describe(defineElement.name, () => {
         );
     });
 
+    it('throws when called with a non-object init', () => {
+        assert.throws(
+            () => {
+                (defineElement() as unknown as (init: unknown) => unknown)(undefined);
+            },
+            {
+                matchConstructor: TypeError,
+            },
+        );
+    });
+
+    it('throws when init has a non-string tagName', () => {
+        assert.throws(
+            () => {
+                defineElement()({
+                    tagName: 42 as unknown as 'tag-with-number-tagname',
+                    render() {
+                        return '';
+                    },
+                });
+            },
+            {
+                matchConstructor: TypeError,
+            },
+        );
+    });
+
+    it('throws when init render is not a function', () => {
+        assert.throws(
+            () => {
+                defineElement()({
+                    tagName: 'tag-with-no-render',
+                    render: 'not a function' as unknown as () => '',
+                });
+            },
+            {
+                matchMessage: 'render is not a function',
+            },
+        );
+    });
+
+    it('throws when reading the static type-only properties at runtime', () => {
+        const MyElement = defineElement<{thing: string}>()({
+            tagName: 'type-only-getters-element',
+            state() {
+                return {
+                    other: 0,
+                };
+            },
+            render() {
+                return '';
+            },
+        });
+
+        assert.throws(() => MyElement.InputsType, {
+            matchMessage: 'InputsType',
+        });
+        assert.throws(() => MyElement.StateType, {
+            matchMessage: 'StateType',
+        });
+        assert.throws(() => MyElement.UpdateStateType, {
+            matchMessage: 'UpdateStateType',
+        });
+    });
+
+    it('throws when the state callback returns a promise', async () => {
+        const MyElement = defineElement()({
+            tagName: 'async-state-element',
+            state() {
+                return Promise.resolve({
+                    something: 1,
+                }) as unknown as {something: number};
+            },
+            render() {
+                return 'hi';
+            },
+        });
+
+        const rendered = await testWeb.render(html`
+            <${MyElement}></${MyElement}>
+        `);
+        assert.instanceOf(rendered, MyElement);
+        /** Render swallows the throw via `errorHandler`, exposing the error on the instance. */
+        assert.isTruthy(rendered._lastRenderError);
+    });
+
+    it('throws when the init callback returns a promise', async () => {
+        const MyElement = defineElement()({
+            tagName: 'async-init-element',
+            init() {
+                return Promise.resolve() as unknown as undefined;
+            },
+            render() {
+                return 'hi';
+            },
+        });
+
+        const rendered = await testWeb.render(html`
+            <${MyElement}></${MyElement}>
+        `);
+        assert.instanceOf(rendered, MyElement);
+        assert.isTruthy(rendered._lastRenderError);
+    });
+
+    it('throws when the render callback returns a promise', async () => {
+        const MyElement = defineElement()({
+            tagName: 'async-render-element',
+            render() {
+                return Promise.resolve('hi') as unknown as string;
+            },
+        });
+
+        const rendered = await testWeb.render(html`
+            <${MyElement}></${MyElement}>
+        `);
+        assert.instanceOf(rendered, MyElement);
+        assert.isTruthy(rendered._lastRenderError);
+    });
+
+    it('throws when init returns a promise during connectedCallback', async () => {
+        let returnPromise = false;
+        const MyElement = defineElement()({
+            tagName: 'reconnect-init-promise-element',
+            init() {
+                if (returnPromise) {
+                    return Promise.resolve() as unknown as undefined;
+                }
+                return undefined;
+            },
+            render() {
+                return 'hi';
+            },
+        });
+
+        const rendered = await testWeb.render(html`
+            <${MyElement}></${MyElement}>
+        `);
+        assert.instanceOf(rendered, MyElement);
+
+        /**
+         * Re-running `connectedCallback` directly while the element is already connected exercises
+         * the second-pass init branch synchronously.
+         */
+        (rendered as unknown as {_initCalled: boolean})._initCalled = false;
+        returnPromise = true;
+        assert.throws(
+            () => {
+                (rendered as unknown as {connectedCallback: () => void}).connectedCallback();
+            },
+            {
+                matchMessage: 'init',
+            },
+        );
+        rendered.remove();
+    });
+
+    it('throws when cleanup returns a promise', async () => {
+        const MyElement = defineElement()({
+            tagName: 'cleanup-promise-element',
+            state() {
+                return {
+                    placeholder: 1,
+                };
+            },
+            cleanup() {
+                return Promise.resolve() as unknown as undefined;
+            },
+            render() {
+                return 'hi';
+            },
+        });
+
+        const rendered = await testWeb.render(html`
+            <${MyElement}></${MyElement}>
+        `);
+        assert.instanceOf(rendered, MyElement);
+
+        assert.throws(
+            () => {
+                (rendered as unknown as {disconnectedCallback: () => void}).disconnectedCallback();
+            },
+            {
+                matchMessage: 'cleanup',
+            },
+        );
+        /**
+         * The throw above exited before the bookkeeping reset, so the fixture's auto-cleanup
+         * disconnect would throw again. Reset the flag manually so cleanup-callback is skipped.
+         */
+        (rendered as unknown as {_stateCalled: boolean})._stateCalled = false;
+    });
+
     it('does not reconstruct children', async () => {
         const Parent = defineElement()({
             tagName: 'parent-that-updates',

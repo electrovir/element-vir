@@ -1,6 +1,6 @@
 import {defineElement} from 'element-vir';
 import {html} from '../index.js';
-import {MyWithInputs} from './my-with-inputs.element.js';
+import {MyWithInputs} from './my-with-inputs.example.js';
 
 export const MyWithAssignment = defineElement()({
     tagName: 'my-with-assignment',

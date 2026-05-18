@@ -17,5 +17,47 @@ describe(convertTemplateToString.name, () => {
             input: unsafeSVG('<svg></svg>'),
             expect: '<svg></svg>',
         },
+        {
+            it: 'returns the raw string when given a templateString object',
+            input: {
+                templateString: '<div>raw</div>',
+            },
+            expect: '<div>raw</div>',
+        },
+        {
+            it: 'returns empty for a fully empty template',
+            input: {
+                strings: undefined,
+                values: undefined,
+            } as never,
+            expect: '',
+        },
+        {
+            it: 'renders a nested template literal in child position',
+            input: html`
+                <p>
+                    ${html`
+                        <span>nested</span>
+                    `}
+                </p>
+            `,
+            expect: '<p> <span>nested</span> </p>',
+        },
+        {
+            it: 'renders an array of templates concatenated',
+            input: html`
+                <ul>
+                    ${[
+                        html`
+                            <li>a</li>
+                        `,
+                        html`
+                            <li>b</li>
+                        `,
+                    ]}
+                </ul>
+            `,
+            expect: '<ul> <li>a</li><li>b</li> </ul>',
+        },
     ]);
 });

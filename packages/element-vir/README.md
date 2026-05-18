@@ -38,7 +38,7 @@ All of [`lit`](https://lit.dev)'s syntax and functionality is available for use 
 
 Use `defineElement` to define your element. Here is a bare-minimum example custom element:
 
-<!-- example-link: src/readme-examples/my-simple.element.ts -->
+<!-- example-link: src/readme-examples/my-simple.example.ts -->
 
 ```TypeScript
 import {defineElement} from 'element-vir';
@@ -60,12 +60,12 @@ Make sure to export your element definition if you need to use it in other files
 
 To use already defined elements (like the example above), they must be interpolated into HTML templates like so:
 
-<!-- example-link: src/readme-examples/my-app.element.ts -->
+<!-- example-link: src/readme-examples/my-app.example.ts -->
 
 ```TypeScript
 import {defineElement} from 'element-vir';
 import {html} from 'element-vir';
-import {MySimple} from './my-simple.element.js';
+import {MySimple} from './my-simple.example.js';
 
 export const MyApp = defineElement()({
     tagName: 'my-app',
@@ -84,7 +84,7 @@ This requirement ensures that the element is properly imported and registered wi
 
 Styles are added through the `styles` property when defining a declarative element (similar to [how they are defined in `lit`](https://lit.dev/docs/components/styles/)):
 
-<!-- example-link: src/readme-examples/my-with-styles.element.ts -->
+<!-- example-link: src/readme-examples/my-with-styles.example.ts -->
 
 ```TypeScript
 import {defineElement} from 'element-vir';
@@ -116,12 +116,12 @@ export const MyWithStyles = defineElement()({
 
 Declarative element definitions can be used in the `css` tagged template just like in the `html` tagged template. This will be replaced by the element's tag name:
 
-<!-- example-link: src/readme-examples/my-with-styles-and-interpolated-selector.element.ts -->
+<!-- example-link: src/readme-examples/my-with-styles-and-interpolated-selector.example.ts -->
 
 ```TypeScript
 import {defineElement} from 'element-vir';
 import {css, html} from 'element-vir';
-import {MySimple} from './my-simple.element.js';
+import {MySimple} from './my-simple.example.js';
 
 export const MyWithStylesAndInterpolatedSelector = defineElement()({
     tagName: 'my-with-styles-and-interpolated-selector',
@@ -144,7 +144,7 @@ Define element inputs by using `defineElement` to define a declarative element. 
 
 To use an element's inputs for use in its template, grab `inputs` from `render`'s parameters and interpolate it into your HTML template:
 
-<!-- example-link: src/readme-examples/my-with-inputs.element.ts -->
+<!-- example-link: src/readme-examples/my-with-inputs.example.ts -->
 
 ```TypeScript
 import {defineElement, html} from 'element-vir';
@@ -166,7 +166,7 @@ export const MyWithInputs = defineElement<{
 
 Define initial internal state values and types with the `stateInit` property when defining an element. Grab it with `state` in `render` to use state. Grab `updateState` in `render` to update state:
 
-<!-- example-link: src/readme-examples/my-with-update-state.element.ts -->
+<!-- example-link: src/readme-examples/my-with-update-state.example.ts -->
 
 ```TypeScript
 import {defineElement} from 'element-vir';
@@ -204,12 +204,12 @@ export const MyWithUpdateState = defineElement()({
 
 Use the `assign` directive to assign values to child custom elements inputs:
 
-<!-- example-link: src/readme-examples/my-with-assignment.element.ts -->
+<!-- example-link: src/readme-examples/my-with-assignment.example.ts -->
 
 ```TypeScript
 import {defineElement} from 'element-vir';
 import {html} from 'element-vir';
-import {MyWithInputs} from './my-with-inputs.element.js';
+import {MyWithInputs} from './my-with-inputs.example.js';
 
 export const MyWithAssignment = defineElement()({
     tagName: 'my-with-assignment',
@@ -232,7 +232,7 @@ There are two other callbacks you can define that are sort of similar to lifecyc
 -   `init`: called right before the first render and has all state and inputs setup. (This is similar to `connectedCallback` in standard HTMLElement classes but is fired much later, after inputs are assigned, to avoid race conditions.)
 -   `cleanup`: called when an element is removed from the DOM. (This is the same as the `disconnectedCallback` in standard HTMLElement classes.)
 
-<!-- example-link: src/readme-examples/my-with-cleanup-callback.element.ts -->
+<!-- example-link: src/readme-examples/my-with-cleanup-callback.example.ts -->
 
 ```TypeScript
 import {defineElement} from 'element-vir';
@@ -262,7 +262,7 @@ When defining a declarative element, use `events` to setup event names and types
 
 To dispatch an event, grab `dispatch` and `events` from `render`'s parameters.
 
-<!-- example-link: src/readme-examples/my-with-events.element.ts -->
+<!-- example-link: src/readme-examples/my-with-events.example.ts -->
 
 ```TypeScript
 import {randomInteger} from '@augment-vir/common';
@@ -301,12 +301,12 @@ export const MyWithEvents = defineElement()({
 
 Use the `listen` directive to listen to events emitted by your custom elements:
 
-<!-- example-link: src/readme-examples/my-with-event-listening.element.ts -->
+<!-- example-link: src/readme-examples/my-with-event-listening.example.ts -->
 
 ```TypeScript
 import {defineElement} from 'element-vir';
 import {html, listen} from 'element-vir';
-import {MyWithEvents} from './my-with-events.element.js';
+import {MyWithEvents} from './my-with-events.example.js';
 
 export const MyWithEventListening = defineElement()({
     tagName: 'my-with-event-listening',
@@ -340,7 +340,7 @@ export const MyWithEventListening = defineElement()({
 
 Create a custom event type with `defineTypedEvent`. Make sure to include the type parameter and call it twice, the second time with the event type name string to ensure type safety when using your event. Note that event type names should be unique, or they will clash with each other.
 
-<!-- example-link: src/readme-examples/my-custom-action.event.ts -->
+<!-- example-link: src/readme-examples/my-custom-action.example.ts -->
 
 ```TypeScript
 import {defineTypedEvent} from 'element-vir';
@@ -352,13 +352,13 @@ export const MyCustomActionEvent = defineTypedEvent<number>()('my-custom-action'
 
 Dispatching a custom event and listening to a custom event is the same as doing so for element events:
 
-<!-- example-link: src/readme-examples/my-with-custom-events.element.ts -->
+<!-- example-link: src/readme-examples/my-with-custom-events.example.ts -->
 
 ```TypeScript
 import {randomInteger} from '@augment-vir/common';
 import {defineElement} from 'element-vir';
 import {html, listen} from 'element-vir';
-import {MyCustomActionEvent} from './my-custom-action.event.js';
+import {MyCustomActionEvent} from './my-custom-action.example.js';
 
 export const MyWithCustomEvents = defineElement()({
     tagName: 'my-with-custom-events',
@@ -400,7 +400,7 @@ Host classes are defined by passing an object to `hostClasses` at element defini
 
 Apply host classes in the element's stylesheet by using a callback for the styles property:
 
-<!-- example-link: src/readme-examples/my-with-host-class-definition.element.ts -->
+<!-- example-link: src/readme-examples/my-with-host-class-definition.example.ts -->
 
 ```TypeScript
 import {defineElement} from 'element-vir';
@@ -452,12 +452,12 @@ export const MyWithHostClassDefinition = defineElement()({
 
 To apply a host class in a consumer, access the child element's `.hostClasses` property:
 
-<!-- example-link: src/readme-examples/my-with-host-class-usage.element.ts -->
+<!-- example-link: src/readme-examples/my-with-host-class-usage.example.ts -->
 
 ```TypeScript
 import {defineElement} from 'element-vir';
 import {html} from 'element-vir';
-import {MyWithHostClassDefinition} from './my-with-host-class-definition.element.js';
+import {MyWithHostClassDefinition} from './my-with-host-class-definition.example.js';
 
 export const MyWithHostClassUsage = defineElement()({
     tagName: 'my-with-host-class-usage',
@@ -475,7 +475,7 @@ export const MyWithHostClassUsage = defineElement()({
 
 Typed CSS variables are created in a similar manner to host classes:
 
-<!-- example-link: src/readme-examples/my-with-css-vars.element.ts -->
+<!-- example-link: src/readme-examples/my-with-css-vars.example.ts -->
 
 ```TypeScript
 import {defineElement} from 'element-vir';
@@ -510,7 +510,7 @@ export const MyWithCssVars = defineElement()({
 
 Use `wrapDefineElement` to compose `defineElement`. This is particularly useful to adding restrictions on the element `tagName`, but it can be used for restricting any of the type parameters:
 
-<!-- example-link: src/readme-examples/my-custom-define.ts -->
+<!-- example-link: src/readme-examples/my-custom-define.example.ts -->
 
 ```TypeScript
 import {wrapDefineElement} from 'element-vir';
@@ -549,7 +549,7 @@ All [built-in `lit` directives](https://lit.dev/docs/templates/directives/) are 
 
 This triggers only once when the element it's attached to has actually been created in the DOM. If the attached element changes, the callback will be triggered again.
 
-<!-- example-link: src/readme-examples/my-with-on-dom-created.element.ts -->
+<!-- example-link: src/readme-examples/my-with-on-dom-created.example.ts -->
 
 ```TypeScript
 import {defineElement} from 'element-vir';
@@ -576,7 +576,7 @@ export const MyWithOnDomCreated = defineElement()({
 
 This directive fires its callback whenever the element it's attached to resizes. The callback is passed an object with a portion of the [`ResizeObserverEntry`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry) properties.
 
-<!-- example-link: src/readme-examples/my-with-on-resize.element.ts -->
+<!-- example-link: src/readme-examples/my-with-on-resize.example.ts -->
 
 ```TypeScript
 import {defineElement} from 'element-vir';
@@ -608,7 +608,7 @@ Listen to a specific event. This is explained in the **Listening to element even
 
 Use the `renderIf` directive to easily render a template if a given condition is true.
 
-<!-- example-link: src/readme-examples/my-with-render-if.element.ts -->
+<!-- example-link: src/readme-examples/my-with-render-if.example.ts -->
 
 ```TypeScript
 import {defineElement, html, renderIf} from 'element-vir';
@@ -632,7 +632,7 @@ export const MyWithRenderIf = defineElement<{shouldRender: boolean}>()({
 
 Use `renderAsync` or `isResolved` in conjunction with `asyncProp` to seamlessly render and update element state based on async values:
 
-<!-- example-link: src/readme-examples/my-with-async-prop.element.ts -->
+<!-- example-link: src/readme-examples/my-with-async-prop.example.ts -->
 
 ```TypeScript
 import {asyncProp, defineElement, html, listen, renderAsync} from 'element-vir';
@@ -698,7 +698,7 @@ export const MyWithAsyncProp = defineElement<{endpoint: string}>()({
 
 To require all child elements to be declarative elements defined by this package, call `requireAllCustomElementsToBeDeclarativeElements` anywhere in your app. This is a global setting so do not enable it unless you want it to be true _everywhere_ in your current run-time. This should not be used if you're using custom elements from other libraries (unless they happen to also use this package to define their custom elements).
 
-<!-- example-link: src/readme-examples/require-declarative-element.ts -->
+<!-- example-link: src/readme-examples/require-declarative-element.example.ts -->
 
 ```TypeScript
 import {requireAllCustomElementsToBeDeclarativeElements} from 'element-vir';

@@ -1,0 +1,41 @@
+{
+    "name": "@electrovir/element-vir-e2e",
+    "version": "26.16.0",
+    "private": true,
+    "license": "(MIT or CC0 1.0)",
+    "author": {
+        "name": "electrovir",
+        "url": "https://github.com/electrovir"
+    },
+    "sideEffects": false,
+    "type": "module",
+    "main": "src/index.mock.ts",
+    "module": "src/index.mock.ts",
+    "types": "src/index.mock.ts",
+    "scripts": {
+        "compile": "virmator compile",
+        "start": "bash src/scripts/run-playwright.sh codegen",
+        "test": "bash src/scripts/run-playwright.sh test",
+        "test:coverage": "npm test",
+        "test:ui": "npm test -- --ui --headed",
+        "test:update": "npm test -- --update-snapshots"
+    },
+    "dependencies": {
+        "@playwright/test": "1.56.1",
+        "element-vir": "*"
+    },
+    "devDependencies": {
+        "@augment-vir/assert": "^31.70.0",
+        "@augment-vir/common": "^31.70.0",
+        "@augment-vir/node": "^31.70.0",
+        "@augment-vir/test": "^31.70.0",
+        "@babel/plugin-transform-typescript": "^7.25.0",
+        "@types/node": "^25.6.0",
+        "playwright": "1.56.1",
+        "type-fest": "^5.6.0",
+        "url-vir": "^2.1.9"
+    },
+    "engines": {
+        "node": ">=22"
+    }
+}

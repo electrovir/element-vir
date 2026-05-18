@@ -15,6 +15,9 @@
     "extends": "../../configs/tsconfig.base.json",
     "references": [
         {
+            "path": "../e2e"
+        },
+        {
             "path": "../element-vir"
         }
     ]

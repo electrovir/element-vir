@@ -3,7 +3,7 @@ import {dirname} from 'path';
 import {fileURLToPath, pathToFileURL} from 'url';
 
 const baseConfig = defineConfig({
-    coveragePercent: 0,
+    coveragePercent: 90,
     packageRootDirPath: dirname(dirname(fileURLToPath(import.meta.url))),
     extraScreenshotOptions: {},
 });

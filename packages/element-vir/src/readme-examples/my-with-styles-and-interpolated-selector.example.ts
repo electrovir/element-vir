@@ -1,6 +1,6 @@
 import {defineElement} from 'element-vir';
 import {css, html} from '../index.js';
-import {MySimple} from './my-simple.element.js';
+import {MySimple} from './my-simple.example.js';
 
 export const MyWithStylesAndInterpolatedSelector = defineElement()({
     tagName: 'my-with-styles-and-interpolated-selector',

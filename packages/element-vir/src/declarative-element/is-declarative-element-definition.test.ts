@@ -2,7 +2,10 @@ import {AssertionError} from '@augment-vir/assert';
 import {describe, itCases} from '@augment-vir/test';
 import {nothing} from '../lit-exports/all-lit-exports.js';
 import {defineElement} from './define-element.js';
-import {assertDeclarativeElementDefinition} from './is-declarative-element-definition.js';
+import {
+    assertDeclarativeElementDefinition,
+    isDeclarativeElementDefinition,
+} from './is-declarative-element-definition.js';
 
 describe(assertDeclarativeElementDefinition.name, () => {
     itCases(assertDeclarativeElementDefinition, [
@@ -47,6 +50,45 @@ describe(assertDeclarativeElementDefinition.name, () => {
             throws: {
                 matchConstructor: AssertionError,
             },
+        },
+        {
+            it: 'rejects a function missing required static properties',
+            inputs: [
+                () => undefined,
+            ],
+            throws: {
+                matchConstructor: AssertionError,
+            },
+        },
+    ]);
+});
+
+describe(isDeclarativeElementDefinition.name, () => {
+    itCases(isDeclarativeElementDefinition, [
+        {
+            it: 'returns true for a real declarative element definition',
+            input: defineElement()({
+                tagName: 'is-decl-def-true',
+                render() {
+                    return nothing;
+                },
+            }),
+            expect: true,
+        },
+        {
+            it: 'returns false for a plain object',
+            input: {},
+            expect: false,
+        },
+        {
+            it: 'returns false for a function without the expected static props',
+            input: () => undefined,
+            expect: false,
+        },
+        {
+            it: 'returns false for undefined',
+            input: undefined,
+            expect: false,
         },
     ]);
 });
