@@ -83,16 +83,19 @@ export function createStringNameMap<
 }
 
 /**
- * Identity map of slot names. Slot names are defined with the element's tag name as a prefix, so no
- * extra string generation is required: each map key maps to itself.
- *
- * Note that if a slot name is _incorrectly_ defined without the element's tag name as the prefix,
- * then the runtime value will actually be `${ElementTagName}-slot-${Name}`.
+ * Map of slot names to their runtime values. Slot names that already start with the element's tag
+ * name are kept as-is; legacy slot names without the tag-name prefix are auto-rewritten at runtime
+ * to `${ElementTagName}-slot-${Name}` and this type reflects that.
  *
  * @category Internal
  */
-export type SlotNamesMap<SlotNames extends ReadonlyArray<string>> = Readonly<{
-    [Name in ArrayElement<SlotNames>]: Name;
+export type SlotNamesMap<
+    ElementTagName extends string,
+    SlotNames extends ReadonlyArray<string>,
+> = Readonly<{
+    [Name in ArrayElement<SlotNames>]: Name extends `${ElementTagName}-${string}`
+        ? Name
+        : `${ElementTagName}-slot-${Name}`;
 }>;
 
 /**
@@ -107,9 +110,12 @@ export type SlotNamesMap<SlotNames extends ReadonlyArray<string>> = Readonly<{
 export function createSlotNamesMap<
     ElementTagName extends CustomElementTagName,
     SlotNames extends ReadonlyArray<string>,
->(elementTagName: ElementTagName, slotNames: SlotNames | undefined): SlotNamesMap<SlotNames> {
+>(
+    elementTagName: ElementTagName,
+    slotNames: SlotNames | undefined,
+): SlotNamesMap<ElementTagName, SlotNames> {
     if (!slotNames) {
-        return {} as SlotNamesMap<SlotNames>;
+        return {} as SlotNamesMap<ElementTagName, SlotNames>;
     }
     const requiredNameStart = [
         elementTagName,
@@ -135,5 +141,5 @@ export function createSlotNamesMap<
         },
     );
 
-    return slotNamesMap as SlotNamesMap<SlotNames>;
+    return slotNamesMap as SlotNamesMap<ElementTagName, SlotNames>;
 }

@@ -61,7 +61,7 @@ export function createStylesCallbackInput<
 }: {
     hostClassNames: HostClassNamesMap<TagName, HostClassKeys>;
     cssVars: Readonly<CssVars<TagName, CssVarKeys>>;
-    slotNamesMap: SlotNamesMap<SlotNames>;
+    slotNamesMap: SlotNamesMap<TagName, SlotNames>;
 }): StylesCallbackInput<TagName, HostClassKeys, CssVarKeys, SlotNames> {
     return {
         hostClasses: mapObjectValues(hostClassNames, (key, name): HostClass => {

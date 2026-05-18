@@ -52,7 +52,8 @@ describe(createSlotNamesMap.name, () => {
             'header',
         ] as const);
 
-        assert.tsType(slotNames.header).equals<'header'>();
+        assert.tsType(slotNames.header).equals<'my-element-slot-header'>();
+        assert.strictEquals(slotNames.header, 'my-element-slot-header');
     });
 
     it('returns an empty map when given an empty array', () => {

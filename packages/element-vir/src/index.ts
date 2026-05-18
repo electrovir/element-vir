@@ -33,7 +33,6 @@ export * from './declarative-element/properties/tag-name.js';
 export * from './declarative-element/render-callback.js';
 export * from './declarative-element/wrap-define-element.js';
 export * from './lit-exports/all-lit-exports.js';
-export * from './require-declarative-element.js';
 export * from './template-transforms/minimal-element-definition.js';
 export * from './template-transforms/vir-css/vir-css.js';
 export * from './template-transforms/vir-html/html-interpolation.js';

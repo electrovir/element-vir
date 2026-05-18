@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-vir-e2e",
-    "version": "26.16.0",
+    "version": "26.17.0",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "author": {
@@ -22,7 +22,7 @@
     },
     "dependencies": {
         "@playwright/test": "1.56.1",
-        "element-vir": "*"
+        "element-vir": "^26.17.0"
     },
     "devDependencies": {
         "@augment-vir/assert": "^31.70.0",

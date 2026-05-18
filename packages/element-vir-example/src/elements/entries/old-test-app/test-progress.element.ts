@@ -1,7 +1,5 @@
 import {assert} from '@augment-vir/assert';
-import {defineElement, html, requireAllCustomElementsToBeDeclarativeElements} from 'element-vir';
-
-requireAllCustomElementsToBeDeclarativeElements();
+import {defineElement, html} from 'element-vir';
 
 export type TestTypesProgressInputs = {
     thingA: number;

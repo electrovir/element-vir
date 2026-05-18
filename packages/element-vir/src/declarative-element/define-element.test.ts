@@ -264,12 +264,12 @@ describe(defineElement.name, () => {
 
         assert.strictEquals(MyElement.tagName, 'element-rejects-bad-slot-names');
         assert.strictEquals(
-            MyElement.slotNames.header as string,
+            MyElement.slotNames.header,
             'element-rejects-bad-slot-names-slot-header',
         );
         assert.tsType(MyElement.slotNames).equals<
             Readonly<{
-                header: 'header';
+                header: 'element-rejects-bad-slot-names-slot-header';
             }>
         >();
     });

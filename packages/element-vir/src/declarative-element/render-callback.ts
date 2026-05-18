@@ -108,7 +108,7 @@ export type RenderParams<
         SlotNames,
         TestIds
     >;
-    slotNames: SlotNamesMap<SlotNames>;
+    slotNames: SlotNamesMap<TagName, SlotNames>;
     testIds: Readonly<StringNameMap<TagName, 'test-id', TestIds>>;
     /** Dispatch an event from the current element. */
     dispatch: <EventTypeName extends keyof EventsInit>(
@@ -156,7 +156,7 @@ export function createRenderParams<
     >;
     eventsMap: EventDescriptorMap<TagName, EventsInit>;
     cssVars: Readonly<CssVars<TagName, CssVarKeys>>;
-    slotNamesMap: SlotNamesMap<SlotNames>;
+    slotNamesMap: SlotNamesMap<TagName, SlotNames>;
     testIdsMap: Readonly<StringNameMap<TagName, 'test-id', TestIds>>;
 }): RenderParams<
     TagName,

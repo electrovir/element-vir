@@ -1,8 +1,6 @@
 import {ElementBookApp} from 'element-book';
-import {defineElement, html, requireAllCustomElementsToBeDeclarativeElements} from 'element-vir';
+import {defineElement, html} from 'element-vir';
 import {allBookPages} from './all-book-pages.js';
-
-requireAllCustomElementsToBeDeclarativeElements();
 
 export const VirTestBookApp = defineElement()({
     tagName: 'vir-test-book-app',

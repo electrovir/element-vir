@@ -1,5 +1,5 @@
 import {type MaybePromise} from '@augment-vir/common';
-import {directive, Directive, type PartInfo} from '../../lit-exports/all-lit-exports.js';
+import {AsyncDirective, directive, type PartInfo} from '../../lit-exports/all-lit-exports.js';
 import {assertIsElementPartInfo} from './directive-helpers.js';
 
 /**
@@ -48,7 +48,7 @@ const directiveName = 'onResize';
  * ```
  */
 export const onResize = directive(
-    class extends Directive {
+    class extends AsyncDirective {
         public element: Element | undefined;
         public readonly resizeObserver = new ResizeObserver((entries) => {
             if (this.element && this.callback) {
@@ -82,6 +82,16 @@ export const onResize = directive(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         public render(callback: OnResizeCallback) {
             return undefined;
+        }
+
+        public override disconnected() {
+            this.resizeObserver.disconnect();
+        }
+
+        public override reconnected() {
+            if (this.element) {
+                this.resizeObserver.observe(this.element);
+            }
         }
     },
 );

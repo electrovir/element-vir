@@ -694,18 +694,6 @@ export const MyWithAsyncProp = defineElement<{endpoint: string}>()({
 });
 ```
 
-## Require all child custom elements to be declarative elements
-
-To require all child elements to be declarative elements defined by this package, call `requireAllCustomElementsToBeDeclarativeElements` anywhere in your app. This is a global setting so do not enable it unless you want it to be true _everywhere_ in your current run-time. This should not be used if you're using custom elements from other libraries (unless they happen to also use this package to define their custom elements).
-
-<!-- example-link: src/readme-examples/require-declarative-element.example.ts -->
-
-```TypeScript
-import {requireAllCustomElementsToBeDeclarativeElements} from 'element-vir';
-
-requireAllCustomElementsToBeDeclarativeElements();
-```
-
 # Dev
 
 ## markdown out of date

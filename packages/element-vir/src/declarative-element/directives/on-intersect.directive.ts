@@ -1,6 +1,6 @@
 import {assert, assertWrap, check} from '@augment-vir/assert';
 import {type MaybePromise} from '@augment-vir/common';
-import {directive, Directive, type PartInfo} from '../../lit-exports/all-lit-exports.js';
+import {AsyncDirective, directive, type PartInfo} from '../../lit-exports/all-lit-exports.js';
 import {assertIsElementPartInfo} from './directive-helpers.js';
 
 const directiveName = 'onIntersect';
@@ -58,7 +58,7 @@ export type OnIntersectOptions = IntersectionObserverInit;
  * ```
  */
 export const onIntersect = directive(
-    class extends Directive {
+    class extends AsyncDirective {
         public element: Element | undefined;
         public options: OnIntersectOptions | undefined;
         public intersectionObserver: undefined | IntersectionObserver;
@@ -134,6 +134,16 @@ export const onIntersect = directive(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         public render(options: OnIntersectOptions, callback: OnIntersectCallback) {
             return undefined;
+        }
+
+        public override disconnected() {
+            this.intersectionObserver?.disconnect();
+        }
+
+        public override reconnected() {
+            if (this.element && this.intersectionObserver) {
+                this.intersectionObserver.observe(this.element);
+            }
         }
     },
 );

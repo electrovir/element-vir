@@ -354,7 +354,7 @@ export type StaticDeclarativeElementProperties<
         TestIds
     >;
     readonly events: EventDescriptorMap<TagName, EventsInit>;
-    readonly slotNames: SlotNamesMap<SlotNames>;
+    readonly slotNames: SlotNamesMap<TagName, SlotNames>;
     readonly testIds: Readonly<StringNameMap<TagName, 'test-id', TestIds>>;
     readonly init: DeclarativeElementInit<
         TagName,

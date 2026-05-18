@@ -126,7 +126,7 @@ export function defineElement<Inputs extends PropertyInitMapBase = {}>(
               > = initInput;
 
         if (!check.isObject(init)) {
-            throw new TypeError('Cannot define element with non-object init: ${init}');
+            throw new TypeError(`Cannot define element with non-object init: ${String(init)}`);
         }
 
         return internalDefineElement({
@@ -169,7 +169,7 @@ function internalDefineElement<
     TestIds
 > {
     if (!check.isObject(init)) {
-        throw new TypeError('Cannot define element with non-object init: ${init}');
+        throw new TypeError(`Cannot define element with non-object init: ${String(init)}`);
     } else if (!check.isString(init.tagName)) {
         throw new TypeError('Missing valid tagName (expected a string).');
     }
@@ -239,7 +239,19 @@ function internalDefineElement<
         CssVarKeys,
         SlotNames,
         TestIds
-    >['slotNames'] = createSlotNamesMap(init.tagName, init.slotNames as SlotNames | undefined);
+    >['slotNames'] = createSlotNamesMap(
+        init.tagName,
+        init.slotNames as SlotNames | undefined,
+    ) as unknown as StaticDeclarativeElementProperties<
+        TagName,
+        Inputs,
+        State,
+        EventsInit,
+        HostClassKeys,
+        CssVarKeys,
+        SlotNames,
+        TestIds
+    >['slotNames'];
     const testIdsMap: StaticDeclarativeElementProperties<
         TagName,
         Inputs,
@@ -394,7 +406,7 @@ function internalDefineElement<
                     const stateInit = init.state(renderParams);
 
                     if (stateInit instanceof Promise) {
-                        throw new TypeError('init cannot be asynchronous');
+                        throw new TypeError('state cannot be asynchronous');
                     }
 
                     getObjectTypedKeys(stateInit).forEach((stateKey) => {
@@ -460,19 +472,27 @@ function internalDefineElement<
                     stateValue.destroy();
                 }
             });
+            this._initCalled = false;
+            this._stateCalled = false;
         }
 
         public override disconnectedCallback(): void {
             super.disconnectedCallback();
-            if (init.cleanup && this._stateCalled) {
-                const renderParams = this.createRenderParams();
-                if ((init.cleanup(renderParams) as any) instanceof Promise) {
-                    throw new TypeError(`cleanup in '${init.tagName}' cannot be asynchronous`);
+            /**
+             * Always reset bookkeeping and run `destroy()`, even when `cleanup` throws — otherwise
+             * a throwing cleanup leaves `_initCalled` / `_stateCalled` stuck and corrupts the next
+             * mount.
+             */
+            try {
+                if (init.cleanup && this._stateCalled) {
+                    const renderParams = this.createRenderParams();
+                    if ((init.cleanup(renderParams) as any) instanceof Promise) {
+                        throw new TypeError(`cleanup in '${init.tagName}' cannot be asynchronous`);
+                    }
                 }
+            } finally {
+                this.destroy();
             }
-            this.destroy();
-            this._initCalled = false;
-            this._stateCalled = false;
         }
 
         // this is set below in Object.defineProperties

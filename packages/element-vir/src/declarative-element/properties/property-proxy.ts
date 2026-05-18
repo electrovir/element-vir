@@ -109,7 +109,7 @@ export function createElementPropertyProxy<PropertyInitGeneric extends PropertyI
                 }
             } else if (isObservableBase(oldValue)) {
                 /** Clear out old listener that is no longer used. */
-                element.observablePropertyListenerMap[propertyKey] = undefined;
+                delete element.observablePropertyListenerMap[propertyKey];
             }
 
             setValueOnElement(newValue);

@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-deprecated */
 
 import {check} from '@augment-vir/assert';
-import {collapseWhiteSpace, getOrSet, safeMatch} from '@augment-vir/common';
+import {getOrSet} from '@augment-vir/common';
 import {assign} from '../../declarative-element/directives/assign.directive.js';
 import {type HTMLTemplateResult} from '../../lit-exports/all-lit-exports.js';
-import {declarativeElementRequired} from '../../require-declarative-element.js';
 import {
     type MinimalElementDefinition,
     hasTagName,
@@ -112,36 +111,6 @@ function transformHtml(
     };
 }
 
-function extractCustomElementTags(input: string): string[] {
-    const tagNameMatches = safeMatch(input, /<\/\s*[^\s><]+\s*>/g);
-    return tagNameMatches.reduce((accum: string[], match) => {
-        const tagName = collapseWhiteSpace(match.replace(/\n/g, ' ')).replace(/<\/|>/g, '');
-        // custom elements always have a dash in them
-        if (tagName.includes('-')) {
-            return accum.concat(tagName);
-        }
-        return accum;
-    }, []);
-}
-
-function stringValidator(input: string): void {
-    if (declarativeElementRequired) {
-        const customElementTagNames = extractCustomElementTags(input);
-        if (customElementTagNames.length) {
-            console.error(
-                `Custom element tags must be interpolated from declarative elements: ${customElementTagNames.join(
-                    ', ',
-                )}`,
-            );
-        }
-    }
-}
-
 export function transformHtmlTemplate(litTemplate: HTMLTemplateResult): TemplateTransform {
-    return transformTemplate(
-        litTemplate.strings,
-        litTemplate.values,
-        transformHtml,
-        stringValidator,
-    );
+    return transformTemplate(litTemplate.strings, litTemplate.values, transformHtml);
 }
