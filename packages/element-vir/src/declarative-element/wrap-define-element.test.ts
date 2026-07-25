@@ -47,7 +47,7 @@ describe(wrapDefineElement.name, () => {
 
         assert.isLengthExactly(errors, 1);
     });
-    it('should match original define element types', () => {
+    it('matches original define element types', () => {
         assert
             .tsType(
                 myDefineElement<MySpecificInputs>()({
@@ -146,19 +146,22 @@ describe(wrapDefineElement.name, () => {
         });
     });
 
-    it('requires non-void returning render', () => {
-        myDefineElement()({
-            tagName: 'my-thing-abc6',
-            // @ts-expect-error: render missing a return is not allowed
-            render() {},
-        });
-        myDefineElement()({
-            tagName: 'my-thing-abc7',
-            // returning undefined is chill
-            render() {
-                return undefined;
-            },
-        });
+    it('allows void returning render', () => {
+        assert.isDefined(
+            myDefineElement()({
+                tagName: 'my-thing-abc6',
+                render() {},
+            }),
+        );
+        assert.isDefined(
+            myDefineElement()({
+                tagName: 'my-thing-abc7',
+                // returning undefined is chill
+                render() {
+                    return undefined;
+                },
+            }),
+        );
     });
 
     it('allows defining sub states', () => {
@@ -188,7 +191,7 @@ describe(wrapDefineElement.name, () => {
         });
     });
 
-    it('should still create a valid element', async () => {
+    it('still creates a valid element', async () => {
         const MySpecificElement = myDefineElement<MySpecificInputs>()({
             tagName: 'my-tag-abc8',
             events: {

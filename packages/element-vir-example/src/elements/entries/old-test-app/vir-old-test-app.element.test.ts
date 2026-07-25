@@ -61,7 +61,7 @@ describe(VirOldTestApp.tagName, () => {
         return appElement;
     }
 
-    it('should change input numbers', async () => {
+    it('changes input numbers', async () => {
         function getDisplayedInputNumber(appElement: HTMLElement): number {
             const inputNumberSpan = queryTree(appElement, [
                 TestChildElement.tagName,
@@ -122,7 +122,7 @@ describe(VirOldTestApp.tagName, () => {
         });
     });
 
-    it('should render unique elements with identical strings', async () => {
+    it('renders unique elements with identical strings', async () => {
         const rendered = await renderApp();
 
         const appElement = getAppElement(rendered);

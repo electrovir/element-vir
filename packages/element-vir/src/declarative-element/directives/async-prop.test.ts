@@ -10,10 +10,8 @@ import {type AsyncProp, type AsyncValue, asyncProp} from './async-prop.js';
 import {listen} from './listen.directive.js';
 import {renderAsync} from './render-async.directive.js';
 
-/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-
 describe(asyncProp.name, () => {
-    it('should have proper types', () => {
+    it('has proper types', () => {
         type Dimensions = {width: number; length: number};
         type TriggerType = {
             imageUrl: string;

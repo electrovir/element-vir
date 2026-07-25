@@ -1,10 +1,12 @@
 import {defineConfig} from '@virmator/test/configs/web-test-runner.config.base.mjs';
-import {dirname} from 'path';
+import {dirname, resolve} from 'path';
 import {fileURLToPath, pathToFileURL} from 'url';
+
+const packageRootDirPath = resolve(import.meta.dirname, '..');
 
 const baseConfig = defineConfig({
     coveragePercent: 90,
-    packageRootDirPath: dirname(dirname(fileURLToPath(import.meta.url))),
+    packageRootDirPath,
     extraScreenshotOptions: {},
 });
 
@@ -12,6 +14,9 @@ const baseConfig = defineConfig({
 const webTestRunnerConfig = {
     ...baseConfig,
     port: 8102,
+    rootDir: resolve(packageRootDirPath, '..', '..'),
+    /** `define-element.test.ts` runs well past the 2 minute default under full-suite contention. */
+    testsFinishTimeout: 5 * 60_000,
 };
 
 export default webTestRunnerConfig;

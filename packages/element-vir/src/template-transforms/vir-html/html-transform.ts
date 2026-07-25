@@ -23,7 +23,10 @@ export function mapHtmlValues(
         const nextString = inputTemplateStrings[currentValueIndex + 1];
 
         if (lastString && nextString) {
-            const {shouldHaveTagNameHere} = classifyValue(lastString, nextString);
+            const {shouldHaveTagNameHere} = classifyValue({
+                lastNewString: lastString,
+                currentTemplateString: nextString,
+            });
 
             if (shouldHaveTagNameHere && check.isString(currentValue)) {
                 const replacement: MinimalElementDefinition = {
@@ -43,7 +46,13 @@ export function mapHtmlValues(
     });
 }
 
-function classifyValue(lastNewString: string, currentTemplateString: string) {
+function classifyValue({
+    lastNewString,
+    currentTemplateString,
+}: Readonly<{
+    lastNewString: string;
+    currentTemplateString: string;
+}>) {
     const isOpeningTag =
         lastNewString.trim().endsWith('<') && !!currentTemplateString.match(/^[\s>]/);
     const isClosingTag =
@@ -67,10 +76,10 @@ function transformHtml(
         ? rawCurrentValue.definition
         : rawCurrentValue;
 
-    const {isOpeningTag, shouldHaveTagNameHere} = classifyValue(
+    const {isOpeningTag, shouldHaveTagNameHere} = classifyValue({
         lastNewString,
         currentTemplateString,
-    );
+    });
     const isTagNameWrapper = hasTagName(currentValue);
 
     if (isTagNameWrapper && shouldHaveTagNameHere && currentValue.tagInterpolationKey) {
@@ -93,24 +102,26 @@ function transformHtml(
         );
     } else if (!shouldHaveTagNameHere || !isTagNameWrapper) {
         return undefined;
+    } else {
+        return {
+            replacement: currentValue.tagName,
+            getExtraValues(extraValueCurrentValue) {
+                const assignedInputs = isMinimalDefinitionWithInputs(extraValueCurrentValue)
+                    ? extraValueCurrentValue.inputs
+                    : undefined;
+
+                return [
+                    isOpeningTag && assignedInputs ? assign(assignedInputs) : undefined,
+                ].filter(check.isTruthy);
+            },
+        };
     }
-
-    const replacement = currentValue.tagName;
-
-    return {
-        replacement,
-        getExtraValues(extraValueCurrentValue) {
-            const assignedInputs = isMinimalDefinitionWithInputs(extraValueCurrentValue)
-                ? extraValueCurrentValue.inputs
-                : undefined;
-
-            return [
-                isOpeningTag && assignedInputs ? assign(assignedInputs) : undefined,
-            ].filter(check.isTruthy);
-        },
-    };
 }
 
 export function transformHtmlTemplate(litTemplate: HTMLTemplateResult): TemplateTransform {
-    return transformTemplate(litTemplate.strings, litTemplate.values, transformHtml);
+    return transformTemplate({
+        inputTemplateStrings: litTemplate.strings,
+        inputValues: litTemplate.values,
+        transformValue: transformHtml,
+    });
 }

@@ -13,6 +13,7 @@ import {type HtmlInterpolation} from '../template-transforms/vir-html/html-inter
  *
  * @category Internal
  */
+/* eslint-disable @virmator/prefer-protected-over-private */
 declare class RepeatDirective extends Directive {
     private _itemKeys?;
     constructor(partInfo: PartInfo);

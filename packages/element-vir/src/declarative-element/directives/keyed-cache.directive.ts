@@ -18,8 +18,8 @@ import {
  * @category Internal
  */
 class KeyedCacheDirective extends AsyncDirective {
-    private readonly cache = new Map<PropertyKey, RootPart>();
-    private currentKey: PropertyKey | undefined = undefined;
+    protected readonly cache = new Map<PropertyKey, RootPart>();
+    protected currentKey: PropertyKey | undefined = undefined;
 
     constructor(partInfo: PartInfo) {
         super(partInfo);

@@ -49,12 +49,19 @@ export function getTransformedTemplate<PossibleValues>(
     };
 }
 
-export function transformTemplate<PossibleValues>(
-    inputTemplateStrings: TemplateStringsArray,
-    inputValues: PossibleValues[],
-    transformValue: ValueTransformCallback,
-    assertValidString?: (templateStringPart: string) => void,
-): TemplateTransform {
+export type TransformTemplateParams<PossibleValues> = Readonly<{
+    inputTemplateStrings: TemplateStringsArray;
+    inputValues: PossibleValues[];
+    transformValue: ValueTransformCallback;
+    assertValidString?: ((templateStringPart: string) => void) | undefined;
+}>;
+
+export function transformTemplate<PossibleValues>({
+    inputTemplateStrings,
+    inputValues,
+    transformValue,
+    assertValidString,
+}: TransformTemplateParams<PossibleValues>): TemplateTransform {
     const newStrings: string[] = [];
     const newRaws: string[] = [];
     const valueIndexDeletions: AllValueTransforms['valueIndexDeletions'] = [];

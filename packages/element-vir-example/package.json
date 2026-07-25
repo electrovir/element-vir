@@ -2,7 +2,7 @@
     "name": "@electrovir/element-vir-example",
     "version": "26.17.0",
     "private": true,
-    "license": "(MIT or CC0 1.0)",
+    "license": "(MIT OR CC0-1.0)",
     "author": {
         "name": "electrovir",
         "url": "https://github.com/electrovir"
@@ -16,21 +16,21 @@
         "test:coverage": "npm test"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.71.4",
-        "@augment-vir/common": "^31.71.4",
+        "@augment-vir/assert": "^32.1.0",
+        "@augment-vir/common": "^32.1.0",
         "element-book": "^26.17.3",
         "element-vir": "^26.17.0",
-        "vira": "^31.22.2"
+        "vira": "^31.28.1"
     },
     "devDependencies": {
-        "@augment-vir/test": "^31.71.4",
+        "@augment-vir/test": "^32.1.0",
         "@electrovir/element-vir-e2e": "^26.17.0",
-        "esbuild": "^0.28.0",
-        "markdown-code-example-inserter": "^3.0.5",
-        "type-fest": "^5.7.0",
-        "typedoc": "^0.28.19",
+        "esbuild": "^0.28.1",
+        "markdown-code-example-inserter": "^3.0.6",
+        "type-fest": "^5.8.0",
+        "typedoc": "^0.28.20",
         "typescript": "6.0.3",
-        "vite": "^8.0.16",
+        "vite": "^8.1.5",
         "vite-tsconfig-paths": "^6.1.1"
     },
     "engines": {

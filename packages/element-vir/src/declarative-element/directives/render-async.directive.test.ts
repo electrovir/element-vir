@@ -70,7 +70,7 @@ describe(asyncProp.name, () => {
         };
     }
 
-    it('should have proper types', () => {
+    it('has proper types', () => {
         type SomethingObject = {something: number};
 
         defineElement()({
@@ -98,7 +98,7 @@ describe(asyncProp.name, () => {
         });
     });
 
-    it('should render the resolution callback', async () => {
+    it('renders the resolution callback', async () => {
         const {instance, deferredPromise, allAsyncValues} = await setupAsyncPropTest();
 
         const randomValue = Math.random() * 100;

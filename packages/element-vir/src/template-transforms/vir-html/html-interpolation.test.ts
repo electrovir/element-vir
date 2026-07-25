@@ -27,9 +27,9 @@ describe('HtmlInterpolation', () => {
     });
 
     it('allows the ifDefined directive', () => {
-        html`
+        assert.isDefined(html`
             <div title=${ifDefined(Math.random() > 0.5 ? undefined : 'hello')}></div>
-        `;
+        `);
     });
 
     /** In order to support directive results, this must also be the case. */
@@ -98,13 +98,13 @@ describe('HtmlInterpolation', () => {
     });
 
     it('allows function interpolation', () => {
-        html`
+        assert.isDefined(html`
             <div
                 @click=${() => {
                     console.info('you clicked me!');
                 }}
             ></div>
-        `;
+        `);
     });
 
     it('allows vira icon definitions', () => {

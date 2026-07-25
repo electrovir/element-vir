@@ -22,9 +22,9 @@ function extractElementKeys(values: unknown[]): WeakMapElementKey[] {
                 return value.definition;
             } else if (hasTagName(value)) {
                 return value.tagInterpolationKey || value;
+            } else {
+                return undefined;
             }
-
-            return undefined;
         },
         check.isTruthy,
     );
@@ -58,14 +58,14 @@ export function setMappedTemplate<PossibleValues>(
     valueToSet: TemplateTransform,
 ) {
     const elementKeys = extractElementKeys(values);
-    return setNestedValues(
-        transformedTemplateStrings,
-        [
+    return setNestedValues({
+        map: transformedTemplateStrings,
+        keys: [
             templateStringsKey,
             ...elementKeys,
         ],
         valueToSet,
-    );
+    });
 }
 
 function getNestedValues(
@@ -84,14 +84,14 @@ function getNestedValues(
             value: currentTemplateAndNested,
             reason: 'reached end of keys array',
         };
-    } else if (!currentTemplateAndNested.nested) {
+    } else if (currentTemplateAndNested.nested) {
+        return getNestedValues(currentTemplateAndNested.nested, keys, index + 1);
+    } else {
         return {
             value: undefined,
             reason: `map at key index ${index} did not have nested maps`,
         };
     }
-
-    return getNestedValues(currentTemplateAndNested.nested, keys, index + 1);
 }
 
 function getCurrentKeyAndValue(
@@ -133,12 +133,17 @@ function getCurrentKeyAndValue(
     };
 }
 
-function setNestedValues(
-    map: TemplatesWeakMap | NestedTemplatesWeakMap,
-    keys: (TemplateStringsArray | WeakMapElementKey)[],
-    valueToSet: TemplateTransform,
+function setNestedValues({
+    map,
+    keys,
+    valueToSet,
     index = 0,
-): {result: boolean; reason: string} {
+}: Readonly<{
+    map: TemplatesWeakMap | NestedTemplatesWeakMap;
+    keys: (TemplateStringsArray | WeakMapElementKey)[];
+    valueToSet: TemplateTransform;
+    index?: number | undefined;
+}>): {result: boolean; reason: string} {
     const {currentTemplateAndNested, currentKey, reason} = getCurrentKeyAndValue(map, keys, index);
     if (!currentKey) {
         return {
@@ -169,5 +174,10 @@ function setNestedValues(
         nestedAndTemplate.nested = nestedWeakMap;
     }
 
-    return setNestedValues(nestedWeakMap, keys, valueToSet, index + 1);
+    return setNestedValues({
+        map: nestedWeakMap,
+        keys,
+        valueToSet,
+        index: index + 1,
+    });
 }

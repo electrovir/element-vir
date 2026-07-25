@@ -105,6 +105,7 @@ export function renderAsync<T, FallbackResult>(
  *
  * @category Async
  */
+// eslint-disable-next-line @virmator/prefer-params-object
 export function renderAsync<
     T,
     FallbackResult,

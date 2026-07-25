@@ -51,7 +51,7 @@ describe(assertIsDeclarativeElement.name, () => {
         const fixture = await testWeb.render(html`
             <${TestIsDeclarativeElement}></${TestIsDeclarativeElement}>
         `);
-        assertIsDeclarativeElement(fixture);
+        assert.doesNotThrow(() => assertIsDeclarativeElement(fixture));
     });
     itCases(assertIsDeclarativeElement, [
         {

@@ -113,10 +113,12 @@ describe(createStringNameMap.name, () => {
 
 describe(assertValidStringNames.name, () => {
     it('passes when every string starts with the tag name and a dash', () => {
-        assertValidStringNames('my-element', [
-            'my-element-foo',
-            'my-element-bar',
-        ]);
+        assert.doesNotThrow(() =>
+            assertValidStringNames('my-element', [
+                'my-element-foo',
+                'my-element-bar',
+            ]),
+        );
     });
 
     it('throws when a string does not start with the tag name', () => {
@@ -144,6 +146,6 @@ describe(assertValidStringNames.name, () => {
     });
 
     it('passes when given an empty array', () => {
-        assertValidStringNames('my-element', []);
+        assert.doesNotThrow(() => assertValidStringNames('my-element', []));
     });
 });

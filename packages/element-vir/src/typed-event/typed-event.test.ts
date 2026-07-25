@@ -4,7 +4,7 @@ import {listen} from '../declarative-element/directives/listen.directive.js';
 import {defineTypedEvent} from './typed-event.js';
 
 describe(defineTypedEvent.name, () => {
-    it('should create the correct types', () => {
+    it('creates the correct types', () => {
         const eventTypeName = 'my-custom-typed-event';
 
         const myCustomTypedEvent = defineTypedEvent<number>()(eventTypeName);

@@ -119,8 +119,9 @@ export function createEventDescriptorMap<
                         );
                     } else if (currentElementEventKey === '') {
                         throw new Error('Got empty string for events key.');
+                    } else {
+                        return true;
                     }
-                    return true;
                 },
             )
             .reduce(

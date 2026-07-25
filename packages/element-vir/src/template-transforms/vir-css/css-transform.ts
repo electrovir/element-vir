@@ -26,5 +26,9 @@ export function transformCssTemplate(
     inputTemplateStrings: TemplateStringsArray,
     inputValues: (number | CSSResultGroup | MinimalElementDefinition)[],
 ): TemplateTransform {
-    return transformTemplate(inputTemplateStrings, inputValues, transformCss);
+    return transformTemplate({
+        inputTemplateStrings,
+        inputValues,
+        transformValue: transformCss,
+    });
 }

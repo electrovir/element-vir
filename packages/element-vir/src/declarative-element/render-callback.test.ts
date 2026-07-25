@@ -16,7 +16,7 @@ import {
 } from '../index.js';
 
 describe('RenderParams', () => {
-    it('should produce proper types', () => {
+    it('produces proper types', () => {
         type MyAsyncPropTriggerType = {input: string | undefined};
 
         defineElement()({
@@ -95,7 +95,7 @@ describe('RenderParams', () => {
         });
     });
 
-    it('should have proper types for an empty element', () => {
+    it('has proper types for an empty element', () => {
         function doNotExecuteThis() {
             const renderParams = createRenderParams({
                 element: {} as any,
@@ -146,17 +146,21 @@ describe('UpdateStateCallback', () => {
         function acceptStateFromElementDefinition(state: (typeof customElement)['StateType']) {
             state.doThing.setValue('yo');
         }
+
+        assert.isDefined(customElement);
     });
 });
 
 describe('RenderCallback', () => {
-    it('requires a return of something', () => {
+    it('allows an empty return', () => {
         const renderSomething: RenderCallback = () => {
             return undefined;
         };
-        // @ts-expect-error this should return something
         const renderSomething2: RenderCallback = () => {
             return;
         };
+
+        assert.isDefined(renderSomething);
+        assert.isDefined(renderSomething2);
     });
 });

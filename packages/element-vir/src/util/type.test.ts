@@ -2,7 +2,7 @@ import {describe, it} from '@augment-vir/test';
 import {type NonEmptyString} from './type.js';
 
 describe('nonEmptyString', () => {
-    it('should ensure type safety', () => {
+    it('ensures type safety', () => {
         const emptyString = '';
         // @ts-expect-error: blocks an empty string
         const nonEmptyString: NonEmptyString<'something'> = emptyString;
