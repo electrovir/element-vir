@@ -22,13 +22,14 @@ export function mapHtmlValues(
         const lastString = inputTemplateStrings[currentValueIndex];
         const nextString = inputTemplateStrings[currentValueIndex + 1];
 
-        if (lastString && nextString) {
+        /** Only a string can be an interpolated tag name, and this runs on every render. */
+        if (lastString && nextString && check.isString(currentValue)) {
             const {shouldHaveTagNameHere} = classifyValue({
                 lastNewString: lastString,
                 currentTemplateString: nextString,
             });
 
-            if (shouldHaveTagNameHere && check.isString(currentValue)) {
+            if (shouldHaveTagNameHere) {
                 const replacement: MinimalElementDefinition = {
                     tagName: currentValue,
                     tagInterpolationKey: getOrSet(tagNameKeys, currentValue, () => {
@@ -46,6 +47,11 @@ export function mapHtmlValues(
     });
 }
 
+/** Characters that are allowed to directly follow an interpolated opening tag name. */
+const openingTagNameFollower = /^[\s>/]/;
+/** An interpolated closing tag name must be followed by the tag's `>`. */
+const closingTagNameFollower = /^\s*>/;
+
 function classifyValue({
     lastNewString,
     currentTemplateString,
@@ -53,10 +59,12 @@ function classifyValue({
     lastNewString: string;
     currentTemplateString: string;
 }>) {
+    /** Only the end of this string is ever checked, so only its end needs trimming. */
+    const trimmedLastNewString = lastNewString.trimEnd();
     const isOpeningTag =
-        lastNewString.trim().endsWith('<') && !!currentTemplateString.match(/^[\s>]/);
+        trimmedLastNewString.endsWith('<') && openingTagNameFollower.test(currentTemplateString);
     const isClosingTag =
-        lastNewString.trim().endsWith('</') && currentTemplateString.trim().startsWith('>');
+        trimmedLastNewString.endsWith('</') && closingTagNameFollower.test(currentTemplateString);
     const shouldHaveTagNameHere: boolean = isOpeningTag || isClosingTag;
 
     return {
@@ -118,7 +126,9 @@ function transformHtml(
     }
 }
 
-export function transformHtmlTemplate(litTemplate: HTMLTemplateResult): TemplateTransform {
+export function transformHtmlTemplate(
+    litTemplate: Readonly<Pick<HTMLTemplateResult, 'strings' | 'values'>>,
+): TemplateTransform {
     return transformTemplate({
         inputTemplateStrings: litTemplate.strings,
         inputValues: litTemplate.values,

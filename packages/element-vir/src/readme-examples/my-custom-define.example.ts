@@ -13,12 +13,21 @@ export const defineVerifiedVirElement = wrapDefineElement<VirTagName>({
     },
 });
 
-// add an optional transform callback
+/**
+ * Add an optional transform callback. A transform must leave `tagName` alone: every event type,
+ * host class, CSS var, slot name, and test id is derived from the original tag name.
+ */
 export const defineTransformedVirElement = wrapDefineElement<VirTagName>({
     transformInputs: (inputs) => {
         return {
             ...inputs,
-            tagName: inputs.tagName.startsWith('vir-') ? `vir-${inputs.tagName}` : inputs.tagName,
+            tagName: inputs.tagName.startsWith('vir-') ? inputs.tagName : `vir-${inputs.tagName}`,
+            options: {
+                ...inputs.options,
+                errorHandler: (error) => {
+                    console.error(`'${inputs.tagName}' failed to render`, error);
+                },
+            },
         };
     },
 });

@@ -33,6 +33,19 @@ export type MinimalDefinitionWithInputs<TagName extends string = string> = {
 };
 
 /**
+ * Checks if properties can be read off of the input at all.
+ *
+ * This exists instead of `check.hasKey` because `check.hasKey` costs roughly a microsecond per call
+ * (it runs its attempts through a `try`/`catch`), and the predicates below run on every
+ * interpolated value of every template on every render.
+ *
+ * @category Internal
+ */
+export function canHoldProperties(value: unknown): value is Record<PropertyKey, unknown> {
+    return !!value && (typeof value === 'object' || typeof value === 'function');
+}
+
+/**
  * Checks if the input is an instance of {@link MinimalDefinitionWithInputs}.
  *
  * @category Internal
@@ -40,10 +53,7 @@ export type MinimalDefinitionWithInputs<TagName extends string = string> = {
 export function isMinimalDefinitionWithInputs(
     value: unknown,
 ): value is MinimalDefinitionWithInputs {
-    return (
-        check.hasKey(value, '_elementVirIsMinimalDefinitionWithInputs') &&
-        !!value._elementVirIsMinimalDefinitionWithInputs
-    );
+    return canHoldProperties(value) && !!value._elementVirIsMinimalDefinitionWithInputs;
 }
 
 /**
@@ -53,5 +63,5 @@ export function isMinimalDefinitionWithInputs(
  * @category Internal
  */
 export function hasTagName(value: unknown): value is MinimalElementDefinition {
-    return check.hasKey(value, 'tagName') && !!value.tagName && typeof value.tagName === 'string';
+    return canHoldProperties(value) && check.isString(value.tagName) && !!value.tagName;
 }

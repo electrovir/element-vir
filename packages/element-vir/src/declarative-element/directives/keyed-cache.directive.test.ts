@@ -29,7 +29,10 @@ describe('keyedCache', () => {
         return shadowRoot.querySelector('.cached-input');
     }
 
-    async function switchKey(fixture: InstanceType<typeof TestKeyedCacheElement>, key: string) {
+    async function switchKey(
+        fixture: Element & {assignInputs: (inputs: {activeKey: string}) => void},
+        key: string,
+    ) {
         fixture.assignInputs({
             activeKey: key,
         });
@@ -510,7 +513,7 @@ describe('keyedCache', () => {
         assert.strictEquals(clickCount, 2);
     });
 
-    it('preserves element-vir element state across key switches', async () => {
+    it('restores the same element instance with re-initialized state across key switches', async () => {
         const StatefulChild = defineElement<{label: string}>()({
             tagName: 'test-keyed-cache-stateful-child',
             state() {
@@ -629,9 +632,18 @@ describe('keyedCache', () => {
         /** The restored child should be the exact same element instance. */
         assert.strictEquals(restoredChildA, childA);
 
-        /** Its internal element state should be fully preserved. */
-        assert.strictEquals(restoredChildA.instanceState.clickCount, 3);
-        assert.strictEquals(restoredChildA.instanceState.lastMessage, 'hello from state-a');
+        /**
+         * Reattaching an element re-runs its `state` callback, so element state resets to its
+         * initial values. `keyedCache` only promises to preserve DOM state.
+         */
+        await waitUntil.strictEquals(0, () => restoredChildA.instanceState.clickCount);
+        assert.strictEquals(restoredChildA.instanceState.lastMessage, '');
+
+        /** DOM state that no binding controls survives the trip through the cache. */
+        const restoredInputA = restoredChildA.shadowRoot.querySelector('.message-input');
+        assert.instanceOf(restoredInputA, HTMLInputElement);
+        assert.strictEquals(restoredInputA, inputA);
+        assert.strictEquals(restoredInputA.value, 'hello from state-a');
 
         /** Switch back to 'state-b' and verify its state too. */
         fixture.assignInputs({
@@ -643,7 +655,7 @@ describe('keyedCache', () => {
         const restoredChildB = parentShadow.querySelector('test-keyed-cache-stateful-child');
         assert.instanceOf(restoredChildB, StatefulChild);
         assert.strictEquals(restoredChildB, childB);
-        assert.strictEquals(restoredChildB.instanceState.clickCount, 1);
+        await waitUntil.strictEquals(0, () => restoredChildB.instanceState.clickCount);
         assert.strictEquals(restoredChildB.instanceState.lastMessage, '');
     });
 
@@ -681,5 +693,268 @@ describe('keyedCache', () => {
         const inputAfter = getInput(fixture);
         assert.instanceOf(inputAfter, HTMLInputElement);
         assert.strictEquals(inputAfter.value, '');
+    });
+
+    it('has the expected type', () => {
+        assert.tsType<Parameters<typeof keyedCache>>().equals<
+            [
+                PropertyKey,
+                unknown,
+            ]
+        >();
+    });
+
+    it('preserves the active DOM across a disconnect and reconnect', async () => {
+        const fixture = await testWeb.render(html`
+            <${TestKeyedCacheElement.assign({
+                activeKey: 'active',
+            })}></${TestKeyedCacheElement}>
+        `);
+        assert.instanceOf(fixture, TestKeyedCacheElement);
+
+        const input = getInput(fixture);
+        assert.instanceOf(input, HTMLInputElement);
+        input.value = 'still here';
+
+        const parent = fixture.parentNode;
+        assert.isTruthy(parent);
+        fixture.remove();
+        parent.append(fixture);
+        await waitForAnimationFrame(2);
+
+        const inputAfter = getInput(fixture);
+        assert.instanceOf(inputAfter, HTMLInputElement);
+        assert.strictEquals(inputAfter, input);
+        assert.strictEquals(inputAfter.value, 'still here');
+    });
+
+    it('works with symbol keys', async () => {
+        const firstKey = Symbol.for('keyed-cache-first');
+        const secondKey = Symbol.for('keyed-cache-second');
+
+        const SymbolKeyElement = defineElement<{activeKey: symbol; label: string}>()({
+            tagName: 'test-keyed-cache-symbol-key-element',
+            render({inputs}) {
+                return html`
+                    <span class="key-label">${inputs.label}</span>
+                    ${keyedCache(
+                        inputs.activeKey,
+                        html`
+                            <input class="cached-input" />
+                        `,
+                    )}
+                `;
+            },
+        });
+
+        const fixture = await testWeb.render(html`
+            <${SymbolKeyElement.assign({
+                activeKey: firstKey,
+                label: 'first',
+            })}></${SymbolKeyElement}>
+        `);
+        assert.instanceOf(fixture, SymbolKeyElement);
+
+        const firstInput = getInput(fixture);
+        assert.instanceOf(firstInput, HTMLInputElement);
+        firstInput.value = 'first value';
+
+        fixture.assignInputs({
+            activeKey: secondKey,
+            label: 'second',
+        });
+        await waitUntil.strictEquals('second', () => getKeyLabel(fixture));
+
+        const secondInput = getInput(fixture);
+        assert.instanceOf(secondInput, HTMLInputElement);
+        assert.strictEquals(secondInput.value, '');
+
+        fixture.assignInputs({
+            activeKey: firstKey,
+            label: 'first',
+        });
+        await waitUntil.strictEquals('first', () => getKeyLabel(fixture));
+
+        const restoredFirst = getInput(fixture);
+        assert.instanceOf(restoredFirst, HTMLInputElement);
+        assert.strictEquals(restoredFirst, firstInput);
+        assert.strictEquals(restoredFirst.value, 'first value');
+    });
+
+    it('keeps separate caches for separate directive instances', async () => {
+        const TwoCacheElement = defineElement<{activeKey: string}>()({
+            tagName: 'test-keyed-cache-two-cache-element',
+            render({inputs}) {
+                return html`
+                    <span class="key-label">${inputs.activeKey}</span>
+                    ${keyedCache(
+                        inputs.activeKey,
+                        html`
+                            <input class="top-input" />
+                        `,
+                    )}
+                    ${keyedCache(
+                        inputs.activeKey,
+                        html`
+                            <input class="bottom-input" />
+                        `,
+                    )}
+                `;
+            },
+        });
+
+        const fixture = await testWeb.render(html`
+            <${TwoCacheElement.assign({
+                activeKey: 'shared-a',
+            })}></${TwoCacheElement}>
+        `);
+        assert.instanceOf(fixture, TwoCacheElement);
+
+        const topInput = fixture.shadowRoot.querySelector('.top-input');
+        const bottomInput = fixture.shadowRoot.querySelector('.bottom-input');
+        assert.instanceOf(topInput, HTMLInputElement);
+        assert.instanceOf(bottomInput, HTMLInputElement);
+        topInput.value = 'top a';
+        bottomInput.value = 'bottom a';
+
+        await switchKey(fixture, 'shared-b');
+
+        const topInputB = fixture.shadowRoot.querySelector('.top-input');
+        const bottomInputB = fixture.shadowRoot.querySelector('.bottom-input');
+        assert.instanceOf(topInputB, HTMLInputElement);
+        assert.instanceOf(bottomInputB, HTMLInputElement);
+        assert.strictEquals(topInputB.value, '');
+        assert.strictEquals(bottomInputB.value, '');
+
+        await switchKey(fixture, 'shared-a');
+
+        const restoredTop = fixture.shadowRoot.querySelector('.top-input');
+        const restoredBottom = fixture.shadowRoot.querySelector('.bottom-input');
+        assert.instanceOf(restoredTop, HTMLInputElement);
+        assert.instanceOf(restoredBottom, HTMLInputElement);
+        assert.strictEquals(restoredTop, topInput);
+        assert.strictEquals(restoredBottom, bottomInput);
+        assert.strictEquals(restoredTop.value, 'top a');
+        assert.strictEquals(restoredBottom.value, 'bottom a');
+    });
+
+    it('updates the value when only the value changes', async () => {
+        const SameKeyElement = defineElement<{counter: number}>()({
+            tagName: 'test-keyed-cache-same-key-element',
+            render({inputs}) {
+                return html`
+                    ${keyedCache(
+                        'constant-key',
+                        html`
+                            <span class="counter-display">${inputs.counter}</span>
+                            <input class="cached-input" />
+                        `,
+                    )}
+                `;
+            },
+        });
+
+        const fixture = await testWeb.render(html`
+            <${SameKeyElement.assign({
+                counter: 1,
+            })}></${SameKeyElement}>
+        `);
+        assert.instanceOf(fixture, SameKeyElement);
+
+        const input = getInput(fixture);
+        assert.instanceOf(input, HTMLInputElement);
+        input.value = 'typed';
+
+        fixture.assignInputs({
+            counter: 2,
+        });
+        await waitUntil.strictEquals('2', () =>
+            fixture.shadowRoot.querySelector('.counter-display')?.textContent.trim(),
+        );
+
+        const sameInput = getInput(fixture);
+        assert.instanceOf(sameInput, HTMLInputElement);
+        assert.strictEquals(sameInput, input);
+        assert.strictEquals(sameInput.value, 'typed');
+    });
+
+    it('swaps structurally different templates per key', async () => {
+        const StructureElement = defineElement<{activeKey: string}>()({
+            tagName: 'test-keyed-cache-structure-element',
+            render({inputs}) {
+                return html`
+                    <span class="key-label">${inputs.activeKey}</span>
+                    ${keyedCache(
+                        inputs.activeKey,
+                        inputs.activeKey === 'input-key'
+                            ? html`
+                                  <input class="cached-input" />
+                              `
+                            : html`
+                                  <textarea class="cached-area"></textarea>
+                              `,
+                    )}
+                `;
+            },
+        });
+
+        const fixture = await testWeb.render(html`
+            <${StructureElement.assign({
+                activeKey: 'input-key',
+            })}></${StructureElement}>
+        `);
+        assert.instanceOf(fixture, StructureElement);
+
+        const input = getInput(fixture);
+        assert.instanceOf(input, HTMLInputElement);
+        input.value = 'in the input';
+
+        await switchKey(fixture, 'area-key');
+
+        const area = fixture.shadowRoot.querySelector('.cached-area');
+        assert.instanceOf(area, HTMLTextAreaElement);
+        assert.isNull(getInput(fixture));
+        area.value = 'in the area';
+
+        await switchKey(fixture, 'input-key');
+
+        const restoredInput = getInput(fixture);
+        assert.instanceOf(restoredInput, HTMLInputElement);
+        assert.strictEquals(restoredInput, input);
+        assert.strictEquals(restoredInput.value, 'in the input');
+        assert.isNull(fixture.shadowRoot.querySelector('.cached-area'));
+
+        await switchKey(fixture, 'area-key');
+
+        const restoredArea = fixture.shadowRoot.querySelector('.cached-area');
+        assert.instanceOf(restoredArea, HTMLTextAreaElement);
+        assert.strictEquals(restoredArea, area);
+        assert.strictEquals(restoredArea.value, 'in the area');
+    });
+
+    it('renders nothing for an undefined value', async () => {
+        const EmptyElement = defineElement<{activeKey: string}>()({
+            tagName: 'test-keyed-cache-empty-element',
+            render({inputs}) {
+                return html`
+                    <span class="key-label">${inputs.activeKey}</span>
+                    ${keyedCache(inputs.activeKey, undefined)}
+                `;
+            },
+        });
+
+        const fixture = await testWeb.render(html`
+            <${EmptyElement.assign({
+                activeKey: 'empty-a',
+            })}></${EmptyElement}>
+        `);
+        assert.instanceOf(fixture, EmptyElement);
+        assert.strictEquals(fixture.shadowRoot.textContent.trim(), 'empty-a');
+
+        await switchKey(fixture, 'empty-b');
+        assert.strictEquals(fixture.shadowRoot.textContent.trim(), 'empty-b');
+
+        await switchKey(fixture, 'empty-a');
+        assert.strictEquals(fixture.shadowRoot.textContent.trim(), 'empty-a');
     });
 });

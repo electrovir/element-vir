@@ -360,28 +360,37 @@ import {defineElement} from 'element-vir';
 import {html, listen} from 'element-vir';
 import {MyCustomActionEvent} from './my-custom-action.example.js';
 
-export const MyWithCustomEvents = defineElement()({
-    tagName: 'my-with-custom-events',
+export const MyWithCustomEventDispatch = defineElement()({
+    tagName: 'my-with-custom-event-dispatch',
     render({dispatch}) {
         return html`
-            <div
+            <button
+                ${listen('click', () => {
+                    dispatch(
+                        new MyCustomActionEvent(
+                            randomInteger({
+                                min: 0,
+                                max: 1_000_000,
+                            }),
+                        ),
+                    );
+                })}
+            >
+                send a number
+            </button>
+        `;
+    },
+});
+
+export const MyWithCustomEvents = defineElement()({
+    tagName: 'my-with-custom-events',
+    render() {
+        return html`
+            <${MyWithCustomEventDispatch}
                 ${listen(MyCustomActionEvent, (event) => {
                     console.info(`Got a number! ${event.detail}`);
                 })}
-            >
-                <div
-                    ${listen('click', () => {
-                        dispatch(
-                            new MyCustomActionEvent(
-                                randomInteger({
-                                    min: 0,
-                                    max: 1_000_000,
-                                }),
-                            ),
-                        );
-                    })}
-                ></div>
-            </div>
+            ></${MyWithCustomEventDispatch}>
         `;
     },
 });
@@ -508,7 +517,7 @@ export const MyWithCssVars = defineElement()({
 
 ## Custom Type Requirements
 
-Use `wrapDefineElement` to compose `defineElement`. This is particularly useful to adding restrictions on the element `tagName`, but it can be used for restricting any of the type parameters:
+Use `wrapDefineElement` to compose `defineElement`. This is particularly useful to adding restrictions on the element `tagName`, but it can be used for restricting any of the type parameters. Note that a `transformInputs` callback may not change `tagName`: `wrapDefineElement` throws if it does, because the returned definition's static type and all tag-name-derived names (event types, host classes, CSS vars, slot names, test ids) come from the original tag name.
 
 <!-- example-link: src/readme-examples/my-custom-define.example.ts -->
 
@@ -528,12 +537,21 @@ export const defineVerifiedVirElement = wrapDefineElement<VirTagName>({
     },
 });
 
-// add an optional transform callback
+/**
+ * Add an optional transform callback. A transform must leave `tagName` alone: every event type,
+ * host class, CSS var, slot name, and test id is derived from the original tag name.
+ */
 export const defineTransformedVirElement = wrapDefineElement<VirTagName>({
     transformInputs: (inputs) => {
         return {
             ...inputs,
-            tagName: inputs.tagName.startsWith('vir-') ? `vir-${inputs.tagName}` : inputs.tagName,
+            tagName: inputs.tagName.startsWith('vir-') ? inputs.tagName : `vir-${inputs.tagName}`,
+            options: {
+                ...inputs.options,
+                errorHandler: (error) => {
+                    console.error(`'${inputs.tagName}' failed to render`, error);
+                },
+            },
         };
     },
 });

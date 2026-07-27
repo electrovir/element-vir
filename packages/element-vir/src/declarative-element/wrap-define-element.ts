@@ -9,6 +9,23 @@ import {type PropertyInitMapBase} from './properties/element-properties.js';
 import {type BaseStringName} from './properties/string-names.js';
 
 /**
+ * A {@link DeclarativeElementInit} with all type parameters erased, used internally by
+ * {@link wrapDefineElement} to call its own options callbacks.
+ *
+ * @category Internal
+ */
+export type AnyDeclarativeElementInit = DeclarativeElementInit<
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+>;
+
+/**
  * Options for {@link wrapDefineElement}.
  *
  * @category Internal
@@ -38,6 +55,12 @@ export type WrapDefineElementOptions<
     /**
      * An optional callback which transforms a element definition init object given to the wrapped
      * element definition.
+     *
+     * The transformed `tagName` must equal the original: TypeScript cannot compute the result of a
+     * run-time string transform, so a changed `tagName` would register a custom element that no
+     * longer matches the returned definition's type, and would also invalidate the event types,
+     * host class names, CSS var names, slot names, and test ids that are all derived from the
+     * original tag name. {@link wrapDefineElement} throws when a transform changes it.
      */
     transformInputs: (
         inputInit: DeclarativeElementInit<
@@ -72,6 +95,7 @@ export type WrapDefineElementOptions<
  * - Etc.
  *
  * @category Element Definition
+ * @throws If `options.transformInputs` returns a different `tagName` than it was given.
  */
 export function wrapDefineElement<
     TagNameRequirement extends CustomElementTagName = CustomElementTagName,
@@ -81,7 +105,7 @@ export function wrapDefineElement<
 >(options?: WrapDefineElementOptions | undefined) {
     const {assertInputs, transformInputs}: WrapDefineElementOptions = {
         assertInputs: options?.assertInputs ?? (() => {}),
-        transformInputs: options?.transformInputs ?? ((inputs: any) => inputs),
+        transformInputs: options?.transformInputs ?? ((inputInit) => inputInit),
     };
 
     return <Inputs extends InputsRequirement>(
@@ -108,10 +132,18 @@ export function wrapDefineElement<
             >,
         ) => {
             assertInputs(inputs as DeclarativeElementInit<any, any, any, any, any, any, any, any>);
+            const transformedInputs = transformInputs(
+                inputs as DeclarativeElementInit<any, any, any, any, any, any, any, any>,
+            );
+
+            if (transformedInputs.tagName !== inputs.tagName) {
+                throw new Error(
+                    `transformInputs cannot change tagName: '${inputs.tagName}' was transformed into '${transformedInputs.tagName}'.`,
+                );
+            }
+
             return defineElement<Inputs>(...errorParams)(
-                transformInputs(
-                    inputs as DeclarativeElementInit<any, any, any, any, any, any, any, any>,
-                ) as unknown as DeclarativeElementInit<
+                transformedInputs as unknown as DeclarativeElementInit<
                     TagName,
                     Inputs,
                     State,

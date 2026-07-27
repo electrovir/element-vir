@@ -16,8 +16,6 @@ import {hostClassStylesTest} from '../e2e-tests/host-class-styles.book.js';
 import {hostClassesTest} from '../e2e-tests/host-classes.book.js';
 import {inputTypesTest} from '../e2e-tests/input-types.book.js';
 import {inputsTest} from '../e2e-tests/inputs.book.js';
-import {keyedCacheDifferentElementsTest} from '../e2e-tests/keyed-cache-different-elements.book.js';
-import {keyedCacheTest} from '../e2e-tests/keyed-cache.book.js';
 import {lifecycleTest} from '../e2e-tests/lifecycle.book.js';
 import {listenToActivateTest} from '../e2e-tests/listen-to-activate.book.js';
 import {listenToEnterTest} from '../e2e-tests/listen-to-enter.book.js';
@@ -61,7 +59,6 @@ export const allTestPages: BookPage[] = [
     testIdTest,
     hostClassesTest,
     cssVarsTest,
-    keyedCacheTest,
     multipleSlotsTest,
     observablePropsTest,
     undefinedInterpolationTest,
@@ -89,7 +86,6 @@ export const allTestPages: BookPage[] = [
     cssVarOverrideTest,
     hostClassStylesTest,
     nestedTemplatesTest,
-    keyedCacheDifferentElementsTest,
     typedEventsStandaloneTest,
     typedEventBubbleTest,
     multipleInstancesTest,

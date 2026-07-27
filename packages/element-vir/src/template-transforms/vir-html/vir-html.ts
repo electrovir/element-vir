@@ -18,15 +18,16 @@ export function html<const Values extends HtmlInterpolation[]>(
 ): HTMLTemplateResult {
     const mappedValues = mapHtmlValues(inputTemplateStrings, inputValues);
 
-    const litTemplate = litHtml(inputTemplateStrings, ...mappedValues);
     const transformedTemplate = getTransformedTemplate(inputTemplateStrings, mappedValues, () => {
-        return transformHtmlTemplate(litTemplate);
+        return transformHtmlTemplate({
+            strings: inputTemplateStrings,
+            values: mappedValues,
+        });
     });
 
-    const htmlTemplate: HTMLTemplateResult = {
-        ...litTemplate,
-        strings: transformedTemplate.strings,
-        values: transformedTemplate.values,
-    };
-    return htmlTemplate;
+    /**
+     * The lit template is built directly from the transformed template so that a discarded lit
+     * template and a copy of it aren't allocated on every render.
+     */
+    return litHtml(transformedTemplate.strings, ...transformedTemplate.values);
 }

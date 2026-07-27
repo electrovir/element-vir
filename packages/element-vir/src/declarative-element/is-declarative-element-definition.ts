@@ -25,6 +25,30 @@ const expectedStaticProperties = getObjectTypedKeys({
     Record<keyof StaticDeclarativeElementProperties<any, any, any, any, any, any, any, any>, ''>
 >);
 
+/** `assignedInputs` is only populated by the template transforms, so it is legitimately unset. */
+const staticPropertiesAllowedToBeUndefined: ReadonlyArray<
+    keyof StaticDeclarativeElementProperties<any, any, any, any, any, any, any, any>
+> = ['assignedInputs'];
+
+/**
+ * The type-only statics (such as `InputsType`) are getters that throw, so their descriptors must be
+ * inspected instead of their values.
+ */
+function findStaticDescriptor(
+    input: Readonly<object>,
+    key: PropertyKey,
+): PropertyDescriptor | undefined {
+    const ownDescriptor = Object.getOwnPropertyDescriptor(input, key);
+
+    if (ownDescriptor) {
+        return ownDescriptor;
+    }
+
+    const parent = Object.getPrototypeOf(input) as object | null;
+
+    return parent == undefined ? undefined : findStaticDescriptor(parent, key);
+}
+
 /**
  * Asserts that the given input is a declarative element definition.
  *
@@ -39,8 +63,16 @@ export function assertDeclarativeElementDefinition(
         throw new AssertionError('Input is not a declarative element constructor', failMessage);
     }
     expectedStaticProperties.forEach((expectedProperty) => {
-        if (!check.hasKey(input, expectedProperty)) {
+        const descriptor = findStaticDescriptor(input, expectedProperty);
+
+        if (!descriptor) {
             throw new AssertionError(`missing prop '${expectedProperty}'`, failMessage);
+        } else if (
+            !descriptor.get &&
+            descriptor.value === undefined &&
+            !staticPropertiesAllowedToBeUndefined.includes(expectedProperty)
+        ) {
+            throw new AssertionError(`undefined prop '${expectedProperty}'`, failMessage);
         }
     });
 }

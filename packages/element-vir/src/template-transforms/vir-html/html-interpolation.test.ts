@@ -5,8 +5,12 @@ import {describe, it} from '@augment-vir/test';
 import {defineElement} from '../../declarative-element/define-element.js';
 import {renderIf} from '../../declarative-element/directives/render-if.directive.js';
 import {type RenderCallback} from '../../declarative-element/render-callback.js';
-import {classMap, ifDefined} from '../../lit-exports/all-lit-exports.js';
-import {type DirectiveOutput, type HtmlInterpolation} from './html-interpolation.js';
+import {classMap, ifDefined, type nothing} from '../../lit-exports/all-lit-exports.js';
+import {
+    type DirectiveOutput,
+    type HtmlInterpolation,
+    type VerifyHtmlValues,
+} from './html-interpolation.js';
 import {html} from './vir-html.js';
 
 describe('HtmlInterpolation', () => {
@@ -124,5 +128,96 @@ describe('HtmlInterpolation', () => {
                 >
             >()
             .matches<RenderCallback>();
+    });
+
+    it('allows empty and primitive interpolations', () => {
+        assert.tsType<null>().matches<HtmlInterpolation>();
+        assert.tsType<undefined>().matches<HtmlInterpolation>();
+        assert.tsType<string>().matches<HtmlInterpolation>();
+        assert.tsType<number>().matches<HtmlInterpolation>();
+        assert.tsType<boolean>().matches<HtmlInterpolation>();
+        assert.tsType<bigint>().matches<HtmlInterpolation>();
+        assert.tsType<typeof nothing>().matches<HtmlInterpolation>();
+        assert.tsType<Element>().matches<HtmlInterpolation>();
+        assert.tsType<HtmlInterpolation[]>().matches<HtmlInterpolation>();
+        assert.tsType<ReadonlyArray<HtmlInterpolation>>().matches<HtmlInterpolation>();
+    });
+});
+
+describe('VerifyHtmlValues', () => {
+    const NoInputs = defineElement()({
+        tagName: 'verify-html-values-no-inputs',
+        render() {
+            return '';
+        },
+    });
+    const WithInputs = defineElement<{param1: string}>()({
+        tagName: 'verify-html-values-with-inputs',
+        render() {
+            return '';
+        },
+    });
+
+    it('passes through definitions that need no inputs', () => {
+        assert.tsType<VerifyHtmlValues<[typeof NoInputs]>>().equals<[typeof NoInputs]>();
+    });
+
+    it('replaces definitions that are missing their inputs with an error string', () => {
+        assert
+            .tsType<VerifyHtmlValues<[typeof WithInputs]>>()
+            .equals<['ERROR: This element is missing its inputs.']>();
+        assert
+            .tsType<
+                VerifyHtmlValues<
+                    [
+                        typeof WithInputs,
+                        typeof WithInputs,
+                    ]
+                >
+            >()
+            .equals<
+                [
+                    'ERROR: This element is missing its inputs.',
+                    'ERROR: This element is missing its inputs.',
+                ]
+            >();
+    });
+
+    it('allows a definition after its inputs were assigned', () => {
+        type Assigned = ReturnType<typeof WithInputs.assign>;
+
+        assert
+            .tsType<
+                VerifyHtmlValues<
+                    [
+                        Assigned,
+                        typeof WithInputs,
+                    ]
+                >
+            >()
+            .equals<
+                [
+                    Assigned,
+                    typeof WithInputs,
+                ]
+            >();
+    });
+
+    it('passes through values that are not element definitions', () => {
+        assert
+            .tsType<
+                VerifyHtmlValues<
+                    [
+                        string,
+                        number,
+                    ]
+                >
+            >()
+            .equals<
+                [
+                    string,
+                    number,
+                ]
+            >();
     });
 });

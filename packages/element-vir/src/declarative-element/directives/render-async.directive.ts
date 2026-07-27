@@ -127,10 +127,7 @@ export function renderAsync<
             ? errorRender(asyncPropValue)
             : extractErrorMessage(asyncPropValue);
         return errorResult as any;
-    } else if (
-        check.isPromiseLike(asyncPropValue) ||
-        (options.useLastResolvedValue && asyncPropValue === undefined)
-    ) {
+    } else if (check.isPromiseLike(asyncPropValue)) {
         const fallbackResult: FallbackResult = fallback;
         return fallbackResult as any;
     } else {

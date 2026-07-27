@@ -1,6 +1,13 @@
 import {assert} from '@augment-vir/assert';
 import {describe, it} from '@augment-vir/test';
-import {assertValidStringNames, createSlotNamesMap, createStringNameMap} from './string-names.js';
+import {
+    type BaseStringName,
+    type SlotNamesMap,
+    type StringNameMap,
+    assertValidStringNames,
+    createSlotNamesMap,
+    createStringNameMap,
+} from './string-names.js';
 
 describe(createSlotNamesMap.name, () => {
     it('passes through slot names that already start with the tag name', () => {
@@ -75,6 +82,51 @@ describe(createSlotNamesMap.name, () => {
         assert.notStrictEquals(first, second);
         assert.deepEquals(first, second);
     });
+
+    it('treats a slot name equal to the tag name as a legacy name', () => {
+        const slotNames = createSlotNamesMap('my-element', [
+            'my-element',
+        ] as const);
+
+        assert.deepEquals(slotNames as Record<string, string>, {
+            'my-element': 'my-element-slot-my-element',
+        });
+    });
+
+    it('passes through deeply prefixed slot names unchanged', () => {
+        const slotNames = createSlotNamesMap('my-element', [
+            'my-element-header-left',
+        ] as const);
+
+        assert.strictEquals(slotNames['my-element-header-left'], 'my-element-header-left');
+    });
+
+    it('keeps a legacy slot name that contains dashes intact', () => {
+        const slotNames = createSlotNamesMap('my-element', [
+            'header-left',
+        ] as const);
+
+        assert.strictEquals(slotNames['header-left'], 'my-element-slot-header-left');
+    });
+
+    it('types unprefixed slot names as legacy generated names', () => {
+        assert
+            .tsType<
+                SlotNamesMap<
+                    'my-element',
+                    readonly [
+                        'my-element-header',
+                        'footer',
+                    ]
+                >
+            >()
+            .equals<
+                Readonly<{
+                    'my-element-header': 'my-element-header';
+                    footer: 'my-element-slot-footer';
+                }>
+            >();
+    });
 });
 
 describe(createStringNameMap.name, () => {
@@ -108,6 +160,42 @@ describe(createStringNameMap.name, () => {
         const testIds = createStringNameMap('my-element', 'test-id', undefined);
 
         assert.isEmpty(Object.keys(testIds));
+    });
+
+    it('does not share references between calls', () => {
+        const names = [
+            'submit-button',
+        ] as const;
+        const first = createStringNameMap('my-element', 'test-id', names);
+        const second = createStringNameMap('my-element', 'test-id', names);
+
+        assert.notStrictEquals(first, second);
+        assert.deepEquals(first, second);
+    });
+
+    it('joins with a bare dash when the name type is an empty string', () => {
+        const names = createStringNameMap('my-element', '', [
+            'thing',
+        ] as const);
+
+        assert.strictEquals(names.thing, 'my-element--thing');
+    });
+
+    it('leaves an already prefixed name un-deduplicated', () => {
+        const testIds = createStringNameMap('my-element', 'test-id', [
+            'my-element-test-id-thing',
+        ] as const);
+
+        assert.strictEquals(
+            testIds['my-element-test-id-thing'],
+            'my-element-test-id-my-element-test-id-thing',
+        );
+    });
+
+    it('types the generated map as readonly', () => {
+        assert
+            .tsType<StringNameMap<'my-element', 'test-id', readonly ['thing']>>()
+            .equals<Readonly<{thing: 'my-element-test-id-thing'}>>();
     });
 });
 
@@ -147,5 +235,52 @@ describe(assertValidStringNames.name, () => {
 
     it('passes when given an empty array', () => {
         assert.doesNotThrow(() => assertValidStringNames('my-element', []));
+    });
+
+    it('includes the element tag name and the reason in the error message', () => {
+        assert.throws(
+            () =>
+                assertValidStringNames('my-element', [
+                    'bad-name',
+                ]),
+            {
+                matchMessage:
+                    "Invalid element string name 'bad-name' in 'my-element': element string names must begin with the element's tag name.",
+            },
+        );
+    });
+
+    it('throws on a string that is exactly the tag name', () => {
+        assert.throws(() =>
+            assertValidStringNames('my-element', [
+                'my-element',
+            ]),
+        );
+    });
+
+    it('allows an empty suffix after the required dash', () => {
+        assert.doesNotThrow(() =>
+            assertValidStringNames('my-element', [
+                'my-element-',
+            ]),
+        );
+    });
+
+    it('throws on the first invalid string even when later strings are valid', () => {
+        assert.throws(
+            () =>
+                assertValidStringNames('my-element', [
+                    'first-bad',
+                    'my-element-good',
+                    'second-bad',
+                ]),
+            {
+                matchMessage: "Invalid element string name 'first-bad'",
+            },
+        );
+    });
+
+    it('requires every string name to start with the tag name', () => {
+        assert.tsType<BaseStringName<'my-element'>>().equals<`my-element-${string}`>();
     });
 });

@@ -168,9 +168,7 @@ function internalDefineElement<
     SlotNames,
     TestIds
 > {
-    if (!check.isObject(init)) {
-        throw new TypeError(`Cannot define element with non-object init: ${String(init)}`);
-    } else if (!check.isString(init.tagName)) {
+    if (!check.isString(init.tagName)) {
         throw new TypeError('Missing valid tagName (expected a string).');
     }
 
@@ -195,10 +193,19 @@ function internalDefineElement<
         TestIds
     >;
     type ThisElementInstance = InstanceType<ThisElementStaticClass>;
+    type ThisRenderParams = RenderParams<
+        TagName,
+        Inputs,
+        State,
+        EventsInit,
+        HostClassKeys,
+        CssVarKeys,
+        SlotNames,
+        TestIds
+    >;
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!init.render || typeof init.render === 'string') {
-        throw new Error(`Failed to define element '${init.tagName}': render is not a function`);
+    if (!check.isFunction(init.render)) {
+        throw new TypeError(`Failed to define element '${init.tagName}': render is not a function`);
     }
 
     const elementOptions: DeclarativeElementDefinitionOptions = {
@@ -312,16 +319,7 @@ function internalDefineElement<
         public _lastRenderError: Error | undefined = undefined;
         public _internalRenderCount = 0;
 
-        public createRenderParams(): RenderParams<
-            TagName,
-            Inputs,
-            State,
-            EventsInit,
-            HostClassKeys,
-            CssVarKeys,
-            SlotNames,
-            TestIds
-        > {
+        public createRenderParams(): ThisRenderParams {
             return createRenderParams({
                 element: this,
                 eventsMap,
@@ -368,7 +366,7 @@ function internalDefineElement<
         public static override readonly init = init as any;
         public static override readonly slotNames = slotNamesMap as any;
         public static override readonly testIds = testIdsMap as any;
-        public get InstanceType() {
+        public static get InstanceType(): any {
             throw new Error(
                 `'InstanceType' was called on ${init.tagName} as a value but it is only a type.`,
             );
@@ -394,6 +392,30 @@ function internalDefineElement<
         public _hasRendered = false;
         public _lastRenderedProps: ThisElementInstance['_lastRenderedProps'] = undefined as any;
 
+        protected runPreRenderCallbacks(renderParams: ThisRenderParams) {
+            if (!this._stateCalled && init.state) {
+                this._stateCalled = true;
+                const stateInit = init.state(renderParams);
+
+                if (stateInit instanceof Promise) {
+                    throw new TypeError('state cannot be asynchronous');
+                }
+
+                getObjectTypedKeys(stateInit).forEach((stateKey) => {
+                    bindReactiveProperty(this, stateKey);
+
+                    (this.instanceState as PropertyInitMapBase)[stateKey] = stateInit[stateKey];
+                });
+            }
+
+            if (!this._initCalled && init.init) {
+                this._initCalled = true;
+                if ((init.init(renderParams) as any) instanceof Promise) {
+                    throw new TypeError('init cannot be asynchronous');
+                }
+            }
+        }
+
         public render() {
             this._internalRenderCount++;
             try {
@@ -401,27 +423,7 @@ function internalDefineElement<
 
                 const renderParams = this.createRenderParams();
 
-                if (!this._stateCalled && init.state) {
-                    this._stateCalled = true;
-                    const stateInit = init.state(renderParams);
-
-                    if (stateInit instanceof Promise) {
-                        throw new TypeError('state cannot be asynchronous');
-                    }
-
-                    getObjectTypedKeys(stateInit).forEach((stateKey) => {
-                        bindReactiveProperty(this, stateKey);
-
-                        (this.instanceState as PropertyInitMapBase)[stateKey] = stateInit[stateKey];
-                    });
-                }
-
-                if (!this._initCalled && init.init) {
-                    this._initCalled = true;
-                    if ((init.init(renderParams) as any) instanceof Promise) {
-                        throw new TypeError('init cannot be asynchronous');
-                    }
-                }
+                this.runPreRenderCallbacks(renderParams);
 
                 const renderResult = typedRenderCallback(renderParams);
                 if (renderResult instanceof Promise) {
@@ -442,6 +444,7 @@ function internalDefineElement<
                         ...renderParams.state,
                     },
                 };
+                this._lastRenderError = undefined;
                 return renderResult;
             } catch (caught) {
                 const error: Error = ensureErrorAndPrependMessage(
@@ -457,12 +460,13 @@ function internalDefineElement<
 
         public override connectedCallback(): void {
             super.connectedCallback();
-            if (this._hasRendered && !this._initCalled && init.init) {
-                this._initCalled = true;
-                const renderParams = this.createRenderParams();
-                if ((init.init(renderParams) as any) instanceof Promise) {
-                    throw new TypeError(`init in '${init.tagName}' cannot be asynchronous`);
-                }
+            /**
+             * Re-insertion must re-run `state` before `init` so that the callback order matches the
+             * first mount, and must schedule a render since Lit does not schedule one itself.
+             */
+            if (this._hasRendered) {
+                this.runPreRenderCallbacks(this.createRenderParams());
+                this.requestUpdate();
             }
         }
 
@@ -484,7 +488,7 @@ function internalDefineElement<
              * mount.
              */
             try {
-                if (init.cleanup && this._stateCalled) {
+                if (init.cleanup && this._hasRendered) {
                     const renderParams = this.createRenderParams();
                     if ((init.cleanup(renderParams) as any) instanceof Promise) {
                         throw new TypeError(`cleanup in '${init.tagName}' cannot be asynchronous`);

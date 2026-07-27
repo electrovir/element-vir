@@ -1,11 +1,24 @@
 import {check} from '@augment-vir/assert';
-import {filterMap} from '@augment-vir/common';
-import {hasTagName, isMinimalDefinitionWithInputs} from './minimal-element-definition.js';
+import {filterMap, getOrSet} from '@augment-vir/common';
+import {
+    canHoldProperties,
+    hasTagName,
+    isMinimalDefinitionWithInputs,
+} from './minimal-element-definition.js';
 import {type TemplateTransform} from './template-transform-type.js';
+import {tagNameKeys} from './vir-html/tag-name-keys.js';
 
 type WeakMapElementKey = {
     tagName: string;
 };
+
+/**
+ * DOM nodes have a `tagName` but never contribute to a template transform, so keying the cache on
+ * them would create an unbounded entry per node instance.
+ */
+function isDomNode(value: unknown): boolean {
+    return canHoldProperties(value) && check.isNumber(value.nodeType);
+}
 
 type TemplateAndNested = {
     template: TemplateTransform | undefined;
@@ -20,10 +33,22 @@ function extractElementKeys(values: unknown[]): WeakMapElementKey[] {
         (value): WeakMapElementKey | undefined => {
             if (isMinimalDefinitionWithInputs(value)) {
                 return value.definition;
-            } else if (hasTagName(value)) {
-                return value.tagInterpolationKey || value;
-            } else {
+            } else if (!hasTagName(value) || isDomNode(value)) {
                 return undefined;
+            } else if (value.tagInterpolationKey) {
+                return value.tagInterpolationKey;
+            } else if (check.isFunction(value)) {
+                return value;
+            } else {
+                /**
+                 * Any other object that merely carries a tag name gets a key shared by tag name so
+                 * that the cache is not defeated by a new object on every render.
+                 */
+                return getOrSet(tagNameKeys, value.tagName, () => {
+                    return {
+                        tagName: value.tagName,
+                    };
+                });
             }
         },
         check.isTruthy,
@@ -44,12 +69,16 @@ export function getAlreadyMappedTemplate<PossibleValues>(
     templateStringsKey: TemplateStringsArray,
     values: PossibleValues[],
 ) {
-    const elementKeys = extractElementKeys(values);
-    const nestedValue = getNestedValues(transformedTemplateStrings, [
-        templateStringsKey,
-        ...elementKeys,
-    ]);
-    return nestedValue.value?.template;
+    /**
+     * This runs on every render, so the maps are walked directly instead of through the wrapper
+     * objects that {@link setNestedValues} needs for its failure reasons.
+     */
+    return extractElementKeys(values).reduce(
+        (parent: TemplateAndNested | undefined, elementKey) => {
+            return parent?.nested?.get(elementKey);
+        },
+        transformedTemplateStrings.get(templateStringsKey),
+    )?.template;
 }
 
 export function setMappedTemplate<PossibleValues>(
@@ -68,32 +97,6 @@ export function setMappedTemplate<PossibleValues>(
     });
 }
 
-function getNestedValues(
-    map: TemplatesWeakMap | NestedTemplatesWeakMap,
-    keys: (TemplateStringsArray | WeakMapElementKey)[],
-    index = 0,
-): {value: undefined | TemplateAndNested; reason: string} {
-    const {currentTemplateAndNested, reason} = getCurrentKeyAndValue(map, keys, index);
-    if (!currentTemplateAndNested) {
-        return {
-            value: currentTemplateAndNested,
-            reason,
-        };
-    } else if (index === keys.length - 1) {
-        return {
-            value: currentTemplateAndNested,
-            reason: 'reached end of keys array',
-        };
-    } else if (currentTemplateAndNested.nested) {
-        return getNestedValues(currentTemplateAndNested.nested, keys, index + 1);
-    } else {
-        return {
-            value: undefined,
-            reason: `map at key index ${index} did not have nested maps`,
-        };
-    }
-}
-
 function getCurrentKeyAndValue(
     map: TemplatesWeakMap | NestedTemplatesWeakMap,
     keys: (TemplateStringsArray | WeakMapElementKey)[],
@@ -110,19 +113,14 @@ function getCurrentKeyAndValue(
             currentTemplateAndNested: undefined,
             reason: `key at index ${index} not found`,
         };
-    } else if (!map.has(currentKey as any)) {
+    }
+
+    const currentTemplateAndNested = map.get(currentKey as any);
+    if (!currentTemplateAndNested) {
         return {
             currentKey,
             currentTemplateAndNested: undefined,
             reason: `key at index ${index} was not in the map`,
-        };
-    }
-    const currentTemplateAndNested = map.get(currentKey as any);
-    if (currentTemplateAndNested == undefined) {
-        return {
-            currentKey,
-            currentTemplateAndNested: undefined,
-            reason: `value at key at index ${index} was undefined`,
         };
     }
 

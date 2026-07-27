@@ -26,10 +26,7 @@ export const mutate = directive(
         constructor(partInfo: PartInfo) {
             super(partInfo);
 
-            this.element = assertWrap.instanceOf(
-                extractElement(partInfo, 'modifyElement'),
-                HTMLElement,
-            );
+            this.element = assertWrap.instanceOf(extractElement(partInfo, 'mutate'), HTMLElement);
         }
 
         public render(callback: (params: Omit<MutateDirectiveParams, 'params'>) => void) {

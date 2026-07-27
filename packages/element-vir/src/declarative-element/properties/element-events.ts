@@ -111,17 +111,11 @@ export function createEventDescriptorMap<
                 (
                     currentElementEventKey: keyof EventsInitGeneric,
                 ): currentElementEventKey is NonEmptyString<keyof EventsInitGeneric> => {
-                    if (typeof currentElementEventKey !== 'string') {
-                        throw new TypeError(
-                            `Expected event key of type string but got type '${typeof currentElementEventKey}' for key ${String(
-                                currentElementEventKey,
-                            )}`,
-                        );
-                    } else if (currentElementEventKey === '') {
+                    if (currentElementEventKey === '') {
                         throw new Error('Got empty string for events key.');
-                    } else {
-                        return true;
                     }
+
+                    return true;
                 },
             )
             .reduce(

@@ -1,7 +1,7 @@
 import {type MaybePromise} from '@augment-vir/common';
 import {
+    AsyncDirective,
     directive,
-    Directive,
     type DirectiveResult,
     noChange,
     type PartInfo,
@@ -144,7 +144,7 @@ type ListenerMetaData = {
  * call is wrapped in the function above.
  */
 const listenDirective = directive(
-    class extends Directive {
+    class extends AsyncDirective {
         public readonly element: Element;
         public lastListenerMetaData: ListenerMetaData | undefined;
 
@@ -155,14 +155,30 @@ const listenDirective = directive(
         }
 
         public resetListener(listenerMetaData: ListenerMetaData) {
+            this.removeCurrentListener();
+            this.lastListenerMetaData = listenerMetaData;
+            /** While disconnected, `reconnected` is responsible for attaching the listener. */
+            if (this.isConnected) {
+                this.addCurrentListener();
+            }
+        }
+
+        public addCurrentListener() {
+            if (this.lastListenerMetaData) {
+                this.element.addEventListener(
+                    this.lastListenerMetaData.eventType,
+                    this.lastListenerMetaData.listener,
+                );
+            }
+        }
+
+        public removeCurrentListener() {
             if (this.lastListenerMetaData) {
                 this.element.removeEventListener(
                     this.lastListenerMetaData.eventType,
                     this.lastListenerMetaData.listener,
                 );
             }
-            this.element.addEventListener(listenerMetaData.eventType, listenerMetaData.listener);
-            this.lastListenerMetaData = listenerMetaData;
         }
 
         public createListenerMetaData(
@@ -201,6 +217,14 @@ const listenDirective = directive(
             }
 
             return noChange;
+        }
+
+        public override disconnected() {
+            this.removeCurrentListener();
+        }
+
+        public override reconnected() {
+            this.addCurrentListener();
         }
     },
 );

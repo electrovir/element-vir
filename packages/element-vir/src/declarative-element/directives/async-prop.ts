@@ -18,7 +18,7 @@ export class InternalAsyncPropClass<Value, Params> extends CallbackObservable<Va
         this,
         {value: Exclude<AsyncValue<Value>, Promise<any> | Error>}
     > {
-        return !(this.value instanceof Promise);
+        return !(this.value instanceof Promise) && !(this.value instanceof Error);
     }
 
     /**

@@ -1,12 +1,12 @@
 import {assert, waitUntil} from '@augment-vir/assert';
 import {DeferredPromise, randomString, typedMap, wait, waitValue} from '@augment-vir/common';
 import {describe, it, itCases, testWeb} from '@augment-vir/test';
-import {isObservableBase, noUpdate} from 'observavir';
+import {AsyncValueState, isObservableBase, noUpdate} from 'observavir';
 import {nothing} from '../../lit-exports/all-lit-exports.js';
 import {html} from '../../template-transforms/vir-html/vir-html.js';
 import {defineElement} from '../define-element.js';
 import {defineElementEvent} from '../properties/element-events.js';
-import {type AsyncProp, type AsyncValue, asyncProp} from './async-prop.js';
+import {type AsyncProp, type AsyncValue, InternalAsyncPropClass, asyncProp} from './async-prop.js';
 import {listen} from './listen.directive.js';
 import {renderAsync} from './render-async.directive.js';
 
@@ -276,12 +276,17 @@ describe(asyncProp.name, () => {
         const initialPromiseResult = await initialPromise;
 
         assert.isLengthExactly(deferredPromiseWrappers as DeferredPromise<number>[], 2);
-        assert.strictEquals(instance.instanceState.myAsyncProp.value as unknown, resolutionValue);
+        /**
+         * Read into fresh locals because `assert.strictEquals` narrows its first argument for the
+         * rest of the scope, which would otherwise pin `.value` to the promise it was first
+         * compared against.
+         */
+        const resolvedValue: unknown = instance.instanceState.myAsyncProp.value;
+        const lastResolvedValue: unknown = instance.instanceState.myAsyncProp.lastResolvedValue;
+
+        assert.strictEquals(resolvedValue, resolutionValue);
         assert.strictEquals(initialPromiseResult, resolutionValue);
-        assert.strictEquals(
-            instance.instanceState.myAsyncProp.lastResolvedValue as unknown,
-            resolutionValue,
-        );
+        assert.strictEquals(lastResolvedValue, resolutionValue);
 
         // assign a new input; element should re-render and create a new promise
         instance.assignInputs({
@@ -300,7 +305,8 @@ describe(asyncProp.name, () => {
         await waitUntil(() => renderCount === 5, undefined, 'Render count failed to reach 5');
 
         assert.isLengthExactly(deferredPromiseWrappers as DeferredPromise<number>[], 3);
-        assert.strictEquals(instance.instanceState.myAsyncProp.value as unknown, rejectionError);
+        const rejectedValue: unknown = instance.instanceState.myAsyncProp.value;
+        assert.strictEquals(rejectedValue, rejectionError);
 
         // force an update; element should re-render and update state
         await testWeb.click(forceUpdateButton);
@@ -329,10 +335,8 @@ describe(asyncProp.name, () => {
         deferredPromiseWrappers[4].resolve(finalResolutionValue);
 
         await waitUntil(() => renderCount === 7, undefined, 'Render count failed to reach 7');
-        assert.strictEquals(
-            instance.instanceState.myAsyncProp.value as unknown,
-            finalResolutionValue,
-        );
+        const finalValue: unknown = instance.instanceState.myAsyncProp.value;
+        assert.strictEquals(finalValue, finalResolutionValue);
 
         // assign an already resolved value; element should update once and immediately use the resolved value
         await testWeb.click(assignResolvedButton);
@@ -585,6 +589,14 @@ describe(asyncProp.name, () => {
         instance.setValue;
         instance.update;
         instance.value;
+        instance.settledValue;
+        void instance.promiseValue;
+        instance.state;
+        instance.isResolved;
+        instance.isSettled;
+        instance.isWaiting;
+        instance.isError;
+        instance.isNotError;
 
         /**
          * These properties are set to `protected` to hide them so the `AsyncProp` interface is
@@ -606,6 +618,8 @@ describe(asyncProp.name, () => {
         instance.listenToEvent;
         // @ts-expect-error: should not exist publicly
         instance.listen;
+        // @ts-expect-error: should not exist publicly
+        instance.resolvedValue;
     });
 
     it('does not trigger updates with a function input changing', () => {
@@ -728,7 +742,8 @@ describe(asyncProp.name, () => {
         await wait({
             milliseconds: updateDuration.milliseconds * 2,
         });
-        assert.strictEquals(rendered.instanceState.myProp.value as unknown, 42);
+        const settledPropValue: unknown = rendered.instanceState.myProp.value;
+        assert.strictEquals(settledPropValue, 42);
     });
 
     it('allows noUpdate', async () => {
@@ -770,6 +785,525 @@ describe(asyncProp.name, () => {
         await waitUntil.isTruthy(() => rendered._internalRenderCount > 0);
         assert.instanceOf(rendered.instanceState.asyncValues.value, Promise);
     });
+
+    it('resolves a promise of noUpdate into the last resolved value', async () => {
+        const instance = asyncProp<string>({
+            defaultValue: 'first',
+        });
+
+        assert.strictEquals(instance.setValue(Promise.resolve(noUpdate)), true);
+        await waitUntil.isTruthy(() => !(instance.value instanceof Promise));
+        assert.strictEquals(instance.value, 'first');
+        assert.strictEquals(instance.lastResolvedValue, 'first');
+    });
+
+    it('creates a new instance of the internal class', () => {
+        assert.instanceOf(asyncProp(), InternalAsyncPropClass);
+        assert.notStrictEquals(asyncProp(), asyncProp());
+    });
+
+    it('starts with a pending promise and no params', () => {
+        const instance = asyncProp<string, {value: string}>();
+
+        assert.instanceOf(instance.value, Promise);
+        assert.isUndefined(instance.settledValue);
+        assert.isUndefined(instance.lastResolvedValue);
+        assert.isUndefined(instance.lastParams);
+        assert.strictEquals(instance.state, AsyncValueState.Waiting);
+    });
+
+    it('reuses the pending value promise until it settles', async () => {
+        const instance = asyncProp<number>();
+        const initialPromise = instance.value;
+        const firstDeferred = new DeferredPromise<number>();
+
+        assert.isTrue(instance.setValue(firstDeferred.promise));
+        assert.strictEquals(instance.value, initialPromise);
+        /** Setting the exact same promise again is a no-op. */
+        assert.isFalse(instance.setValue(firstDeferred.promise));
+
+        firstDeferred.resolve(4);
+        assert.strictEquals(await initialPromise, 4);
+        assert.strictEquals(instance.value, 4);
+
+        const secondDeferred = new DeferredPromise<number>();
+        assert.isTrue(instance.setValue(secondDeferred.promise));
+        assert.instanceOf(instance.value, Promise);
+        assert.notStrictEquals(instance.value, initialPromise);
+        assert.strictEquals(instance.lastResolvedValue, 4);
+
+        secondDeferred.resolve(5);
+        await waitUntil.isTruthy(() => instance.value === 5);
+    });
+
+    it('discards a stale promise resolution', async () => {
+        const instance = asyncProp<string>();
+        const firstDeferred = new DeferredPromise<string>();
+        const secondDeferred = new DeferredPromise<string>();
+
+        instance.setValue(firstDeferred.promise);
+        instance.setValue(secondDeferred.promise);
+
+        firstDeferred.resolve('first');
+        await wait({
+            milliseconds: 0,
+        });
+        assert.instanceOf(instance.value, Promise);
+
+        secondDeferred.resolve('second');
+        await waitUntil.isTruthy(() => !(instance.value instanceof Promise));
+        const secondValue: unknown = instance.value;
+        assert.strictEquals(secondValue, 'second');
+        assert.strictEquals(instance.lastResolvedValue, 'second');
+    });
+
+    it('discards a stale promise rejection', async () => {
+        const instance = asyncProp<string>();
+        const firstDeferred = new DeferredPromise<string>();
+        const secondDeferred = new DeferredPromise<string>();
+
+        instance.setValue(firstDeferred.promise);
+        instance.setValue(secondDeferred.promise);
+
+        firstDeferred.reject(new Error('stale rejection'));
+        await wait({
+            milliseconds: 0,
+        });
+        assert.instanceOf(instance.value, Promise);
+
+        secondDeferred.resolve('second');
+        await waitUntil.isTruthy(() => !(instance.value instanceof Promise));
+        const secondValue: unknown = instance.value;
+        assert.strictEquals(secondValue, 'second');
+    });
+
+    it('ignores a promise that settles after setValue', async () => {
+        const instance = asyncProp<number>();
+        const deferred = new DeferredPromise<number>();
+
+        instance.setValue(deferred.promise);
+        assert.isTrue(instance.setValue(1));
+
+        deferred.resolve(2);
+        await wait({
+            milliseconds: 0,
+        });
+
+        assert.strictEquals(instance.value, 1);
+        assert.strictEquals(instance.lastResolvedValue, 1);
+    });
+
+    it('wraps a non-error promise rejection reason into an Error', async () => {
+        const instance = asyncProp<number>();
+
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+        instance.setValue(Promise.reject('just a string'));
+
+        await waitUntil.isTruthy(() => instance.value instanceof Error);
+        assert.isError(instance.value as Error, {
+            matchMessage: 'just a string',
+        });
+    });
+
+    it('captures an error thrown synchronously by updateCallback', () => {
+        const errorMessage = [
+            'intentional sync error:',
+            randomString(),
+        ].join(' ');
+        const instance = asyncProp<number>({
+            updateCallback() {
+                throw new Error(errorMessage);
+            },
+        });
+
+        assert.isTrue(instance.update());
+        assert.isError(instance.value as Error, {
+            matchMessage: errorMessage,
+        });
+        assert.isUndefined(instance.lastResolvedValue);
+    });
+
+    it('does not change lastResolvedValue when an error is set', () => {
+        const instance = asyncProp<string>({
+            defaultValue: 'first',
+        });
+
+        assert.strictEquals(instance.lastResolvedValue, 'first');
+
+        instance.setValue(new Error('nope'));
+
+        assert.instanceOf(instance.value, Error);
+        assert.strictEquals(instance.lastResolvedValue, 'first');
+        assert.strictEquals(instance.state, AsyncValueState.Rejected);
+    });
+
+    it('throws when updating without a callback', () => {
+        const instance = asyncProp<number>();
+
+        assert.throws(() => instance.forceUpdate(), {
+            matchConstructor: TypeError,
+            matchMessage: 'Cannot update value: updateCallback was never set.',
+        });
+    });
+
+    it('throws when updating without params', () => {
+        const instance = asyncProp<number, {value: number}>({
+            updateCallback({value}) {
+                return value;
+            },
+        });
+
+        assert.throws(() => instance.forceUpdate(), {
+            matchConstructor: TypeError,
+            matchMessage: 'Cannot update value: params were never set.',
+        });
+    });
+
+    it('only calls updateCallback when params deeply change', () => {
+        let callCount: number = 0;
+        const instance = asyncProp({
+            updateCallback(params: {nested: {value: number}}) {
+                callCount++;
+                return params.nested.value;
+            },
+        });
+
+        assert.isTrue(
+            instance.update({
+                nested: {
+                    value: 1,
+                },
+            }),
+        );
+        assert.isFalse(
+            instance.update({
+                nested: {
+                    value: 1,
+                },
+            }),
+        );
+        assert.isTrue(
+            instance.update({
+                nested: {
+                    value: 2,
+                },
+            }),
+        );
+        assert.strictEquals(callCount, 2);
+    });
+
+    it('treats repeated void params as unchanged', () => {
+        let callCount: number = 0;
+        const instance = asyncProp({
+            updateCallback() {
+                callCount++;
+                return callCount;
+            },
+        });
+
+        assert.isTrue(instance.update());
+        assert.isFalse(instance.update());
+        assert.isTrue(instance.forceUpdate());
+        assert.strictEquals(callCount, 2);
+    });
+
+    it('passes the previous resolved value to updateCallback', () => {
+        const previousValues: unknown[] = [];
+        const instance = asyncProp({
+            updateCallback(params: {value: number}, previousResolvedValue) {
+                previousValues.push(previousResolvedValue);
+                return params.value;
+            },
+        });
+
+        instance.update({
+            value: 1,
+        });
+        instance.update({
+            value: 2,
+        });
+
+        assert.deepEquals(previousValues, [
+            undefined,
+            1,
+        ]);
+    });
+
+    it('sets params without calling updateCallback', () => {
+        const callParams: {value: number}[] = [];
+        const instance = asyncProp({
+            updateCallback(params: {value: number}) {
+                callParams.push(params);
+                return params.value;
+            },
+        });
+
+        assert.isTrue(
+            instance.setParams({
+                value: 1,
+            }),
+        );
+        assert.deepEquals(callParams, []);
+        assert.deepEquals(instance.lastParams, {
+            value: 1,
+        });
+        assert.isFalse(
+            instance.setParams({
+                value: 1,
+            }),
+        );
+        assert.isFalse(
+            instance.update({
+                value: 1,
+            }),
+        );
+        assert.deepEquals(callParams, []);
+        assert.isTrue(
+            instance.update({
+                value: 2,
+            }),
+        );
+        assert.deepEquals(callParams, [
+            {
+                value: 2,
+            },
+        ]);
+    });
+
+    it('does not call updateCallback for defaultParams', () => {
+        let callCount: number = 0;
+        const instance = asyncProp({
+            defaultParams: {
+                value: 1,
+            },
+            updateCallback(params: {value: number}) {
+                callCount++;
+                return params.value;
+            },
+        });
+
+        assert.deepEquals(instance.lastParams, {
+            value: 1,
+        });
+        assert.strictEquals(callCount, 0);
+        assert.instanceOf(instance.value, Promise);
+        assert.isFalse(
+            instance.update({
+                value: 1,
+            }),
+        );
+        assert.strictEquals(callCount, 0);
+    });
+
+    it('updates on every call when equalityCheck is undefined', () => {
+        let callCount: number = 0;
+        const instance = asyncProp({
+            equalityCheck: undefined,
+            updateCallback(params: {value: number}) {
+                callCount++;
+                return callCount;
+            },
+        });
+
+        assert.isTrue(
+            instance.update({
+                value: 1,
+            }),
+        );
+        assert.isTrue(
+            instance.update({
+                value: 1,
+            }),
+        );
+        assert.strictEquals(callCount, 2);
+        assert.strictEquals(instance.value, 2);
+    });
+
+    it('never updates when equalityCheck always matches', () => {
+        let callCount: number = 0;
+        const instance = asyncProp({
+            equalityCheck: () => true,
+            updateCallback(params: {value: number}) {
+                callCount++;
+                return params.value;
+            },
+        });
+
+        assert.isTrue(
+            instance.update({
+                value: 1,
+            }),
+        );
+        assert.isFalse(
+            instance.update({
+                value: 2,
+            }),
+        );
+        assert.strictEquals(callCount, 1);
+    });
+
+    it('captures an error thrown by the equality check', () => {
+        const errorMessage = [
+            'intentional equality check error:',
+            randomString(),
+        ].join(' ');
+        const instance = asyncProp<number, {value: number}>({
+            updateCallback({value}) {
+                return value;
+            },
+        });
+
+        instance.update({
+            value: 1,
+        });
+
+        assert.isFalse(
+            instance.update({
+                get value(): number {
+                    throw new Error(errorMessage);
+                },
+            }),
+        );
+        assert.isError(instance.value as Error, {
+            matchMessage: errorMessage,
+        });
+    });
+
+    it('destroys state async props when the element is removed', async () => {
+        let destroyCount = 0;
+
+        const VirAsyncPropDestroy = defineElement()({
+            tagName: 'vir-async-prop-destroy',
+            state() {
+                const myProp = asyncProp<string>({
+                    defaultValue: 'hi',
+                });
+                const originalDestroy = myProp.destroy.bind(myProp);
+                myProp.destroy = () => {
+                    destroyCount++;
+                    originalDestroy();
+                };
+
+                return {
+                    myProp,
+                };
+            },
+            render({state}) {
+                return renderAsync(state.myProp, 'loading');
+            },
+        });
+
+        const instance = await testWeb.render(html`
+            <${VirAsyncPropDestroy}></${VirAsyncPropDestroy}>
+        `);
+
+        assert.instanceOf(instance, VirAsyncPropDestroy);
+        assert.strictEquals(destroyCount, 0);
+
+        instance.remove();
+
+        await waitUntil(() => destroyCount === 1, undefined, 'async prop was never destroyed');
+    });
+
+    it('never exposes an Error through an isResolved check in a render callback', async () => {
+        const observedValues: string[] = [];
+
+        const VirIsResolvedConsumer = defineElement()({
+            tagName: 'vir-is-resolved-consumer',
+            state() {
+                return {
+                    myProp: asyncProp<string>(),
+                };
+            },
+            render({state}) {
+                if (state.myProp.isResolved()) {
+                    assert.tsType(state.myProp.value).equals<string>();
+                    observedValues.push(state.myProp.value);
+                    return state.myProp.value;
+                } else if (state.myProp.isError()) {
+                    return 'error';
+                } else {
+                    return 'loading';
+                }
+            },
+        });
+
+        const instance = await testWeb.render(html`
+            <${VirIsResolvedConsumer}></${VirIsResolvedConsumer}>
+        `);
+
+        assert.instanceOf(instance, VirIsResolvedConsumer);
+        assert.strictEquals(instance.shadowRoot.textContent, 'loading');
+
+        instance.instanceState.myProp.setValue(new Error('consumer error'));
+        await waitUntil(() => instance.shadowRoot.textContent === 'error');
+
+        instance.instanceState.myProp.setValue('all good');
+        await waitUntil(() => instance.shadowRoot.textContent === 'all good');
+
+        assert.deepEquals(observedValues, ['all good']);
+    });
+
+    it('keeps rendering the last resolved value while a new promise is pending', async () => {
+        const deferredPromises: DeferredPromise<string>[] = [];
+
+        const VirAsyncPropLastResolved = defineElement<{trigger: number}>()({
+            tagName: 'vir-async-prop-last-resolved',
+            state() {
+                return {
+                    myProp: asyncProp({
+                        updateCallback(params: {trigger: number}) {
+                            const deferred = new DeferredPromise<string>();
+                            deferredPromises.push(deferred);
+                            return deferred.promise;
+                        },
+                    }),
+                };
+            },
+            render({inputs, state}) {
+                state.myProp.update({
+                    trigger: inputs.trigger,
+                });
+
+                return html`
+                    <span class="value-span">
+                        ${renderAsync(state.myProp, 'loading', undefined, undefined, {
+                            useLastResolvedValue: true,
+                        })}
+                    </span>
+                `;
+            },
+        });
+
+        const instance = await testWeb.render(html`
+            <${VirAsyncPropLastResolved.assign({
+                trigger: 0,
+            })}></${VirAsyncPropLastResolved}>
+        `);
+
+        assert.instanceOf(instance, VirAsyncPropLastResolved);
+        const span = instance.shadowRoot.querySelector('.value-span');
+        assert.instanceOf(span, HTMLSpanElement);
+        /**
+         * `useLastResolvedValue` renders the not-yet-set `undefined` last resolved value rather
+         * than the fallback, because `undefined` is a legitimate resolved value.
+         */
+        assert.strictEquals(span.innerText, '');
+
+        assert.isDefined(deferredPromises[0]);
+        deferredPromises[0].resolve('first');
+        await waitUntil(() => span.innerText === 'first');
+
+        instance.assignInputs({
+            trigger: 1,
+        });
+        await waitUntil(() => deferredPromises.length === 2);
+        assert.strictEquals(span.innerText as string, 'first');
+
+        assert.isDefined(deferredPromises[1]);
+        deferredPromises[1].resolve('second');
+        await waitUntil(() => span.innerText === 'second');
+    });
 });
 
 describe('AsyncProp value type guards', () => {
@@ -799,6 +1333,268 @@ describe('AsyncProp value type guards', () => {
 
         assert.tsType(myAsyncProp.settledValue).equals<string | Error | undefined>();
     });
+    it('narrows each guard independently', () => {
+        const myAsyncProp = asyncProp({
+            async updateCallback(trigger: {callback: number}) {
+                await wait({
+                    milliseconds: 0,
+                });
+                return 'five';
+            },
+        });
+
+        if (myAsyncProp.isResolved()) {
+            assert.tsType(myAsyncProp.value).equals<string>();
+        }
+        if (myAsyncProp.isSettled()) {
+            assert.tsType(myAsyncProp.value).equals<string | Error>();
+        }
+        if (myAsyncProp.isWaiting()) {
+            assert.tsType(myAsyncProp.value).equals<Promise<string>>();
+        }
+        if (myAsyncProp.isError()) {
+            assert.tsType(myAsyncProp.value).equals<Error>();
+        }
+        if (myAsyncProp.isNotError()) {
+            assert.tsType(myAsyncProp.value).equals<Promise<string> | string>();
+        }
+    });
+
+    function testAllGuards(value: unknown) {
+        const myAsyncProp = asyncProp();
+
+        myAsyncProp.setValue(value);
+
+        return {
+            isResolved: myAsyncProp.isResolved(),
+            isSettled: myAsyncProp.isSettled(),
+            isWaiting: myAsyncProp.isWaiting(),
+            isError: myAsyncProp.isError(),
+            isNotError: myAsyncProp.isNotError(),
+            state: myAsyncProp.state,
+        };
+    }
+
+    itCases(testAllGuards, [
+        {
+            it: 'detects a pending promise',
+            input: new Promise(() => {}),
+            expect: {
+                isResolved: false,
+                isSettled: false,
+                isWaiting: true,
+                isError: false,
+                isNotError: true,
+                state: AsyncValueState.Waiting,
+            },
+        },
+        {
+            it: 'detects an error',
+            input: new Error('guard error'),
+            expect: {
+                isResolved: false,
+                isSettled: true,
+                isWaiting: false,
+                isError: true,
+                isNotError: false,
+                state: AsyncValueState.Rejected,
+            },
+        },
+        {
+            it: 'detects a resolved value',
+            input: {
+                stuff: 'hello',
+            },
+            expect: {
+                isResolved: true,
+                isSettled: true,
+                isWaiting: false,
+                isError: false,
+                isNotError: true,
+                state: AsyncValueState.Resolved,
+            },
+        },
+        {
+            it: 'detects a resolved undefined value',
+            input: undefined,
+            expect: {
+                isResolved: true,
+                isSettled: true,
+                isWaiting: false,
+                isError: false,
+                isNotError: true,
+                state: AsyncValueState.Resolved,
+            },
+        },
+        {
+            it: 'detects an Error subclass',
+            input: new (class CustomGuardError extends Error {
+                public override name = 'CustomGuardError';
+            })('subclass error'),
+            expect: {
+                isResolved: false,
+                isSettled: true,
+                isWaiting: false,
+                isError: true,
+                isNotError: false,
+                state: AsyncValueState.Rejected,
+            },
+        },
+        {
+            it: 'treats an error-shaped object as resolved',
+            input: {
+                message: 'x',
+                name: 'Error',
+            },
+            expect: {
+                isResolved: true,
+                isSettled: true,
+                isWaiting: false,
+                isError: false,
+                isNotError: true,
+                state: AsyncValueState.Resolved,
+            },
+        },
+        {
+            it: 'treats an error-shaped string as resolved',
+            input: 'Error: boom',
+            expect: {
+                isResolved: true,
+                isSettled: true,
+                isWaiting: false,
+                isError: false,
+                isNotError: true,
+                state: AsyncValueState.Resolved,
+            },
+        },
+    ]);
+
+    it('excludes Error from the isResolved narrowed value type', () => {
+        const errorOrStringProp = asyncProp<string | Error>();
+
+        assert.tsType(errorOrStringProp.value).equals<AsyncValue<string | Error>>();
+
+        if (errorOrStringProp.isResolved()) {
+            assert.tsType(errorOrStringProp.value).equals<string>();
+        }
+        if (errorOrStringProp.isSettled()) {
+            assert.tsType(errorOrStringProp.value).equals<string | Error>();
+        }
+        if (errorOrStringProp.isNotError()) {
+            assert.tsType(errorOrStringProp.value).equals<string | Promise<string | Error>>();
+        }
+    });
+
+    it('reports an intentionally resolved Error value as unresolved', () => {
+        const instance = asyncProp<Error>();
+        const resolvedError = new Error('resolved on purpose');
+
+        instance.setValue(resolvedError);
+
+        assert.deepEquals(
+            {
+                isResolved: instance.isResolved(),
+                isError: instance.isError(),
+                isSettled: instance.isSettled(),
+                lastResolvedValue: instance.lastResolvedValue,
+            },
+            {
+                isResolved: false,
+                isError: true,
+                isSettled: true,
+                lastResolvedValue: undefined,
+            },
+        );
+    });
+
+    it('flips isResolved across the error and success lifecycle', () => {
+        const instance = asyncProp<string, {shouldFail: boolean}>({
+            updateCallback({shouldFail}) {
+                if (shouldFail) {
+                    throw new Error('lifecycle failure');
+                }
+                return 'success';
+            },
+        });
+
+        assert.isFalse(instance.isResolved());
+        assert.isTrue(instance.isWaiting());
+
+        instance.update({
+            shouldFail: true,
+        });
+        assert.isFalse(instance.isResolved());
+        assert.isTrue(instance.isError());
+
+        instance.update({
+            shouldFail: false,
+        });
+        assert.isTrue(instance.isResolved());
+        assert.strictEquals(instance.value, 'success');
+
+        instance.setValue(new Error('later failure'));
+        assert.isFalse(instance.isResolved());
+        assert.strictEquals(instance.lastResolvedValue, 'success');
+
+        instance.forceUpdate({
+            shouldFail: false,
+        });
+        assert.isTrue(instance.isResolved());
+    });
+
+    it('resolves back to true after a rejected promise is replaced', async () => {
+        const instance = asyncProp<string>();
+        const failingDeferred = new DeferredPromise<string>();
+
+        instance.setValue(failingDeferred.promise);
+        assert.isFalse(instance.isResolved());
+
+        failingDeferred.reject(new Error('rejected promise'));
+        await waitUntil.isTruthy(() => instance.isError());
+        assert.isFalse(instance.isResolved());
+
+        const succeedingDeferred = new DeferredPromise<string>();
+        instance.setValue(succeedingDeferred.promise);
+        assert.isFalse(instance.isResolved());
+
+        succeedingDeferred.resolve('recovered');
+        await waitUntil.isTruthy(() => instance.isResolved());
+        assert.strictEquals(instance.value, 'recovered');
+    });
+
+    it('exposes settledValue for each value phase', async () => {
+        const instance = asyncProp<string>();
+        const deferred = new DeferredPromise<string>();
+
+        instance.setValue(deferred.promise);
+        assert.isUndefined(instance.settledValue);
+
+        deferred.resolve('hi');
+        await waitUntil.isTruthy(() => instance.settledValue === 'hi');
+
+        const error = new Error('settled error');
+        instance.setValue(error);
+        const settledError: unknown = instance.settledValue;
+        assert.strictEquals(settledError, error);
+    });
+
+    it('reuses the pending promise for promiseValue', async () => {
+        const instance = asyncProp<string>();
+
+        const pendingValue: unknown = instance.value;
+        assert.strictEquals(pendingValue, instance.promiseValue);
+
+        instance.setValue('hi');
+        assert.notStrictEquals(instance.promiseValue, instance.value);
+        assert.strictEquals(await instance.promiseValue, 'hi');
+
+        const error = new Error('promise value error');
+        instance.setValue(error);
+        await assert.throws(async () => await instance.promiseValue, {
+            matchMessage: error.message,
+        });
+    });
+
     function testIsSettled(value: unknown) {
         const myAsyncProp = asyncProp();
 

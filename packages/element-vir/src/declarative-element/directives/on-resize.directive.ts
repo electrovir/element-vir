@@ -71,9 +71,6 @@ export const onResize = directive(
             // if the element changes we need to observe the new one
             if (newElement !== oldElement) {
                 this.element = newElement;
-                if (oldElement) {
-                    this.resizeObserver.unobserve(oldElement);
-                }
                 this.resizeObserver.observe(newElement);
             }
             return this.render(callback);

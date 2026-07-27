@@ -1,3 +1,4 @@
+import {check} from '@augment-vir/assert';
 import {collapseWhiteSpace} from '@augment-vir/common';
 import {
     type TemplateResult,
@@ -36,7 +37,7 @@ export function convertTemplateToString(
         ...(values || []),
         '', // this last empty string is so it's easier to deal with indexes
     ];
-    const stringsList = strings ?? [''];
+    const stringsList = strings?.length ? strings : [''];
 
     const all = stringsList.map((stringValue, index) => {
         const value = extractValue(stringValue, valueList[index]);
@@ -46,17 +47,24 @@ export function convertTemplateToString(
     return collapseWhiteSpace(all.join(''));
 }
 
-function extractValue(previousString: string, value: any) {
-    if (value._$litType$ != undefined || value._$litDirective$ != undefined) {
+function extractValue(previousString: string, value: any): string {
+    if (value == undefined) {
+        /** Lit renders nothing for nullish child values and an empty attribute value. */
+        return previousString.endsWith('=') ? '""' : '';
+    } else if (
+        check.isObject(value) &&
+        ('templateString' in value ||
+            value._$litType$ != undefined ||
+            value._$litDirective$ != undefined)
+    ) {
         // nested templates
-        return convertTemplateToString(value);
+        return convertTemplateToString(value as TemplateResult);
     } else if (Array.isArray(value)) {
-        // array of strings or templates.
-        const values = value.map((innerValue) => convertTemplateToString(innerValue));
-        return values.join('');
+        /** Each entry gets the same treatment a top level value would, as lit does. */
+        return value.map((innerValue) => extractValue('', innerValue)).join('');
     } else if (previousString.endsWith('=')) {
         return `"${value}"`;
     } else {
-        return value;
+        return String(value);
     }
 }

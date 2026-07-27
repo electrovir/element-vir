@@ -9,7 +9,7 @@ export class TypedEvent<
     EventTypeNameGeneric extends string = '',
     EventDetailGeneric = undefined,
 > extends CustomEvent<EventDetailGeneric> {
-    public readonly _type: EventTypeNameGeneric = '' as EventTypeNameGeneric;
+    public readonly _type: EventTypeNameGeneric;
     public override get type(): EventTypeNameGeneric {
         return this._type;
     }
@@ -18,11 +18,15 @@ export class TypedEvent<
         type: EventTypeNameGeneric | {type: EventTypeNameGeneric},
         value: EventDetailGeneric,
     ) {
-        super(typeof type === 'string' ? type : type.type, {
+        const eventType = typeof type === 'string' ? type : type.type;
+
+        super(eventType, {
             detail: value,
             bubbles: true,
             composed: true,
         });
+
+        this._type = eventType;
     }
 }
 
@@ -80,7 +84,6 @@ export function defineTypedEvent<EventDetailGeneric>() {
     ): DefinedTypedEvent<EventTypeNameGeneric, EventDetailGeneric> => {
         return class extends TypedEvent<EventTypeNameGeneric, EventDetailGeneric> {
             public static readonly type = eventType;
-            public override readonly _type = eventType;
 
             constructor(value: EventDetailGeneric) {
                 super(eventType, value);

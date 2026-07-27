@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/constructor-for-side-effects */
-import {assert} from '@augment-vir/assert';
-import {describe, it} from '@augment-vir/test';
+import {assert, assertWrap} from '@augment-vir/assert';
+import {describe, it, testWeb} from '@augment-vir/test';
 import {type SingleCssVarDefinition} from 'lit-css-vars';
 import {
     type AsyncProp,
@@ -14,6 +14,51 @@ import {
     defineElementEvent,
     html,
 } from '../index.js';
+
+const renderParamsHistory: unknown[] = [];
+
+const RenderParamsRecorder = defineElement<{inputValue?: string | undefined}>()({
+    tagName: 'render-params-recorder',
+    state() {
+        return {
+            count: 0 as number,
+        };
+    },
+    cssVars: {
+        'render-params-recorder-color': 'red',
+    },
+    events: {
+        recorderEvent: defineElementEvent<number>(),
+    },
+    slotNames: [
+        'render-params-recorder-slot',
+    ],
+    testIds: [
+        'target',
+    ],
+    render(params) {
+        renderParamsHistory.push(params);
+        return html`
+            <span>${params.state.count}</span>
+        `;
+    },
+});
+
+/** The history must be typed after the definition exists to avoid a circular type reference. */
+function latestRenderParams() {
+    return assertWrap.isDefined(renderParamsHistory[renderParamsHistory.length - 1]) as Parameters<
+        (typeof RenderParamsRecorder)['render']
+    >[0];
+}
+
+async function renderRecorder() {
+    renderParamsHistory.length = 0;
+    const fixture = await testWeb.render(html`
+        <${RenderParamsRecorder}></${RenderParamsRecorder}>
+    `);
+    assert.instanceOf(fixture, RenderParamsRecorder);
+    return fixture;
+}
 
 describe('RenderParams', () => {
     it('produces proper types', () => {
@@ -148,6 +193,178 @@ describe('UpdateStateCallback', () => {
         }
 
         assert.isDefined(customElement);
+    });
+});
+
+describe(createRenderParams.name, () => {
+    it('passes exactly the expected render params', async () => {
+        await renderRecorder();
+
+        assert.deepEquals(Object.keys(latestRenderParams()).sort(), [
+            'cssVars',
+            'dispatch',
+            'events',
+            'host',
+            'inputs',
+            'slotNames',
+            'state',
+            'testIds',
+            'updateState',
+        ]);
+    });
+
+    it('passes the element itself as host', async () => {
+        const fixture = await renderRecorder();
+
+        assert.strictEquals(latestRenderParams().host, fixture);
+        assert.strictEquals(latestRenderParams().host.shadowRoot, fixture.shadowRoot);
+    });
+
+    it('passes the definition static maps by reference', async () => {
+        await renderRecorder();
+
+        assert.strictEquals(latestRenderParams().events, RenderParamsRecorder.events);
+        assert.strictEquals(latestRenderParams().cssVars, RenderParamsRecorder.cssVars);
+        assert.strictEquals(latestRenderParams().slotNames, RenderParamsRecorder.slotNames);
+        assert.strictEquals(latestRenderParams().testIds, RenderParamsRecorder.testIds);
+    });
+
+    it('passes the instance state and inputs proxies by reference', async () => {
+        const fixture = await renderRecorder();
+
+        assert.strictEquals(latestRenderParams().state, fixture.instanceState);
+        assert.strictEquals(latestRenderParams().inputs, fixture.instanceInputs);
+    });
+
+    it('creates a new params object for each render but keeps state and inputs identity', async () => {
+        const fixture = await renderRecorder();
+        const firstParams = latestRenderParams();
+
+        firstParams.updateState({
+            count: 1,
+        });
+        await fixture.updateComplete;
+
+        assert.isLengthExactly(renderParamsHistory, 2);
+        const secondParams = latestRenderParams();
+
+        assert.notStrictEquals(secondParams, firstParams);
+        assert.notStrictEquals(secondParams.updateState, firstParams.updateState);
+        assert.notStrictEquals(secondParams.dispatch, firstParams.dispatch);
+        assert.strictEquals(secondParams.state, firstParams.state);
+        assert.strictEquals(secondParams.inputs, firstParams.inputs);
+        assert.strictEquals(secondParams.host, firstParams.host);
+        assert.strictEquals(secondParams.events, firstParams.events);
+        assert.strictEquals(secondParams.cssVars, firstParams.cssVars);
+        assert.strictEquals(secondParams.slotNames, firstParams.slotNames);
+        assert.strictEquals(secondParams.testIds, firstParams.testIds);
+    });
+
+    it('sees the current state in each render', async () => {
+        const fixture = await renderRecorder();
+
+        assert.strictEquals(latestRenderParams().state.count, 0);
+        latestRenderParams().updateState({
+            count: 3,
+        });
+        assert.strictEquals(latestRenderParams().state.count, 3);
+        await fixture.updateComplete;
+        assert.strictEquals(latestRenderParams().state.count, 3);
+    });
+
+    it('batches multiple state updates into a single re-render', async () => {
+        const fixture = await renderRecorder();
+        const renderCountBeforeUpdates = fixture._internalRenderCount;
+
+        latestRenderParams().updateState({
+            count: 1,
+        });
+        latestRenderParams().updateState({
+            count: 2,
+        });
+        await fixture.updateComplete;
+
+        assert.strictEquals(fixture._internalRenderCount, renderCountBeforeUpdates + 1);
+        assert.strictEquals(fixture.instanceState.count, 2);
+    });
+
+    it('does not re-render when the state is set to its current value', async () => {
+        const fixture = await renderRecorder();
+        const renderCountBeforeUpdate = fixture._internalRenderCount;
+
+        latestRenderParams().updateState({
+            count: fixture.instanceState.count,
+        });
+        await fixture.updateComplete;
+
+        assert.strictEquals(fixture._internalRenderCount, renderCountBeforeUpdate);
+    });
+
+    it('does not re-render for an empty state update', async () => {
+        const fixture = await renderRecorder();
+        const renderCountBeforeUpdate = fixture._internalRenderCount;
+
+        latestRenderParams().updateState({});
+        await fixture.updateComplete;
+
+        assert.strictEquals(fixture._internalRenderCount, renderCountBeforeUpdate);
+    });
+
+    it('throws when updating a state key that does not exist', async () => {
+        await renderRecorder();
+
+        const missingKeyUpdate = {
+            missingStateKey: 'nope',
+        } as Parameters<ReturnType<typeof latestRenderParams>['updateState']>[0];
+
+        assert.strictEquals(
+            assertWrap.throws(() => latestRenderParams().updateState(missingKeyUpdate)).message,
+            "Property 'missingStateKey' does not exist on 'render-params-recorder'.",
+        );
+    });
+
+    it('dispatches events from the element', async () => {
+        const fixture = await renderRecorder();
+        const dispatchedEvents: string[] = [];
+        fixture.addEventListener(RenderParamsRecorder.events.recorderEvent.type, (event) => {
+            dispatchedEvents.push(event.type);
+        });
+
+        assert.isTrue(
+            latestRenderParams().dispatch(new RenderParamsRecorder.events.recorderEvent(4)),
+        );
+        assert.deepEquals(dispatchedEvents, [
+            'render-params-recorder-recorderEvent',
+        ]);
+    });
+
+    it('returns false from dispatch when a cancelable event is prevented', async () => {
+        const fixture = await renderRecorder();
+        fixture.addEventListener('cancel-me', (event) => {
+            event.preventDefault();
+        });
+
+        assert.isFalse(
+            latestRenderParams().dispatch(
+                new Event('cancel-me', {
+                    cancelable: true,
+                }),
+            ),
+        );
+        assert.isTrue(latestRenderParams().dispatch(new Event('cancel-me')));
+    });
+
+    it('reflects assigned inputs in the inputs param', async () => {
+        const fixture = await renderRecorder();
+
+        assert.isUndefined(latestRenderParams().inputs.inputValue);
+
+        fixture.assignInputs({
+            inputValue: 'assigned',
+        });
+        await fixture.updateComplete;
+
+        assert.strictEquals(latestRenderParams().inputs.inputValue, 'assigned');
     });
 });
 

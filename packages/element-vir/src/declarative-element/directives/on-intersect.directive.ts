@@ -118,9 +118,6 @@ export const onIntersect = directive(
             // if the element changes we need to observe the new one
             if (newElement !== oldElement) {
                 this.element = newElement;
-                if (oldElement) {
-                    this.intersectionObserver.unobserve(oldElement);
-                }
                 needsObserving = true;
             }
 

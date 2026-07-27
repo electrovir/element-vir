@@ -1,46 +1,8 @@
 export type {KeyFn} from 'lit/directives/repeat.js';
-export type {RepeatDirective};
 
-import {type ChildPart, type noChange} from 'lit-html';
-import {type Directive, type PartInfo} from 'lit-html/directive.js';
 import {type KeyFn} from 'lit-html/directives/repeat.js';
 import {repeat as repeatImport} from 'lit/directives/repeat.js';
 import {type HtmlInterpolation} from '../template-transforms/vir-html/html-interpolation.js';
-
-/**
- * A modified class type for the built-in lit `repeat` directive which works for element-vir
- * declarative elements.
- *
- * @category Internal
- */
-/* eslint-disable @virmator/prefer-protected-over-private */
-declare class RepeatDirective extends Directive {
-    private _itemKeys?;
-    constructor(partInfo: PartInfo);
-    private _getValuesAndKeys;
-    /** Renders the repeated templates. */
-    public render<T>(items: Iterable<T>, template: ItemTemplate<T>): Array<HtmlInterpolation>;
-    /** Renders the repeated templates. */
-    public render<T>(
-        items: Iterable<T>,
-        keyFn: KeyFn<T> | ItemTemplate<T>,
-        template: ItemTemplate<T>,
-    ): Array<HtmlInterpolation>;
-
-    /** Updates the repeated templates. */
-    public update<T>(
-        containerPart: ChildPart,
-        [
-            items,
-            keyFnOrTemplate,
-            template,
-        ]: [
-            Iterable<T>,
-            KeyFn<T> | ItemTemplate<T>,
-            ItemTemplate<T>,
-        ],
-    ): HtmlInterpolation[] | typeof noChange;
-}
 
 /**
  * A modified `ItemTemplate` type for the built-in lit `repeat` directive which works for

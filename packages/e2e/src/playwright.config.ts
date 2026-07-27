@@ -7,9 +7,8 @@ import {
 } from './data/file-paths.js';
 
 /**
- * Hardcoded copy of `testIdAttributeName` from `element-vir`. Importing `element-vir` here would
- * load it before Playwright registers our babel plugin prologue, causing `declare class` fields in
- * `lit-repeat-fix.ts` to error out.
+ * Hardcoded copy of `testIdAttributeName` from `element-vir` so that this config, which Playwright
+ * loads in Node before any test runs, does not pull in the whole framework for one string.
  */
 const testIdAttributeName = 'data-test-id';
 
@@ -45,27 +44,4 @@ const playwrightTestConfig: PlaywrightTestConfig = defineConfig({
     },
 });
 
-const fullConfig: PlaywrightTestConfig & {
-    '@playwright/test': {
-        babelPlugins: ReadonlyArray<
-            [
-                string,
-                Record<string, unknown>,
-            ]
-        >;
-    };
-} = {
-    ...playwrightTestConfig,
-    '@playwright/test': {
-        babelPlugins: [
-            [
-                '@babel/plugin-transform-typescript',
-                {
-                    allowDeclareFields: true,
-                },
-            ],
-        ],
-    },
-};
-
-export default fullConfig;
+export default playwrightTestConfig;

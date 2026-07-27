@@ -72,68 +72,59 @@ export function transformTemplate<PossibleValues>({
         const lastNewString = newStrings[lastNewStringsIndex];
         const currentValueIndex = currentTemplateStringIndex - 1;
         const currentValue = inputValues[currentValueIndex];
+        const currentRawLitString =
+            inputTemplateStrings.raw[currentTemplateStringIndex] ?? currentTemplateString;
 
         if (assertValidString) {
             assertValidString(currentTemplateString);
         }
 
-        let transformOutput: ReturnType<ValueTransformCallback> | undefined = undefined;
-        let extraValues: unknown[] = [];
-
-        if (typeof lastNewString === 'string') {
-            transformOutput = transformValue(lastNewString, currentTemplateString, currentValue);
-            if (transformOutput) {
-                newStrings[lastNewStringsIndex] = [
-                    lastNewString,
-                    transformOutput.replacement,
-                ].join('');
-                valueIndexDeletions.push(currentValueIndex);
-                const getExtraValuesCallback = transformOutput.getExtraValues;
-                extraValues = getExtraValuesCallback ? getExtraValuesCallback(currentValue) : [];
-
-                if (extraValues.length && getExtraValuesCallback) {
-                    newStrings[lastNewStringsIndex] += ' ';
-                    extraValues.forEach((value, index) => {
-                        // don't insert the first time, we need n-1 inserts
-                        if (index) {
-                            newStrings.push(' ');
-                        }
-                    });
-                    valueTransforms.push((values): ArrayInsertion<unknown> => {
-                        const latestCurrentValue = values[currentValueIndex];
-                        const insertions = getExtraValuesCallback(latestCurrentValue);
-                        return {
-                            index: currentValueIndex,
-                            values: insertions,
-                        };
-                    });
-                    newStrings.push(currentTemplateString);
-                } else {
-                    newStrings[lastNewStringsIndex] += currentTemplateString;
-                }
-            }
-        }
+        const transformOutput: ReturnType<ValueTransformCallback> =
+            typeof lastNewString === 'string'
+                ? transformValue(lastNewString, currentTemplateString, currentValue)
+                : undefined;
 
         if (!transformOutput) {
             newStrings.push(currentTemplateString);
+            newRaws.push(currentRawLitString);
+            return;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const currentRawLitString = inputTemplateStrings.raw[currentTemplateStringIndex]!;
-        if (transformOutput) {
-            newRaws[lastNewStringsIndex] = [
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                newRaws[lastNewStringsIndex]!,
-                transformOutput.replacement,
-                currentRawLitString,
-            ].join('');
-            if (extraValues.length) {
-                extraValues.forEach(() => {
-                    newRaws.push('');
-                });
-            }
-        } else {
+        newStrings[lastNewStringsIndex] = [
+            lastNewString,
+            transformOutput.replacement,
+        ].join('');
+        newRaws[lastNewStringsIndex] = [
+            newRaws[lastNewStringsIndex],
+            transformOutput.replacement,
+        ].join('');
+        valueIndexDeletions.push(currentValueIndex);
+        const getExtraValuesCallback = transformOutput.getExtraValues;
+        const extraValues = getExtraValuesCallback ? getExtraValuesCallback(currentValue) : [];
+
+        if (extraValues.length && getExtraValuesCallback) {
+            newStrings[lastNewStringsIndex] += ' ';
+            newRaws[lastNewStringsIndex] += ' ';
+            extraValues.forEach((value, index) => {
+                // don't insert the first time, we need n-1 inserts
+                if (index) {
+                    newStrings.push(' ');
+                    newRaws.push(' ');
+                }
+            });
+            valueTransforms.push((values): ArrayInsertion<unknown> => {
+                const latestCurrentValue = values[currentValueIndex];
+                const insertions = getExtraValuesCallback(latestCurrentValue);
+                return {
+                    index: currentValueIndex,
+                    values: insertions,
+                };
+            });
+            newStrings.push(currentTemplateString);
             newRaws.push(currentRawLitString);
+        } else {
+            newStrings[lastNewStringsIndex] += currentTemplateString;
+            newRaws[lastNewStringsIndex] += currentRawLitString;
         }
     });
 

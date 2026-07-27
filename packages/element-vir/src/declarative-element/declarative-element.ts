@@ -50,7 +50,11 @@ export type DeclarativeElementHost<
         >,
         Exclude<
             keyof StaticDeclarativeElementProperties<any, any, any, any, any, any, any, any>,
-            keyof HTMLElement
+            /**
+             * `render` must survive the omission: it is a public instance method that merely shares
+             * its name with the definition's static render callback.
+             */
+            keyof HTMLElement | 'render'
         >
     >,
     'shadowRoot'
