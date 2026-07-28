@@ -1,5 +1,9 @@
-import {type SetRequiredAndNotNull} from '@augment-vir/common';
-import {type EmptyObject, type IsAny, type IsEmptyObject} from 'type-fest';
+import {
+    type EmptyObject,
+    type IsAny,
+    type IsEmptyObject,
+    type SetRequiredAndNotNull,
+} from '@augment-vir/common';
 import {LitElement, type CSSResult} from '../lit-exports/base-lit-exports.js';
 import {type MinimalDefinitionWithInputs} from '../template-transforms/minimal-element-definition.js';
 import {type CustomElementTagName} from './custom-tag-name.js';

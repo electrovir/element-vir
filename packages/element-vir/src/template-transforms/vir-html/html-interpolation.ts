@@ -1,6 +1,11 @@
-import {type AnyFunction, type Overwrite} from '@augment-vir/common';
+import {
+    type AnyFunction,
+    type EmptyObject,
+    type HasRequiredKeys,
+    type IsNever,
+    type Overwrite,
+} from '@augment-vir/common';
 import {type CSSResult, type TemplateResult, type nothing} from 'lit';
-import {type EmptyObject, type HasRequiredKeys, type IsNever} from 'type-fest';
 import {type DeclarativeElementDefinition} from '../../declarative-element/declarative-element.js';
 import {type Decrement, type Increment} from '../../util/increment.js';
 import {

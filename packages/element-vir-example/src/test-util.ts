@@ -1,9 +1,8 @@
-import {isRuntimeEnv, RuntimeEnv} from '@augment-vir/common';
+import {isRuntimeEnv, RuntimeEnv, type RequireOneOrNone} from '@augment-vir/common';
 import {type PlaywrightTestContext} from '@augment-vir/test';
 import {type e2eUtil, type Page} from '@electrovir/element-vir-e2e';
 import {defineBookPage, titleToUrlBreadcrumb, type BookElementExampleInit} from 'element-book';
 import {type PropertyInitMapBase} from 'element-vir';
-import {type EmptyObject, type RequireOneOrNone} from 'type-fest';
 
 export const e2eTestsBookPage = defineBookPage({
     title: 'e2e tests',
@@ -20,7 +19,10 @@ export type BookTestCases = {[TestItDescription in string]: PlaywrightTestCaseCa
 /** Make sure that the output of this is also entered into `allTestPages`. */
 export async function defineBookTest<State extends PropertyInitMapBase>(
     description: string,
-    exampleInit: Omit<BookElementExampleInit<EmptyObject, EmptyObject, State>, 'title'> &
+    exampleInit: Omit<
+        BookElementExampleInit<Record<string, never>, Record<string, never>, State>,
+        'title'
+    > &
         RequireOneOrNone<{skip: boolean; only: boolean}>,
     testCases: BookTestCases,
 ) {

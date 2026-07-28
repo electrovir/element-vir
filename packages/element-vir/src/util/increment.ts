@@ -1,5 +1,4 @@
-import {type ArrayElement} from '@augment-vir/common';
-import {type IsNever} from 'type-fest';
+import {type ArrayElement, type IsNever} from '@augment-vir/common';
 
 /**
  * The largest number in this tuple is the largest number of nestings of the same element that

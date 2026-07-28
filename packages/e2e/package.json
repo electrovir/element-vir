@@ -31,7 +31,6 @@
         "@augment-vir/test": "^32.2.1",
         "@types/node": "^26.1.1",
         "playwright": "1.61.1",
-        "type-fest": "^5.8.0",
         "url-vir": "^2.1.10"
     },
     "engines": {

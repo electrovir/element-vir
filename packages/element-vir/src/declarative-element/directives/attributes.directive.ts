@@ -1,5 +1,4 @@
-import {getObjectTypedKeys, getOrSet} from '@augment-vir/common';
-import {type Primitive} from 'type-fest';
+import {getObjectTypedKeys, getOrSet, type Primitive} from '@augment-vir/common';
 import {nothing} from '../../lit-exports/all-lit-exports.js';
 import {createMutateDirective} from './mutate.directive.js';
 

@@ -60,7 +60,6 @@
         "html-spec-tags": "^2.2.3",
         "istanbul-smart-text-reporter": "^1.1.5",
         "markdown-code-example-inserter": "^3.0.6",
-        "type-fest": "^5.8.0",
         "typedoc": "^0.28.20",
         "typescript": "6.0.3",
         "vite": "^8.1.5",

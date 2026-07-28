@@ -1,6 +1,6 @@
 import {assert} from '@augment-vir/assert';
+import {type RequiredKeysOf} from '@augment-vir/common';
 import {describe, it} from '@augment-vir/test';
-import {type RequiredKeysOf} from 'type-fest';
 import {
     type CSSResult,
     type DeclarativeElementDefinitionOptions,

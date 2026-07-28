@@ -1,4 +1,4 @@
-import {type EmptyObject} from 'type-fest';
+import {type EmptyObject} from '@augment-vir/common';
 import {
     directive,
     Directive,

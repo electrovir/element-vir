@@ -161,7 +161,9 @@ describe('readme examples', () => {
     });
 
     it('runs the my-with-cleanup-callback cleanup on removal', async () => {
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         const originalSetInterval = window.setInterval;
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         const originalClearInterval = window.clearInterval;
         const clearedIntervalIds: unknown[] = [];
         const fakeIntervalId = 987_654;
@@ -509,6 +511,7 @@ describe('readme examples', () => {
     });
 
     it('renders an asyncProp fallback and then its resolved value', async () => {
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         const originalFetch = window.fetch;
         const fetchedUrls: string[] = [];
         const fetchResolvers: ((response: Response) => void)[] = [];
