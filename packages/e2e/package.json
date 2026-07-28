@@ -25,10 +25,10 @@
         "element-vir": "^26.17.0"
     },
     "devDependencies": {
-        "@augment-vir/assert": "^32.1.0",
-        "@augment-vir/common": "^32.1.0",
-        "@augment-vir/node": "^32.1.0",
-        "@augment-vir/test": "^32.1.0",
+        "@augment-vir/assert": "^32.2.1",
+        "@augment-vir/common": "^32.2.1",
+        "@augment-vir/node": "^32.2.1",
+        "@augment-vir/test": "^32.2.1",
         "@types/node": "^26.1.1",
         "playwright": "1.61.1",
         "type-fest": "^5.8.0",
