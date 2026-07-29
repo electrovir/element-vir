@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "26.17.0",
+    "version": "26.17.1",
     "keywords": [
         "custom",
         "web",
@@ -43,10 +43,10 @@
         "@augment-vir/common": "^32.2.1",
         "date-vir": "^8.6.2",
         "lit": "^3.3.3",
-        "lit-css-vars": "^3.6.2",
+        "lit-css-vars": "^3.6.3",
         "lit-html": "^3.3.3",
-        "object-shape-tester": "^6.14.0",
-        "observavir": "^2.3.2",
+        "object-shape-tester": "^6.14.1",
+        "observavir": "^2.3.3",
         "typed-event-target": "^4.3.2"
     },
     "devDependencies": {
@@ -57,7 +57,7 @@
         "@web/test-runner-commands": "^1.0.1",
         "@web/test-runner-playwright": "^1.0.0",
         "@web/test-runner-visual-regression": "^1.0.1",
-        "html-spec-tags": "^2.2.3",
+        "html-spec-tags": "^2.2.4",
         "istanbul-smart-text-reporter": "^1.1.5",
         "markdown-code-example-inserter": "^3.0.6",
         "typedoc": "^0.28.20",

@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-vir-mono-repo",
-    "version": "26.17.0",
+    "version": "26.17.1",
     "private": true,
     "repository": {
         "type": "git",
@@ -49,7 +49,7 @@
         "esbuild": "^0.28.1",
         "eslint": "^10.7.0",
         "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-jsdoc": "^63.2.0",
+        "eslint-plugin-jsdoc": "^63.2.2",
         "eslint-plugin-monorepo-cop": "^1.0.2",
         "eslint-plugin-playwright": "^2.10.5",
         "eslint-plugin-prettier": "^5.5.6",
