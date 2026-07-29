@@ -330,6 +330,119 @@ describe(listen.name, () => {
         await waitUntil.strictEquals(2, () => count);
     });
 
+    it('still fires when the element is removed while the event is mid-dispatch', async () => {
+        const order: string[] = [];
+        const MidDispatchElement = defineElement()({
+            tagName: 'listen-mid-dispatch-element',
+            render() {
+                return html`
+                    <button
+                        ${listen('click', () => {
+                            order.push('listen');
+                        })}
+                    >
+                        target
+                    </button>
+                `;
+            },
+        });
+
+        const fixture = await testWeb.render(html`
+            <${MidDispatchElement}></${MidDispatchElement}>
+        `);
+        assert.instanceOf(fixture, MidDispatchElement);
+        const button = fixture.shadowRoot.querySelector('button');
+        assert.instanceOf(button, HTMLButtonElement);
+
+        /**
+         * Mimics a pop-up that removes its own DOM in response to the very click that is still
+         * propagating. This listener is attached to an ancestor in the capture phase so it runs
+         * before the `listen` directive's listener on the target.
+         */
+        fixture.addEventListener(
+            'click',
+            () => {
+                order.push('remove');
+                fixture.remove();
+            },
+            {
+                capture: true,
+            },
+        );
+
+        button.click();
+
+        await waitUntil.deepEquals(
+            [
+                'remove',
+                'listen',
+            ],
+            () => order,
+        );
+    });
+
+    it('still fires when a conditional template drops the subtree mid-dispatch', async () => {
+        const order: string[] = [];
+        const MidDispatchConditionalElement = defineElement()({
+            tagName: 'listen-mid-dispatch-conditional-element',
+            state() {
+                return {
+                    show: true,
+                };
+            },
+            render({state}) {
+                return html`
+                    ${renderIf(
+                        state.show,
+                        html`
+                            <button
+                                ${listen('click', () => {
+                                    order.push('listen');
+                                })}
+                            >
+                                target
+                            </button>
+                        `,
+                    )}
+                `;
+            },
+        });
+
+        const fixture = await testWeb.render(html`
+            <${MidDispatchConditionalElement}></${MidDispatchConditionalElement}>
+        `);
+        assert.instanceOf(fixture, MidDispatchConditionalElement);
+        const button = fixture.shadowRoot.querySelector('button');
+        assert.instanceOf(button, HTMLButtonElement);
+
+        /**
+         * A state update renders in a microtask, which the browser runs _between_ the listeners of
+         * a single dispatch, so the subtree is already gone by the time the click reaches the
+         * button's own listeners.
+         */
+        fixture.addEventListener(
+            'click',
+            () => {
+                order.push('hide');
+                fixture.instanceState.show = false;
+            },
+            {
+                capture: true,
+            },
+        );
+
+        button.click();
+
+        await waitUntil.deepEquals(
+            [
+                'hide',
+                'listen',
+            ],
+            () => order,
+        );
+        assert.isNull(fixture.shadowRoot.querySelector('button'));
+    });
+
     it('removes the listener when a conditional template drops the subtree', async () => {
         let count = 0;
         const ConditionalElement = defineElement<{show: boolean}>()({

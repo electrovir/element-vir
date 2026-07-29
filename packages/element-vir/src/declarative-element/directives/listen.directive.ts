@@ -147,6 +147,7 @@ const listenDirective = directive(
     class extends AsyncDirective {
         public readonly element: Element;
         public lastListenerMetaData: ListenerMetaData | undefined;
+        public isPartDisconnected = false;
 
         constructor(partInfo: PartInfo) {
             super(partInfo);
@@ -181,6 +182,23 @@ const listenDirective = directive(
             }
         }
 
+        /**
+         * An event's propagation path is fixed when its dispatch begins, so an element that gets
+         * removed from the document _during_ a dispatch still has connected nodes in the path of
+         * that event. Plain `addEventListener` listeners keep firing for such an event, so these
+         * must too: otherwise an earlier listener that removes the element (a pop-up closing itself
+         * on the very click it is responding to, for example) silently swallows every later
+         * listener for that same event.
+         */
+        public isMidDispatchDisconnect(event: Event) {
+            return (
+                !this.element.isConnected &&
+                event
+                    .composedPath()
+                    .some((eventTarget) => eventTarget instanceof Node && eventTarget.isConnected)
+            );
+        }
+
         public createListenerMetaData(
             eventType: string,
             callback: (event: TypedEvent<string, unknown>) => ListenCallbackReturn,
@@ -188,8 +206,13 @@ const listenDirective = directive(
             return {
                 eventType,
                 callback,
-                listener: (event: TypedEvent<string, unknown>) =>
-                    this.lastListenerMetaData?.callback(event),
+                listener: (event: TypedEvent<string, unknown>) => {
+                    if (this.isPartDisconnected && !this.isMidDispatchDisconnect(event)) {
+                        return undefined;
+                    }
+
+                    return this.lastListenerMetaData?.callback(event);
+                },
             };
         }
 
@@ -220,10 +243,16 @@ const listenDirective = directive(
         }
 
         public override disconnected() {
-            this.removeCurrentListener();
+            /**
+             * The listener stays attached so that events which were already dispatching still reach
+             * it (see `isMidDispatchDisconnect`); this flag blocks everything dispatched
+             * afterwards.
+             */
+            this.isPartDisconnected = true;
         }
 
         public override reconnected() {
+            this.isPartDisconnected = false;
             this.addCurrentListener();
         }
     },
