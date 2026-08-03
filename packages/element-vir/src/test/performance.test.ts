@@ -211,3 +211,66 @@ describe('render performance', () => {
         assert.strictEquals(updatedItemElements[10]?.textContent, 'changed');
     });
 });
+
+describe('string interpolation performance', () => {
+    it('inspects the template strings for tag name positions only once per site', () => {
+        function build(index: number) {
+            return html`
+                <div class=${`class-${index}`} id=${`id-${index}`}>${`text-${index}`}</div>
+            `;
+        }
+
+        /**
+         * Deciding whether an interpolation sits in a tag name position is the only thing in the
+         * template path that trims a template string. Counting those trims is what distinguishes a
+         * per site decision from a per render one, which no timing budget can do reliably.
+         */
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- the patch calls it with an explicit `this`
+        const originalTrimEnd = String.prototype.trimEnd;
+        const trimCounts = {
+            firstBuild: 0,
+            laterBuilds: 0,
+        };
+        const counter = {
+            current: 0,
+        };
+
+        try {
+            String.prototype.trimEnd = function countedTrimEnd(this: string) {
+                counter.current++;
+                return originalTrimEnd.call(this);
+            };
+
+            build(0);
+            trimCounts.firstBuild = counter.current;
+            counter.current = 0;
+            createArray(50, build);
+            trimCounts.laterBuilds = counter.current;
+        } finally {
+            String.prototype.trimEnd = originalTrimEnd;
+        }
+
+        assert.isAbove(trimCounts.firstBuild, 0);
+        assert.strictEquals(trimCounts.laterBuilds, 0);
+    });
+
+    it('builds templates full of plain string interpolations within budget', () => {
+        function build(index: number) {
+            return html`
+                <div class=${`class-${index}`} id=${`id-${index}`} title=${`title-${index}`}>
+                    <span data-a=${`a-${index}`} data-b=${`b-${index}`}>${`text-${index}`}</span>
+                    <span data-c=${`c-${index}`} data-d=${`d-${index}`}>${`more-${index}`}</span>
+                </div>
+            `;
+        }
+
+        /** Cache the transform so that only the per call work is measured. */
+        build(0);
+        const startTime = performance.now();
+        createArray(20_000, build);
+        const duration = performance.now() - startTime;
+
+        /** This takes about twenty milliseconds. The budget is generous for a busy machine. */
+        assert.isBelow(duration, 500);
+    });
+});

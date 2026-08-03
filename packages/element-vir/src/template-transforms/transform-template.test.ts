@@ -488,6 +488,73 @@ describe(getTransformedTemplate.name, () => {
         ]);
     });
 
+    /**
+     * A no-op transform is the common case: most templates interpolate no element definitions at
+     * all, so this path runs on nearly every render.
+     */
+    describe('with nothing to insert or remove', () => {
+        function buildNoOp(value: number) {
+            const captured = captureTemplate`no op ${value} template`;
+            return {
+                captured,
+                transformed: getTransformedTemplate(captured.strings, captured.values, () => {
+                    return transformTemplate({
+                        inputTemplateStrings: captured.strings,
+                        inputValues: captured.values,
+                        transformValue: noTransform,
+                    });
+                }),
+            };
+        }
+
+        it('returns the input values on every call', () => {
+            assert.deepEquals(buildNoOp(1).transformed.values, [
+                1,
+            ]);
+            assert.deepEquals(buildNoOp(2).transformed.values, [
+                2,
+            ]);
+        });
+
+        it('does not share a values array between calls', () => {
+            assert.notStrictEquals(
+                buildNoOp(1).transformed.values,
+                buildNoOp(2).transformed.values,
+            );
+        });
+
+        it('is unaffected by mutation of an earlier call returned values', () => {
+            const first = buildNoOp(1);
+            first.transformed.values.push(999);
+
+            assert.deepEquals(buildNoOp(2).transformed.values, [
+                2,
+            ]);
+        });
+
+        it('returns values matching the ones it was given', () => {
+            const first = buildNoOp(3);
+
+            assert.deepEquals(first.transformed.values, first.captured.values);
+        });
+
+        it('handles a template with no interpolations at all', () => {
+            function buildEmpty() {
+                const captured = captureTemplate`no interpolations here`;
+                return getTransformedTemplate(captured.strings, captured.values, () => {
+                    return transformTemplate({
+                        inputTemplateStrings: captured.strings,
+                        inputValues: captured.values,
+                        transformValue: noTransform,
+                    });
+                });
+            }
+
+            assert.isEmpty(buildEmpty().values);
+            assert.isEmpty(buildEmpty().values);
+        });
+    });
+
     it('throws when the template strings key cannot be stored', () => {
         const captured = captureTemplate`unusable key`;
         function fallbackTransform(): TemplateTransform {

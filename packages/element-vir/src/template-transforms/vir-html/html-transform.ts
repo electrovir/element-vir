@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-deprecated */
 
 import {check} from '@augment-vir/assert';
-import {getOrSet} from '@augment-vir/common';
+import {getOrSet, getOrSetFromMap} from '@augment-vir/common';
 import {assign} from '../../declarative-element/directives/assign.directive.js';
 import {type HTMLTemplateResult} from '../../lit-exports/all-lit-exports.js';
 import {
@@ -14,36 +14,63 @@ import {type ValueTransformCallback, transformTemplate} from '../transform-templ
 import {type HtmlInterpolation} from './html-interpolation.js';
 import {tagNameKeys} from './tag-name-keys.js';
 
+/**
+ * Which interpolation slots of a template sit in a tag name position. This depends only on the
+ * template's strings, which never change for a given template literal site, so it is computed once
+ * per site: {@link classifyValue} costs a `trimEnd` allocation and up to two regular expression
+ * tests, and it would otherwise run for every interpolated string on every render.
+ */
+const tagNameSlotsByTemplate = new WeakMap<TemplateStringsArray, boolean[]>();
+
+function getTagNameSlots(inputTemplateStrings: TemplateStringsArray): boolean[] {
+    return getOrSetFromMap(tagNameSlotsByTemplate, inputTemplateStrings, () => {
+        /** A template's strings always outnumber its interpolations by exactly one. */
+        return inputTemplateStrings.slice(0, -1).map((lastString, valueIndex) => {
+            const nextString = inputTemplateStrings[valueIndex + 1];
+
+            return (
+                !!lastString &&
+                !!nextString &&
+                classifyValue({
+                    lastNewString: lastString,
+                    currentTemplateString: nextString,
+                }).shouldHaveTagNameHere
+            );
+        });
+    });
+}
+
 export function mapHtmlValues(
     inputTemplateStrings: TemplateStringsArray,
     inputValues: HtmlInterpolation[],
 ): HtmlInterpolation[] {
+    const tagNameSlots = getTagNameSlots(inputTemplateStrings);
+
+    /** Only a string can be an interpolated tag name. */
+    const hasTagNameString = tagNameSlots.some((isTagNameSlot, valueIndex) => {
+        return isTagNameSlot && check.isString(inputValues[valueIndex]);
+    });
+
+    /** Most templates interpolate no tag name strings, so most renders allocate nothing here. */
+    if (!hasTagNameString) {
+        return inputValues;
+    }
+
     return inputValues.map((currentValue, currentValueIndex): HtmlInterpolation => {
-        const lastString = inputTemplateStrings[currentValueIndex];
-        const nextString = inputTemplateStrings[currentValueIndex + 1];
-
-        /** Only a string can be an interpolated tag name, and this runs on every render. */
-        if (lastString && nextString && check.isString(currentValue)) {
-            const {shouldHaveTagNameHere} = classifyValue({
-                lastNewString: lastString,
-                currentTemplateString: nextString,
-            });
-
-            if (shouldHaveTagNameHere) {
-                const replacement: MinimalElementDefinition = {
-                    tagName: currentValue,
-                    tagInterpolationKey: getOrSet(tagNameKeys, currentValue, () => {
-                        return {
-                            tagName: currentValue,
-                        };
-                    }),
-                };
-
-                return replacement;
-            }
+        if (!tagNameSlots[currentValueIndex] || !check.isString(currentValue)) {
+            return currentValue;
         }
 
-        return currentValue;
+        const replacement: MinimalElementDefinition = {
+            tagName: currentValue,
+            tagInterpolationKey: getOrSet(tagNameKeys, currentValue, () => {
+                return {
+                    tagName: currentValue,
+                };
+            }),
+        };
+
+        return replacement;
     });
 }
 

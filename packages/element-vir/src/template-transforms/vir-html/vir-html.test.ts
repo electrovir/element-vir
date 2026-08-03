@@ -164,6 +164,122 @@ describe(html.name, () => {
     });
 });
 
+/**
+ * A template site is built over and over during rendering, so the values array it produces has to
+ * be correct and independent on every single call, not just the first.
+ */
+describe('html repeated calls at one template site', () => {
+    // prettier-ignore
+    function buildTagSite(tagName: string) {
+        return html`<${tagName}></${tagName}>`;
+    }
+
+    it('transforms each interpolated tag name string at one site', () => {
+        const first = buildTagSite('vir-html-repeat-a');
+        const second = buildTagSite('vir-html-repeat-b');
+
+        assert.deepEquals(
+            [...first.strings],
+            [
+                '<vir-html-repeat-a></vir-html-repeat-a>',
+            ],
+        );
+        assert.deepEquals(
+            [...second.strings],
+            [
+                '<vir-html-repeat-b></vir-html-repeat-b>',
+            ],
+        );
+        assert.notStrictEquals(first.strings, second.strings);
+        assert.strictEquals(buildTagSite('vir-html-repeat-a').strings, first.strings);
+    });
+
+    function buildPlainSite(value: number) {
+        return html`
+            <div>${value}</div>
+        `;
+    }
+
+    it('gives each call its own values array', () => {
+        const first = buildPlainSite(1);
+        const second = buildPlainSite(2);
+
+        assert.notStrictEquals(first.values, second.values);
+        assert.deepEquals(first.values, [
+            1,
+        ]);
+        assert.deepEquals(second.values, [
+            2,
+        ]);
+    });
+
+    it('is unaffected by mutation of an earlier call values array', () => {
+        const first = buildPlainSite(1);
+        first.values.push('mutated');
+        first.values[0] = 'overwritten';
+
+        assert.deepEquals(buildPlainSite(2).values, [
+            2,
+        ]);
+    });
+
+    function buildAssignedSite({
+        label,
+        suffix,
+    }: Readonly<{
+        label: string;
+        suffix: string;
+    }>) {
+        return html`
+            <div>
+                <${VirHtmlChild.assign({
+                    label,
+                })}></${VirHtmlChild}>
+                ${suffix}
+            </div>
+        `;
+    }
+
+    it('rebuilds inserted and deleted values on every call', () => {
+        const first = buildAssignedSite({
+            label: 'first label',
+            suffix: 'first suffix',
+        });
+        const second = buildAssignedSite({
+            label: 'second label',
+            suffix: 'second suffix',
+        });
+
+        assert.strictEquals(first.strings, second.strings);
+        assert.isLengthExactly(first.values, second.values.length);
+        assert.notStrictEquals(first.values, second.values);
+        /** The definition interpolations become an assign directive, followed by the suffix. */
+        assert.strictEquals(first.values[first.values.length - 1], 'first suffix');
+        assert.strictEquals(second.values[second.values.length - 1], 'second suffix');
+    });
+
+    it('renders the latest assigned inputs after repeated calls at one site', async () => {
+        buildAssignedSite({
+            label: 'ignored',
+            suffix: 'ignored suffix',
+        });
+        const fixture = await testWeb.render<HTMLDivElement>(
+            buildAssignedSite({
+                label: 'latest',
+                suffix: 'latest suffix',
+            }),
+        );
+        const child = fixture.querySelector('vir-html-test-child');
+
+        assert.instanceOf(child, VirHtmlChild);
+        await child.updateComplete;
+        const span = child.shadowRoot.querySelector('span');
+        assert.instanceOf(span, HTMLSpanElement);
+        assert.strictEquals(span.textContent.trim(), 'latest');
+        assert.strictEquals(fixture.textContent.trim().endsWith('latest suffix'), true);
+    });
+});
+
 describe('html self closing tag names', () => {
     it('renders a self closing interpolated tag name', async () => {
         const fixture = await testWeb.render(html`

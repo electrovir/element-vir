@@ -602,3 +602,226 @@ describe('mapHtmlValues tag name positions', () => {
         );
     });
 });
+
+/**
+ * Whether a slot holds a tag name depends only on the template strings around it, never on the
+ * value in the slot. These pin that separation: every one of them reuses a single template strings
+ * array across calls that pass different values.
+ */
+describe('mapHtmlValues across repeated calls at one template site', () => {
+    function tagWrapper(tagName: string) {
+        return {
+            tagName,
+            tagInterpolationKey: {
+                tagName,
+            },
+        };
+    }
+
+    /** Slots in order: opening tag, attribute value, text content, closing tag. */
+    function captureMixedSite() {
+        return captureTemplate`<${'a'} class=${'b'}>${'c'}</${'d'}>`;
+    }
+
+    it('reuses one template strings array for every call at a site', () => {
+        assert.strictEquals(captureMixedSite().strings, captureMixedSite().strings);
+    });
+
+    it('classifies every slot the same way when the values change', () => {
+        const strings = captureMixedSite().strings;
+
+        assert.deepEquals(
+            mapHtmlValues(strings, [
+                'repeat-tag-one',
+                'class-one',
+                'text-one',
+                'repeat-tag-one',
+            ]),
+            [
+                tagWrapper('repeat-tag-one'),
+                'class-one',
+                'text-one',
+                tagWrapper('repeat-tag-one'),
+            ],
+        );
+        assert.deepEquals(
+            mapHtmlValues(strings, [
+                'repeat-tag-two',
+                'class-two',
+                'text-two',
+                'repeat-tag-two',
+            ]),
+            [
+                tagWrapper('repeat-tag-two'),
+                'class-two',
+                'text-two',
+                tagWrapper('repeat-tag-two'),
+            ],
+        );
+    });
+
+    it('leaves a definition alone at a slot that held a tag name string on an earlier call', () => {
+        const captured = captureTemplate`<${'a'}></${'a'}>`;
+
+        assert.deepEquals(
+            mapHtmlValues(captured.strings, [
+                'swapped-to-definition',
+                'swapped-to-definition',
+            ]),
+            [
+                tagWrapper('swapped-to-definition'),
+                tagWrapper('swapped-to-definition'),
+            ],
+        );
+
+        const secondCall = mapHtmlValues(captured.strings, [
+            HtmlTransformChild,
+            HtmlTransformChild,
+        ]);
+        assert.deepEquals(secondCall, [
+            HtmlTransformChild,
+            HtmlTransformChild,
+        ]);
+        assert.strictEquals(secondCall[0], HtmlTransformChild);
+    });
+
+    it('wraps a tag name string at a slot that held a definition on an earlier call', () => {
+        const captured = captureTemplate`<${'a'}></${'a'}>`;
+
+        assert.deepEquals(
+            mapHtmlValues(captured.strings, [
+                HtmlTransformChild,
+                HtmlTransformChild,
+            ]),
+            [
+                HtmlTransformChild,
+                HtmlTransformChild,
+            ],
+        );
+        assert.deepEquals(
+            mapHtmlValues(captured.strings, [
+                'swapped-to-string',
+                'swapped-to-string',
+            ]),
+            [
+                tagWrapper('swapped-to-string'),
+                tagWrapper('swapped-to-string'),
+            ],
+        );
+    });
+
+    it('keeps two sites with identical template text separate', () => {
+        function captureFirstSite() {
+            return captureTemplate`<${'a'}>${'b'}</${'a'}>`;
+        }
+        function captureSecondSite() {
+            return captureTemplate`<${'a'}>${'b'}</${'a'}>`;
+        }
+
+        assert.notStrictEquals(captureFirstSite().strings, captureSecondSite().strings);
+        [
+            captureFirstSite(),
+            captureSecondSite(),
+        ].forEach((captured) => {
+            assert.deepEquals(
+                mapHtmlValues(captured.strings, [
+                    'identical-text-tag',
+                    'identical-text-value',
+                    'identical-text-tag',
+                ]),
+                [
+                    tagWrapper('identical-text-tag'),
+                    'identical-text-value',
+                    tagWrapper('identical-text-tag'),
+                ],
+            );
+        });
+    });
+
+    it('treats whitespace between the opening bracket and the interpolation as a tag position', () => {
+        const captured = captureTemplate`< ${'a'}></${'a'}>`;
+        const expected = [
+            tagWrapper('leading-space-tag'),
+            tagWrapper('leading-space-tag'),
+        ];
+        const inputValues = [
+            'leading-space-tag',
+            'leading-space-tag',
+        ];
+
+        assert.deepEquals(mapHtmlValues(captured.strings, inputValues), expected);
+        assert.deepEquals(mapHtmlValues(captured.strings, inputValues), expected);
+    });
+
+    it('treats whitespace before a closing tag bracket as a tag position', () => {
+        const captured = captureTemplate`<${'a'}></${'a'} >`;
+        const expected = [
+            tagWrapper('trailing-space-tag'),
+            tagWrapper('trailing-space-tag'),
+        ];
+        const inputValues = [
+            'trailing-space-tag',
+            'trailing-space-tag',
+        ];
+
+        assert.deepEquals(mapHtmlValues(captured.strings, inputValues), expected);
+        assert.deepEquals(mapHtmlValues(captured.strings, inputValues), expected);
+    });
+
+    it('never wraps a slot with no surrounding strings', () => {
+        const captured = captureTemplate`${'a'}`;
+
+        assert.deepEquals(
+            mapHtmlValues(captured.strings, [
+                'bare-slot-one',
+            ]),
+            [
+                'bare-slot-one',
+            ],
+        );
+        assert.deepEquals(
+            mapHtmlValues(captured.strings, [
+                'bare-slot-two',
+            ]),
+            [
+                'bare-slot-two',
+            ],
+        );
+    });
+
+    it('never wraps a slot in text position even when the value looks like a tag name', () => {
+        const captured = captureTemplate`<div>${'a'}</div>`;
+
+        assert.deepEquals(
+            mapHtmlValues(captured.strings, [
+                'html-transform-child',
+            ]),
+            [
+                'html-transform-child',
+            ],
+        );
+        assert.deepEquals(
+            mapHtmlValues(captured.strings, [
+                'html-transform-child',
+            ]),
+            [
+                'html-transform-child',
+            ],
+        );
+    });
+
+    it('returns the mapped values in the input order and length', () => {
+        const captured = captureMixedSite();
+        const inputValues = [
+            'order-tag',
+            'order-class',
+            'order-text',
+            'order-tag',
+        ];
+        const mapped = mapHtmlValues(captured.strings, inputValues);
+
+        assert.isLengthExactly(mapped, inputValues.length);
+        assert.strictEquals(mapped[1], 'order-class');
+        assert.strictEquals(mapped[2], 'order-text');
+    });
+});

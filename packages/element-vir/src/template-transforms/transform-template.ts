@@ -37,11 +37,19 @@ export function getTransformedTemplate<PossibleValues>(
 
     const valueTransforms = templateTransform.valuesTransform(values);
 
-    const transformedValuesArray: PossibleValues[] = insertAndRemoveValues(
-        values,
-        valueTransforms.valueInsertions,
-        valueTransforms.valueIndexDeletions,
-    ) as PossibleValues[];
+    /**
+     * Most templates interpolate no element definitions, so there is nothing to insert or remove
+     * and the values pass straight through. Every caller builds `values` fresh for this call, so
+     * handing the same array back cannot alias anything. This runs on every render.
+     */
+    const transformedValuesArray: PossibleValues[] =
+        valueTransforms.valueInsertions.length || valueTransforms.valueIndexDeletions.length
+            ? (insertAndRemoveValues(
+                  values,
+                  valueTransforms.valueInsertions,
+                  valueTransforms.valueIndexDeletions,
+              ) as PossibleValues[])
+            : values;
 
     return {
         strings: templateTransform.templateStrings,

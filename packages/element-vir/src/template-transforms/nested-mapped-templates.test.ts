@@ -1,4 +1,4 @@
-import {assert} from '@augment-vir/assert';
+import {assert, assertWrap} from '@augment-vir/assert';
 import {createArray, getOrSet} from '@augment-vir/common';
 import {describe, it, testWeb} from '@augment-vir/test';
 import {defineElement} from '../declarative-element/define-element.js';
@@ -31,10 +31,30 @@ const NestedTemplateB = defineElement()({
     },
 });
 
+const NestedTemplateC = defineElement()({
+    tagName: 'nested-template-c',
+    render() {
+        return html`
+            c
+        `;
+    },
+});
+
 const NestedTemplateWithInputs = defineElement<{label: string}>()({
     tagName: 'nested-template-with-inputs',
-    render() {
-        return '';
+    render({inputs}) {
+        return html`
+            ${inputs.label}
+        `;
+    },
+});
+
+const NestedTemplateOtherInputs = defineElement<{label: string}>()({
+    tagName: 'nested-template-other-inputs',
+    render({inputs}) {
+        return html`
+            ${inputs.label}
+        `;
     },
 });
 
@@ -672,6 +692,316 @@ describe('nested-mapped-templates element keys', () => {
                 result: false,
                 reason: 'key at index 0 not found',
             },
+        );
+    });
+});
+
+/**
+ * A tag name is written directly into the cached template strings, so a cache collision between two
+ * elements at one template literal site would silently render the wrong element. Every test here
+ * reuses one template literal site across different interpolated elements.
+ *
+ * The helpers take `MinimalElementDefinition` rather than the concrete definition types because
+ * `html` requires both tag slots of a single site to agree on one definition type, which a union of
+ * real definitions cannot satisfy.
+ */
+describe('nested-mapped-templates tag name collisions at one site', () => {
+    function buildTagSite(definition: MinimalElementDefinition) {
+        // prettier-ignore
+        return html`<${definition}></${definition}>`;
+    }
+
+    it('writes each element own tag name into the cached strings', () => {
+        const aStrings = buildTagSite(NestedTemplateA).strings;
+        const bStrings = buildTagSite(NestedTemplateB).strings;
+
+        assert.deepEquals(
+            [...aStrings],
+            [
+                '<nested-template-a></nested-template-a>',
+            ],
+        );
+        assert.deepEquals(
+            [...bStrings],
+            [
+                '<nested-template-b></nested-template-b>',
+            ],
+        );
+        assert.notStrictEquals(aStrings, bStrings);
+    });
+
+    it('returns each element cached strings again when it comes back around', () => {
+        const aStrings = buildTagSite(NestedTemplateA).strings;
+        const bStrings = buildTagSite(NestedTemplateB).strings;
+        const cStrings = buildTagSite(NestedTemplateC).strings;
+
+        /** Identity, not content: losing it makes lit rebuild all of the element's children. */
+        assert.strictEquals(buildTagSite(NestedTemplateA).strings, aStrings);
+        assert.strictEquals(buildTagSite(NestedTemplateB).strings, bStrings);
+        assert.strictEquals(buildTagSite(NestedTemplateC).strings, cStrings);
+        assert.notStrictEquals(aStrings, bStrings);
+        assert.notStrictEquals(bStrings, cStrings);
+        assert.notStrictEquals(aStrings, cStrings);
+    });
+
+    it('stays correct while alternating between elements', () => {
+        const definitions: ReadonlyArray<MinimalElementDefinition> = [
+            NestedTemplateA,
+            NestedTemplateB,
+            NestedTemplateC,
+        ];
+
+        assert.deepEquals(
+            createArray(12, (index) => {
+                return [...buildTagSite(assertWrap.isDefined(definitions[index % 3])).strings].join(
+                    '',
+                );
+            }),
+            createArray(12, (index) => {
+                const tagName = assertWrap.isDefined(definitions[index % 3]).tagName;
+
+                return `<${tagName}></${tagName}>`;
+            }),
+        );
+    });
+
+    it('renders the element that was actually interpolated', async () => {
+        buildTagSite(NestedTemplateA);
+        assert.instanceOf(await testWeb.render(buildTagSite(NestedTemplateB)), NestedTemplateB);
+        assert.instanceOf(await testWeb.render(buildTagSite(NestedTemplateA)), NestedTemplateA);
+        assert.instanceOf(await testWeb.render(buildTagSite(NestedTemplateC)), NestedTemplateC);
+    });
+
+    it('keeps mismatched opening and closing tags separate', () => {
+        function buildMismatchedSite({
+            opening,
+            closing,
+        }: Readonly<{
+            opening: MinimalElementDefinition;
+            closing: MinimalElementDefinition;
+        }>) {
+            // prettier-ignore
+            return html`<${opening}></${closing}>`;
+        }
+
+        assert.deepEquals(
+            [
+                ...buildMismatchedSite({
+                    opening: NestedTemplateA,
+                    closing: NestedTemplateB,
+                }).strings,
+            ],
+            [
+                '<nested-template-a></nested-template-b>',
+            ],
+        );
+        assert.deepEquals(
+            [
+                ...buildMismatchedSite({
+                    opening: NestedTemplateB,
+                    closing: NestedTemplateA,
+                }).strings,
+            ],
+            [
+                '<nested-template-b></nested-template-a>',
+            ],
+        );
+    });
+
+    it('keeps a tag name string and a different element definition separate', () => {
+        function buildEitherSite(definition: MinimalElementDefinition | string) {
+            // prettier-ignore
+            return html`<${definition}></${definition}>`;
+        }
+
+        const stringStrings = buildEitherSite('nested-template-c').strings;
+        const definitionStrings = buildEitherSite(NestedTemplateA).strings;
+
+        assert.deepEquals(
+            [...stringStrings],
+            [
+                '<nested-template-c></nested-template-c>',
+            ],
+        );
+        assert.deepEquals(
+            [...definitionStrings],
+            [
+                '<nested-template-a></nested-template-a>',
+            ],
+        );
+        assert.strictEquals(buildEitherSite('nested-template-c').strings, stringStrings);
+        assert.strictEquals(buildEitherSite(NestedTemplateA).strings, definitionStrings);
+    });
+
+    it('keeps a definition separate from its own tag name as a string', () => {
+        function buildEitherSite(definition: MinimalElementDefinition | string) {
+            // prettier-ignore
+            return html`<div><${definition}></${definition}></div>`;
+        }
+
+        /**
+         * These two produce identical strings content but reach the cache through different keys:
+         * the definition itself versus the shared tag name key.
+         */
+        const definitionStrings = buildEitherSite(NestedTemplateB).strings;
+        const stringStrings = buildEitherSite('nested-template-b').strings;
+
+        assert.deepEquals([...definitionStrings], [...stringStrings]);
+        assert.strictEquals(buildEitherSite(NestedTemplateB).strings, definitionStrings);
+        assert.strictEquals(buildEitherSite('nested-template-b').strings, stringStrings);
+    });
+
+    it('keeps assigned inputs on different elements separate', () => {
+        function buildAssignedSite({
+            opening,
+            closing,
+        }: Readonly<{
+            opening: MinimalDefinitionWithInputs;
+            closing: MinimalElementDefinition;
+        }>) {
+            // prettier-ignore
+            return html`<${opening}></${closing}>`;
+        }
+
+        assert.deepEquals(
+            [
+                ...buildAssignedSite({
+                    opening: NestedTemplateWithInputs.assign({
+                        label: 'first',
+                    }),
+                    closing: NestedTemplateWithInputs,
+                }).strings,
+            ],
+            [
+                '<nested-template-with-inputs ',
+                '></nested-template-with-inputs>',
+            ],
+        );
+        assert.deepEquals(
+            [
+                ...buildAssignedSite({
+                    opening: NestedTemplateOtherInputs.assign({
+                        label: 'second',
+                    }),
+                    closing: NestedTemplateOtherInputs,
+                }).strings,
+            ],
+            [
+                '<nested-template-other-inputs ',
+                '></nested-template-other-inputs>',
+            ],
+        );
+    });
+
+    it('renders the element and inputs that were actually assigned', async () => {
+        function buildAssignedSite({
+            opening,
+            closing,
+        }: Readonly<{
+            opening: MinimalDefinitionWithInputs;
+            closing: MinimalElementDefinition;
+        }>) {
+            // prettier-ignore
+            return html`<div><${opening}></${closing}></div>`;
+        }
+
+        buildAssignedSite({
+            opening: NestedTemplateWithInputs.assign({
+                label: 'first',
+            }),
+            closing: NestedTemplateWithInputs,
+        });
+        const rendered = await testWeb.render<HTMLDivElement>(
+            buildAssignedSite({
+                opening: NestedTemplateOtherInputs.assign({
+                    label: 'second',
+                }),
+                closing: NestedTemplateOtherInputs,
+            }),
+        );
+        const child = rendered.querySelector('nested-template-other-inputs');
+
+        assert.instanceOf(child, NestedTemplateOtherInputs);
+        assert.isNull(rendered.querySelector('nested-template-with-inputs'));
+        await child.updateComplete;
+        assert.strictEquals(child.shadowRoot.textContent.trim(), 'second');
+    });
+
+    it('keeps a nested inner element from colliding at one outer site', () => {
+        function buildNestedSite(inner: MinimalElementDefinition) {
+            // prettier-ignore
+            return html`<${NestedTemplateA}><${inner}></${inner}></${NestedTemplateA}>`;
+        }
+
+        assert.deepEquals(
+            [...buildNestedSite(NestedTemplateB).strings],
+            [
+                '<nested-template-a><nested-template-b></nested-template-b></nested-template-a>',
+            ],
+        );
+        assert.deepEquals(
+            [...buildNestedSite(NestedTemplateC).strings],
+            [
+                '<nested-template-a><nested-template-c></nested-template-c></nested-template-a>',
+            ],
+        );
+    });
+
+    it('keeps a tag position element separate from a text position one', () => {
+        function buildMixedSite({
+            tagDefinition,
+            textDefinition,
+        }: Readonly<{
+            tagDefinition: MinimalElementDefinition;
+            textDefinition: MinimalElementDefinition;
+        }>) {
+            // prettier-ignore
+            return html`<${tagDefinition}>${textDefinition}</${tagDefinition}>`;
+        }
+
+        const firstStrings = buildMixedSite({
+            tagDefinition: NestedTemplateA,
+            textDefinition: NestedTemplateB,
+        }).strings;
+        const secondStrings = buildMixedSite({
+            tagDefinition: NestedTemplateA,
+            textDefinition: NestedTemplateC,
+        }).strings;
+
+        /** Only the tag position element is written into the strings. */
+        assert.deepEquals([...firstStrings], [...secondStrings]);
+        /** The text position element still takes part in the cache key. */
+        assert.notStrictEquals(firstStrings, secondStrings);
+        assert.deepEquals(
+            [...firstStrings],
+            [
+                '<nested-template-a>',
+                '</nested-template-a>',
+            ],
+        );
+    });
+
+    it('does not collide across two sites that share one element', () => {
+        function buildFirstSite(definition: MinimalElementDefinition) {
+            // prettier-ignore
+            return html`<${definition}></${definition}>`;
+        }
+        function buildSecondSite(definition: MinimalElementDefinition) {
+            // prettier-ignore
+            return html`<div><${definition}></${definition}></div>`;
+        }
+
+        assert.deepEquals(
+            [...buildFirstSite(NestedTemplateA).strings],
+            [
+                '<nested-template-a></nested-template-a>',
+            ],
+        );
+        assert.deepEquals(
+            [...buildSecondSite(NestedTemplateA).strings],
+            [
+                '<div><nested-template-a></nested-template-a></div>',
+            ],
         );
     });
 });
