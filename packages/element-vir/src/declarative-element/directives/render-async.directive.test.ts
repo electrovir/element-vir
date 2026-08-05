@@ -164,7 +164,7 @@ describe(renderAsync.name, () => {
         assert.strictEquals(result, 'fallback');
     });
 
-    it('with useLastResolvedValue treats an undefined last value as a resolution', () => {
+    it('with useLastResolvedValue renders the fallback before the first resolution', () => {
         const resolvedValues: unknown[] = [];
 
         const result = renderAsync<string | undefined, string, string>(
@@ -183,12 +183,35 @@ describe(renderAsync.name, () => {
             },
         );
 
+        assert.strictEquals(result, 'fallback');
+        assert.isEmpty(resolvedValues);
+    });
+
+    it('with useLastResolvedValue treats a settled undefined value as a resolution', () => {
+        const resolvedValues: unknown[] = [];
+
+        const result = renderAsync<string | undefined, string, string>(
+            {
+                value: undefined,
+                lastResolvedValue: undefined,
+            },
+            'fallback',
+            (resolved) => {
+                resolvedValues.push(resolved);
+                return 'rendered';
+            },
+            undefined,
+            {
+                useLastResolvedValue: true,
+            },
+        );
+
         assert.strictEquals(result, 'rendered');
         assert.deepEquals(resolvedValues, [undefined]);
     });
 
-    it('with useLastResolvedValue returns undefined directly when no resolutionRender exists', () => {
-        assert.isUndefined(
+    it('with useLastResolvedValue returns the fallback when no resolutionRender exists', () => {
+        assert.strictEquals(
             renderAsync(
                 {
                     value: Promise.resolve('eventual'),
@@ -201,6 +224,7 @@ describe(renderAsync.name, () => {
                     useLastResolvedValue: true,
                 },
             ),
+            'fallback',
         );
     });
 
@@ -411,7 +435,7 @@ describe(renderAsync.name, () => {
 
         const firstDeferred = new DeferredPromise<string>();
         instance.setValue(firstDeferred.promise);
-        assert.isUndefined(renderLastResolved());
+        assert.strictEquals(renderLastResolved(), 'fallback');
 
         firstDeferred.resolve('first');
         await waitUntil.isTruthy(() => instance.isResolved());

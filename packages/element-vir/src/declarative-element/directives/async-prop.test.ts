@@ -1284,11 +1284,8 @@ describe(asyncProp.name, () => {
         assert.instanceOf(instance, VirAsyncPropLastResolved);
         const span = instance.shadowRoot.querySelector('.value-span');
         assert.instanceOf(span, HTMLSpanElement);
-        /**
-         * `useLastResolvedValue` renders the not-yet-set `undefined` last resolved value rather
-         * than the fallback, because `undefined` is a legitimate resolved value.
-         */
-        assert.strictEquals(span.innerText, '');
+        /** Nothing has resolved yet, so `useLastResolvedValue` still renders the fallback. */
+        assert.strictEquals(span.innerText, 'loading');
 
         assert.isDefined(deferredPromises[0]);
         deferredPromises[0].resolve('first');

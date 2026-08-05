@@ -127,7 +127,17 @@ export function renderAsync<
             ? errorRender(asyncPropValue)
             : extractErrorMessage(asyncPropValue);
         return errorResult as any;
-    } else if (check.isPromiseLike(asyncPropValue)) {
+    } else if (
+        check.isPromiseLike(asyncPropValue) ||
+        /**
+         * `lastResolvedValue` is `undefined` both before the first resolution and when the value
+         * genuinely resolved to `undefined`. Only the former is a loading state, so a still-pending
+         * `value` is what distinguishes them.
+         */
+        (options.useLastResolvedValue &&
+            asyncPropValue === undefined &&
+            check.isPromiseLike(asyncProp.value))
+    ) {
         const fallbackResult: FallbackResult = fallback;
         return fallbackResult as any;
     } else {
