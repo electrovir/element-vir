@@ -18,7 +18,11 @@ describe('onDomRendered', () => {
             return html`
                 <div
                     ${onDomRendered((element) => {
-                        dispatch(new events.renderTrigger(element));
+                        dispatch(
+                            new events.renderTrigger({
+                                detail: element,
+                            }),
+                        );
                     })}
                 >
                     ${inputs.trigger}
@@ -138,7 +142,11 @@ describe('onDomRendered', () => {
                 return html`
                     <div
                         ${onDomRendered((element) => {
-                            dispatch(new events.renderTrigger(element));
+                            dispatch(
+                                new events.renderTrigger({
+                                    detail: element,
+                                }),
+                            );
                         })}
                     >
                         ${inputs.trigger}

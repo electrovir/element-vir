@@ -87,7 +87,11 @@ describe('onIntersect', () => {
                             threshold: 0,
                         },
                         ({entry}) => {
-                            dispatch(new events.intersectionChanged(entry.isIntersecting));
+                            dispatch(
+                                new events.intersectionChanged({
+                                    detail: entry.isIntersecting,
+                                }),
+                            );
                         },
                     )}
                 >
@@ -157,7 +161,11 @@ describe('onIntersect', () => {
                 <div
                     style="height: 50px; width: 50px; display: ${inputs.hide ? 'none' : 'block'};"
                     ${onIntersect(inputs.options, (params) => {
-                        dispatch(new events.intersected(params));
+                        dispatch(
+                            new events.intersected({
+                                detail: params,
+                            }),
+                        );
                     })}
                 >
                     ${inputs.label}
@@ -451,7 +459,11 @@ describe('onIntersect', () => {
                                     threshold: 0,
                                 },
                                 ({entry}) => {
-                                    dispatch(new events.intersected(entry.target));
+                                    dispatch(
+                                        new events.intersected({
+                                            detail: entry.target,
+                                        }),
+                                    );
                                 },
                             )}
                         >
@@ -466,7 +478,11 @@ describe('onIntersect', () => {
                                     threshold: 0,
                                 },
                                 ({entry}) => {
-                                    dispatch(new events.intersected(entry.target));
+                                    dispatch(
+                                        new events.intersected({
+                                            detail: entry.target,
+                                        }),
+                                    );
                                 },
                             )}
                         >

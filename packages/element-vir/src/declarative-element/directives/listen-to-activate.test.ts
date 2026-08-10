@@ -19,7 +19,11 @@ const ActivateTarget = defineElement()({
             <button
                 tabindex="0"
                 ${listenToActivate(() => {
-                    dispatch(new events.activated());
+                    dispatch(
+                        new events.activated({
+                            detail: undefined,
+                        }),
+                    );
                 })}
             >
                 target
@@ -38,7 +42,11 @@ const EnterTarget = defineElement()({
             <button
                 tabindex="0"
                 ${listenToEnter(() => {
-                    dispatch(new events.enterFired());
+                    dispatch(
+                        new events.enterFired({
+                            detail: undefined,
+                        }),
+                    );
                 })}
             >
                 target

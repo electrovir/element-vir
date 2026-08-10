@@ -21,7 +21,7 @@
         "test:update": "npm test -- --update-snapshots"
     },
     "dependencies": {
-        "@playwright/test": "1.61.1",
+        "@playwright/test": "1.62.1",
         "element-vir": "^26.17.3"
     },
     "devDependencies": {
@@ -29,8 +29,8 @@
         "@augment-vir/common": "^32.2.1",
         "@augment-vir/node": "^32.2.1",
         "@augment-vir/test": "^32.2.1",
-        "@types/node": "^26.1.1",
-        "playwright": "1.61.1",
+        "@types/node": "^26.1.2",
+        "playwright": "1.62.1",
         "url-vir": "^2.1.10"
     },
     "engines": {

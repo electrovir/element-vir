@@ -1,3 +1,3 @@
-import {defineTypedEvent} from '../index.js';
+import {defineTypedCustomEvent} from '../index.js';
 
-export const MyCustomActionEvent = defineTypedEvent<number>()('my-custom-action');
+export const MyCustomActionEvent = defineTypedCustomEvent<number>()('my-custom-action');

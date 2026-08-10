@@ -19,7 +19,11 @@ describe('onDomCreated', () => {
             return html`
                 <div
                     ${onDomCreated((element) => {
-                        dispatch(new events.createdTrigger(element));
+                        dispatch(
+                            new events.createdTrigger({
+                                detail: element,
+                            }),
+                        );
                     })}
                 >
                     ${inputs.trigger}
@@ -132,14 +136,22 @@ describe('onDomCreated', () => {
                         html`
                             <span
                                 ${onDomCreated((element) => {
-                                    dispatch(new events.createdTrigger(element));
+                                    dispatch(
+                                        new events.createdTrigger({
+                                            detail: element,
+                                        }),
+                                    );
                                 })}
                             ></span>
                         `,
                         html`
                             <div
                                 ${onDomCreated((element) => {
-                                    dispatch(new events.createdTrigger(element));
+                                    dispatch(
+                                        new events.createdTrigger({
+                                            detail: element,
+                                        }),
+                                    );
                                 })}
                             ></div>
                         `,

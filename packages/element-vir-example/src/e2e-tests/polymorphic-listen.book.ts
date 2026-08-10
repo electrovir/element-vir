@@ -1,14 +1,14 @@
 import {
     defineElement,
     defineElementEvent,
-    defineTypedEvent,
+    defineTypedCustomEvent,
     html,
     listen,
     testId,
 } from 'element-vir';
 import {defineBookTest} from '../test-util.js';
 
-const standaloneTypedEvent = defineTypedEvent<string>()('polymorphic-listen-standalone');
+const standaloneTypedEvent = defineTypedCustomEvent<string>()('polymorphic-listen-standalone');
 
 const PolymorphicChild = defineElement()({
     tagName: 'polymorphic-listen-child',
@@ -21,10 +21,18 @@ const PolymorphicChild = defineElement()({
             <button
                 ${testId(testIds.button)}
                 @click=${(event: Event) => {
-                    dispatch(new events.fromElement(7));
+                    dispatch(
+                        new events.fromElement({
+                            detail: 7,
+                        }),
+                    );
                     const target = event.currentTarget;
                     if (target instanceof EventTarget) {
-                        target.dispatchEvent(new standaloneTypedEvent('standalone-payload'));
+                        target.dispatchEvent(
+                            new standaloneTypedEvent({
+                                detail: 'standalone-payload',
+                            }),
+                        );
                     }
                 }}
             >

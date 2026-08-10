@@ -2,6 +2,7 @@ import {assert, assertWrap, waitUntil} from '@augment-vir/assert';
 import {collapseWhiteSpace} from '@augment-vir/common';
 import {describe, it, testWeb} from '@augment-vir/test';
 import {queryThroughShadow} from '@augment-vir/web';
+import {defineTypedCustomEvent} from 'typed-event-target';
 import {defineElement} from '../declarative-element/define-element.js';
 import {
     listenToActivate,
@@ -11,7 +12,6 @@ import {listen} from '../declarative-element/directives/listen.directive.js';
 import {testId, testIdSelector} from '../declarative-element/directives/test-id.directive.js';
 import {defineElementEvent} from '../declarative-element/properties/element-events.js';
 import {html} from '../template-transforms/vir-html/vir-html.js';
-import {defineTypedEvent, TypedEvent} from '../typed-event/typed-event.js';
 
 /**
  * These mirror the `element-book` example pages in `packages/element-vir-example/src/e2e-tests`, so
@@ -67,7 +67,11 @@ describe('events book', () => {
                         updateState({
                             value: next,
                         });
-                        dispatch(new events.clicked(next));
+                        dispatch(
+                            new events.clicked({
+                                detail: next,
+                            }),
+                        );
                     })}
                 >
                     fire
@@ -133,7 +137,11 @@ describe('typed event bubble book', () => {
                 <button
                     ${testId(testIds.button)}
                     ${listen('click', () => {
-                        dispatch(new events.bubbled('from-grandchild'));
+                        dispatch(
+                            new events.bubbled({
+                                detail: 'from-grandchild',
+                            }),
+                        );
                     })}
                 >
                     fire
@@ -186,7 +194,7 @@ describe('typed event bubble book', () => {
 });
 
 describe('typed events standalone book', () => {
-    const customEventTrigger = defineTypedEvent<{label: string}>()('custom-event-trigger');
+    const customEventTrigger = defineTypedCustomEvent<{label: string}>()('custom-event-trigger');
 
     const TypedEventsStandaloneElement = defineElement()({
         tagName: 'typed-events-standalone-element',
@@ -208,7 +216,9 @@ describe('typed events standalone book', () => {
                         if (target instanceof EventTarget) {
                             target.dispatchEvent(
                                 new customEventTrigger({
-                                    label: 'fired',
+                                    detail: {
+                                        label: 'fired',
+                                    },
                                 }),
                             );
                         }
@@ -230,10 +240,12 @@ describe('typed events standalone book', () => {
         assert.strictEquals(customEventTrigger.type, 'custom-event-trigger');
 
         const instance = new customEventTrigger({
-            label: 'hi',
+            detail: {
+                label: 'hi',
+            },
         });
 
-        assert.instanceOf(instance, TypedEvent);
+        assert.instanceOf(instance, CustomEvent);
         assert.strictEquals(instance.detail.label, 'hi');
     });
 
@@ -257,7 +269,7 @@ describe('typed events standalone book', () => {
 });
 
 describe('polymorphic listen book', () => {
-    const standaloneTypedEvent = defineTypedEvent<string>()('polymorphic-listen-standalone');
+    const standaloneTypedEvent = defineTypedCustomEvent<string>()('polymorphic-listen-standalone');
 
     const PolymorphicChild = defineElement()({
         tagName: 'polymorphic-listen-child',
@@ -270,10 +282,18 @@ describe('polymorphic listen book', () => {
                 <button
                     ${testId(testIds.button)}
                     @click=${(event: Event) => {
-                        dispatch(new events.fromElement(7));
+                        dispatch(
+                            new events.fromElement({
+                                detail: 7,
+                            }),
+                        );
                         const target = event.currentTarget;
                         if (target instanceof EventTarget) {
-                            target.dispatchEvent(new standaloneTypedEvent('standalone-payload'));
+                            target.dispatchEvent(
+                                new standaloneTypedEvent({
+                                    detail: 'standalone-payload',
+                                }),
+                            );
                         }
                     }}
                 >

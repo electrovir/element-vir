@@ -1,14 +1,20 @@
 import {assert, assertWrap, waitUntil} from '@augment-vir/assert';
 import {awaitedForEach, wait} from '@augment-vir/common';
 import {describe, it, testWeb} from '@augment-vir/test';
-import {defineElement, defineTypedEvent, html, renderIf} from '../../index.js';
+import {
+    defineElement,
+    defineElementEvent,
+    defineTypedCustomEvent,
+    defineTypedEvent,
+    html,
+    renderIf,
+} from '../../index.js';
 import {
     type Directive,
     getDirectiveClass,
     type PartInfo,
     PartType,
 } from '../../lit-exports/all-lit-exports.js';
-import {type DefinedTypedEvent} from '../../typed-event/typed-event.js';
 import {type FullElementPartInfo} from './directive-helpers.js';
 import {listen} from './listen.directive.js';
 
@@ -19,10 +25,50 @@ type ListenDirectiveInstance = Directive & {
 
 describe(listen.name, () => {
     it('has proper types', () => {
-        const MyCustomEvent = defineTypedEvent<number>()('my-custom-event');
+        const MyCustomEvent = defineTypedCustomEvent<number>()('my-custom-event');
         listen(MyCustomEvent, (event) => {
             assert.tsType(event.detail).equals<number>();
             assert.tsType(event.detail).notMatches<string>();
+        });
+
+        class ExtendedEvent extends defineTypedEvent('extended-event') {
+            public readonly extraValue = 42;
+        }
+
+        listen(ExtendedEvent, (event) => {
+            assert.tsType(event).equals<ExtendedEvent>();
+            assert.tsType(event.type).equals<'extended-event'>();
+            assert.tsType(event.extraValue).equals<number>();
+        });
+
+        const EventSourceElement = defineElement()({
+            tagName: 'listen-type-event-source',
+            events: {
+                valueChanged: defineElementEvent<{
+                    value: number;
+                }>(),
+            },
+            render() {
+                return html``;
+            },
+        });
+
+        defineElement()({
+            tagName: 'listen-type-event-consumer',
+            render() {
+                return html`
+                    <${EventSourceElement}
+                        ${listen(EventSourceElement.events.valueChanged, (event) => {
+                            assert.tsType(event.detail).equals<{
+                                value: number;
+                            }>();
+                            assert
+                                .tsType(event.type)
+                                .equals<'listen-type-event-source-valueChanged'>();
+                        })}
+                    ></${EventSourceElement}>
+                `;
+            },
         });
 
         listen('click', (event) => {
@@ -157,7 +203,7 @@ describe(listen.name, () => {
     });
 
     it('listens to a typed event and its detail', async () => {
-        const MyCustomEvent = defineTypedEvent<number>()('listen-directive-typed-event');
+        const MyCustomEvent = defineTypedCustomEvent<number>()('listen-directive-typed-event');
         const details: number[] = [];
         const types: string[] = [];
 
@@ -175,22 +221,30 @@ describe(listen.name, () => {
         const child = fixture.querySelector('span');
         assert.instanceOf(child, HTMLSpanElement);
 
-        child.dispatchEvent(new MyCustomEvent(42));
+        child.dispatchEvent(
+            new MyCustomEvent({
+                detail: 42,
+            }),
+        );
 
         await waitUntil.deepEquals([42], () => details);
         assert.deepEquals(types, ['listen-directive-typed-event']);
     });
 
     it('throws for an event type that is not a string', async () => {
-        const badEventType: DefinedTypedEvent<string, unknown> = {
-            // @ts-expect-error: an event type that is not a string
+        const badEventType = {
             type: 5,
         };
 
         await assert.throws(
             async () => {
                 await testWeb.render(html`
-                    <div ${listen(badEventType, () => {})}></div>
+                    <div
+                        ${
+                            // @ts-expect-error: an event type that is not a string
+                            listen(badEventType, () => {})
+                        }
+                    ></div>
                 `);
             },
             {
@@ -716,7 +770,7 @@ describe(listen.name, () => {
     });
 
     it('reattaches a typed event listener on reconnect', async () => {
-        const MyCustomEvent = defineTypedEvent<number>()('listen-reconnect-typed-event');
+        const MyCustomEvent = defineTypedCustomEvent<number>()('listen-reconnect-typed-event');
         const details: number[] = [];
         const TypedEventElement = defineElement()({
             tagName: 'listen-typed-event-reconnect-element',
@@ -741,14 +795,22 @@ describe(listen.name, () => {
         const child = fixture.shadowRoot.querySelector('span');
         assert.instanceOf(child, HTMLSpanElement);
 
-        child.dispatchEvent(new MyCustomEvent(1));
+        child.dispatchEvent(
+            new MyCustomEvent({
+                detail: 1,
+            }),
+        );
         await waitUntil.deepEquals([1], () => details);
 
         fixture.remove();
         await wait({
             milliseconds: 10,
         });
-        child.dispatchEvent(new MyCustomEvent(2));
+        child.dispatchEvent(
+            new MyCustomEvent({
+                detail: 2,
+            }),
+        );
         await wait({
             milliseconds: 100,
         });
@@ -758,7 +820,11 @@ describe(listen.name, () => {
         await wait({
             milliseconds: 10,
         });
-        child.dispatchEvent(new MyCustomEvent(3));
+        child.dispatchEvent(
+            new MyCustomEvent({
+                detail: 3,
+            }),
+        );
         await waitUntil.deepEquals(
             [
                 1,

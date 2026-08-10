@@ -232,7 +232,11 @@ describe('rendering', () => {
                 return html`
                     <button
                         ${listen('click', () => {
-                            dispatch(new events.childEvent('from-child'));
+                            dispatch(
+                                new events.childEvent({
+                                    detail: 'from-child',
+                                }),
+                            );
                         })}
                     >
                         click me
@@ -250,7 +254,11 @@ describe('rendering', () => {
                     <${Child}
                         ${listen(Child.events.childEvent, (event) => {
                             heard.push(`middle: ${event.detail}`);
-                            dispatch(new events.middleEvent('from-middle'));
+                            dispatch(
+                                new events.middleEvent({
+                                    detail: 'from-middle',
+                                }),
+                            );
                         })}
                     ></${Child}>
                 `;

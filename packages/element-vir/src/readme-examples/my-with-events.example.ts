@@ -10,16 +10,26 @@ export const MyWithEvents = defineElement()({
     },
     render({dispatch, events}) {
         return html`
-            <button ${listen('click', () => dispatch(new events.logoutClick()))}>log out</button>
             <button
                 ${listen('click', () =>
                     dispatch(
-                        new events.randomNumber(
-                            randomInteger({
+                        new events.logoutClick({
+                            detail: undefined,
+                        }),
+                    ),
+                )}
+            >
+                log out
+            </button>
+            <button
+                ${listen('click', () =>
+                    dispatch(
+                        new events.randomNumber({
+                            detail: randomInteger({
                                 min: 0,
                                 max: 1_000_000,
                             }),
-                        ),
+                        }),
                     ),
                 )}
             >

@@ -267,7 +267,9 @@ describe('readme examples', () => {
     });
 
     it('creates a bubbling, composed typed event', () => {
-        const event = new MyCustomActionEvent(42);
+        const event = new MyCustomActionEvent({
+            detail: 42,
+        });
 
         assert.strictEquals(MyCustomActionEvent.type, 'my-custom-action');
         assert.deepEquals(

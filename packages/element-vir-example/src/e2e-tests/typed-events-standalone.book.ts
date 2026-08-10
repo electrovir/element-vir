@@ -1,7 +1,7 @@
-import {defineElement, defineTypedEvent, html, listen, testId, TypedEvent} from 'element-vir';
+import {defineElement, defineTypedCustomEvent, html, listen, testId} from 'element-vir';
 import {defineBookTest} from '../test-util.js';
 
-const customEventTrigger = defineTypedEvent<{label: string}>()('custom-event-trigger');
+const customEventTrigger = defineTypedCustomEvent<{label: string}>()('custom-event-trigger');
 
 const TypedEventsStandaloneElement = defineElement()({
     tagName: 'typed-events-standalone-element',
@@ -23,7 +23,9 @@ const TypedEventsStandaloneElement = defineElement()({
                     if (target instanceof EventTarget) {
                         target.dispatchEvent(
                             new customEventTrigger({
-                                label: 'fired',
+                                detail: {
+                                    label: 'fired',
+                                },
                             }),
                         );
                     }
@@ -51,7 +53,7 @@ export const typedEventsStandaloneTest = await defineBookTest(
         },
     },
     {
-        async 'defineTypedEvent + listen captures the event detail'({e2eUtil, page}) {
+        async 'defineTypedCustomEvent + listen captures the event detail'({e2eUtil, page}) {
             await e2eUtil
                 .expect(page.getByTestId(TypedEventsStandaloneElement.testIds.report))
                 .toHaveText('none');
@@ -64,9 +66,11 @@ export const typedEventsStandaloneTest = await defineBookTest(
         'typed event class exposes its static type'({e2eUtil}) {
             e2eUtil.expect(customEventTrigger.type).toBe('custom-event-trigger');
             const instance = new customEventTrigger({
-                label: 'hi',
+                detail: {
+                    label: 'hi',
+                },
             });
-            e2eUtil.expect(instance).toBeInstanceOf(TypedEvent);
+            e2eUtil.expect(instance).toBeInstanceOf(CustomEvent);
             e2eUtil.expect(instance.detail.label).toBe('hi');
         },
     },

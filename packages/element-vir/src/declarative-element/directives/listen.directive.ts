@@ -1,4 +1,5 @@
 import {type MaybePromise} from '@augment-vir/common';
+import {type EventClass} from 'typed-event-target';
 import {
     AsyncDirective,
     directive,
@@ -6,29 +7,27 @@ import {
     noChange,
     type PartInfo,
 } from '../../lit-exports/all-lit-exports.js';
-import {
-    type DefinedTypedEvent,
-    defineTypedEvent,
-    type TypedEvent,
-} from '../../typed-event/typed-event.js';
 import {extractElement} from './directive-helpers.js';
 
 /** We don't care at all what this returns, just allow anything! */
 type ListenCallbackReturn = MaybePromise<any>;
 
 type PossibleListenerCallbacks<
-    TypedEventTypeNameGeneric extends string,
-    TypedEventDetailGeneric,
+    EventClassGeneric extends EventClass,
     NativeElementEventNameGeneric extends keyof HTMLElementEventMap,
 > =
-    | ((
-          event: TypedEvent<TypedEventTypeNameGeneric, TypedEventDetailGeneric>,
-      ) => ListenCallbackReturn)
+    | ((event: InstanceType<EventClassGeneric>) => ListenCallbackReturn)
     | ((event: HTMLElementEventMap[NativeElementEventNameGeneric]) => ListenCallbackReturn);
+
+/** An event constructor with a static event type. */
+export type EventDefinition<EventGeneric extends Event = Event> = EventClass<EventGeneric> &
+    Readonly<{
+        type: EventGeneric['type'];
+    }>;
 
 /**
  * Listen to events. These can be native DOM events (use a string for the inputType argument) or
- * typed events (pass in a return value from {@link defineTypedEvent}).
+ * typed events (pass in an event constructor from `typed-event-target`).
  *
  * @category Directives
  * @example
@@ -57,24 +56,21 @@ type PossibleListenerCallbacks<
  * });
  * ```
  */
-export function listen<TypedEventTypeNameGeneric extends string, TypedEventDetailGeneric>(
+export function listen<EventClassGeneric extends EventDefinition>(
     /**
      * Needs to come either from a declarative element (like MyDeclarativeElement.events.eventName),
-     * from a typed event created via the {@link defineTypedEvent} function, or be the name of a
-     * built-in event (like `'click'`).
+     * from a typed event constructor, or be the name of a built-in event (like `'click'`).
      */
-    eventType: DefinedTypedEvent<TypedEventTypeNameGeneric, TypedEventDetailGeneric>,
+    eventType: EventClassGeneric,
     /**
-     * The callback to fire when an event is caught. Assuming the {@link defineTypedEvent} input is
-     * properly typed, the event given to this callback will also be typed.
+     * The callback to fire when an event is caught. The event type is inferred from the
+     * constructor.
      */
-    listener: (
-        event: TypedEvent<TypedEventTypeNameGeneric, TypedEventDetailGeneric>,
-    ) => ListenCallbackReturn,
+    listener: (event: InstanceType<EventClassGeneric>) => ListenCallbackReturn,
 ): DirectiveResult<any>;
 /**
  * Listen to events. These can be native DOM events (use a string for the inputType argument) or
- * typed events (pass in a return value from {@link defineTypedEvent}).
+ * typed events (pass in an event constructor from `typed-event-target`).
  *
  * @category Directives
  * @example
@@ -106,36 +102,28 @@ export function listen<TypedEventTypeNameGeneric extends string, TypedEventDetai
 export function listen<NativeElementEventNameGeneric extends keyof HTMLElementEventMap>(
     /**
      * Needs to come either from a declarative element (like MyDeclarativeElement.events.eventName),
-     * from a typed event created via the {@link defineTypedEvent} function, or be the name of a
-     * built-in event (like `'click'`).
+     * from a typed event constructor, or be the name of a built-in event (like `'click'`).
      */
     eventType: NativeElementEventNameGeneric,
     /**
-     * The callback to fire when an event is caught. Assuming the {@link defineTypedEvent} input is
-     * properly typed, the event given to this callback will also be typed.
+     * The callback to fire when an event is caught. The event type is inferred from the
+     * constructor.
      */
     listener: (event: HTMLElementEventMap[NativeElementEventNameGeneric]) => ListenCallbackReturn,
 ): DirectiveResult<any>;
 export function listen<
-    TypedEventTypeNameGeneric extends string,
-    TypedEventDetailGeneric,
+    EventClassGeneric extends EventDefinition,
     NativeElementEventNameGeneric extends keyof HTMLElementEventMap,
 >(
-    eventType:
-        | DefinedTypedEvent<TypedEventTypeNameGeneric, TypedEventDetailGeneric>
-        | NativeElementEventNameGeneric,
-    listener: PossibleListenerCallbacks<
-        TypedEventTypeNameGeneric,
-        TypedEventDetailGeneric,
-        NativeElementEventNameGeneric
-    >,
+    eventType: EventClassGeneric | NativeElementEventNameGeneric,
+    listener: PossibleListenerCallbacks<EventClassGeneric, NativeElementEventNameGeneric>,
 ): DirectiveResult<any> {
     return listenDirective(eventType, listener);
 }
 
 type ListenerMetaData = {
     eventType: string;
-    callback: PossibleListenerCallbacks<any, any, any>;
+    callback: PossibleListenerCallbacks<any, any>;
     listener: (event: any) => ListenCallbackReturn;
 };
 
@@ -201,12 +189,12 @@ const listenDirective = directive(
 
         public createListenerMetaData(
             eventType: string,
-            callback: (event: TypedEvent<string, unknown>) => ListenCallbackReturn,
+            callback: (event: Event) => ListenCallbackReturn,
         ): ListenerMetaData {
             return {
                 eventType,
                 callback,
-                listener: (event: TypedEvent<string, unknown>) => {
+                listener: (event: Event) => {
                     if (this.isPartDisconnected && !this.isMidDispatchDisconnect(event)) {
                         return undefined;
                     }
@@ -218,7 +206,7 @@ const listenDirective = directive(
 
         public render(
             eventTypeInput: {type: string} | string,
-            callback: PossibleListenerCallbacks<any, any, any>,
+            callback: PossibleListenerCallbacks<any, any>,
         ) {
             const eventType =
                 typeof eventTypeInput === 'string' ? eventTypeInput : eventTypeInput.type;

@@ -277,16 +277,26 @@ export const MyWithEvents = defineElement()({
     },
     render({dispatch, events}) {
         return html`
-            <button ${listen('click', () => dispatch(new events.logoutClick()))}>log out</button>
             <button
                 ${listen('click', () =>
                     dispatch(
-                        new events.randomNumber(
-                            randomInteger({
+                        new events.logoutClick({
+                            detail: undefined,
+                        }),
+                    ),
+                )}
+            >
+                log out
+            </button>
+            <button
+                ${listen('click', () =>
+                    dispatch(
+                        new events.randomNumber({
+                            detail: randomInteger({
                                 min: 0,
                                 max: 1_000_000,
                             }),
-                        ),
+                        }),
                     ),
                 )}
             >
@@ -338,14 +348,14 @@ export const MyWithEventListening = defineElement()({
 
 ## Typed events without an element
 
-Create a custom event type with `defineTypedEvent`. Make sure to include the type parameter and call it twice, the second time with the event type name string to ensure type safety when using your event. Note that event type names should be unique, or they will clash with each other.
+Create a custom event type with `defineTypedCustomEvent`. Make sure to include the type parameter and call it twice, the second time with the event type name string to ensure type safety when using your event. Note that event type names should be unique, or they will clash with each other.
 
 <!-- example-link: src/readme-examples/my-custom-action.example.ts -->
 
 ```TypeScript
-import {defineTypedEvent} from 'element-vir';
+import {defineTypedCustomEvent} from 'element-vir';
 
-export const MyCustomActionEvent = defineTypedEvent<number>()('my-custom-action');
+export const MyCustomActionEvent = defineTypedCustomEvent<number>()('my-custom-action');
 ```
 
 ### Using a typed event
@@ -367,12 +377,12 @@ export const MyWithCustomEventDispatch = defineElement()({
             <button
                 ${listen('click', () => {
                     dispatch(
-                        new MyCustomActionEvent(
-                            randomInteger({
+                        new MyCustomActionEvent({
+                            detail: randomInteger({
                                 min: 0,
                                 max: 1_000_000,
                             }),
-                        ),
+                        }),
                     );
                 })}
             >

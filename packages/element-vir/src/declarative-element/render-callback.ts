@@ -1,14 +1,9 @@
 import {getObjectTypedKeys, type SetRequiredAndNotNull} from '@augment-vir/common';
 import {type HtmlInterpolation} from '../template-transforms/vir-html/html-interpolation.js';
-import {type TypedEvent} from '../typed-event/typed-event.js';
 import {type CustomElementTagName} from './custom-tag-name.js';
 import {type DeclarativeElement, type DeclarativeElementHost} from './declarative-element.js';
 import {type CssVars} from './properties/css-vars.js';
-import {
-    type EventDescriptorMap,
-    type EventInitMapEventDetailExtractor,
-    type EventsInitMap,
-} from './properties/element-events.js';
+import {type EventDescriptorMap, type EventsInitMap} from './properties/element-events.js';
 import {type PropertyInitMapBase} from './properties/element-properties.js';
 import {
     type BaseStringName,
@@ -111,14 +106,7 @@ export type RenderParams<
     slotNames: SlotNamesMap<TagName, SlotNames>;
     testIds: Readonly<StringNameMap<TagName, 'test-id', TestIds>>;
     /** Dispatch an event from the current element. */
-    dispatch: <EventTypeName extends keyof EventsInit>(
-        event:
-            | TypedEvent<
-                  EventTypeName extends string ? EventTypeName : never,
-                  EventInitMapEventDetailExtractor<EventTypeName, EventsInit>
-              >
-            | Event,
-    ) => boolean;
+    dispatch: (event: Event) => boolean;
     inputs: Readonly<Inputs>;
 };
 

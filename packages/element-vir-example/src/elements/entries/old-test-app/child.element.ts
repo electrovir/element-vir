@@ -68,12 +68,24 @@ export const TestChildElement = defineElement<{
                     }
                 })}
                 ${listen('click', () => {
-                    dispatch(new events.speak(randomString()));
+                    dispatch(
+                        new events.speak({
+                            detail: randomString(),
+                        }),
+                    );
                 })}
             >
                 emit speak event
             </button>
-            <button ${listen('click', () => dispatch(new MyCustomEvent(5)))}>
+            <button
+                ${listen('click', () =>
+                    dispatch(
+                        new MyCustomEvent({
+                            detail: 5,
+                        }),
+                    ),
+                )}
+            >
                 emit custom event (logged to console)
             </button>
             <span>button handle: ${state.button?.tagName}</span>

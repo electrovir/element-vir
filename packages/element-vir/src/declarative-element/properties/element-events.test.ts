@@ -19,11 +19,15 @@ describe('element events', () => {
             render({events}) {
                 const testEventThing = events['test-event-name'];
 
-                const eventInstance = new testEventThing(4);
+                const eventInstance = new testEventThing({
+                    detail: 4,
+                });
                 // @ts-expect-error: requires a number input
-                const badEventInstance1 = new testEventThing(undefined);
-                // @ts-expect-error: requires a number input
-                const badEventInstance2 = new testEventThing('not a number input');
+                const badEventInstance1 = new testEventThing({});
+                const badEventInstance2 = new testEventThing({
+                    // @ts-expect-error: requires a number input
+                    detail: 'not a number input',
+                });
 
                 return html``;
             },
@@ -52,11 +56,15 @@ describe('element events', () => {
 
         const extractedEvent = customElement.events['test-event-name'];
 
-        const eventInstance = new extractedEvent(4);
+        const eventInstance = new extractedEvent({
+            detail: 4,
+        });
         // @ts-expect-error: requires a number input
-        const badEventInstance1 = new extractedEvent(undefined);
-        // @ts-expect-error: requires a number input
-        const badEventInstance2 = new extractedEvent('not a number input');
+        const badEventInstance1 = new extractedEvent({});
+        const badEventInstance2 = new extractedEvent({
+            // @ts-expect-error: requires a number input
+            detail: 'not a number input',
+        });
     });
 });
 
@@ -65,7 +73,12 @@ describe(defineElementEvent.name, () => {
         const CreatedEvent = defineElementEvent<string>()('some-event-type');
 
         assert.strictEquals(CreatedEvent.type, 'some-event-type');
-        assert.strictEquals(new CreatedEvent('detail').type, 'some-event-type');
+        assert.strictEquals(
+            new CreatedEvent({
+                detail: 'detail',
+            }).type,
+            'some-event-type',
+        );
     });
 
     it('creates a distinct event class per call', () => {
@@ -82,13 +95,38 @@ describe(defineElementEvent.name, () => {
         const detail = {
             count: 4,
         };
-        const event = new DetailEvent(detail);
+        const event = new DetailEvent({
+            detail,
+        });
 
         assert.isTrue(event.bubbles);
         assert.isTrue(event.composed);
         assert.instanceOf(event, CustomEvent);
         /** The detail is passed through by reference, not copied. */
         assert.strictEquals(event.detail, detail);
+    });
+
+    it('honors explicitly provided event init options', () => {
+        const DetailEvent = defineElementEvent<number>()('configured-event-type');
+        const event = new DetailEvent({
+            detail: 4,
+            bubbles: false,
+            cancelable: true,
+            composed: false,
+        });
+
+        assert.deepEquals(
+            {
+                bubbles: event.bubbles,
+                cancelable: event.cancelable,
+                composed: event.composed,
+            },
+            {
+                bubbles: false,
+                cancelable: true,
+                composed: false,
+            },
+        );
     });
 });
 
@@ -159,7 +197,12 @@ describe(createEventDescriptorMap.name, () => {
 
         /** Numeric keys produce a `never` type name statically but still work at run time. */
         assert.strictEquals(eventsMap[42].type as string, 'my-element-42');
-        assert.strictEquals(new eventsMap[42](5).type as string, 'my-element-42');
+        assert.strictEquals(
+            new eventsMap[42]({
+                detail: 5,
+            }).type as string,
+            'my-element-42',
+        );
     });
 
     it('ignores symbol event keys', () => {
@@ -190,7 +233,9 @@ describe(createEventDescriptorMap.name, () => {
         const eventsMap = createEventDescriptorMap('my-element', {
             'my-event': defineElementEvent<number>(),
         });
-        const event = new eventsMap['my-event'](5);
+        const event = new eventsMap['my-event']({
+            detail: 5,
+        });
 
         assert.strictEquals(event.type, 'my-element-my-event');
         assert.strictEquals(event.detail, 5);
@@ -210,7 +255,11 @@ describe('element event dispatching', () => {
                 return html`
                     <button
                         ${listen('click', () => {
-                            dispatch(new events['my-event'](42));
+                            dispatch(
+                                new events['my-event']({
+                                    detail: 42,
+                                }),
+                            );
                         })}
                     >
                         dispatch
@@ -252,7 +301,13 @@ describe('element event dispatching', () => {
                 'my-event': defineElementEvent<undefined>(),
             },
             init({events, dispatch}) {
-                dispatchResults.push(dispatch(new events['my-event'](undefined)));
+                dispatchResults.push(
+                    dispatch(
+                        new events['my-event']({
+                            detail: undefined,
+                        }),
+                    ),
+                );
             },
             render() {
                 return 'hi';

@@ -6,7 +6,6 @@ import {
     type AsyncProp,
     Observable,
     type RenderCallback,
-    TypedEvent,
     asyncProp,
     createEventDescriptorMap,
     createRenderParams,
@@ -129,11 +128,17 @@ describe('RenderParams', () => {
                     input: undefined,
                 });
 
-                new testEventThing(4);
+                new testEventThing({
+                    detail: 4,
+                });
                 // @ts-expect-error: requires a number input
-                new testEventThing(undefined);
+                new testEventThing({});
                 // @ts-expect-error: requires a number input
-                new testEventThing('not a number input');
+                new testEventThing();
+                new testEventThing({
+                    // @ts-expect-error: requires a number input
+                    detail: 'not a number input',
+                });
 
                 return html``;
             },
@@ -153,14 +158,17 @@ describe('RenderParams', () => {
             });
 
             const myEvent = renderParams.events.testEventName;
-            const myEventInstance = new myEvent(4);
-            // @ts-expect-error: requires a number input
-            new myEvent('no number here');
+            const myEventInstance = new myEvent({
+                detail: 4,
+            });
+            new myEvent({
+                // @ts-expect-error: requires a number input
+                detail: 'no number here',
+            });
 
             assert.strictEquals(myEventInstance.type, 'my-element-testEventName');
 
             renderParams.dispatch(myEventInstance);
-            renderParams.dispatch(new TypedEvent(renderParams.events.testEventName, 2));
             renderParams.dispatch(new Event('generic event type'));
             // there are no async props in this element
             assert.isEmpty(Object.keys(renderParams.state));
@@ -331,7 +339,11 @@ describe(createRenderParams.name, () => {
         });
 
         assert.isTrue(
-            latestRenderParams().dispatch(new RenderParamsRecorder.events.recorderEvent(4)),
+            latestRenderParams().dispatch(
+                new RenderParamsRecorder.events.recorderEvent({
+                    detail: 4,
+                }),
+            ),
         );
         assert.deepEquals(dispatchedEvents, [
             'render-params-recorder-recorderEvent',

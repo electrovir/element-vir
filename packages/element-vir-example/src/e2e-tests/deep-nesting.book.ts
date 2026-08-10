@@ -12,7 +12,11 @@ const DeepGrandchild = defineElement<{message: string}>()({
             <button
                 ${testId('deep-grandchild-echo')}
                 ${listen('click', () => {
-                    dispatch(new events.echoed(`echo: ${inputs.message}`));
+                    dispatch(
+                        new events.echoed({
+                            detail: `echo: ${inputs.message}`,
+                        }),
+                    );
                 })}
             >
                 echo

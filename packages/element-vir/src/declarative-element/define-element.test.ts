@@ -1172,7 +1172,9 @@ describe(defineElement.name, () => {
             'define-element-event-types-el-myOutput',
         );
 
-        const event = new MyElement.events.myOutput(4);
+        const event = new MyElement.events.myOutput({
+            detail: 4,
+        });
         assert.strictEquals(event.detail, 4);
         assert.strictEquals(event.type, 'define-element-event-types-el-myOutput');
     });

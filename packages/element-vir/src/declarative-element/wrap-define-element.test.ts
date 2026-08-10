@@ -11,7 +11,7 @@ import {
     type CustomElementTagName,
     type DeclarativeElementDefinition,
     type DeclarativeElementInit,
-    type DefineEvent,
+    type DefineElementEvent,
 } from '../index.js';
 
 function defineWithTransformedTagName(
@@ -476,7 +476,7 @@ describe(wrapDefineElement.name, () => {
             MySpecificTagName,
             MySpecificInputs,
             {requiredState: number},
-            {requiredEvent: DefineEvent<boolean>}
+            {requiredEvent: DefineElementEvent<boolean>}
         >({
             /**
              * The options are not parameterized by the wrapper's requirements, so both callbacks
@@ -684,7 +684,7 @@ describe(wrapDefineElement.name, () => {
             MySpecificTagName,
             {requiredInput: string},
             {requiredState: number},
-            {requiredEvent: DefineEvent<boolean>}
+            {requiredEvent: DefineElementEvent<boolean>}
         >();
 
         assert.isDefined(

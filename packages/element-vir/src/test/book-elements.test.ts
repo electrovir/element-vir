@@ -592,7 +592,17 @@ describe('deep nesting book', () => {
                 <button
                     ${testId('deep-grandchild-echo')}
                     ${listen('click', () => {
-                        dispatch(new events.echoed(`echo: ${inputs.message}`));
+                        const invalidEvent = new events.echoed({
+                            // @ts-expect-error: wrong detail type.
+                            detail: 3,
+                        });
+                        assert.tsType(invalidEvent.detail).equals<string>();
+
+                        dispatch(
+                            new events.echoed({
+                                detail: `echo: ${inputs.message}`,
+                            }),
+                        );
                     })}
                 >
                     echo

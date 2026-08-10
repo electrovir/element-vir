@@ -21,7 +21,11 @@ const EventsChildElement = defineElement()({
                     updateState({
                         value: next,
                     });
-                    dispatch(new events.clicked(next));
+                    dispatch(
+                        new events.clicked({
+                            detail: next,
+                        }),
+                    );
                 })}
             >
                 fire

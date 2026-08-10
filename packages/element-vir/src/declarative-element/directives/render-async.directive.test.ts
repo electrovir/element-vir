@@ -30,7 +30,11 @@ describe(asyncProp.name, () => {
         render({state, inputs, dispatch, events}) {
             state.myAsyncProp.setValue(inputs.setAsyncProp);
 
-            dispatch(new events.previousAsyncProp(state.myAsyncProp.value));
+            dispatch(
+                new events.previousAsyncProp({
+                    detail: state.myAsyncProp.value,
+                }),
+            );
 
             return renderAsync(
                 state.myAsyncProp,

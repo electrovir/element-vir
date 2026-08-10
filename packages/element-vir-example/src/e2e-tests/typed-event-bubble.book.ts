@@ -12,7 +12,11 @@ const TypedBubbleGrandchild = defineElement()({
             <button
                 ${testId(testIds.button)}
                 ${listen('click', () => {
-                    dispatch(new events.bubbled('from-grandchild'));
+                    dispatch(
+                        new events.bubbled({
+                            detail: 'from-grandchild',
+                        }),
+                    );
                 })}
             >
                 fire

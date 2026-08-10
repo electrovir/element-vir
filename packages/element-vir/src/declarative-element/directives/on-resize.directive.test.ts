@@ -71,10 +71,12 @@ describe('onResize', () => {
                     style="width: ${inputs.width}px; height: 40px;"
                     ${onResize((size, element) => {
                         dispatch(
-                            new events.sized([
-                                size,
-                                element,
-                            ]),
+                            new events.sized({
+                                detail: [
+                                    size,
+                                    element,
+                                ],
+                            }),
                         );
                     })}
                 >
@@ -202,8 +204,10 @@ describe('onResize', () => {
                     ${onResize((size) => {
                         dispatch(
                             new events.sizedWithLabel({
-                                label: inputs.label,
-                                width: Math.round(size.contentRect.width),
+                                detail: {
+                                    label: inputs.label,
+                                    width: Math.round(size.contentRect.width),
+                                },
                             }),
                         );
                     })}
@@ -400,7 +404,11 @@ describe('onResize', () => {
                         <span
                             style="display: block; width: 100px; height: 20px;"
                             ${onResize((size) => {
-                                dispatch(new events.resized(size.target));
+                                dispatch(
+                                    new events.resized({
+                                        detail: size.target,
+                                    }),
+                                );
                             })}
                         >
                             span
@@ -410,7 +418,11 @@ describe('onResize', () => {
                         <div
                             style="width: 100px; height: 20px;"
                             ${onResize((size) => {
-                                dispatch(new events.resized(size.target));
+                                dispatch(
+                                    new events.resized({
+                                        detail: size.target,
+                                    }),
+                                );
                             })}
                         >
                             div

@@ -1,9 +1,9 @@
 import {
-    type DefinedTypedEvent,
-    type DefineEvent,
-    defineTypedEvent,
-    type TypedEvent,
-} from '../../typed-event/typed-event.js';
+    defineTypedCustomEvent,
+    type EventClass,
+    type TypedCustomEvent,
+    type TypedCustomEventInit,
+} from 'typed-event-target';
 import {type NonEmptyString} from '../../util/type.js';
 import {type CustomElementTagName} from '../custom-tag-name.js';
 
@@ -12,7 +12,20 @@ import {type CustomElementTagName} from '../custom-tag-name.js';
  *
  * @category Internal
  */
-export type EventsInitMap = Record<string, DefineEvent<any>>;
+export type DefineElementEvent<EventDetail> = <EventType extends string>(
+    eventType: NonEmptyString<EventType>,
+) => DefinedElementEvent<EventDetail, EventType>;
+
+/** A concrete element event definition. */
+export type DefinedElementEvent<EventDetail, EventType extends string> = (new (
+    eventInitDict: TypedCustomEventInit<EventDetail>,
+) => TypedCustomEvent<EventDetail, EventType>) &
+    Readonly<{
+        type: EventType;
+    }>;
+
+/** Element event definition factories keyed by their element-local event names. */
+export type EventsInitMap = Record<string, DefineElementEvent<any>>;
 
 /**
  * Used to define element events, with a type.
@@ -32,7 +45,7 @@ export type EventsInitMap = Record<string, DefineEvent<any>>;
  *         return html`
  *             <div
  *                 ${listen('click', () => {
- *                     dispatch(new events.myOutput(1));
+ *                     dispatch(new events.myOutput({detail: 1}));
  *                 })}
  *             >
  *                 Some div
@@ -42,8 +55,8 @@ export type EventsInitMap = Record<string, DefineEvent<any>>;
  * });
  * ```
  */
-export function defineElementEvent<EventDetailGeneric>(): DefineEvent<EventDetailGeneric> {
-    return defineTypedEvent<EventDetailGeneric>();
+export function defineElementEvent<EventDetail>(): DefineElementEvent<EventDetail> {
+    return defineTypedCustomEvent<EventDetail>();
 }
 
 /**
@@ -54,7 +67,10 @@ export function defineElementEvent<EventDetailGeneric>(): DefineEvent<EventDetai
 export type EventInitMapEventDetailExtractor<
     EventTypeNameGeneric extends keyof EventsInitGeneric,
     EventsInitGeneric extends EventsInitMap,
-> = EventsInitGeneric[EventTypeNameGeneric] extends DefineEvent<infer Detail> ? Detail : never;
+> =
+    EventsInitGeneric[EventTypeNameGeneric] extends DefineElementEvent<infer Detail>
+        ? Detail
+        : never;
 
 /**
  * Maps the given element tag name and map of event names to their run-time event type strings.
@@ -65,28 +81,25 @@ export type EventDescriptorMap<
     TagName extends CustomElementTagName,
     EventsInitGeneric extends EventsInitMap,
 > = {
-    [CurrentEventTypeName in keyof EventsInitGeneric]: DefinedTypedEvent<
-        CurrentEventTypeName extends string ? `${TagName}-${CurrentEventTypeName}` : never,
-        EventInitMapEventDetailExtractor<CurrentEventTypeName, EventsInitGeneric>
+    [CurrentEventTypeName in keyof EventsInitGeneric]: DefinedElementEvent<
+        EventInitMapEventDetailExtractor<CurrentEventTypeName, EventsInitGeneric>,
+        CurrentEventTypeName extends string ? `${TagName}-${CurrentEventTypeName}` : never
     >;
 };
 
 /**
- * Extract the event detail type from a {@link TypedEvent}, {@link DefinedTypedEvent}, or
- * `CustomEvent.
+ * Extract the event detail type from a custom event instance or constructor.
  *
  * @category Internal
  */
-export type EventDetail<
-    ElementEvent extends TypedEvent<any, any> | DefinedTypedEvent<any, any> | CustomEvent,
-> =
-    ElementEvent extends TypedEvent<string, infer Detail>
-        ? Detail
-        : ElementEvent extends DefinedTypedEvent<any, infer Detail>
-          ? Detail
-          : ElementEvent extends CustomEvent<infer Detail>
+export type EventDetail<ElementEvent extends CustomEvent | EventClass<CustomEvent>> =
+    ElementEvent extends EventClass<infer EventInstance>
+        ? EventInstance extends CustomEvent<infer Detail>
             ? Detail
-            : 'TYPE ERROR: failed to extract event detail type';
+            : never
+        : ElementEvent extends CustomEvent<infer Detail>
+          ? Detail
+          : never;
 
 /**
  * Maps an element definition initialization's tag name and event map to a map of ready-to-construct
@@ -123,24 +136,20 @@ export function createEventDescriptorMap<
                     accum: EventDescriptorMap<TagName, EventsInitGeneric>,
                     currentElementEventKey: keyof EventsInitGeneric,
                 ): EventDescriptorMap<TagName, EventsInitGeneric> => {
-                    const eventObject: DefinedTypedEvent<
-                        typeof currentElementEventKey extends string
-                            ? typeof currentElementEventKey
-                            : never,
+                    const eventObject: DefinedElementEvent<
                         EventInitMapEventDetailExtractor<
                             typeof currentElementEventKey,
                             EventsInitGeneric
-                        >
-                    > = defineTypedEvent<
-                        EventInitMapEventDetailExtractor<
-                            typeof currentElementEventKey,
-                            EventsInitGeneric
-                        >
-                    >()<
+                        >,
                         typeof currentElementEventKey extends string
                             ? typeof currentElementEventKey
                             : never
-                    >(
+                    > = defineElementEvent<
+                        EventInitMapEventDetailExtractor<
+                            typeof currentElementEventKey,
+                            EventsInitGeneric
+                        >
+                    >()(
                         [
                             tagName,
                             currentElementEventKey,

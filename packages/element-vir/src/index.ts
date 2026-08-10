@@ -1,4 +1,11 @@
 export * from 'observavir';
+export {
+    defineTypedCustomEvent,
+    defineTypedEvent,
+    type TypedCustomEvent,
+    type TypedCustomEventInit,
+    type TypedEvent,
+} from 'typed-event-target';
 
 export * from './declarative-element/custom-tag-name.js';
 export * from './declarative-element/declarative-element-init.js';
@@ -37,7 +44,6 @@ export * from './template-transforms/minimal-element-definition.js';
 export * from './template-transforms/vir-css/vir-css.js';
 export * from './template-transforms/vir-html/html-interpolation.js';
 export * from './template-transforms/vir-html/vir-html.js';
-export * from './typed-event/typed-event.js';
 export * from './util/increment.js';
 export * from './util/lit-template.js';
 export * from './util/type.js';

@@ -20,6 +20,12 @@ import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import {unsafeSVG} from 'lit/directives/unsafe-svg.js';
 import {until} from 'lit/directives/until.js';
 import * as indexExports from './index.js';
+import {
+    defineTypedCustomEvent,
+    defineTypedEvent,
+    type TypedCustomEvent,
+    type TypedEvent,
+} from './index.js';
 import * as allLitExports from './lit-exports/all-lit-exports.js';
 
 /**
@@ -57,7 +63,6 @@ const expectedPublicExportNames = [
     'ObservableValueUpdateEvent',
     'PartType',
     'TemplateResultType',
-    'TypedEvent',
     'UnsafeHTMLDirective',
     'UntilDirective',
     'allObservableEvents',
@@ -93,6 +98,7 @@ const expectedPublicExportNames = [
     'defaultDeclarativeElementDefinitionOptions',
     'defineElement',
     'defineElementEvent',
+    'defineTypedCustomEvent',
     'defineTypedEvent',
     'directive',
     'eventOptions',
@@ -201,5 +207,43 @@ describe('element-vir public API', () => {
     it('overrides the lit html and css tag functions with its own', () => {
         assert.notStrictEquals(indexExports.html, litHtml);
         assert.notStrictEquals(indexExports.css, litCss);
+    });
+});
+
+describe('typed-event-target exports', () => {
+    it('defines a typed event without detail', () => {
+        const MyEvent = defineTypedEvent('my-event');
+        const event = new MyEvent({
+            cancelable: true,
+        });
+
+        assert.instanceOf(event, Event);
+        assert.strictEquals(event.type, 'my-event');
+        assert.isTrue(event.cancelable);
+        assert.tsType(event).matches<TypedEvent<'my-event'>>();
+    });
+
+    it('defines a typed custom event with the standard event init input', () => {
+        const MyCustomEvent = defineTypedCustomEvent<number>()('my-custom-event');
+        const event = new MyCustomEvent({
+            detail: 42,
+        });
+
+        assert.instanceOf(event, CustomEvent);
+        assert.deepEquals(
+            {
+                type: event.type,
+                detail: event.detail,
+                bubbles: event.bubbles,
+                composed: event.composed,
+            },
+            {
+                type: 'my-custom-event',
+                detail: 42,
+                bubbles: true,
+                composed: true,
+            },
+        );
+        assert.tsType(event).matches<TypedCustomEvent<number, 'my-custom-event'>>();
     });
 });

@@ -497,7 +497,11 @@ describe(asyncProp.name, () => {
                     assert.tsType(state.myAsyncProp.value).equals<number | undefined>();
                 }
 
-                dispatch(new events.wasRendered());
+                dispatch(
+                    new events.wasRendered({
+                        detail: undefined,
+                    }),
+                );
 
                 return html`
                     <button

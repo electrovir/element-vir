@@ -7,11 +7,11 @@ import {
     type EventDetail,
     type Observable,
     type TemplateResult,
-    TypedEvent,
+    type TypedCustomEvent,
     css,
     defineElement,
     defineElementEvent,
-    defineTypedEvent,
+    defineTypedCustomEvent,
     html,
     listen,
 } from 'element-vir';
@@ -132,10 +132,19 @@ describe('test elements', () => {
             render({state, dispatch, events}): TemplateResult {
                 // @ts-expect-error: this has no state
                 console.info(state.thing);
+                dispatch(
+                    new events.thingHappened({
+                        detail: undefined,
+                    }),
+                );
+                // @ts-expect-error: this event requires an init object
                 dispatch(new events.thingHappened());
-                dispatch(new events.thingHappened(undefined));
-                // @ts-expect-error: this event has no inputs
-                dispatch(new events.thingHappened(5));
+                dispatch(
+                    new events.thingHappened({
+                        // @ts-expect-error: this event requires an undefined detail
+                        detail: 5,
+                    }),
+                );
                 return html``;
             },
         });
@@ -150,7 +159,7 @@ describe('test elements', () => {
             }),
         );
 
-        const MyElementEvent = defineTypedEvent<string>()('customEvent');
+        const MyElementEvent = defineTypedCustomEvent<string>()('customEvent');
 
         defineElement()({
             tagName: 'test-element-no-events-or-state',
@@ -160,15 +169,19 @@ describe('test elements', () => {
                 // @ts-expect-error: this has no state
                 console.info(state.thing);
                 // should only allow strings
-                // @ts-expect-error: this event requires a string
-                dispatch(new MyElementEvent(5));
-                dispatch(new MyElementEvent('derp'));
+                dispatch(
+                    new MyElementEvent({
+                        // @ts-expect-error: this event requires a string
+                        detail: 5,
+                    }),
+                );
+                dispatch(
+                    new MyElementEvent({
+                        detail: 'derp',
+                    }),
+                );
                 // @ts-expect-error: this property does not exist
                 events.thingHappened;
-                // @ts-expect-error: this has no events
-                dispatch(new events.thingHappened(events.thingHappened));
-                // @ts-expect-error: this has no events
-                dispatch(new TypedEvent(events.thingHappened, 5));
                 return html``;
             },
         });
@@ -216,41 +229,58 @@ describe('test elements', () => {
                             console.info(event);
                         })}
                         @click=${() => {
-                            dispatch(new TestElement.events.stringEvent(randomString()));
-                            dispatch(new TestElement.events.numberEvent(4));
-
-                            dispatch(new events.stringEvent(randomString()));
-                            dispatch(new events.numberEvent(4));
-
                             dispatch(
-                                new TypedEvent(TestElement.events.stringEvent, randomString()),
-                            );
-                            dispatch(new TypedEvent(TestElement.events.numberEvent, 4));
-
-                            // @ts-expect-error: requires a number input
-                            dispatch(new TestElement.events.numberEvent(randomString()));
-                            dispatch(
-                                new TypedEvent(TestElement.events.numberEvent, randomString()),
-                            );
-                            // @ts-expect-error: requires a number input
-                            dispatch(new events.numberEvent(randomString()));
-
-                            // @ts-expect-error: requires a value
-                            dispatch(new TypedEvent(TestElement.events.numberEvent));
-                            dispatch(new TypedEvent(TestElement.events.stringEvent, 4));
-                            // @ts-expect-error: requires a value
-                            dispatch(new TypedEvent(TestElement.events.stringEvent));
-                            // @ts-expect-error: this event does not exist
-                            dispatch(new TypedEvent(TestElement.events.nonExistingEvent, 4));
-                            // @ts-expect-error: this event does not exist
-                            dispatch(new TypedEvent(TestElement.events.nonExistingEvent));
-                            dispatch(
-                                new TypedEvent(TestElement.events.yo, {
-                                    hello: 'there',
+                                new TestElement.events.stringEvent({
+                                    detail: randomString(),
                                 }),
                             );
-                            // @ts-expect-error: requires a value
-                            dispatch(new TypedEvent(TestElement.events.yo));
+                            dispatch(
+                                new TestElement.events.numberEvent({
+                                    detail: 4,
+                                }),
+                            );
+
+                            dispatch(
+                                new events.stringEvent({
+                                    detail: randomString(),
+                                }),
+                            );
+                            dispatch(
+                                new events.numberEvent({
+                                    detail: 4,
+                                }),
+                            );
+
+                            dispatch(
+                                new TestElement.events.numberEvent({
+                                    // @ts-expect-error: requires a number input
+                                    detail: randomString(),
+                                }),
+                            );
+                            dispatch(
+                                new events.numberEvent({
+                                    // @ts-expect-error: requires a number input
+                                    detail: randomString(),
+                                }),
+                            );
+
+                            // @ts-expect-error: requires an init object
+                            dispatch(new TestElement.events.numberEvent());
+                            dispatch(
+                                new TestElement.events.stringEvent({
+                                    // @ts-expect-error: requires a string detail
+                                    detail: 4,
+                                }),
+                            );
+                            // @ts-expect-error: this event does not exist
+                            TestElement.events.nonExistingEvent;
+                            dispatch(
+                                new TestElement.events.yo({
+                                    detail: {
+                                        hello: 'there',
+                                    },
+                                }),
+                            );
                         }}
                     >
                         click me
@@ -269,23 +299,23 @@ describe('test elements', () => {
                     .tsType<EventDetail<typeof TestElement.events.numberEvent>>()
                     .equals<number>();
 
-                const myEvent: TypedEvent<
-                    (typeof TestElement.events.numberEvent)['type'],
-                    EventDetail<typeof TestElement.events.numberEvent>
+                const myEvent: TypedCustomEvent<
+                    EventDetail<typeof TestElement.events.numberEvent>,
+                    (typeof TestElement.events.numberEvent)['type']
                 > = event;
                 // @ts-expect-error: `event` requires a number
-                const myEventString: TypedEvent<
-                    (typeof TestElement.events.numberEvent)['type'],
-                    string
+                const myEventString: TypedCustomEvent<
+                    string,
+                    (typeof TestElement.events.numberEvent)['type']
                 > = event;
             });
             listen(TestElement.events.yo, (event) => {
                 const detail: Record<string, string> = event.detail;
                 // @ts-expect-error: detail is not a string
                 const detailString: string = event.detail;
-                const myEvent: TypedEvent<
-                    (typeof TestElement.events.yo)['type'],
-                    EventDetail<typeof TestElement.events.yo>
+                const myEvent: TypedCustomEvent<
+                    EventDetail<typeof TestElement.events.yo>,
+                    (typeof TestElement.events.yo)['type']
                 > = event;
             });
         }

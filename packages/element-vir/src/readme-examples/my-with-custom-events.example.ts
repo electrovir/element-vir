@@ -10,12 +10,12 @@ export const MyWithCustomEventDispatch = defineElement()({
             <button
                 ${listen('click', () => {
                     dispatch(
-                        new MyCustomActionEvent(
-                            randomInteger({
+                        new MyCustomActionEvent({
+                            detail: randomInteger({
                                 min: 0,
                                 max: 1_000_000,
                             }),
-                        ),
+                        }),
                     );
                 })}
             >
