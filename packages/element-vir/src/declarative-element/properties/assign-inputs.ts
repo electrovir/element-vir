@@ -32,36 +32,98 @@ export function createPropertyCollisionError({
     );
 }
 
+type ElementWithInstanceInputs = Element & Pick<DeclarativeElement, 'instanceInputs'>;
+type ElementWithInstanceState = Element & Pick<DeclarativeElement, 'instanceState'>;
+
+function hasInstanceInputs(element: Element): element is ElementWithInstanceInputs {
+    return 'instanceInputs' in element;
+}
+
+function hasInstanceState(element: Element): element is ElementWithInstanceState {
+    return 'instanceState' in element;
+}
+
+function assertInputDoesNotCollide({
+    element,
+    inputKey,
+}: Readonly<{
+    element: Element;
+    inputKey: PropertyKey;
+}>) {
+    if (hasInstanceState(element) && Object.hasOwn(element.instanceState, inputKey)) {
+        throw createPropertyCollisionError({
+            propertyKey: inputKey,
+            propertyType: ElementPropertyType.Input,
+            tagName: element.tagName,
+        });
+    }
+}
+
+function writeInput({
+    element,
+    inputKey,
+    value,
+}: Readonly<{
+    element: Element;
+    inputKey: PropertyKey;
+    value: unknown;
+}>) {
+    if (hasInstanceInputs(element)) {
+        element.instanceInputs[inputKey] = value;
+    } else {
+        Reflect.set(element, inputKey, value);
+    }
+}
+
+/** Assigns one input without changing any other input values. */
+export function assignInput({
+    element,
+    inputKey,
+    value,
+}: Readonly<{
+    element: Element;
+    inputKey: PropertyKey;
+    value: unknown;
+}>) {
+    assertInputDoesNotCollide({
+        element,
+        inputKey,
+    });
+    writeInput({
+        element,
+        inputKey,
+        value,
+    });
+}
+
 export function assignInputs(element: Element, inputs: object): void {
-    const instanceState = (element as Partial<DeclarativeElement>).instanceState;
     const newInputKeys = getObjectTypedKeys(inputs);
 
     /** Validate every key first so that a collision leaves the element untouched. */
     newInputKeys.forEach((newInputKey) => {
-        if (instanceState && Object.hasOwn(instanceState, newInputKey)) {
-            throw createPropertyCollisionError({
-                propertyKey: newInputKey,
-                propertyType: ElementPropertyType.Input,
-                tagName: element.tagName,
-            });
-        }
+        assertInputDoesNotCollide({
+            element,
+            inputKey: newInputKey,
+        });
     });
 
     newInputKeys.forEach((newInputKey) => {
-        if ('instanceInputs' in element) {
-            (element.instanceInputs as DeclarativeElement['instanceInputs'])[newInputKey] =
-                inputs[newInputKey];
-        } else {
-            element[newInputKey] = inputs[newInputKey];
-        }
+        writeInput({
+            element,
+            inputKey: newInputKey,
+            value: inputs[newInputKey],
+        });
     });
 
     /** Wipe out all inputs that weren't set to undefined (as expected) */
-    if ('instanceInputs' in element) {
+    if (hasInstanceInputs(element)) {
         getObjectTypedKeys(element.instanceInputs).forEach((existingKey) => {
             if (!(existingKey in inputs)) {
-                (element.instanceInputs as DeclarativeElement['instanceInputs'])[existingKey] =
-                    undefined;
+                writeInput({
+                    element,
+                    inputKey: existingKey,
+                    value: undefined,
+                });
             }
         });
     }

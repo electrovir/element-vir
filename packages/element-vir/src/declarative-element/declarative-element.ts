@@ -9,6 +9,10 @@ import {type MinimalDefinitionWithInputs} from '../template-transforms/minimal-e
 import {type CustomElementTagName} from './custom-tag-name.js';
 import {type DeclarativeElementInit} from './declarative-element-init.js';
 import {type DeclarativeElementDefinitionOptions} from './definition-options.js';
+import {
+    assignInputFromAttribute,
+    assignInputsFromAttributes,
+} from './properties/attribute-inputs.js';
 import {type CssVars} from './properties/css-vars.js';
 import {type EventDescriptorMap, type EventsInitMap} from './properties/element-events.js';
 import {type PropertyInitMapBase} from './properties/element-properties.js';
@@ -125,6 +129,18 @@ export abstract class DeclarativeElement<
     SlotNames extends ReadonlyArray<string> = any,
     TestIds extends ReadonlyArray<string> = any,
 > extends LitElement {
+    protected hasConnectedInputAttributeObserver = false;
+    protected readonly inputAttributeObserver = new MutationObserver((mutations) => {
+        mutations.forEach(({attributeName}) => {
+            if (attributeName) {
+                assignInputFromAttribute({
+                    attributeName,
+                    element: this,
+                });
+            }
+        });
+    });
+
     /**
      * Assign inputs to an element instantiation. Use only on the opening tag.
      *
@@ -302,6 +318,21 @@ export abstract class DeclarativeElement<
     public abstract assignInputs(
         inputs: EmptyObject extends Required<Inputs> ? never : Partial<Inputs>,
     ): void;
+
+    public override connectedCallback(): void {
+        if (!this.hasConnectedInputAttributeObserver) {
+            this.hasConnectedInputAttributeObserver = true;
+            assignInputsFromAttributes({
+                element: this,
+            });
+            this.inputAttributeObserver.observe(this, {
+                attributes: true,
+            });
+        }
+
+        super.connectedCallback();
+    }
+
     /** The element definition for this element instance. */
     public abstract readonly definition: DeclarativeElementDefinition<
         TagName,

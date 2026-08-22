@@ -162,6 +162,8 @@ export const MyWithInputs = defineElement<{
 });
 ```
 
+When using a raw element tag, each non-native host attribute is assigned to a camel-cased input as a string. For example, `<my-element my-thing="Ada"></my-element>` assigns `'Ada'` to `inputs.myThing`. Changes to these attributes update their inputs. Native HTML attributes such as `class`, `style`, `title`, etc. are not mapped to inputs.
+
 ## Defining internal state
 
 Define initial internal state values and types with the `stateInit` property when defining an element. Grab it with `state` in `render` to use state. Grab `updateState` in `render` to update state:

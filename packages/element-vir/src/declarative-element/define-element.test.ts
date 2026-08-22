@@ -26,6 +26,67 @@ import {defineElementEvent} from './properties/element-events.js';
 import {type UpdateStateCallback} from './render-callback.js';
 
 describe(defineElement.name, () => {
+    it('reads and updates raw host attributes as string inputs', async () => {
+        const RawAttributeInputs = defineElement<{
+            myThing?: string | undefined;
+        }>()({
+            tagName: 'raw-attribute-inputs',
+            render({inputs}) {
+                return html`
+                    <span>${inputs.myThing}</span>
+                `;
+            },
+        });
+
+        const fixture = await testWeb.render(html`
+            <raw-attribute-inputs my-thing="initial"></raw-attribute-inputs>
+        `);
+        assert.instanceOf(fixture, RawAttributeInputs);
+        assert.strictEquals(fixture.instanceInputs.myThing, 'initial');
+        assert.strictEquals(fixture.shadowRoot.textContent.trim(), 'initial');
+
+        fixture.setAttribute('my-thing', 'updated');
+        await waitUntil.strictEquals('updated', () => fixture.instanceInputs.myThing);
+        await fixture.updateComplete;
+        assert.strictEquals(fixture.shadowRoot.textContent.trim(), 'updated');
+
+        fixture.removeAttribute('my-thing');
+        await waitUntil.isUndefined(() => fixture.instanceInputs.myThing);
+        await fixture.updateComplete;
+        assert.isEmpty(fixture.shadowRoot.textContent.trim());
+    });
+
+    it('ignores default HTML attributes when assigning raw host attributes', async () => {
+        const RawAttributeInputs = defineElement<{
+            myThing: string;
+        }>()({
+            tagName: 'raw-attribute-native-attributes',
+            render({inputs}) {
+                return html`
+                    <span>${inputs.myThing}</span>
+                `;
+            },
+        });
+
+        const fixture = await testWeb.render(html`
+            <raw-attribute-native-attributes
+                class="host-class"
+                style="color: red;"
+                tabindex="4"
+                title="native title"
+                my-thing="input value"
+            ></raw-attribute-native-attributes>
+        `);
+        assert.instanceOf(fixture, RawAttributeInputs);
+
+        assert.strictEquals(fixture.instanceInputs.myThing, 'input value');
+        assert.deepEquals(Object.keys(fixture.instanceInputs), ['myThing']);
+        assert.strictEquals(fixture.title, 'native title');
+        assert.strictEquals(fixture.tabIndex, 4);
+        assert.strictEquals(fixture.className, 'host-class');
+        assert.strictEquals(fixture.style.color, 'red');
+    });
+
     it('does not allow HTMLElement properties in state or inputs', () => {
         // @ts-expect-error style is a default HTMLElement key
         defineElement<{
