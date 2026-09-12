@@ -244,7 +244,9 @@ describe(transformTemplate.name, () => {
                 return currentValue === 1
                     ? {
                           replacement: 'X',
-                          getExtraValues: () => [],
+                          getExtraValues() {
+                              return [];
+                          },
                       }
                     : undefined;
             },
@@ -274,10 +276,12 @@ describe(transformTemplate.name, () => {
                 return currentValue === 1
                     ? {
                           replacement: 'R',
-                          getExtraValues: () => [
-                              'x',
-                              'y',
-                          ],
+                          getExtraValues() {
+                              return [
+                                  'x',
+                                  'y',
+                              ];
+                          },
                       }
                     : undefined;
             },
@@ -325,7 +329,9 @@ describe(transformTemplate.name, () => {
             transformValue() {
                 return {
                     replacement: 'R',
-                    getExtraValues: () => ['x'],
+                    getExtraValues() {
+                        return ['x'];
+                    },
                 };
             },
         });
@@ -354,10 +360,12 @@ describe(transformTemplate.name, () => {
             transformValue() {
                 return {
                     replacement: 'R',
-                    getExtraValues: (currentValue) => [
-                        currentValue,
-                        currentValue,
-                    ],
+                    getExtraValues(currentValue) {
+                        return [
+                            currentValue,
+                            currentValue,
+                        ];
+                    },
                 };
             },
         });
@@ -416,9 +424,11 @@ describe(getTransformedTemplate.name, () => {
                     transformValue(lastNewString, currentLitString, currentValue) {
                         return {
                             replacement: String(currentValue),
-                            getExtraValues: (extraValue) => [
-                                extraValue,
-                            ],
+                            getExtraValues(extraValue) {
+                                return [
+                                    extraValue,
+                                ];
+                            },
                         };
                     },
                 });
@@ -1031,9 +1041,11 @@ describe('transformTemplate value transforms', () => {
             transformValue() {
                 return {
                     replacement: 'R',
-                    getExtraValues: (currentValue) => [
-                        currentValue,
-                    ],
+                    getExtraValues(currentValue) {
+                        return [
+                            currentValue,
+                        ];
+                    },
                 };
             },
         });

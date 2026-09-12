@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-vir-e2e",
-    "version": "26.17.3",
+    "version": "27.0.0",
     "private": true,
     "license": "(MIT OR CC0-1.0)",
     "author": {
@@ -21,17 +21,17 @@
         "test:update": "npm test -- --update-snapshots"
     },
     "dependencies": {
-        "@playwright/test": "1.62.1",
-        "element-vir": "^26.17.3"
+        "@playwright/test": "1.63.0",
+        "element-vir": "^27.0.0-beta.3"
     },
     "devDependencies": {
-        "@augment-vir/assert": "^32.2.1",
-        "@augment-vir/common": "^32.2.1",
-        "@augment-vir/node": "^32.2.1",
-        "@augment-vir/test": "^32.2.1",
-        "@types/node": "^26.1.2",
-        "playwright": "1.62.1",
-        "url-vir": "^2.1.10"
+        "@augment-vir/assert": "^32.3.0-beta.0",
+        "@augment-vir/common": "^32.3.0-beta.0",
+        "@augment-vir/node": "^32.3.0-beta.0",
+        "@augment-vir/test": "^32.3.0-beta.0",
+        "@types/node": "^26.5.0",
+        "playwright": "1.63.0",
+        "url-vir": "^2.2.2"
     },
     "engines": {
         "node": ">=22"

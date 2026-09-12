@@ -149,15 +149,15 @@ describe('test elements', () => {
             },
         });
 
-        assert.throws(() =>
-            defineElement()({
+        assert.throws(() => {
+            return defineElement()({
                 // @ts-expect-error: tag name must have dashes in it
                 tagName: 'invalidTagNameMissingDash',
                 render() {
                     return html``;
                 },
-            }),
-        );
+            });
+        });
 
         const MyElementEvent = defineTypedCustomEvent<string>()('customEvent');
 
@@ -186,12 +186,12 @@ describe('test elements', () => {
             },
         });
 
-        assert.throws(() =>
+        assert.throws(() => {
             // @ts-expect-error: missing render
-            defineElement()({
+            return defineElement()({
                 tagName: 'element-vir-test-element-no-render',
-            }),
-        );
+            });
+        });
 
         const TestElement = defineElement<{
             stringInput: string;

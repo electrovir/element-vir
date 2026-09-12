@@ -125,11 +125,13 @@ describe('css vars book', () => {
         cssVars: {
             'css-vars-element-color': 'rgb(123, 45, 67)',
         },
-        styles: ({cssVars}) => css`
-            .target {
-                color: ${cssVars['css-vars-element-color'].value};
-            }
-        `,
+        styles({cssVars}) {
+            return css`
+                .target {
+                    color: ${cssVars['css-vars-element-color'].value};
+                }
+            `;
+        },
         testIds: ['target'],
         render({testIds}) {
             return html`
@@ -155,11 +157,13 @@ describe('css var override book', () => {
         cssVars: {
             'css-var-override-child-color': 'rgb(1, 1, 1)',
         },
-        styles: ({cssVars}) => css`
-            .target {
-                color: ${cssVars['css-var-override-child-color'].value};
-            }
-        `,
+        styles({cssVars}) {
+            return css`
+                .target {
+                    color: ${cssVars['css-var-override-child-color'].value};
+                }
+            `;
+        },
         testIds: ['target'],
         render({testIds}) {
             return html`

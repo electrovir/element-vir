@@ -90,7 +90,9 @@ describe(html.name, () => {
             'a',
             'b',
         ];
-        const callback = () => undefined;
+        function callback() {
+            return undefined;
+        }
         const element = document.createElement('span');
 
         assert.deepEquals(

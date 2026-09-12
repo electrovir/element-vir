@@ -562,10 +562,10 @@ function renderAsyncMatrixCase({
     const options: RenderAsyncOptions = {
         useLastResolvedValue,
     };
-    const resolutionRender = (resolved: unknown) => {
+    function resolutionRender(resolved: unknown) {
         resolvedValues.push(resolved);
         return 'resolution render';
-    };
+    }
 
     const result = withErrorRender
         ? renderAsync(

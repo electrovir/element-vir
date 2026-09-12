@@ -9,7 +9,9 @@ const HostClassesElement = defineElement()({
         };
     },
     hostClasses: {
-        'host-classes-element-active': ({state}) => state.isActive,
+        'host-classes-element-active'({state}) {
+            return state.isActive;
+        },
         'host-classes-element-manual': false,
     },
     testIds: [

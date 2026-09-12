@@ -153,7 +153,9 @@ describe(applyHostClasses.name, () => {
         >({
             host,
             hostClassesInit: {
-                'foo-element-active': ({state}) => state.enabled,
+                'foo-element-active'({state}) {
+                    return state.enabled;
+                },
             },
             hostClassNames: {
                 'foo-element-active': 'foo-element-active',
@@ -173,7 +175,9 @@ describe(applyHostClasses.name, () => {
         >({
             host,
             hostClassesInit: {
-                'foo-element-active': ({state}) => state.enabled,
+                'foo-element-active'({state}) {
+                    return state.enabled;
+                },
             },
             hostClassNames: {
                 'foo-element-active': 'foo-element-active',
@@ -223,7 +227,7 @@ describe(applyHostClasses.name, () => {
         applyHostClasses<'foo-element', typeof inputs, typeof state, 'foo-element-active'>({
             host,
             hostClassesInit: {
-                'foo-element-active': (callbackInput) => {
+                'foo-element-active'(callbackInput) {
                     callbackInputs.push(callbackInput);
                     return true;
                 },
@@ -254,7 +258,9 @@ describe(applyHostClasses.name, () => {
         >({
             host,
             hostClassesInit: {
-                'foo-element-key': () => true,
+                'foo-element-key'() {
+                    return true;
+                },
             },
             hostClassNames: {
                 'foo-element-key': 'foo-element-mapped-name',
@@ -278,16 +284,20 @@ describe('styles callback integration', () => {
                 };
             },
             hostClasses: {
-                'styles-callback-element-active': ({state}) => state.active,
+                'styles-callback-element-active'({state}) {
+                    return state.active;
+                },
             },
-            styles: ({hostClasses}) => css`
-                ${hostClasses['styles-callback-element-active'].selector} {
-                    color: rgb(10, 20, 30);
-                }
-                .target {
-                    color: black;
-                }
-            `,
+            styles({hostClasses}) {
+                return css`
+                    ${hostClasses['styles-callback-element-active'].selector} {
+                        color: rgb(10, 20, 30);
+                    }
+                    .target {
+                        color: black;
+                    }
+                `;
+            },
             render() {
                 return html`
                     <span class="target">styled</span>
@@ -311,7 +321,9 @@ describe('styles callback integration', () => {
                 };
             },
             hostClasses: {
-                'styles-toggle-host-class-element-active': ({state}) => state.active,
+                'styles-toggle-host-class-element-active'({state}) {
+                    return state.active;
+                },
             },
             render() {
                 return html`

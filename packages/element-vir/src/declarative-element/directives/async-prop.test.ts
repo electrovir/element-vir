@@ -636,23 +636,23 @@ describe(asyncProp.name, () => {
 
         instance.update({
             prop1: 'hi',
-            callback: () => {},
+            callback() {},
         });
         instance.update({
             prop1: 'hi',
-            callback: () => {},
+            callback() {},
         });
         instance.update({
             prop1: 'hi',
-            callback: () => {},
+            callback() {},
         });
         instance.update({
             prop1: 'hi',
-            callback: () => {},
+            callback() {},
         });
         instance.update({
             prop1: 'bye',
-            callback: () => {},
+            callback() {},
         });
 
         assert.strictEquals(callCount, 2);
@@ -772,7 +772,7 @@ describe(asyncProp.name, () => {
                     }),
                 };
             },
-            render: ({state}) => {
+            render({state}) {
                 state.asyncValues.update({
                     value: 'hello there',
                     shouldBypass: true,
@@ -1126,7 +1126,9 @@ describe(asyncProp.name, () => {
     it('never updates when equalityCheck always matches', () => {
         let callCount: number = 0;
         const instance = asyncProp({
-            equalityCheck: () => true,
+            equalityCheck() {
+                return true;
+            },
             updateCallback(params: {value: number}) {
                 callCount++;
                 return params.value;

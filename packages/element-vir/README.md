@@ -280,27 +280,27 @@ export const MyWithEvents = defineElement()({
     render({dispatch, events}) {
         return html`
             <button
-                ${listen('click', () =>
-                    dispatch(
+                ${listen('click', () => {
+                    return dispatch(
                         new events.logoutClick({
                             detail: undefined,
                         }),
-                    ),
-                )}
+                    );
+                })}
             >
                 log out
             </button>
             <button
-                ${listen('click', () =>
-                    dispatch(
+                ${listen('click', () => {
+                    return dispatch(
                         new events.randomNumber({
                             detail: randomInteger({
                                 min: 0,
                                 max: 1_000_000,
                             }),
                         }),
-                    ),
-                )}
+                    );
+                })}
             >
                 generate random number
             </button>
@@ -444,7 +444,7 @@ export const MyWithHostClassDefinition = defineElement()({
          * This host class will be automatically applied if the given callback is evaluated to true
          * after a call to render.
          */
-        'my-with-host-class-definition-automatic': ({state}) => {
+        'my-with-host-class-definition-automatic'({state}) {
             return state.myProp === 'foo';
         },
     },
@@ -452,15 +452,17 @@ export const MyWithHostClassDefinition = defineElement()({
      * Apply styles to the host classes by using a callback for "styles". The callback's argument
      * contains the host classes defined above in the "hostClasses" property.
      */
-    styles: ({hostClasses}) => css`
-        ${hostClasses['my-with-host-class-definition-automatic'].selector} {
-            color: blue;
-        }
+    styles({hostClasses}) {
+        return css`
+            ${hostClasses['my-with-host-class-definition-automatic'].selector} {
+                color: blue;
+            }
 
-        ${hostClasses['my-with-host-class-definition-a'].selector} {
-            color: red;
-        }
-    `,
+            ${hostClasses['my-with-host-class-definition-a'].selector} {
+                color: red;
+            }
+        `;
+    },
     render({state}) {
         return html`
             ${state.myProp}
@@ -508,19 +510,21 @@ export const MyWithCssVars = defineElement()({
         /** The value assigned here ('blue') becomes the fallback value for this CSS var. */
         'my-with-css-vars-my-var': 'blue',
     },
-    styles: ({cssVars}) => css`
-        :host {
-            /*
+    styles({cssVars}) {
+        return css`
+            :host {
+                /*
                 Set CSS vars (or reference the name directly) via the ".name" property
             */
-            ${cssVars['my-with-css-vars-my-var'].name}: yellow;
-            /*
+                ${cssVars['my-with-css-vars-my-var'].name}: yellow;
+                /*
                 Use CSS vars with the ".value" property. This includes a "var" wrapper and the
                 assigned fallback value (which in this case is 'blue').
             */
-            color: ${cssVars['my-with-css-vars-my-var'].value};
-        }
-    `,
+                color: ${cssVars['my-with-css-vars-my-var'].value};
+            }
+        `;
+    },
     render() {
         return html``;
     },
@@ -542,7 +546,7 @@ export const defineVirElement = wrapDefineElement<VirTagName>();
 
 // add an optional assert callback
 export const defineVerifiedVirElement = wrapDefineElement<VirTagName>({
-    assertInputs: (inputs) => {
+    assertInputs(inputs) {
         if (!inputs.tagName.startsWith('vir-')) {
             throw new Error('all custom elements must start with "vir-"');
         }
@@ -554,13 +558,13 @@ export const defineVerifiedVirElement = wrapDefineElement<VirTagName>({
  * host class, CSS var, slot name, and test id is derived from the original tag name.
  */
 export const defineTransformedVirElement = wrapDefineElement<VirTagName>({
-    transformInputs: (inputs) => {
+    transformInputs(inputs) {
         return {
             ...inputs,
             tagName: inputs.tagName.startsWith('vir-') ? inputs.tagName : `vir-${inputs.tagName}`,
             options: {
                 ...inputs.options,
-                errorHandler: (error) => {
+                errorHandler(error) {
                     console.error(`'${inputs.tagName}' failed to render`, error);
                 },
             },

@@ -55,7 +55,9 @@ export const inputTypesTest = await defineBookTest(
                         2,
                         3,
                     ],
-                    callback: () => 'callback fired',
+                    callback() {
+                        return 'callback fired';
+                    },
                 })}></${InputTypesChild}>
             `;
         },

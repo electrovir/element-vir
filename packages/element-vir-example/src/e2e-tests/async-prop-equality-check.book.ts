@@ -9,7 +9,7 @@ const EqualityCheckElement = defineElement()({
     state() {
         return {
             data: asyncProp<string, {key: string; nonce: number}>({
-                equalityCheck: (a, b) => {
+                equalityCheck(a, b) {
                     if (
                         a &&
                         typeof a === 'object' &&

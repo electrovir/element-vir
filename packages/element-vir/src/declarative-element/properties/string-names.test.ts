@@ -201,20 +201,21 @@ describe(createStringNameMap.name, () => {
 
 describe(assertValidStringNames.name, () => {
     it('passes when every string starts with the tag name and a dash', () => {
-        assert.doesNotThrow(() =>
-            assertValidStringNames('my-element', [
+        assert.doesNotThrow(() => {
+            return assertValidStringNames('my-element', [
                 'my-element-foo',
                 'my-element-bar',
-            ]),
-        );
+            ]);
+        });
     });
 
     it('throws when a string does not start with the tag name', () => {
         assert.throws(
-            () =>
-                assertValidStringNames('my-element', [
+            () => {
+                return assertValidStringNames('my-element', [
                     'other-element-foo',
-                ]),
+                ]);
+            },
             {
                 matchMessage: "Invalid element string name 'other-element-foo'",
             },
@@ -223,10 +224,11 @@ describe(assertValidStringNames.name, () => {
 
     it('throws when a string is missing the trailing dash after the tag name', () => {
         assert.throws(
-            () =>
-                assertValidStringNames('my-element', [
+            () => {
+                return assertValidStringNames('my-element', [
                     'my-elementFoo',
-                ]),
+                ]);
+            },
             {
                 matchMessage: "Invalid element string name 'my-elementFoo'",
             },
@@ -239,10 +241,11 @@ describe(assertValidStringNames.name, () => {
 
     it('includes the element tag name and the reason in the error message', () => {
         assert.throws(
-            () =>
-                assertValidStringNames('my-element', [
+            () => {
+                return assertValidStringNames('my-element', [
                     'bad-name',
-                ]),
+                ]);
+            },
             {
                 matchMessage:
                     "Invalid element string name 'bad-name' in 'my-element': element string names must begin with the element's tag name.",
@@ -251,29 +254,30 @@ describe(assertValidStringNames.name, () => {
     });
 
     it('throws on a string that is exactly the tag name', () => {
-        assert.throws(() =>
-            assertValidStringNames('my-element', [
+        assert.throws(() => {
+            return assertValidStringNames('my-element', [
                 'my-element',
-            ]),
-        );
+            ]);
+        });
     });
 
     it('allows an empty suffix after the required dash', () => {
-        assert.doesNotThrow(() =>
-            assertValidStringNames('my-element', [
+        assert.doesNotThrow(() => {
+            return assertValidStringNames('my-element', [
                 'my-element-',
-            ]),
-        );
+            ]);
+        });
     });
 
     it('throws on the first invalid string even when later strings are valid', () => {
         assert.throws(
-            () =>
-                assertValidStringNames('my-element', [
+            () => {
+                return assertValidStringNames('my-element', [
                     'first-bad',
                     'my-element-good',
                     'second-bad',
-                ]),
+                ]);
+            },
             {
                 matchMessage: "Invalid element string name 'first-bad'",
             },

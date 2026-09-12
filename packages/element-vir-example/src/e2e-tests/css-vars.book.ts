@@ -6,11 +6,13 @@ const CssVarsElement = defineElement()({
     cssVars: {
         'css-vars-element-color': 'rgb(123, 45, 67)',
     },
-    styles: ({cssVars}) => css`
-        .target {
-            color: ${cssVars['css-vars-element-color'].value};
-        }
-    `,
+    styles({cssVars}) {
+        return css`
+            .target {
+                color: ${cssVars['css-vars-element-color'].value};
+            }
+        `;
+    },
     testIds: ['target'],
     render({testIds}) {
         return html`

@@ -312,9 +312,9 @@ describe('repeat', () => {
         `);
 
         assert.deepEquals(
-            Array.from(rendered.querySelectorAll('li')).map((listItem) =>
-                listItem.textContent.trim(),
-            ),
+            Array.from(rendered.querySelectorAll('li')).map((listItem) => {
+                return listItem.textContent.trim();
+            }),
             [
                 'a',
                 'b',
@@ -347,9 +347,9 @@ describe('repeat', () => {
             </ul>
         `);
         assert.deepEquals(
-            Array.from(renderedSet.querySelectorAll('li')).map((listItem) =>
-                listItem.textContent.trim(),
-            ),
+            Array.from(renderedSet.querySelectorAll('li')).map((listItem) => {
+                return listItem.textContent.trim();
+            }),
             [
                 'a',
                 'b',
@@ -366,9 +366,9 @@ describe('repeat', () => {
             </ul>
         `);
         assert.deepEquals(
-            Array.from(renderedGenerator.querySelectorAll('li')).map((listItem) =>
-                listItem.textContent.trim(),
-            ),
+            Array.from(renderedGenerator.querySelectorAll('li')).map((listItem) => {
+                return listItem.textContent.trim();
+            }),
             [
                 'first',
                 'second',

@@ -172,14 +172,14 @@ describe(assertDeclarativeElementDefinition.name, () => {
 
     it('reports the first missing static property', () => {
         assert.strictEquals(
-            assertWrap.throws(() =>
-                assertDeclarativeElementDefinition(
+            assertWrap.throws(() => {
+                return assertDeclarativeElementDefinition(
                     createFakeDefinition([
                         'render',
                         'cssVars',
                     ]),
-                ),
-            ).message,
+                );
+            }).message,
             "missing prop 'cssVars'",
         );
     });
@@ -188,12 +188,13 @@ describe(assertDeclarativeElementDefinition.name, () => {
         getObjectTypedKeys(allStaticProperties).forEach((staticProperty) => {
             assert.strictEquals(
                 assertWrap.throws(
-                    () =>
-                        assertDeclarativeElementDefinition(
+                    () => {
+                        return assertDeclarativeElementDefinition(
                             createFakeDefinition([
                                 staticProperty,
                             ]),
-                        ),
+                        );
+                    },
                     undefined,
                     staticProperty,
                 ).message,
@@ -209,14 +210,14 @@ describe(assertDeclarativeElementDefinition.name, () => {
             'my custom fail message: Input is not a declarative element constructor',
         );
         assert.strictEquals(
-            assertWrap.throws(() =>
-                assertDeclarativeElementDefinition(
+            assertWrap.throws(() => {
+                return assertDeclarativeElementDefinition(
                     createFakeDefinition([
                         'tagName',
                     ]),
                     'my custom fail message',
-                ),
-            ).message,
+                );
+            }).message,
             "my custom fail message: missing prop 'tagName'",
         );
     });
@@ -246,25 +247,25 @@ describe(assertDeclarativeElementDefinition.name, () => {
 
     it('rejects a static property that is present but undefined', () => {
         assert.strictEquals(
-            assertWrap.throws(() =>
-                assertDeclarativeElementDefinition(
+            assertWrap.throws(() => {
+                return assertDeclarativeElementDefinition(
                     Object.assign(createFakeDefinition(), {
                         tagName: undefined,
                     }),
-                ),
-            ).message,
+                );
+            }).message,
             "undefined prop 'tagName'",
         );
     });
 
     it('allows an undefined assignedInputs', () => {
-        assert.doesNotThrow(() =>
-            assertDeclarativeElementDefinition(
+        assert.doesNotThrow(() => {
+            return assertDeclarativeElementDefinition(
                 Object.assign(createFakeDefinition(), {
                     assignedInputs: undefined,
                 }),
-            ),
-        );
+            );
+        });
     });
 
     it('never reads a real definition type-only getter', () => {
@@ -325,7 +326,9 @@ describe(isDeclarativeElementDefinition.name, () => {
         },
         {
             it: 'returns false for a function without the expected static props',
-            input: () => undefined,
+            input() {
+                return undefined;
+            },
             expect: false,
         },
         {

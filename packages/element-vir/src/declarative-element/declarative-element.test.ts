@@ -20,6 +20,9 @@ import {
 
 const InstanceSurfaceElement = defineElement<{myInput: string}>()({
     tagName: 'instance-surface-element',
+    testIds: [
+        'eventButton',
+    ],
     state() {
         return {
             myState: 0 as number,
@@ -115,6 +118,8 @@ describe('DeclarativeElementDefinition', () => {
     });
 
     it('extends the abstract DeclarativeElement class', () => {
+        const genericInstance: DeclarativeElementDefinition = InstanceSurfaceElement;
+
         assert.strictEquals(Object.getPrototypeOf(InstanceSurfaceElement), DeclarativeElement);
         assert.tsType<typeof InstanceSurfaceElement>().matches<DeclarativeElementDefinition>();
     });

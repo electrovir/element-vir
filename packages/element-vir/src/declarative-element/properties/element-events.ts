@@ -16,7 +16,11 @@ export type DefineElementEvent<EventDetail> = <EventType extends string>(
     eventType: NonEmptyString<EventType>,
 ) => DefinedElementEvent<EventDetail, EventType>;
 
-/** A concrete element event definition. */
+/**
+ * A concrete element event definition.
+ *
+ * @category Internal
+ */
 export type DefinedElementEvent<EventDetail, EventType extends string> = (new (
     eventInitDict: TypedCustomEventInit<EventDetail>,
 ) => TypedCustomEvent<EventDetail, EventType>) &
@@ -24,7 +28,11 @@ export type DefinedElementEvent<EventDetail, EventType extends string> = (new (
         type: EventType;
     }>;
 
-/** Element event definition factories keyed by their element-local event names. */
+/**
+ * Element event definition factories keyed by their element-local event names.
+ *
+ * @category Internal
+ */
 export type EventsInitMap = Record<string, DefineElementEvent<any>>;
 
 /**

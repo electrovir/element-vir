@@ -135,7 +135,7 @@ export function renderAsync<
          * `value` is what distinguishes them.
          */
         (options.useLastResolvedValue &&
-            asyncPropValue === undefined &&
+            asyncPropValue == undefined &&
             check.isPromiseLike(asyncProp.value))
     ) {
         const fallbackResult: FallbackResult = fallback;

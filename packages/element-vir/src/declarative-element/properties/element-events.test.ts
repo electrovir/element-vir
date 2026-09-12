@@ -180,10 +180,11 @@ describe(createEventDescriptorMap.name, () => {
 
     it('throws on an empty string event key', () => {
         assert.throws(
-            () =>
-                createEventDescriptorMap('my-element', {
+            () => {
+                return createEventDescriptorMap('my-element', {
                     '': defineElementEvent<number>(),
-                }),
+                });
+            },
             {
                 matchMessage: 'Got empty string for events key.',
             },
@@ -218,11 +219,12 @@ describe(createEventDescriptorMap.name, () => {
 
     it('throws for an empty string event key that comes after valid keys', () => {
         assert.throws(
-            () =>
-                createEventDescriptorMap('my-element', {
+            () => {
+                return createEventDescriptorMap('my-element', {
                     'valid-event': defineElementEvent<number>(),
                     '': defineElementEvent<number>(),
-                }),
+                });
+            },
             {
                 matchMessage: 'Got empty string for events key.',
             },

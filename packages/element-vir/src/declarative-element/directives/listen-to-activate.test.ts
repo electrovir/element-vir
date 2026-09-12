@@ -1,4 +1,4 @@
-// cspell:word Spacebar
+// cspell:words spacebar
 
 import {assert, waitUntil} from '@augment-vir/assert';
 import {wait} from '@augment-vir/common';

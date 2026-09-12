@@ -331,9 +331,9 @@ describe('keyedCache', () => {
 
         const shadowRoot = fixture.shadowRoot;
 
-        await waitUntil.strictEquals('10', () =>
-            shadowRoot.querySelector('.counter-display')?.textContent.trim(),
-        );
+        await waitUntil.strictEquals('10', () => {
+            return shadowRoot.querySelector('.counter-display')?.textContent.trim();
+        });
         const inputA = shadowRoot.querySelector('.cached-input');
         assert.instanceOf(inputA, HTMLInputElement);
         inputA.value = 'binding test';
@@ -344,9 +344,9 @@ describe('keyedCache', () => {
             counter: 20,
         });
         await waitUntil.strictEquals('bind-b', () => getKeyLabel(fixture));
-        await waitUntil.strictEquals('20', () =>
-            shadowRoot.querySelector('.counter-display')?.textContent.trim(),
-        );
+        await waitUntil.strictEquals('20', () => {
+            return shadowRoot.querySelector('.counter-display')?.textContent.trim();
+        });
 
         /** Switch back to 'bind-a' with an updated counter. */
         fixture.assignInputs({
@@ -356,9 +356,9 @@ describe('keyedCache', () => {
         await waitUntil.strictEquals('bind-a', () => getKeyLabel(fixture));
 
         /** The counter binding should reflect the new value. */
-        await waitUntil.strictEquals('99', () =>
-            shadowRoot.querySelector('.counter-display')?.textContent.trim(),
-        );
+        await waitUntil.strictEquals('99', () => {
+            return shadowRoot.querySelector('.counter-display')?.textContent.trim();
+        });
 
         /** But the DOM state (typed input value) should still be preserved. */
         const restoredInput = shadowRoot.querySelector('.cached-input');
@@ -574,9 +574,9 @@ describe('keyedCache', () => {
         const parentShadow = fixture.shadowRoot;
 
         /** Wait for the child to render. */
-        await waitUntil.isTruthy(() =>
-            parentShadow.querySelector('test-keyed-cache-stateful-child'),
-        );
+        await waitUntil.isTruthy(() => {
+            return parentShadow.querySelector('test-keyed-cache-stateful-child');
+        });
 
         const childA = parentShadow.querySelector('test-keyed-cache-stateful-child');
         assert.instanceOf(childA, StatefulChild);
@@ -601,9 +601,9 @@ describe('keyedCache', () => {
             activeKey: 'state-b',
         });
         await waitUntil.strictEquals('state-b', () => getKeyLabel(fixture));
-        await waitUntil.isTruthy(() =>
-            parentShadow.querySelector('test-keyed-cache-stateful-child'),
-        );
+        await waitUntil.isTruthy(() => {
+            return parentShadow.querySelector('test-keyed-cache-stateful-child');
+        });
 
         const childB = parentShadow.querySelector('test-keyed-cache-stateful-child');
         assert.instanceOf(childB, StatefulChild);
@@ -868,9 +868,9 @@ describe('keyedCache', () => {
         fixture.assignInputs({
             counter: 2,
         });
-        await waitUntil.strictEquals('2', () =>
-            fixture.shadowRoot.querySelector('.counter-display')?.textContent.trim(),
-        );
+        await waitUntil.strictEquals('2', () => {
+            return fixture.shadowRoot.querySelector('.counter-display')?.textContent.trim();
+        });
 
         const sameInput = getInput(fixture);
         assert.instanceOf(sameInput, HTMLInputElement);

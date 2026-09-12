@@ -210,15 +210,17 @@ describe(wrapDefineElement.name, () => {
                     events: {
                         outputOne: defineElementEvent<string>(),
                     },
-                    styles: ({cssVars, hostClasses}) => css`
-                        ${hostClasses['my-tag-abc4-do-thing'].selector} {
-                            color: ${cssVars['my-tag-abc4-var'].value};
-                        }
+                    styles({cssVars, hostClasses}) {
+                        return css`
+                            ${hostClasses['my-tag-abc4-do-thing'].selector} {
+                                color: ${cssVars['my-tag-abc4-var'].value};
+                            }
 
-                        :host(${hostClasses['my-tag-abc4-do-thing'].name}) {
-                            ${cssVars['my-tag-abc4-var'].name}: green;
-                        }
-                    `,
+                            :host(${hostClasses['my-tag-abc4-do-thing'].name}) {
+                                ${cssVars['my-tag-abc4-var'].name}: green;
+                            }
+                        `;
+                    },
                     render() {
                         return '';
                     },

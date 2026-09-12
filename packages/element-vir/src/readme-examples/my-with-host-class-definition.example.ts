@@ -18,7 +18,7 @@ export const MyWithHostClassDefinition = defineElement()({
          * This host class will be automatically applied if the given callback is evaluated to true
          * after a call to render.
          */
-        'my-with-host-class-definition-automatic': ({state}) => {
+        'my-with-host-class-definition-automatic'({state}) {
             return state.myProp === 'foo';
         },
     },
@@ -26,15 +26,17 @@ export const MyWithHostClassDefinition = defineElement()({
      * Apply styles to the host classes by using a callback for "styles". The callback's argument
      * contains the host classes defined above in the "hostClasses" property.
      */
-    styles: ({hostClasses}) => css`
-        ${hostClasses['my-with-host-class-definition-automatic'].selector} {
-            color: blue;
-        }
+    styles({hostClasses}) {
+        return css`
+            ${hostClasses['my-with-host-class-definition-automatic'].selector} {
+                color: blue;
+            }
 
-        ${hostClasses['my-with-host-class-definition-a'].selector} {
-            color: red;
-        }
-    `,
+            ${hostClasses['my-with-host-class-definition-a'].selector} {
+                color: red;
+            }
+        `;
+    },
     render({state}) {
         return html`
             ${state.myProp}

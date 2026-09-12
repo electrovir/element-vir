@@ -138,7 +138,9 @@ describe('input types book', () => {
                     2,
                     3,
                 ],
-                callback: () => 'callback fired',
+                callback() {
+                    return 'callback fired';
+                },
             })}></${InputTypesChild}>
         `);
         assert.instanceOf(fixture, InputTypesChild);
@@ -733,7 +735,9 @@ describe('host classes book', () => {
             };
         },
         hostClasses: {
-            'host-classes-element-active': ({state}) => state.isActive,
+            'host-classes-element-active'({state}) {
+                return state.isActive;
+            },
             'host-classes-element-manual': false,
         },
         testIds: [
@@ -804,21 +808,25 @@ describe('host class styles book', () => {
             };
         },
         hostClasses: {
-            'host-class-styles-element-highlighted': ({state}) => state.highlighted,
+            'host-class-styles-element-highlighted'({state}) {
+                return state.highlighted;
+            },
         },
-        styles: ({hostClasses}) => css`
-            :host {
-                display: block;
-            }
+        styles({hostClasses}) {
+            return css`
+                :host {
+                    display: block;
+                }
 
-            ${hostClasses['host-class-styles-element-highlighted'].selector} .inner {
-                background-color: rgb(244, 233, 222);
-            }
+                ${hostClasses['host-class-styles-element-highlighted'].selector} .inner {
+                    background-color: rgb(244, 233, 222);
+                }
 
-            .inner {
-                background-color: rgb(11, 22, 33);
-            }
-        `,
+                .inner {
+                    background-color: rgb(11, 22, 33);
+                }
+            `;
+        },
         testIds: [
             'toggle',
             'inner',

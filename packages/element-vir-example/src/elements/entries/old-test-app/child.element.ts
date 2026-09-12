@@ -8,7 +8,7 @@ export const TestChildElement = defineElement<{
     myProp?: number;
 }>()({
     tagName: 'element-vir-test-child',
-    styles: ({hostClasses, cssVars}) => {
+    styles({hostClasses, cssVars}) {
         return css`
             :host {
                 display: flex;
@@ -43,7 +43,9 @@ export const TestChildElement = defineElement<{
     },
     hostClasses: {
         'element-vir-test-child-test': false,
-        'element-vir-test-child-automatic': ({inputs}) => inputs.displayNumber === 15,
+        'element-vir-test-child-automatic'({inputs}) {
+            return inputs.displayNumber === 15;
+        },
     },
     events: {
         speak: defineElementEvent<string>(),
@@ -78,13 +80,13 @@ export const TestChildElement = defineElement<{
                 emit speak event
             </button>
             <button
-                ${listen('click', () =>
-                    dispatch(
+                ${listen('click', () => {
+                    return dispatch(
                         new MyCustomEvent({
                             detail: 5,
                         }),
-                    ),
-                )}
+                    );
+                })}
             >
                 emit custom event (logged to console)
             </button>

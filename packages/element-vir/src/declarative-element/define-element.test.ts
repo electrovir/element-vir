@@ -363,7 +363,7 @@ describe(defineElement.name, () => {
                 'element-with-slot-names-in-styles-header',
                 'element-with-slot-names-in-styles-footer',
             ],
-            styles: ({slotNames}) => {
+            styles({slotNames}) {
                 assert
                     .tsType(slotNames['element-with-slot-names-in-styles-header'])
                     .equals<CSSResult>();
@@ -406,7 +406,7 @@ describe(defineElement.name, () => {
                 'element-shared-slot-names-a',
                 'element-shared-slot-names-b',
             ],
-            styles: ({slotNames}) => {
+            styles({slotNames}) {
                 slotNamesFromStyles.a = slotNames['element-shared-slot-names-a'].cssText;
                 slotNamesFromStyles.b = slotNames['element-shared-slot-names-b'].cssText;
                 return css``;
@@ -432,7 +432,7 @@ describe(defineElement.name, () => {
     it('passes an empty slot names object to styles when no slot names are defined', () => {
         defineElement()({
             tagName: 'element-no-slot-names-in-styles',
-            styles: ({slotNames}) => {
+            styles({slotNames}) {
                 assert.isEmpty(Object.keys(slotNames));
                 return css``;
             },
@@ -601,13 +601,13 @@ describe(defineElement.name, () => {
         rendered.destroy();
         const countAfterDestroy = count;
 
-        await assert.throws(() =>
-            waitUntil.isTruthy(() => count > countAfterDestroy + 10, {
+        await assert.throws(() => {
+            return waitUntil.isTruthy(() => count > countAfterDestroy + 10, {
                 timeout: {
                     milliseconds: 3000,
                 },
-            }),
-        );
+            });
+        });
     });
 
     it('throws when called with a non-object init', () => {
@@ -1052,7 +1052,9 @@ describe(defineElement.name, () => {
     });
 
     it('stores a copy of the init with a normalized options object', () => {
-        const renderCallback = () => '';
+        function renderCallback() {
+            return '';
+        }
         const options = {
             allowPolymorphicState: true,
         };
@@ -1158,7 +1160,9 @@ describe(defineElement.name, () => {
             tagName: 'define-element-host-class-names-el',
             hostClasses: {
                 'define-element-host-class-names-el-manual': false,
-                'define-element-host-class-names-el-auto': () => true,
+                'define-element-host-class-names-el-auto'() {
+                    return true;
+                },
             },
             render() {
                 return '';
@@ -1182,8 +1186,12 @@ describe(defineElement.name, () => {
             },
             hostClasses: {
                 'define-element-apply-host-classes-el-manual': false,
-                'define-element-apply-host-classes-el-enabled': ({inputs}) => inputs.enabled,
-                'define-element-apply-host-classes-el-counted': ({state}) => state.counter > 0,
+                'define-element-apply-host-classes-el-enabled'({inputs}) {
+                    return inputs.enabled;
+                },
+                'define-element-apply-host-classes-el-counted'({state}) {
+                    return state.counter > 0;
+                },
             },
             render() {
                 return '';

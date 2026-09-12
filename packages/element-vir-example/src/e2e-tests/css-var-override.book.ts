@@ -6,11 +6,13 @@ const CssVarOverrideChild = defineElement()({
     cssVars: {
         'css-var-override-child-color': 'rgb(1, 1, 1)',
     },
-    styles: ({cssVars}) => css`
-        .target {
-            color: ${cssVars['css-var-override-child-color'].value};
-        }
-    `,
+    styles({cssVars}) {
+        return css`
+            .target {
+                color: ${cssVars['css-var-override-child-color'].value};
+            }
+        `;
+    },
     testIds: ['target'],
     render({testIds}) {
         return html`

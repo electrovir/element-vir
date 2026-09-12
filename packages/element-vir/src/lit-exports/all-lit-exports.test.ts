@@ -92,10 +92,9 @@ describe('all-lit-exports', () => {
         ];
 
         const mismatches = Object.keys(allLitExportRecord).filter((key) => {
-            return !sourceModules.some(
-                (sourceModule) =>
-                    key in sourceModule && sourceModule[key] === allLitExportRecord[key],
-            );
+            return !sourceModules.some((sourceModule) => {
+                return key in sourceModule && sourceModule[key] === allLitExportRecord[key];
+            });
         });
 
         assert.deepEquals(mismatches, []);

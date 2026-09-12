@@ -11,27 +11,27 @@ export const MyWithEvents = defineElement()({
     render({dispatch, events}) {
         return html`
             <button
-                ${listen('click', () =>
-                    dispatch(
+                ${listen('click', () => {
+                    return dispatch(
                         new events.logoutClick({
                             detail: undefined,
                         }),
-                    ),
-                )}
+                    );
+                })}
             >
                 log out
             </button>
             <button
-                ${listen('click', () =>
-                    dispatch(
+                ${listen('click', () => {
+                    return dispatch(
                         new events.randomNumber({
                             detail: randomInteger({
                                 min: 0,
                                 max: 1_000_000,
                             }),
                         }),
-                    ),
-                )}
+                    );
+                })}
             >
                 generate random number
             </button>

@@ -17,6 +17,7 @@ export default [
              * Turn off or on specific rules. See {@link defineEslintConfig} for which plugins are
              * already enabled.
              */
+            '@typescript-eslint/no-generated-empty-object-type': 'off',
         },
     },
 ];

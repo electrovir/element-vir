@@ -18,10 +18,10 @@ function queryTree(
      * The callback is split out here to appears the Type Gods. Without it, finalElement will be the
      * type of the internal currentContext (which is incorrect).
      */
-    const reduceCallback = (
+    function reduceCallback(
         currentContext: Element | undefined | ShadowRoot,
         selector: string,
-    ): Element | undefined => {
+    ): Element | undefined {
         if (!currentContext) {
             return undefined;
         }
@@ -29,7 +29,7 @@ function queryTree(
             currentContext = currentContext.shadowRoot;
         }
         return currentContext.querySelector(selector) ?? undefined;
-    };
+    }
 
     const finalElement = selectors.reduce(reduceCallback, context);
 
@@ -126,9 +126,9 @@ describe(VirOldTestApp.tagName, () => {
         const rendered = await renderApp();
 
         const appElement = getAppElement(rendered);
-        const childrenWithDataAttribute = Array.from(appElement.children).filter((child) =>
-            child.hasAttribute('data-tag-name'),
-        );
+        const childrenWithDataAttribute = Array.from(appElement.children).filter((child) => {
+            return child.hasAttribute('data-tag-name');
+        });
 
         const tagNames = new Set(childrenWithDataAttribute.map((child) => child.tagName));
 

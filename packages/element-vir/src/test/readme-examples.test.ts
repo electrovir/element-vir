@@ -337,15 +337,15 @@ describe('readme examples', () => {
         assert.isEmpty([...instance.classList]);
 
         instance.instanceState.myProp = 'foo';
-        await waitUntil.isTrue(() =>
-            instance.classList.contains('my-with-host-class-definition-automatic'),
-        );
+        await waitUntil.isTrue(() => {
+            return instance.classList.contains('my-with-host-class-definition-automatic');
+        });
         assert.strictEquals(window.getComputedStyle(instance).color, 'rgb(0, 0, 255)');
 
         instance.instanceState.myProp = 'hello there';
-        await waitUntil.isFalse(() =>
-            instance.classList.contains('my-with-host-class-definition-automatic'),
-        );
+        await waitUntil.isFalse(() => {
+            return instance.classList.contains('my-with-host-class-definition-automatic');
+        });
     });
 
     it('applies a manual host class from a consumer', async () => {

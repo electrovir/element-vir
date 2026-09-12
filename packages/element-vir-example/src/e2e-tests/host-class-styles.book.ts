@@ -9,21 +9,25 @@ const HostClassStylesElement = defineElement()({
         };
     },
     hostClasses: {
-        'host-class-styles-element-highlighted': ({state}) => state.highlighted,
+        'host-class-styles-element-highlighted'({state}) {
+            return state.highlighted;
+        },
     },
-    styles: ({hostClasses}) => css`
-        :host {
-            display: block;
-        }
-        ${hostClasses['host-class-styles-element-highlighted'].selector} .inner {
-            background-color: rgb(244, 233, 222);
-        }
-        .inner {
-            background-color: rgb(11, 22, 33);
-            padding: 8px;
-            color: white;
-        }
-    `,
+    styles({hostClasses}) {
+        return css`
+            :host {
+                display: block;
+            }
+            ${hostClasses['host-class-styles-element-highlighted'].selector} .inner {
+                background-color: rgb(244, 233, 222);
+            }
+            .inner {
+                background-color: rgb(11, 22, 33);
+                padding: 8px;
+                color: white;
+            }
+        `;
+    },
     testIds: [
         'toggle',
         'inner',

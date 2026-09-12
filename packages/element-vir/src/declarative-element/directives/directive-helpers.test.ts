@@ -78,13 +78,14 @@ describe('directive helpers', () => {
 
     it('omits the host suffix when the host is missing', () => {
         assert.throws(
-            () =>
-                assertIsElementPartInfo(
+            () => {
+                return assertIsElementPartInfo(
                     createFakePartInfo({
                         type: PartType.CHILD,
                     }),
                     'my-directive',
-                ),
+                );
+            },
             {
                 matchMessage: 'my-directive directive can only be attached directly to an element.',
                 matchConstructor: Error,
@@ -94,8 +95,8 @@ describe('directive helpers', () => {
 
     it('omits the host suffix when the host is not an element', () => {
         assert.throws(
-            () =>
-                assertIsElementPartInfo(
+            () => {
+                return assertIsElementPartInfo(
                     createFakePartInfo({
                         type: PartType.CHILD,
                         host: {
@@ -103,7 +104,8 @@ describe('directive helpers', () => {
                         },
                     }),
                     'my-directive',
-                ),
+                );
+            },
             {
                 matchMessage: 'my-directive directive can only be attached directly to an element.',
             },
@@ -114,14 +116,15 @@ describe('directive helpers', () => {
         const host = document.createElement('section');
 
         assert.throws(
-            () =>
-                assertIsElementPartInfo(
+            () => {
+                return assertIsElementPartInfo(
                     createFakePartInfo({
                         type: PartType.CHILD,
                         host,
                     }),
                     'my-directive',
-                ),
+                );
+            },
             {
                 matchMessage:
                     'my-directive directive can only be attached directly to an element: in section.',
@@ -137,14 +140,14 @@ describe('directive helpers', () => {
             PartType.EVENT,
             PartType.PROPERTY,
         ].forEach((partType) => {
-            assert.throws(() =>
-                assertIsElementPartInfo(
+            assert.throws(() => {
+                return assertIsElementPartInfo(
                     createFakePartInfo({
                         type: partType,
                     }),
                     'my-directive',
-                ),
-            );
+                );
+            });
         });
     });
 

@@ -278,7 +278,7 @@ describe('async prop equality check book', () => {
         state() {
             return {
                 data: asyncProp<string, {key: string; nonce: number}>({
-                    equalityCheck: (first, second) => {
+                    equalityCheck(first, second) {
                         if (check.hasKey(first, 'key') && check.hasKey(second, 'key')) {
                             return first.key === second.key;
                         }

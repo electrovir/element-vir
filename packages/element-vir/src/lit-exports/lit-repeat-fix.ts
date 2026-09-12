@@ -66,5 +66,7 @@ export interface RepeatDirectiveFn {
  *
  * If no `keyFn` is provided, this directive will perform similar to mapping items to values, and
  * DOM will be reused against potentially different items.
+ *
+ * @category Directives
  */
 export const repeat = repeatImport as RepeatDirectiveFn;

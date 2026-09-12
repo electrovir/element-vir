@@ -99,8 +99,8 @@ describe('css vars', () => {
 
     it('rejects css var keys that are not prefixed with the tag name', () => {
         assert.throws(
-            () =>
-                defineElement()({
+            () => {
+                return defineElement()({
                     tagName: 'css-vars-invalid-element',
                     cssVars: {
                         // @ts-expect-error: css var keys must start with the tag name
@@ -109,7 +109,8 @@ describe('css vars', () => {
                     render() {
                         return 'hi';
                     },
-                }),
+                });
+            },
             {
                 matchMessage: "Invalid element string name 'not-prefixed-color'",
             },
@@ -124,7 +125,7 @@ describe('css vars', () => {
             cssVars: {
                 'css-vars-sharing-element-color': 'blue',
             },
-            styles: ({cssVars}) => {
+            styles({cssVars}) {
                 styleCallbackCssVars.push(cssVars);
                 return css`
                     :host {
@@ -155,11 +156,13 @@ describe('css vars', () => {
             cssVars: {
                 'css-vars-styles-element-color': 'rgb(10, 20, 30)',
             },
-            styles: ({cssVars}) => css`
-                .target {
-                    color: ${cssVars['css-vars-styles-element-color'].value};
-                }
-            `,
+            styles({cssVars}) {
+                return css`
+                    .target {
+                        color: ${cssVars['css-vars-styles-element-color'].value};
+                    }
+                `;
+            },
             render() {
                 return html`
                     <span class="target">colored</span>

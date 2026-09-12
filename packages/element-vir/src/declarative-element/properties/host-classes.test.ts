@@ -20,7 +20,9 @@ describe(createHostClassNamesMap.name, () => {
                 {enabled: boolean}
             >
         >({
-            'my-element-active': ({state}) => state.enabled,
+            'my-element-active'({state}) {
+                return state.enabled;
+            },
             'my-element-manual': false,
         });
 
@@ -57,7 +59,9 @@ describe('host classes in an element definition', () => {
         const HostClassNamesElement = defineElement()({
             tagName: 'host-classes-names-element',
             hostClasses: {
-                'host-classes-names-element-active': () => true,
+                'host-classes-names-element-active'() {
+                    return true;
+                },
                 'host-classes-names-element-manual': false,
             },
             render() {
@@ -84,8 +88,8 @@ describe('host classes in an element definition', () => {
 
     it('rejects host class keys that are not prefixed with the tag name', () => {
         assert.throws(
-            () =>
-                defineElement()({
+            () => {
+                return defineElement()({
                     tagName: 'host-classes-invalid-element',
                     hostClasses: {
                         // @ts-expect-error: host class keys must start with the tag name
@@ -94,7 +98,8 @@ describe('host classes in an element definition', () => {
                     render() {
                         return 'hi';
                     },
-                }),
+                });
+            },
             {
                 matchMessage: "Invalid element string name 'not-prefixed-active'",
             },
@@ -105,7 +110,9 @@ describe('host classes in an element definition', () => {
         const InputHostClassElement = defineElement<{highlighted: boolean}>()({
             tagName: 'host-classes-input-element',
             hostClasses: {
-                'host-classes-input-element-highlighted': ({inputs}) => inputs.highlighted,
+                'host-classes-input-element-highlighted'({inputs}) {
+                    return inputs.highlighted;
+                },
             },
             render() {
                 return 'hi';

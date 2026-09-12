@@ -87,34 +87,34 @@ export const VirOldTestApp = defineElement()({
             >
                 Welcome to the test app.
                 <button
-                    ${listen('click', () =>
-                        updateState({
+                    ${listen('click', () => {
+                        return updateState({
                             funnyNumber: randomInteger({
                                 min: 0,
                                 max: 10,
                             }),
-                        }),
-                    )}
+                        });
+                    })}
                 >
                     assign NEW number to child
                 </button>
                 <!-- Verify that the child component does not rerender when we pass it the same value. -->
                 <!-- Check the console logs to verify.-->
                 <button
-                    ${listen('click', () =>
-                        updateState({
+                    ${listen('click', () => {
+                        return updateState({
                             funnyNumber: 4,
-                        }),
-                    )}
+                        });
+                    })}
                 >
                     assign SAME number to child
                 </button>
                 <button
-                    ${listen('click', () =>
-                        updateState({
+                    ${listen('click', () => {
+                        return updateState({
                             showChild: !state.showChild,
-                        }),
-                    )}
+                        });
+                    })}
                 >
                     toggle second child
                 </button>

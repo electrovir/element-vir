@@ -96,7 +96,9 @@ describe(isDeclarativeElement.name, () => {
         },
         {
             it: 'rejects a function',
-            input: () => undefined,
+            input() {
+                return undefined;
+            },
             expect: false,
         },
         {
@@ -169,11 +171,11 @@ describe(assertIsDeclarativeElement.name, () => {
     });
     it('reports a tagName property from a non-element input', () => {
         assert.strictEquals(
-            assertWrap.throws(() =>
-                assertIsDeclarativeElement({
+            assertWrap.throws(() => {
+                return assertIsDeclarativeElement({
                     tagName: 'fake-tag-name',
-                }),
-            ).message,
+                });
+            }).message,
             'fake-tag-name is not a declarative element.',
         );
     });

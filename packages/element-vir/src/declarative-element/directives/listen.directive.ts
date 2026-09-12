@@ -19,7 +19,11 @@ type PossibleListenerCallbacks<
     | ((event: InstanceType<EventClassGeneric>) => ListenCallbackReturn)
     | ((event: HTMLElementEventMap[NativeElementEventNameGeneric]) => ListenCallbackReturn);
 
-/** An event constructor with a static event type. */
+/**
+ * An event constructor with a static event type.
+ *
+ * @category Internal
+ */
 export type EventDefinition<EventGeneric extends Event = Event> = EventClass<EventGeneric> &
     Readonly<{
         type: EventGeneric['type'];

@@ -37,15 +37,16 @@ describe('attributes directive', () => {
     });
     it('fails on uppercase letters', async () => {
         await assert.throws(
-            () =>
-                testWeb.render(html`
+            () => {
+                return testWeb.render(html`
                     <div
                         ${attributes({
                             // @ts-expect-error: attribute keys cannot have uppercase
                             Uppercase: '',
                         })}
                     ></div>
-                `),
+                `);
+            },
             {
                 matchMessage: 'Cannot assign attribute name with uppercase letters',
             },
@@ -53,15 +54,16 @@ describe('attributes directive', () => {
     });
     it('includes the offending attribute name in the uppercase failure', async () => {
         await assert.throws(
-            () =>
-                testWeb.render(html`
+            () => {
+                return testWeb.render(html`
                     <div
                         ${attributes({
                             // @ts-expect-error: attribute keys cannot have uppercase
                             someAttribute: 'value',
                         })}
                     ></div>
-                `),
+                `);
+            },
             {
                 matchMessage: 'Cannot assign attribute name with uppercase letters: someAttribute',
                 matchConstructor: Error,

@@ -70,7 +70,9 @@ function createTransform(): TemplateTransform {
     return transformTemplate({
         inputTemplateStrings: captured.strings,
         inputValues: [],
-        transformValue: () => undefined,
+        transformValue() {
+            return undefined;
+        },
     });
 }
 

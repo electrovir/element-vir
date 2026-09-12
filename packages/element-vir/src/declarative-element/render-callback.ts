@@ -1,4 +1,8 @@
-import {getObjectTypedKeys, type SetRequiredAndNotNull} from '@augment-vir/common';
+import {
+    type BivariantFunction,
+    getObjectTypedKeys,
+    type SetRequiredAndNotNull,
+} from '@augment-vir/common';
 import {type HtmlInterpolation} from '../template-transforms/vir-html/html-interpolation.js';
 import {type CustomElementTagName} from './custom-tag-name.js';
 import {type DeclarativeElement, type DeclarativeElementHost} from './declarative-element.js';
@@ -25,18 +29,21 @@ export type RenderCallback<
     CssVarKeys extends BaseStringName<TagName> = any,
     SlotNames extends ReadonlyArray<string> = any,
     TestIds extends ReadonlyArray<string> = any,
-> = (
-    params: RenderParams<
-        TagName,
-        Inputs,
-        State,
-        EventsInit,
-        HostClassKeys,
-        CssVarKeys,
-        SlotNames,
-        TestIds
-    >,
-) => HtmlInterpolation;
+> = BivariantFunction<
+    [
+        RenderParams<
+            TagName,
+            Inputs,
+            State,
+            EventsInit,
+            HostClassKeys,
+            CssVarKeys,
+            SlotNames,
+            TestIds
+        >,
+    ],
+    HtmlInterpolation
+>;
 
 /**
  * Type for the `init` and `cleanup` element definition methods.
@@ -177,7 +184,9 @@ export function createRenderParams<
         cssVars,
         slotNames: slotNamesMap,
         testIds: testIdsMap,
-        dispatch: (event) => element.dispatchEvent(event),
+        dispatch(event) {
+            return element.dispatchEvent(event);
+        },
         events: eventsMap,
         host: element as SetRequiredAndNotNull<typeof element, 'shadowRoot'>,
         inputs: element.instanceInputs,

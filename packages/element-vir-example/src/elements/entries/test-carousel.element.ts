@@ -78,94 +78,96 @@ export const TestCarousel = defineElement<{
     cssVars: {
         'test-carousel-arrow-margin': '40px',
     },
-    styles: ({cssVars}) => css`
-        :host {
-            display: block;
-            position: relative;
-            overflow-y: hidden;
-            box-sizing: border-box;
-            z-index: 0;
-        }
+    styles({cssVars}) {
+        return css`
+            :host {
+                display: block;
+                position: relative;
+                overflow-y: hidden;
+                box-sizing: border-box;
+                z-index: 0;
+            }
 
-        ${hideScrollbars(`.${templatesContainerClassName}`)}
+            ${hideScrollbars(`.${templatesContainerClassName}`)}
 
-        .${unsafeCSS(templatesContainerClassName)} {
-            position: relative;
-            display: flex;
-            gap: 24px;
-            overflow-x: scroll;
-            scroll-snap-type: x mandatory;
-            z-index: 9;
-            overflow-y: hidden;
-        }
+            .${unsafeCSS(templatesContainerClassName)} {
+                position: relative;
+                display: flex;
+                gap: 24px;
+                overflow-x: scroll;
+                scroll-snap-type: x mandatory;
+                z-index: 9;
+                overflow-y: hidden;
+            }
 
-        .template-wrapper {
-            scroll-snap-align: center;
-            /*
+            .template-wrapper {
+                scroll-snap-align: center;
+                /*
                 Sometimes the edges clip just by a couple pixels, so account for that with the calc.
             */
-            max-width: calc(100% - 2px);
-        }
+                max-width: calc(100% - 2px);
+            }
 
-        .arrow {
-            --background-degrees: 90deg;
-            position: absolute;
-            width: 100px;
-            max-width: 20%;
-            opacity: 1;
-            transition: 500ms;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            z-index: 200;
-            background: linear-gradient(
-                var(--background-degrees),
-                white 0%,
-                rgba(255, 255, 255, 0.6) 30%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            will-change: visibility;
-        }
+            .arrow {
+                --background-degrees: 90deg;
+                position: absolute;
+                width: 100px;
+                max-width: 20%;
+                opacity: 1;
+                transition: 500ms;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                z-index: 200;
+                background: linear-gradient(
+                    var(--background-degrees),
+                    white 0%,
+                    rgba(255, 255, 255, 0.6) 30%,
+                    rgba(255, 255, 255, 0) 100%
+                );
+                will-change: visibility;
+            }
 
-        .arrow.right {
-            justify-content: flex-end;
-            --background-degrees: -90deg;
-            left: unset;
-            right: 0;
-        }
+            .arrow.right {
+                justify-content: flex-end;
+                --background-degrees: -90deg;
+                left: unset;
+                right: 0;
+            }
 
-        .arrow ${ViraIcon} {
-            cursor: pointer;
-            position: relative;
-            z-index: 11;
-            margin: 0 ${cssVars['test-carousel-arrow-margin'].value};
-            box-shadow: 0px 2px 28px rgba(0, 0, 0, 0.12);
-            display: inline-flex;
-            padding: 8px;
-            border-radius: 50%;
-            background-color: white;
-        }
+            .arrow ${ViraIcon} {
+                cursor: pointer;
+                position: relative;
+                z-index: 11;
+                margin: 0 ${cssVars['test-carousel-arrow-margin'].value};
+                box-shadow: 0px 2px 28px rgba(0, 0, 0, 0.12);
+                display: inline-flex;
+                padding: 8px;
+                border-radius: 50%;
+                background-color: white;
+            }
 
-        .hidden {
-            /*
+            .hidden {
+                /*
                 Don't use "opacity: 0" here, it causes super wacky bugs where the scrolling gets reset
                 but only SOMETIMES. Refreshing repeatedly seems to eventually get it stuck.
             */
-            /*visibility: hidden;*/
-            /*
+                /*visibility: hidden;*/
+                /*
                 I'm giving opacity a shot since we've moved the arrows to being absolutely
                 positioned. Maybe that will help? If the carousel starts resetting its scroll
                 position randomly for no apparent reason, try going back to using visibility. Note
                 that transitions won't work anymore, so remove the transition duration that was
                 added above in this same commit.
             */
-            opacity: 0;
-            pointer-events: none;
-        }
-    `,
+                opacity: 0;
+                pointer-events: none;
+            }
+        `;
+    },
     render({inputs}) {
         return html`
             <div>
