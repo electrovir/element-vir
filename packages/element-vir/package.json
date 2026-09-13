@@ -1,6 +1,6 @@
 {
     "name": "element-vir",
-    "version": "27.0.0",
+    "version": "27.0.1",
     "keywords": [
         "custom",
         "web",
@@ -39,8 +39,8 @@
         "test:docs": "virmator docs check"
     },
     "dependencies": {
-        "@augment-vir/assert": "^32.3.0-beta.0",
-        "@augment-vir/common": "^32.3.0-beta.0",
+        "@augment-vir/assert": "^32.3.0",
+        "@augment-vir/common": "^32.3.0",
         "date-vir": "^9.1.1",
         "lit": "^3.3.3",
         "lit-css-vars": "^3.6.3",
@@ -50,8 +50,8 @@
         "typed-event-target": "^4.3.3"
     },
     "devDependencies": {
-        "@augment-vir/test": "^32.3.0-beta.0",
-        "@augment-vir/web": "^32.3.0-beta.0",
+        "@augment-vir/test": "^32.3.0",
+        "@augment-vir/web": "^32.3.0",
         "@web/dev-server-esbuild": "^2.0.0",
         "@web/test-runner": "^1.0.0",
         "@web/test-runner-commands": "^1.0.1",
