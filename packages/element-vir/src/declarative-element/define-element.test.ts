@@ -1651,6 +1651,47 @@ describe(defineElement.name, () => {
         assert.deepEquals(calls, ['cleanup']);
     });
 
+    it('does not render or re-run state and init when cleanup updates state', async () => {
+        const calls: string[] = [];
+        const MyElement = defineElement()({
+            tagName: 'define-element-cleanup-update-state-el',
+            state() {
+                calls.push('state');
+                return {
+                    counter: 0,
+                };
+            },
+            init() {
+                calls.push('init');
+            },
+            cleanup({updateState}) {
+                calls.push('cleanup');
+                updateState({
+                    counter: 1,
+                });
+            },
+            render() {
+                calls.push('render');
+                return '';
+            },
+        });
+
+        const rendered = await testWeb.render(html`
+            <${MyElement}></${MyElement}>
+        `);
+        assert.instanceOf(rendered, MyElement);
+
+        rendered.remove();
+        await rendered.updateComplete;
+
+        assert.deepEquals(calls, [
+            'state',
+            'init',
+            'render',
+            'cleanup',
+        ]);
+    });
+
     it('skips cleanup for an element that never rendered', () => {
         const calls: string[] = [];
         const MyElement = defineElement()({

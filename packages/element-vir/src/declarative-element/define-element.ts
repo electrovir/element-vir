@@ -8,6 +8,7 @@ import {
     getObjectTypedKeys,
     kebabCaseToCamelCase,
 } from '@augment-vir/common';
+import {type PropertyValues} from 'lit';
 import {defineCssVars} from 'lit-css-vars';
 import {type MinimalDefinitionWithInputs} from '../template-transforms/minimal-element-definition.js';
 import {css} from '../template-transforms/vir-css/vir-css.js';
@@ -456,6 +457,16 @@ function internalDefineElement<
                 void elementOptions.errorHandler?.(error);
                 return extractErrorMessage(error);
             }
+        }
+
+        /**
+         * Lit still runs updates requested after disconnect (such as an `updateState` call in
+         * `cleanup`). Skip them: `destroy()` has already reset `_stateCalled` and `_initCalled`, so
+         * rendering here would re-run `state` and `init` on a detached element. `connectedCallback`
+         * schedules a fresh render on re-insertion.
+         */
+        protected override shouldUpdate(changedProperties: PropertyValues): boolean {
+            return this.isConnected && super.shouldUpdate(changedProperties);
         }
 
         public override connectedCallback(): void {
