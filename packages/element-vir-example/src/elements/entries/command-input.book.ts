@@ -1,6 +1,6 @@
 import {assertWrap} from '@augment-vir/assert';
 import {defineBookPage} from 'element-book';
-import {Observable, defineElement, html, listen} from 'element-vir';
+import {Trigger, defineElement, html, listen, onDomRendered} from 'element-vir';
 
 enum FileUploadCommand {
     OpenFilePicker = 'open-file-picker',
@@ -8,48 +8,41 @@ enum FileUploadCommand {
 }
 
 const VirCommandInputUpload = defineElement<{
-    commands: Observable<FileUploadCommand | undefined>;
+    commands: Trigger<FileUploadCommand>;
 }>()({
     tagName: 'vir-command-input-upload',
     state() {
         return {
             fileNames: [] as string[],
-            /** Any state value with a `destroy` method is destroyed when the element disconnects. */
-            commandListener: undefined as undefined | {destroy: () => void},
         };
     },
-    init({inputs, host, updateState}) {
-        const commandHandlers: Record<FileUploadCommand, () => void> = {
-            [FileUploadCommand.OpenFilePicker]() {
-                host.shadowRoot.querySelector('input')?.click();
-            },
-            [FileUploadCommand.Clear]() {
-                updateState({
-                    fileNames: [],
-                });
-            },
-        };
-
-        const removeListener = inputs.commands.listen(false, (command) => {
-            if (command) {
-                commandHandlers[command]();
-            }
-        });
-
-        updateState({
-            commandListener: {
-                destroy() {
-                    removeListener();
-                },
-            },
-        });
-    },
-    render({state, updateState}) {
+    render({inputs, state, updateState}) {
         return html`
             <input
                 type="file"
                 multiple
                 hidden
+                ${onDomRendered((element) => {
+                    const fileInput = assertWrap.instanceOf(element, HTMLInputElement);
+                    /**
+                     * Consume the trigger in a `onDomRendered` listener so that we for sure have a
+                     * reference to the input element (it has already been rendered).
+                     */
+                    const command = inputs.commands.value;
+                    const commandHandlers: Record<FileUploadCommand, () => void> = {
+                        [FileUploadCommand.OpenFilePicker]() {
+                            fileInput.click();
+                        },
+                        [FileUploadCommand.Clear]() {
+                            updateState({
+                                fileNames: [],
+                            });
+                        },
+                    };
+                    if (command) {
+                        commandHandlers[command]();
+                    }
+                })}
                 ${listen('change', (event) => {
                     const fileInput = assertWrap.instanceOf(event.currentTarget, HTMLInputElement);
 
@@ -68,25 +61,21 @@ const VirCommandInputParent = defineElement()({
     tagName: 'vir-command-input-parent',
     state() {
         return {
-            uploadCommands: new Observable<FileUploadCommand | undefined>({
-                defaultValue: undefined,
-                /** Fire listeners on every `setValue`, even when the same command is sent twice. */
-                equalityCheck: undefined,
-            }),
+            uploadCommands: new Trigger<FileUploadCommand>(),
         };
     },
     render({state}) {
         return html`
             <button
                 ${listen('click', () => {
-                    state.uploadCommands.setValue(FileUploadCommand.OpenFilePicker);
+                    state.uploadCommands.trigger(FileUploadCommand.OpenFilePicker);
                 })}
             >
                 Choose files
             </button>
             <button
                 ${listen('click', () => {
-                    state.uploadCommands.setValue(FileUploadCommand.Clear);
+                    state.uploadCommands.trigger(FileUploadCommand.Clear);
                 })}
             >
                 Clear
