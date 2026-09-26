@@ -25,11 +25,11 @@
         "element-vir": "^27.0.2"
     },
     "devDependencies": {
-        "@augment-vir/assert": "^32.3.1",
-        "@augment-vir/common": "^32.3.1",
-        "@augment-vir/node": "^32.3.1",
-        "@augment-vir/test": "^32.3.1",
-        "@types/node": "^26.6.1",
+        "@augment-vir/assert": "^32.5.0",
+        "@augment-vir/common": "^32.5.0",
+        "@augment-vir/node": "^32.5.0",
+        "@augment-vir/test": "^32.5.0",
+        "@types/node": "^26.6.2",
         "playwright": "1.63.0",
         "url-vir": "^2.2.2"
     },
