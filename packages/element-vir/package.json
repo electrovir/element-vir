@@ -46,7 +46,7 @@
         "lit-css-vars": "^3.6.3",
         "lit-html": "^3.3.3",
         "object-shape-tester": "^6.15.1",
-        "observavir": "^2.4.0",
+        "observavir": "^2.4.1",
         "typed-event-target": "^4.3.4"
     },
     "devDependencies": {

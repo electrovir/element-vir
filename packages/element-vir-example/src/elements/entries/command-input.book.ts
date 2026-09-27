@@ -28,7 +28,7 @@ const VirCommandInputUpload = defineElement<{
                      * Consume the trigger in a `onDomRendered` listener so that we for sure have a
                      * reference to the input element (it has already been rendered).
                      */
-                    const command = inputs.commands.value;
+                    const command = inputs.commands.consumeValue();
                     const commandHandlers: Record<FileUploadCommand, () => void> = {
                         [FileUploadCommand.OpenFilePicker]() {
                             fileInput.click();
